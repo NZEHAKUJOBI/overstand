@@ -1,0 +1,1145 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}Contact Us - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.95) 0%, rgba(15, 107, 63, 0.9) 100%),
+            url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920') center/cover;
+        padding: 120px 0 80px;
+        margin-top: 76px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 40% 60%, rgba(212, 165, 32, 0.15), transparent 60%);
+        pointer-events: none;
+    }
+
+    .page-hero h1 {
+        color: white;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .page-hero p {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .contact-info-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        position: sticky;
+        top: 100px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: start;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid var(--neutral-100);
+    }
+
+    .contact-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .contact-item .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+
+    .contact-item:hover .icon {
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+        transform: scale(1.1);
+    }
+
+    .contact-item .icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .contact-item .content h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-item .content p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .contact-item .content a {
+        color: var(--primary-green);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .contact-item .content a:hover {
+        color: var(--accent-gold);
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .social-link {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+    }
+
+    .social-link:hover {
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(212, 165, 32, 0.3);
+    }
+
+    .contact-form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+        color: var(--primary-green);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid var(--neutral-200);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(27, 122, 76, 0.1);
+    }
+
+    .form-control::placeholder {
+        color: var(--neutral-400);
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .char-counter {
+        text-align: right;
+        font-size: 0.85rem;
+        color: var(--neutral-500);
+        margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+        color: white;
+        padding: 1rem 3rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 50px;
+        border: none;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(27, 122, 76, 0.3);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+    }
+
+    .quick-links-section {
+        background: var(--neutral-100);
+    }
+
+    .quick-link-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .quick-link-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(27, 122, 76, 0.15);
+    }
+
+    .quick-link-card h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--accent-gold);
+    }
+
+    .quick-link-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .quick-link-card ul li {
+        margin-bottom: 0.75rem;
+    }
+
+    .quick-link-card ul li a {
+        color: var(--neutral-600);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+
+    .quick-link-card ul li a:hover {
+        color: var(--primary-green);
+        background: rgba(27, 122, 76, 0.05);
+        transform: translateX(5px);
+    }
+
+    .quick-link-card ul li a i {
+        margin-right: 0.75rem;
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+    }
+
+    .faq-section {
+        background: white;
+    }
+
+    .accordion-item {
+        border: 2px solid var(--neutral-100);
+        border-radius: 12px !important;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .accordion-button {
+        background: white;
+        color: var(--primary-green);
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.05));
+        color: var(--primary-green);
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border: none;
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231B7A4C'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+
+    .accordion-body {
+        padding: 1.5rem;
+        color: var(--neutral-600);
+        line-height: 1.8;
+    }
+
+    .newsletter-section {
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        padding: 60px 0;
+        color: white;
+    }
+
+    .newsletter-box {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .newsletter-box h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .newsletter-box p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .newsletter-form {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .newsletter-form input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+    }
+
+    .newsletter-form button {
+        padding: 1rem 2.5rem;
+        background: var(--accent-gold);
+        color: var(--dark-green);
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .newsletter-form button:hover {
+        background: white;
+        color: var(--primary-green);
+        transform: translateY(-2px);
+    }
+
+    .newsletter-checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 1rem auto 0;
+        text-align: left;
+    }
+    .newsletter-checkbox input[type="checkbox"] {
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--accent-gold);
+    }
+    .newsletter-checkbox label {
+        cursor: pointer;
+        line-height: 1.4;
+    }
+
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+        .newsletter-form {
+            flex-direction: column;
+        }
+
+        .contact-info-card {
+            position: static;
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1>{% translate "Contact Us" %}</h1>
+                <p>Get in touch with the IPAWAS Secretariat. We're here to support investors, member IPAs, and partners
+                    across West Africa.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Contact Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Contact Information -->
+            <div class="col-lg-4">
+                <div class="contact-info-card">
+                    <h3 style="color: var(--primary-green); font-weight: 700; margin-bottom: 2rem;">IPAWAS Secretariat
+                    </h3>
+
+                    <div class="contact-item">
+                        <div class="icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="content">
+                            <h4>{% translate "Physical Address" %}</h4>
+                            <p>
+                                IPAWAS Secretariat<br>
+                                Nigerian Investment Promotion Commission (NIPC)<br>
+                                Plot 1181, Aguiyi Ironsi Street<br>
+                                Maitama District<br>
+                                Abuja, Federal Capital Territory<br>
+                                Nigeria
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="content">
+                            <h4>{% translate "Email" %}</h4>
+                            <p><a href="mailto:infodesk@ipawas.org">infodesk@ipawas.org</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="content">
+                            <h4>{% translate "Phone" %}</h4>
+                            <p><a href="tel:+2349062040061">+234 (0) 906 204 0061</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="content">
+                            <h4>{% translate "Office Hours" %}</h4>
+                            <p>{% translate "Monday – Friday" %}<br>{% translate "8:00 AM – 4:00 PM (GMT+1)" %}</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="content">
+                            <h4>{% translate "Social Media" %}</h4>
+                            <div class="social-links">
+                                {% if social_media.linkedin %}
+                                <a href="{{ social_media.linkedin }}" class="social-link" title="{% translate 'LinkedIn' %}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                {% endif %}
+                                {% if social_media.twitter %}
+                                <a href="{{ social_media.twitter }}" class="social-link" title="{% translate 'X (Twitter)' %}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                {% endif %}
+                                {% if social_media.facebook %}
+                                <a href="{{ social_media.facebook }}" class="social-link" title="{% translate 'Facebook' %}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                {% endif %}
+                                {% if social_media.youtube %}
+                                <a href="{{ social_media.youtube }}" class="social-link" title="{% translate 'YouTube' %}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                                {% endif %}
+                                {% if social_media.instagram %}
+                                <a href="{{ social_media.instagram }}" class="social-link" title="{% translate 'Instagram' %}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                {% endif %}
+                                {% if not social_media.linkedin and not social_media.twitter and not social_media.facebook and not social_media.youtube and not social_media.instagram %}
+                                <span class="text-muted" style="font-size:0.9rem;">{% translate "Coming soon" %}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <div class="contact-form-card">
+                    <h3 style="color: var(--primary-green); font-weight: 700; margin-bottom: 2rem;">Send Us a Message
+                    </h3>
+
+                    <p class="text-muted mb-4">Have a question or inquiry? Fill out the form below and our team will get
+                        back to you within 2 business days.</p>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" id="contactForm">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <!-- Inquiry Type -->
+                            <div class="col-md-6">
+                                <label for="{{ form.inquiry_type.id_for_label }}" class="form-label">Inquiry Type
+                                    *</label>
+                                {{ form.inquiry_type }}
+                                {% if form.inquiry_type.errors %}
+                                <div class="text-danger small mt-1">{{ form.inquiry_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Member State -->
+                            <div class="col-md-6">
+                                <label for="{{ form.member_state.id_for_label }}" class="form-label">Country of
+                                    Interest</label>
+                                {{ form.member_state }}
+                                <small class="text-muted d-block">{% translate "Leave blank for general inquiries" %}</small>
+                                {% if form.member_state.errors %}
+                                <div class="text-danger small mt-1">{{ form.member_state.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.full_name.id_for_label }}" class="form-label">{% translate "Full Name *" %}</label>
+                                {{ form.full_name }}
+                                {% if form.full_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.full_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">{% translate "Email Address *" %}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">{% translate "Phone Number" %}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Company Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.company_name.id_for_label }}"
+                                    class="form-label">{% translate "Company/Organization" %}</label>
+                                {{ form.company_name }}
+                                {% if form.company_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.company_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Company Country -->
+                            <div class="col-md-6">
+                                <label for="{{ form.company_country.id_for_label }}" class="form-label">Your
+                                    Country</label>
+                                {{ form.company_country }}
+                                {% if form.company_country.errors %}
+                                <div class="text-danger small mt-1">{{ form.company_country.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Sector of Interest -->
+                            <div class="col-md-6">
+                                <label for="{{ form.sector_of_interest.id_for_label }}" class="form-label">Sector of
+                                    Interest</label>
+                                {{ form.sector_of_interest }}
+                                {% if form.sector_of_interest.errors %}
+                                <div class="text-danger small mt-1">{{ form.sector_of_interest.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Estimated Investment -->
+                            <div class="col-md-12">
+                                <label for="{{ form.estimated_investment.id_for_label }}" class="form-label">Estimated
+                                    Investment Range</label>
+                                {{ form.estimated_investment }}
+                                <small class="text-muted">e.g., $100k - $500k, $1M - $5M</small>
+                                {% if form.estimated_investment.errors %}
+                                <div class="text-danger small mt-1">{{ form.estimated_investment.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="col-md-12">
+                                <label for="{{ form.subject.id_for_label }}" class="form-label">{% translate "Subject *" %}</label>
+                                {{ form.subject }}
+                                {% if form.subject.errors %}
+                                <div class="text-danger small mt-1">{{ form.subject.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Message -->
+                            <div class="col-md-12">
+                                <label for="{{ form.message.id_for_label }}" class="form-label">{% translate "Message *" %}</label>
+                                {{ form.message }}
+                                <div class="char-counter">
+                                    <span id="charCount">0</span> / 1000 characters
+                                </div>
+                                {% if form.message.errors %}
+                                <div class="text-danger small mt-1">{{ form.message.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-md-12">
+                                <button type="submit" class="btn-submit">
+                                    <span class="submit-text">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    </span>
+                                    <span class="loading-text d-none">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- IPA Office Directory -->
+    {% if ipa_offices %}
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h3 style="color: var(--primary-green); font-weight: 700;">
+                <i class="fas fa-map-marked-alt me-2"></i>{% translate "Find Us" %}
+            </h3>
+            <p class="text-muted">{% translate "Investment Promotion Agencies across West Africa" %}</p>
+        </div>
+        <div class="row g-3">
+            {% for office in ipa_offices %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div style="background: white; border-radius: 14px; padding: 1.25rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; border-top: 3px solid var(--primary-green);">
+                    <div class="d-flex align-items-center mb-2">
+                        {% if office.flag_emoji %}<span style="font-size:1.4rem; margin-right:0.5rem;">{{ office.flag_emoji }}</span>{% endif %}
+                        <strong style="color: var(--primary-green); font-size: 0.95rem;">{{ office.country_name }}</strong>
+                    </div>
+                    <p class="mb-1" style="font-size: 0.85rem; color: var(--neutral-700); font-weight: 600;">{{ office.ipa_acronym }}</p>
+                    <p class="mb-1" style="font-size: 0.8rem; color: var(--neutral-600);">{{ office.ipa_full_name }}</p>
+                    {% if office.capital_city %}
+                    <p class="mb-1" style="font-size: 0.8rem; color: var(--neutral-500);">
+                        <i class="fas fa-map-pin me-1"></i>{{ office.capital_city }}
+                    </p>
+                    {% endif %}
+                    {% if office.contact_email %}
+                    <a href="mailto:{{ office.contact_email }}" style="font-size: 0.8rem; color: var(--primary-green); text-decoration: none; word-break: break-all;">
+                        <i class="fas fa-envelope me-1"></i>{{ office.contact_email }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border: none; border-radius: 20px; overflow: hidden;">
+                <div class="modal-header"
+                    style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); border: none; padding: 2rem;">
+                    <div class="w-100 text-center">
+                        <div class="success-icon mb-3">
+                            <i class="fas fa-check-circle" style="font-size: 4rem; color: white;"></i>
+                        </div>
+                        <h3 class="modal-title text-white fw-bold" id="successModalLabel">{% translate "Message Received!" %}</h3>
+                    </div>
+                </div>
+                <div class="modal-body text-center" style="padding: 2.5rem 2rem;">
+                    <p class="mb-3" style="font-size: 1.1rem; color: var(--neutral-700);">
+                        Thank you for contacting IPAWAS. We've received your inquiry and our team will review it
+                        shortly.
+                    </p>
+
+                    <div class="reference-box"
+                        style="background: var(--neutral-100); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                        <p class="mb-2" style="color: var(--neutral-600); font-size: 0.9rem; font-weight: 600;">Your
+                            Reference Number</p>
+                        <p class="mb-0"
+                            style="font-size: 1.5rem; font-weight: 700; color: var(--primary-green); font-family: 'Courier New', monospace;"
+                            id="referenceNumber">
+                            INQ-2025-0001
+                        </p>
+                        <small class="text-muted">{% translate "Please save this for your records" %}</small>
+                    </div>
+
+                    <div class="response-time"
+                        style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.05)); border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem;">
+                        <i class="fas fa-clock" style="color: var(--accent-gold); font-size: 1.2rem;"></i>
+                        <p class="mb-0 mt-2" style="color: var(--neutral-700); font-weight: 600;">
+                            Expected Response Time: <span style="color: var(--primary-green);">{% translate "2 Business Days" %}</span>
+                        </p>
+                    </div>
+
+                    <p class="mt-4 mb-0" style="color: var(--neutral-600); font-size: 0.95rem;">
+                        A confirmation email has been sent to your inbox. If you need immediate assistance, please call
+                        <a href="tel:+2349062040061"
+                            style="color: var(--primary-green); font-weight: 600; text-decoration: none;">+234 (0) 906
+                            204 0061</a>
+                    </p>
+                    <p class="mt-2 mb-0" style="color: var(--neutral-500); font-size: 0.82rem;">
+                        <i class="fas fa-info-circle me-1"></i>{% translate "Didn't receive a confirmation email? Check your spam folder or contact us directly at" %}
+                        <a href="mailto:infodesk@ipawas.org" style="color: var(--primary-green); text-decoration: none;">infodesk@ipawas.org</a>
+                    </p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 1.5rem 2rem; background: var(--neutral-50);">
+                    <button type="button" class="btn" data-bs-dismiss="modal"
+                        style="background: linear-gradient(135deg, var(--accent-gold), #B8941E); color: white; padding: 0.75rem 2.5rem; border-radius: 50px; font-weight: 700; border: none; width: 100%;">
+                        <i class="fas fa-thumbs-up me-2"></i>Got It!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="content-section quick-links-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Looking for Something Specific?" %}</h2>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="quick-link-card">
+                    <h4>{% translate "For Investors" %}</h4>
+                    <ul>
+                        <li><a href="{% url 'opportunities:listing' %}"><i class="fas fa-arrow-right"></i>Investment
+                                Opportunities</a></li>
+                        <li><a href="{% url 'investor_services:hub' %}"><i class="fas fa-arrow-right"></i>{% translate "How to Invest" %}</a></li>
+                        <li><a href="{% url 'members:hub' %}"><i class="fas fa-arrow-right"></i>{% translate "Connect with an IPA" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="quick-link-card">
+                    <h4>{% translate "For IPAs" %}</h4>
+                    <ul>
+                        <li><a href="{% url 'accounts:login' %}"><i class="fas fa-arrow-right"></i>{% translate "IPA Login Portal" %}</a></li>
+                        <li><a href="{% url 'knowledge_hub:hub' %}"><i class="fas fa-arrow-right"></i>{% translate "IPA Resources" %}</a></li>
+                        <li><a href="{% url 'programs:hub' %}"><i class="fas fa-arrow-right"></i>{% translate "Training Programs" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="quick-link-card">
+                    <h4>{% translate "For Partners" %}</h4>
+                    <ul>
+                        <li><a href="{% url 'about:strategic_priorities' %}"><i class="fas fa-arrow-right"></i>{% translate "Partnership Opportunities" %}</a></li>
+                        <li><a href="{% url 'about:strategic_priorities' %}"><i class="fas fa-arrow-right"></i>Development
+                                Partners</a></li>
+                        <li><a href="{% url 'about:contact' %}"><i class="fas fa-arrow-right"></i>{% translate "Partnership Application" %}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="quick-link-card">
+                    <h4>{% translate "For Media" %}</h4>
+                    <ul>
+                        <li><a href="{% url 'media_center:hub' %}"><i class="fas fa-arrow-right"></i>{% translate "Press Releases" %}</a></li>
+                        <li><a href="{% url 'media_center:media_kit' %}"><i class="fas fa-arrow-right"></i>{% translate "Media Kit" %}</a></li>
+                        <li><a href="{% url 'knowledge_hub:news' %}"gallery"><i class="fas fa-arrow-right"></i>{% translate "Event Photos" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="content-section faq-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Frequently Asked Questions" %}</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq1">
+                                What is IPAWAS?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                IPAWAS (Investment Promotion Agencies of West African States) is a regional association
+                                of Investment Promotion Agencies from all 12 ECOWAS member states. We facilitate
+                                investment promotion, capacity building, and regional cooperation to position West
+                                Africa as a premier investment destination. <a href="{% url 'about:who_we_are' %}"
+                                    style="color: var(--primary-green); font-weight: 600;">{% translate "Learn more about us" %}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq2">
+                                How can I invest in West Africa through IPAWAS?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                IPAWAS connects investors with investment opportunities across West Africa. You can
+                                explore opportunities on our <a href="{% url 'opportunities:listing' %}"
+                                    style="color: var(--primary-green); font-weight: 600;">Investment Opportunities
+                                    page</a>, and we can help connect you with the relevant country IPA for facilitation
+                                and support throughout the investment process.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq3">
+                                Does IPAWAS charge for its services?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                No, IPAWAS does not charge investors for information, facilitation, or connection
+                                services. Our mandate is to support and promote investment in West Africa. All investor
+                                services are provided free of charge.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq4">
+                                How do I contact a specific country's IPA?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Visit our <a href="{% url 'members:hub' %}"
+                                    style="color: var(--primary-green); font-weight: 600;">{% translate "Member States page" %}</a> to
+                                find detailed information and contact details for all 12 national Investment Promotion
+                                Agencies. Each country profile includes the IPA's website, email, and phone contact.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq5">
+                                Can I visit the IPAWAS office?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, we welcome visits by appointment. Please email us at <a
+                                    href="mailto:infodesk@ipawas.org"
+                                    style="color: var(--primary-green); font-weight: 600;">infodesk@ipawas.org</a> or
+                                call <a href="tel:+2349062040061"
+                                    style="color: var(--primary-green); font-weight: 600;">+234 (0) 906 204 0061</a> to
+                                schedule a meeting. Our office is located in Abuja, Nigeria.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq6">
+                                Where can I find investment data?
+                            </button>
+                        </h2>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Access comprehensive investment data, trends, and analytics through our <a href="{% url 'knowledge_hub:resources' %}"
+                                    style="color: var(--primary-green); font-weight: 600;">West Africa Investment
+                                    Intelligence System (WAIIS)</a>. The portal provides real-time investment
+                                information, sector analysis, and economic indicators across the region.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#faq7">
+                                How do I partner with IPAWAS?
+                            </button>
+                        </h2>
+                        <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We welcome partnerships with organizations committed to advancing investment in West
+                                Africa. Visit our <a href="{% url 'about:strategic_priorities' %}"
+                                    style="color: var(--primary-green); font-weight: 600;">{% translate "Partnerships page" %}</a> to
+                                learn about partnership opportunities and submit an application.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-box">
+            <h3>{% translate "Stay Updated" %}</h3>
+            <p>Subscribe to our newsletter for the latest investment opportunities, news, and events from across West
+                Africa.</p>
+
+            <form class="newsletter-form" id="newsletterForm">
+                {% csrf_token %}
+                <input type="email" id="newsletterEmail" name="email" placeholder="{% translate 'Enter your email address' %}" required>
+                <button type="submit" id="newsletterBtn">{% translate "Subscribe" %}</button>
+            </form>
+            <div id="newsletterMsg" style="margin-top:0.75rem;font-size:0.9rem;display:none;"></div>
+
+            <div class="newsletter-checkbox">
+                <input type="checkbox" id="newsletter-consent" required>
+                <label for="newsletter-consent">
+                    I agree to receive newsletters from IPAWAS and understand I can unsubscribe at any time.
+                </label>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Character counter
+    const messageTextarea = document.getElementById('id_message');
+    const charCount = document.getElementById('charCount');
+
+    if (messageTextarea && charCount) {
+        messageTextarea.addEventListener('input', function () {
+            charCount.textContent = this.value.length;
+        });
+    }
+
+    // CSRF token helper
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Form submission with AJAX
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('.btn-submit');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const loadingText = submitBtn.querySelector('.loading-text');
+
+            submitBtn.disabled = true;
+            submitText.classList.add('d-none');
+            loadingText.classList.remove('d-none');
+
+            const formData = new FormData(this);
+
+            fetch(this.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update modal with reference number
+                        document.getElementById('referenceNumber').textContent = data.reference;
+
+                        // Show the modal
+                        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+
+                        // Reset form
+                        contactForm.reset();
+                        charCount.textContent = '0';
+
+                        // Scroll to top when modal is closed
+                        document.getElementById('successModal').addEventListener('hidden.bs.modal', function () {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        });
+                    } else {
+                        // Show error messages
+                        let errorMsg = 'Please correct the following errors:\n\n';
+                        for (let field in data.errors) {
+                            errorMsg += `${field}: ${data.errors[field].join(', ')}\n`;
+                        }
+                        alert(errorMsg);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again or contact us directly at infodesk@ipawas.org');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitText.classList.remove('d-none');
+                    loadingText.classList.add('d-none');
+                });
+        });
+    }
+
+    // Newsletter subscription
+    const newsletterForm = document.getElementById('newsletterForm');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const consent = document.getElementById('newsletter-consent');
+            if (!consent.checked) {
+                const msg = document.getElementById('newsletterMsg');
+                msg.style.color = '#dc3545';
+                msg.textContent = 'Please accept the consent checkbox first.';
+                msg.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('newsletterBtn');
+            const msg = document.getElementById('newsletterMsg');
+            btn.disabled = true;
+            btn.textContent = 'Subscribing...';
+
+            const formData = new FormData(this);
+
+            fetch('{% url "newsletter_subscribe" %}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+            })
+            .then(r => r.json())
+            .then(data => {
+                msg.style.color = data.success ? '#198754' : '#dc3545';
+                msg.textContent = data.success ? data.message : data.error;
+                msg.style.display = 'block';
+                if (data.success) {
+                    newsletterForm.reset();
+                    btn.textContent = 'Subscribed ✓';
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Subscribe';
+                }
+            })
+            .catch(() => {
+                msg.style.color = '#dc3545';
+                msg.textContent = 'Connection error. Please try again.';
+                msg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Subscribe';
+            });
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,729 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Investor Toolkit | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .toolkit-hero {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.95), rgba(15, 107, 63, 0.98)),
+                    url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200');
+        background-size: cover;
+        background-position: center;
+        padding: 120px 0 80px;
+        margin-top: 76px;
+        color: white;
+    }
+
+    .tool-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .tool-card:hover {
+        border-color: var(--accent-gold);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(27, 122, 76, 0.15);
+    }
+
+    .tool-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .calculator-section {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .result-box {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(212, 165, 32, 0.05));
+        border-left: 4px solid var(--primary-green);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    .result-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .result-item:last-child {
+        border-bottom: none;
+    }
+
+    .result-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+    }
+
+    .input-group-text {
+        background-color: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="toolkit-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">{% translate "Investor Toolkit" %}</h1>
+        <p class="lead mb-4">{% translate "Interactive tools to analyze and plan your West African investments" %}</p>
+        <p class="mb-0">{% translate "Calculate incentives, compare costs, estimate ROI, and generate checklists" %}</p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <!-- Tool Overview -->
+    <section class="mb-5">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h4 class="mb-3">{% translate "Incentive Calculator" %}</h4>
+                    <p class="text-muted small">{% translate "Calculate potential savings from tax holidays, duty exemptions, and other incentives across different countries." %}</p>
+                    <a href="#incentive-calc" class="btn btn-success btn-sm w-100 mt-3">{% translate "Use Calculator" %}</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4 class="mb-3">{% translate "Cost Comparison" %}</h4>
+                    <p class="text-muted small">{% translate "Compare operational costs including labor, utilities, rent, and logistics across West African countries." %}</p>
+                    <a href="#cost-comp" class="btn btn-success btn-sm w-100 mt-3">{% translate "Use Calculator" %}</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="mb-3">{% translate "ROI Estimator" %}</h4>
+                    <p class="text-muted small">{% translate "Estimate return on investment based on sector benchmarks, market size, and your investment parameters." %}</p>
+                    <a href="#roi-calc" class="btn btn-success btn-sm w-100 mt-3">{% translate "Use Calculator" %}</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h4 class="mb-3">{% translate "Checklist Generator" %}</h4>
+                    <p class="text-muted small">{% translate "Generate customized investment checklists based on your country, sector, and project stage." %}</p>
+                    <a href="#checklist-gen" class="btn btn-success btn-sm w-100 mt-3">{% translate "Use Generator" %}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Incentive Calculator -->
+    <section id="incentive-calc" class="calculator-section">
+        <h2 class="mb-4"><i class="fas fa-gift text-success me-2"></i>{% translate "Incentive Calculator" %}</h2>
+        <p class="text-muted mb-4">{% translate "Calculate potential savings from investment incentives. Results are estimates based on standard incentive packages." %}</p>
+
+        <form id="incentiveForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Country *" %}</label>
+                    <select name="country" class="form-select" required>
+                        <option value="">{% translate "Select country..." %}</option>
+                        <option value="benin">{% translate "Benin" %}</option>
+                        <option value="cabo-verde">{% translate "Cabo Verde" %}</option>
+                        <option value="cote-divoire">{% translate "Côte d'Ivoire" %}</option>
+                        <option value="gambia">{% translate "The Gambia" %}</option>
+                        <option value="ghana">{% translate "Ghana" %}</option>
+                        <option value="guinea">{% translate "Guinea" %}</option>
+                        <option value="guinea-bissau">{% translate "Guinea-Bissau" %}</option>
+                        <option value="liberia">{% translate "Liberia" %}</option>
+                        <option value="nigeria">{% translate "Nigeria" %}</option>
+                        <option value="senegal">{% translate "Senegal" %}</option>
+                        <option value="sierra-leone">{% translate "Sierra Leone" %}</option>
+                        <option value="togo">{% translate "Togo" %}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Sector *" %}</label>
+                    <select name="sector" class="form-select" required>
+                        <option value="">{% translate "Select sector..." %}</option>
+                        <option value="agriculture">{% translate "Agriculture & Agribusiness" %}</option>
+                        <option value="energy">{% translate "Energy & Renewable Energy" %}</option>
+                        <option value="manufacturing">{% translate "Manufacturing" %}</option>
+                        <option value="ict">{% translate "ICT & Digital Economy" %}</option>
+                        <option value="infrastructure">{% translate "Infrastructure & Logistics" %}</option>
+                        <option value="mining">{% translate "Mining & Natural Resources" %}</option>
+                        <option value="tourism">{% translate "Tourism & Hospitality" %}</option>
+                        <option value="financial">{% translate "Financial Services" %}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Investment Amount (USD) *" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="investment" class="form-control" placeholder="1000000" min="1" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Number of Jobs to Create" %}</label>
+                    <input type="number" name="jobs" class="form-control" placeholder="50" min="0">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Annual Revenue (USD)" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="revenue" class="form-control" placeholder="5000000" min="0">
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Imported Equipment Value (USD)" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="equipment" class="form-control" placeholder="500000" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                <i class="fas fa-calculator me-2"></i>{% translate "Calculate Incentives" %}
+            </button>
+        </form>
+
+        <div id="incentiveResults" class="result-box" style="display: none;">
+            <h4 class="mb-4">{% translate "Estimated Incentive Savings" %}</h4>
+            <div class="result-item">
+                <span>{% translate "Tax Holiday Savings (5 years)" %}</span>
+                <span class="result-value" id="taxSavings">$0</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "Import Duty Waiver" %}</span>
+                <span class="result-value" id="dutySavings">$0</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "VAT Exemption (Equipment)" %}</span>
+                <span class="result-value" id="vatSavings">$0</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "Training Grant Potential" %}</span>
+                <span class="result-value" id="trainingGrant">$0</span>
+            </div>
+            <div class="result-item border-top pt-3 mt-3">
+                <strong>{% translate "Total Estimated Savings" %}</strong>
+                <strong class="result-value text-success" id="totalSavings">$0</strong>
+            </div>
+            <p class="text-muted small mt-3 mb-0">{% blocktranslate trimmed %}
+                <i class="fas fa-info-circle me-1"></i>These are estimates based on typical incentive packages. Actual incentives vary by project and require IPA approval. Contact the relevant IPA for precise figures.
+            {% endblocktranslate %}</p>
+        </div>
+    </section>
+
+    <!-- Cost Comparison Tool -->
+    <section id="cost-comp" class="calculator-section">
+        <h2 class="mb-4"><i class="fas fa-balance-scale text-success me-2"></i>{% translate "Cost Comparison Tool" %}</h2>
+        <p class="text-muted mb-4">{% translate "Compare monthly operational costs across multiple West African countries." %}</p>
+
+        <form id="costCompForm">
+            <div class="mb-3">
+                <label class="form-label">{% translate "Select Countries to Compare (up to 3) *" %}</label>
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="ghana" id="cc1">
+                            <label class="form-check-label" for="cc1">{% translate "Ghana" %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="nigeria" id="cc2">
+                            <label class="form-check-label" for="cc2">{% translate "Nigeria" %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="cote-divoire" id="cc3">
+                            <label class="form-check-label" for="cc3">{% translate "Côte d'Ivoire" %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="senegal" id="cc4">
+                            <label class="form-check-label" for="cc4">{% translate "Senegal" %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="benin" id="cc5">
+                            <label class="form-check-label" for="cc5">{% translate "Benin" %}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input compare-country" type="checkbox" name="countries" value="togo" id="cc6">
+                            <label class="form-check-label" for="cc6">{% translate "Togo" %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Number of Employees *" %}</label>
+                    <input type="number" name="employees" class="form-control" placeholder="50" min="1" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Facility Size (sq meters) *" %}</label>
+                    <input type="number" name="facility_size" class="form-control" placeholder="1000" min="1" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                <i class="fas fa-chart-bar me-2"></i>{% translate "Compare Costs" %}
+            </button>
+        </form>
+
+        <div id="costCompResults" class="result-box" style="display: none;">
+            <h4 class="mb-4">{% translate "Monthly Operational Cost Comparison" %}</h4>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{% translate "Cost Category" %}</th>
+                            <th id="country1Header">{% translate "Country 1" %}</th>
+                            <th id="country2Header">{% translate "Country 2" %}</th>
+                            <th id="country3Header">{% translate "Country 3" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="costTableBody">
+                        <!-- Results populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small mt-3 mb-0">{% blocktranslate trimmed %}
+                <i class="fas fa-info-circle me-1"></i>Costs are estimates based on industry averages and may vary by location within countries. Actual costs may vary based on local market conditions, labor regulations, and other factors.
+            {% endblocktranslate %}</p>
+        </div>
+    </section>
+
+    <!-- ROI Estimator -->
+    <section id="roi-calc" class="calculator-section">
+        <h2 class="mb-4"><i class="fas fa-chart-line text-success me-2"></i>{% translate "ROI Estimator" %}</h2>
+        <p class="text-muted mb-4">{% translate "Estimate your potential return on investment based on sector benchmarks and market conditions." %}</p>
+
+        <form id="roiForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Investment Amount (USD) *" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="investment" class="form-control" placeholder="2000000" min="1" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Sector *" %}</label>
+                    <select name="sector" class="form-select" required>
+                        <option value="">{% translate "Select sector..." %}</option>
+                        <option value="agriculture">{% translate "Agriculture & Agribusiness" %}</option>
+                        <option value="energy">{% translate "Energy & Renewable Energy" %}</option>
+                        <option value="manufacturing">{% translate "Manufacturing" %}</option>
+                        <option value="ict">{% translate "ICT & Digital Economy" %}</option>
+                        <option value="infrastructure">{% translate "Infrastructure & Logistics" %}</option>
+                        <option value="mining">{% translate "Mining & Natural Resources" %}</option>
+                        <option value="tourism">{% translate "Tourism & Hospitality" %}</option>
+                        <option value="financial">{% translate "Financial Services" %}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Expected Annual Revenue (USD) *" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="revenue" class="form-control" placeholder="5000000" min="1" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Annual Operating Costs (USD) *" %}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="costs" class="form-control" placeholder="3000000" min="0" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Investment Timeline (years) *" %}</label>
+                    <select name="timeline" class="form-select" required>
+                        <option value="">{% translate "Select timeline..." %}</option>
+                        <option value="3">{% translate "3 years" %}</option>
+                        <option value="5">{% translate "5 years" %}</option>
+                        <option value="7">{% translate "7 years" %}</option>
+                        <option value="10">{% translate "10 years" %}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{% translate "Risk Level" %}</label>
+                    <select name="risk" class="form-select">
+                        <option value="low">{% translate "Low Risk" %}</option>
+                        <option value="medium" selected>{% translate "Medium Risk" %}</option>
+                        <option value="high">{% translate "High Risk" %}</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                <i class="fas fa-calculator me-2"></i>{% translate "Estimate ROI" %}
+            </button>
+        </form>
+
+        <div id="roiResults" class="result-box" style="display: none;">
+            <h4 class="mb-4">{% translate "ROI Analysis" %}</h4>
+            <div class="result-item">
+                <span>{% translate "Annual Net Profit" %}</span>
+                <span class="result-value" id="netProfit">$0</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "Annual ROI" %}</span>
+                <span class="result-value" id="annualROI">0%</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "Payback Period" %}</span>
+                <span class="result-value" id="paybackPeriod">{% translate "0 years" %}</span>
+            </div>
+            <div class="result-item">
+                <span>{% translate "Total Returns (Timeline)" %}</span>
+                <span class="result-value" id="totalReturns">$0</span>
+            </div>
+            <div class="result-item border-top pt-3 mt-3">
+                <strong>{% translate "Net Present Value (NPV)" %}</strong>
+                <strong class="result-value text-success" id="npv">$0</strong>
+            </div>
+            <div class="alert alert-info mt-3">
+                <strong>{% translate "Sector Benchmark:" %}</strong> {% blocktranslate trimmed %}Average ROI for <span id="roiSector"></span> in West Africa:{% endblocktranslate %} <strong id="benchmarkROI">12-18%</strong>
+            </div>
+            <p class="text-muted small mb-0">{% blocktranslate trimmed %}
+                <i class="fas fa-info-circle me-1"></i>This is a simplified ROI calculation. For detailed financial modeling, please consult with our advisory team or a financial professional. Actual ROI may vary based on market conditions, competition, and other factors.
+            {% endblocktranslate %}</p>
+        </div>
+    </section>
+
+    <!-- Checklist Generator -->
+    <section id="checklist-gen" class="calculator-section">
+        <h2 class="mb-4"><i class="fas fa-clipboard-check text-success me-2"></i>{% translate "Investment Checklist Generator" %}</h2>
+        <p class="text-muted mb-4">{% translate "Generate a customized checklist for your investment journey based on country, sector, and project stage." %}</p>
+
+        <form id="checklistForm">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{% translate "Country *" %}</label>
+                    <select name="country" class="form-select" required>
+                        <option value="">{% translate "Select country..." %}</option>
+                        <option value="benin">{% translate "Benin" %}</option>
+                        <option value="cabo-verde">{% translate "Cabo Verde" %}</option>
+                        <option value="cote-divoire">{% translate "Côte d'Ivoire" %}</option>
+                        <option value="gambia">{% translate "The Gambia" %}</option>
+                        <option value="ghana">{% translate "Ghana" %}</option>
+                        <option value="guinea">{% translate "Guinea" %}</option>
+                        <option value="guinea-bissau">{% translate "Guinea-Bissau" %}</option>
+                        <option value="liberia">{% translate "Liberia" %}</option>
+                        <option value="nigeria">{% translate "Nigeria" %}</option>
+                        <option value="senegal">{% translate "Senegal" %}</option>
+                        <option value="sierra-leone">{% translate "Sierra Leone" %}</option>
+                        <option value="togo">{% translate "Togo" %}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{% translate "Sector *" %}</label>
+                    <select name="sector" class="form-select" required>
+                        <option value="">{% translate "Select sector..." %}</option>
+                        <option value="agriculture">{% translate "Agriculture & Agribusiness" %}</option>
+                        <option value="energy">{% translate "Energy & Renewable Energy" %}</option>
+                        <option value="manufacturing">{% translate "Manufacturing" %}</option>
+                        <option value="ict">{% translate "ICT & Digital Economy" %}</option>
+                        <option value="infrastructure">{% translate "Infrastructure & Logistics" %}</option>
+                        <option value="mining">{% translate "Mining & Natural Resources" %}</option>
+                        <option value="tourism">{% translate "Tourism & Hospitality" %}</option>
+                        <option value="financial">{% translate "Financial Services" %}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{% translate "Project Stage *" %}</label>
+                    <select name="stage" class="form-select" required>
+                        <option value="">{% translate "Select stage..." %}</option>
+                        <option value="research">{% translate "Initial Research" %}</option>
+                        <option value="planning">{% translate "Planning & Feasibility" %}</option>
+                        <option value="setup">{% translate "Setup & Registration" %}</option>
+                        <option value="operation">{% translate "Operational Launch" %}</option>
+                        <option value="expansion">{% translate "Expansion" %}</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                <i class="fas fa-list-check me-2"></i>{% translate "Generate Checklist" %}
+            </button>
+        </form>
+
+        <div id="checklistResults" class="result-box" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">{% translate "Your Investment Checklist" %}</h4>
+                <button class="btn btn-outline-success" onclick="downloadChecklist()">
+                    <i class="fas fa-download me-2"></i>{% translate "Download PDF" %}
+                </button>
+            </div>
+            <div id="checklistContent">
+                <!-- Checklist items populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="text-center my-5 py-5" style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); border-radius: 16px; color: white;">
+        <div class="container">
+            <h2 class="mb-3">{% translate "Need More Detailed Analysis?" %}</h2>
+            <p class="lead mb-4">{% translate "Our advisory team can provide comprehensive financial modeling and feasibility studies" %}</p>
+            <a href="{% url 'investor_services:advisory' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-tie me-2"></i>{% translate "Request Advisory Services" %} 
+            </a>
+        </div>
+    </section>
+</div>
+
+<script>
+// Incentive Calculator
+document.getElementById('incentiveForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch('{% url "investor_services:incentive_calculator" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('taxSavings').textContent = '$' + data.tax_savings.toLocaleString();
+        document.getElementById('dutySavings').textContent = '$' + data.duty_savings.toLocaleString();
+        document.getElementById('vatSavings').textContent = '$' + data.vat_savings.toLocaleString();
+        document.getElementById('trainingGrant').textContent = '$' + data.training_grant.toLocaleString();
+        document.getElementById('totalSavings').textContent = '$' + data.total_savings.toLocaleString();
+        document.getElementById('incentiveResults').style.display = 'block';
+        document.getElementById('incentiveResults').scrollIntoView({behavior: 'smooth'});
+    });
+});
+
+// Cost Comparison Tool
+document.getElementById('costCompForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch('{% url "investor_services:cost_comparison" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Populate table headers
+        document.getElementById('country1Header').textContent = data.countries[0];
+        document.getElementById('country2Header').textContent = data.countries[1] || '-';
+        document.getElementById('country3Header').textContent = data.countries[2] || '-';
+
+        // Populate table body
+        const tbody = document.getElementById('costTableBody');
+        tbody.innerHTML = '';
+
+        const categories = ['labor', 'utilities', 'rent', 'logistics', 'total'];
+        const labels = {
+            labor: 'Labor Costs',
+            utilities: 'Utilities',
+            rent: 'Rent',
+            logistics: 'Logistics',
+            total: 'Total Monthly Cost'
+        };
+
+        categories.forEach(cat => {
+            const row = `<tr ${cat === 'total' ? 'class="fw-bold table-light"' : ''}>
+                <td>{% blocktranslate trimmed %}${labels[cat]}{% endblocktranslate %}</td>
+                <td>{% blocktranslate trimmed %}$${data.costs[0][cat].toLocaleString()}{% endblocktranslate %}</td>
+                <td>{% blocktranslate trimmed %}$${(data.costs[1] ? data.costs[1][cat] : 0).toLocaleString()}{% endblocktranslate %}</td>
+                <td>{% blocktranslate trimmed %}$${(data.costs[2] ? data.costs[2][cat] : 0).toLocaleString()}{% endblocktranslate %}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        document.getElementById('costCompResults').style.display = 'block';
+        document.getElementById('costCompResults').scrollIntoView({behavior: 'smooth'});
+    });
+});
+
+// ROI Estimator
+document.getElementById('roiForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch('{% url "investor_services:roi_estimator" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('netProfit').textContent = '$' + data.net_profit.toLocaleString();
+        document.getElementById('annualROI').textContent = data.annual_roi + '%';
+        document.getElementById('paybackPeriod').textContent = data.payback_period + ' years';
+        document.getElementById('totalReturns').textContent = '$' + data.total_returns.toLocaleString();
+        document.getElementById('npv').textContent = '$' + data.npv.toLocaleString();
+        document.getElementById('roiSector').textContent = data.sector;
+        document.getElementById('benchmarkROI').textContent = data.benchmark_roi;
+
+        document.getElementById('roiResults').style.display = 'block';
+        document.getElementById('roiResults').scrollIntoView({behavior: 'smooth'});
+    });
+});
+
+// Checklist Generator
+document.getElementById('checklistForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    const country = formData.get('country');
+    const sector = formData.get('sector');
+    const stage = formData.get('stage');
+
+    // Generate checklist (placeholder - would typically fetch from server)
+    const checklists = {
+        research: [
+            'Market research and demand assessment',
+            'Competitive landscape analysis',
+            'Regulatory environment overview',
+            'Investment climate assessment',
+            'Initial IPA contact',
+            'Site visit planning'
+        ],
+        planning: [
+            'Detailed feasibility study',
+            'Financial modeling',
+            'Business plan development',
+            'Partner identification',
+            'Site selection',
+            'Environmental impact assessment',
+            'Incentives application'
+        ],
+        setup: [
+            'Company registration',
+            'Business license application',
+            'Sector-specific permits',
+            'Tax registration',
+            'Work permits for expatriates',
+            'Bank account opening',
+            'Office/facility lease',
+            'Insurance coverage'
+        ],
+        operation: [
+            'Staff recruitment',
+            'Equipment procurement',
+            'Supply chain setup',
+            'Marketing and branding',
+            'Quality certifications',
+            'Compliance setup',
+            'IPA aftercare registration'
+        ],
+        expansion: [
+            'Market expansion strategy',
+            'Additional facility planning',
+            'Workforce scaling',
+            'Regional diversification',
+            'New product/service lines',
+            'Partnership opportunities'
+        ]
+    };
+
+    const items = checklists[stage] || [];
+    let html = `<h5 class="mb-3 text-muted">{% translate "${country.toUpperCase()} | ${sector.replace('-', ' ')} | ${stage.toUpperCase()}" %}</h5>`;
+
+    items.forEach((item, i) => {
+        html += `
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="check${i}">
+                <label class="form-check-label" for="check${i}">{% translate "${item}" %}</label>
+            </div>
+        `;
+    });
+
+    html += `
+        <div class="alert alert-success mt-4">
+            <strong>Note:</strong> This is a general checklist. For country-specific requirements,
+            please consult with the ${country.replace('-', ' ')} IPA.
+        </div>
+    `;
+
+    document.getElementById('checklistContent').innerHTML = html;
+    document.getElementById('checklistResults').style.display = 'block';
+    document.getElementById('checklistResults').scrollIntoView({behavior: 'smooth'});
+});
+
+function downloadChecklist() {
+    alert('Checklist PDF download functionality would be implemented here.');
+}
+
+// Limit country selection to 3
+document.querySelectorAll('.compare-country').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const checked = document.querySelectorAll('.compare-country:checked').length;
+        if (checked >= 3) {
+            document.querySelectorAll('.compare-country:not(:checked)').forEach(cb => {
+                cb.disabled = true;
+            });
+        } else {
+            document.querySelectorAll('.compare-country').forEach(cb => {
+                cb.disabled = false;
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

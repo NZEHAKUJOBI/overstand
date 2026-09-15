@@ -1,0 +1,513 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Manage Permissions - {{ user_obj.get_full_name }}{% endblocktranslate %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:users' %}">{% translate "Users" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:user_detail' user_obj.pk %}">{{ user_obj.get_full_name }}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Permissions" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">{% translate "Manage Permissions" %}</h1>
+            <p class="page-description">{% blocktranslate trimmed %}Set permissions for {{ user_obj.get_full_name }}{% endblocktranslate %}</p>
+        </div>
+        <a href="{% url 'dashboard:hq:user_detail' user_obj.pk %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>{% translate "Back to User" %}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Role & Permissions" %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Role Selection -->
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{% translate "Role-Based Permissions:" %}</strong> Selecting a role automatically sets default permissions.
+                        {% translate "You can override individual permissions below." %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">User Role <span class="text-danger">*</span></label>
+                        {{ form.role }}
+                        {% if form.role.errors %}
+                        <div class="invalid-feedback d-block">{{ form.role.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.role.help_text }}</small>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Core Permissions -->
+                    <h5 class="mb-3">{% translate "Core Permissions" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_edit_profile }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_edit_profile.id_for_label }}">
+                                        <i class="fas fa-edit text-primary me-2"></i>{% translate "Edit Profile" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can edit member state profile and information" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_manage_sectors }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_manage_sectors.id_for_label }}">
+                                        <i class="fas fa-layer-group text-primary me-2"></i>{% translate "Manage Sectors" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can add and edit priority sectors" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_manage_users }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_manage_users.id_for_label }}">
+                                        <i class="fas fa-users-cog text-primary me-2"></i>{% translate "Manage Users" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can create and edit other IPA users" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Investment Opportunities -->
+                    <h5 class="mb-3">{% translate "Investment Opportunities" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_create_opportunities }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_create_opportunities.id_for_label }}">
+                                        <i class="fas fa-plus-circle text-success me-2"></i>{% translate "Create Opportunities" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can create new investment opportunities" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_publish_opportunities }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_publish_opportunities.id_for_label }}">
+                                        <i class="fas fa-paper-plane text-success me-2"></i>{% translate "Publish Opportunities" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can publish opportunities without approval" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_edit_incentives }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_edit_incentives.id_for_label }}">
+                                        <i class="fas fa-gift text-success me-2"></i>{% translate "Edit Incentives" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can manage investment incentives" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Content Management -->
+                    <h5 class="mb-3">{% translate "Content Management" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_manage_success_stories }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_manage_success_stories.id_for_label }}">
+                                        <i class="fas fa-star text-warning me-2"></i>{% translate "Manage Success Stories" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can create and edit success stories" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_approve_data }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_approve_data.id_for_label }}">
+                                        <i class="fas fa-check-circle text-warning me-2"></i>{% translate "Approve Data" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can approve WAIIS data submissions" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Inquiries -->
+                    <h5 class="mb-3">{% translate "Investor Inquiries" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_view_inquiries }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_view_inquiries.id_for_label }}">
+                                        <i class="fas fa-envelope text-info me-2"></i>{% translate "View Inquiries" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can view investor inquiries" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_respond_to_inquiries }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_respond_to_inquiries.id_for_label }}">
+                                        <i class="fas fa-reply text-info me-2"></i>{% translate "Respond to Inquiries" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can respond to investor inquiries" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Analytics & Data -->
+                    <h5 class="mb-3">{% translate "Analytics & Data" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_view_analytics }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_view_analytics.id_for_label }}">
+                                        <i class="fas fa-chart-line text-danger me-2"></i>{% translate "View Analytics" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can access analytics dashboard" %}</p>
+                        </div>
+
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.can_export_data }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.can_export_data.id_for_label }}">
+                                        <i class="fas fa-download text-danger me-2"></i>{% translate "Export Data" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Can export data and reports" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Additional Settings -->
+                    <h5 class="mb-3">{% translate "Additional Settings" %}</h5>
+                    <div class="permissions-section">
+                        <div class="permission-card">
+                            <div class="permission-header">
+                                <div class="form-check form-switch">
+                                    {{ form.is_primary_contact }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.is_primary_contact.id_for_label }}">
+                                        <i class="fas fa-star text-warning me-2"></i>{% translate "Primary Contact" %}
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="permission-description">{% translate "Primary focal point for this IPA" %}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard:hq:user_detail' user_obj.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary-green">
+                            <i class="fas fa-save me-2"></i>{% translate "Save Permissions" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">{% translate "User Info" %}</h6>
+                <div class="text-center mb-3">
+                    <div class="user-avatar-md mx-auto mb-2">
+                        {{ user_obj.first_name.0|upper }}{{ user_obj.last_name.0|upper }}
+                    </div>
+                    <h6 class="mb-1">{{ user_obj.get_full_name }}</h6>
+                    <p class="text-muted small mb-0">{{ user_obj.email }}</p>
+                </div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Current Role" %}</span>
+                        <span class="info-value">
+                            {% if object.role %}
+                                <span class="badge bg-info">{{ object.get_role_display }}</span>
+                            {% else %}
+                                {% translate "Not set" %}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Member State" %}</span>
+                        <span class="info-value">
+                            {% if object.member_state %}
+                                {{ object.member_state.country_name }}
+                            {% else %}
+                                {% translate "Not assigned" %}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-warning bg-opacity-10 border-warning">
+            <div class="card-body">
+                <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>{% translate "Important" %}</h6>
+                <p class="small mb-0">
+                    {% translate "Changing permissions affects what this user can see and do. Make sure you trust" %}
+                    {% translate "them with the permissions you grant." %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .permissions-section {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .permission-card {
+        padding: 1rem;
+        border: 2px solid var(--neutral-200);
+        border-radius: 12px;
+        transition: all 0.3s;
+    }
+
+    .permission-card:hover {
+        border-color: var(--primary-green);
+        box-shadow: 0 2px 8px rgba(27, 122, 76, 0.1);
+    }
+
+    .permission-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .permission-description {
+        margin: 0;
+        padding-left: 3rem;
+        font-size: 0.875rem;
+        color: var(--neutral-600);
+    }
+
+    .form-check-input {
+        width: 2.5rem;
+        height: 1.25rem;
+        border-radius: 2rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+    }
+
+    .form-check-label {
+        font-size: 0.9375rem;
+        margin-left: 0.5rem;
+        cursor: pointer;
+    }
+
+    .user-avatar-md {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--neutral-600);
+        font-size: 0.875rem;
+    }
+
+    .info-value {
+        text-align: right;
+        color: var(--neutral-800);
+    }
+
+    .form-select {
+        border-radius: 8px;
+        border: 2px solid var(--neutral-200);
+        padding: 0.625rem 0.875rem;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-adjust permissions based on role selection
+    document.getElementById('id_role').addEventListener('change', function() {
+        const role = this.value;
+
+        // Role-based defaults (you can customize these)
+        const rolePermissions = {
+            'ipa_director': {
+                can_edit_profile: true,
+                can_manage_sectors: true,
+                can_create_opportunities: true,
+                can_publish_opportunities: true,
+                can_manage_users: true,
+                can_view_analytics: true,
+                can_export_data: true,
+                can_view_inquiries: true,
+                can_respond_to_inquiries: true,
+                can_edit_incentives: true,
+                can_manage_success_stories: true,
+                can_approve_data: true
+            },
+            'ipa_manager': {
+                can_edit_profile: true,
+                can_manage_sectors: true,
+                can_create_opportunities: true,
+                can_publish_opportunities: true,
+                can_manage_users: false,
+                can_view_analytics: true,
+                can_export_data: true,
+                can_view_inquiries: true,
+                can_respond_to_inquiries: true,
+                can_edit_incentives: true,
+                can_manage_success_stories: true,
+                can_approve_data: false
+            },
+            'ipa_officer': {
+                can_edit_profile: true,
+                can_manage_sectors: true,
+                can_create_opportunities: true,
+                can_publish_opportunities: false,
+                can_manage_users: false,
+                can_view_analytics: true,
+                can_export_data: false,
+                can_view_inquiries: true,
+                can_respond_to_inquiries: true,
+                can_edit_incentives: true,
+                can_manage_success_stories: true,
+                can_approve_data: false
+            },
+            'ipa_data_entry': {
+                can_edit_profile: true,
+                can_manage_sectors: false,
+                can_create_opportunities: true,
+                can_publish_opportunities: false,
+                can_manage_users: false,
+                can_view_analytics: false,
+                can_export_data: false,
+                can_view_inquiries: false,
+                can_respond_to_inquiries: false,
+                can_edit_incentives: true,
+                can_manage_success_stories: false,
+                can_approve_data: false
+            },
+            'ipa_analyst': {
+                can_edit_profile: false,
+                can_manage_sectors: false,
+                can_create_opportunities: false,
+                can_publish_opportunities: false,
+                can_manage_users: false,
+                can_view_analytics: true,
+                can_export_data: true,
+                can_view_inquiries: true,
+                can_respond_to_inquiries: false,
+                can_edit_incentives: false,
+                can_manage_success_stories: false,
+                can_approve_data: false
+            }
+        };
+
+        if (rolePermissions[role]) {
+            const permissions = rolePermissions[role];
+            for (const [perm, value] of Object.entries(permissions)) {
+                const checkbox = document.getElementById(`id_${perm}`);
+                if (checkbox) {
+                    checkbox.checked = value;
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

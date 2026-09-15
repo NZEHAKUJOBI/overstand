@@ -1,0 +1,361 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}{{ user_obj.get_full_name }} - User Details{% endblocktranslate %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:users' %}">{% translate "Users" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{{ user_obj.get_full_name }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">{{ user_obj.get_full_name }}</h1>
+            <p class="page-description">{{ user_obj.email }}</p>
+        </div>
+        <div class="btn-group">
+            <a href="{% url 'dashboard:hq:user_edit' user_obj.pk %}" class="btn btn-primary-green">
+                <i class="fas fa-edit me-2"></i>{% translate "Edit User" %}
+            </a>
+            <a href="{% url 'dashboard:hq:user_permissions' user_obj.pk %}" class="btn btn-accent-gold">
+                <i class="fas fa-key me-2"></i>{% translate "Manage Permissions" %}
+            </a>
+            <form method="post" action="{% url 'dashboard:hq:user_deactivate' user_obj.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-{% if user_obj.is_active %}danger{% else %}success{% endif %}"
+                        onclick="return confirm('Are you sure you want to {% if user_obj.is_active %}deactivate{% else %}activate{% endif %} this user?')">
+                    <i class="fas fa-{% if user_obj.is_active %}ban{% else %}check{% endif %} me-2"></i>
+                    {% if user_obj.is_active %}Deactivate{% else %}Activate{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- User Information -->
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "User Information" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="user-avatar-lg mx-auto mb-3">
+                        {{ user_obj.first_name.0|upper }}{{ user_obj.last_name.0|upper }}
+                    </div>
+                    <h4 class="mb-1">{{ user_obj.get_full_name }}</h4>
+                    <p class="text-muted">{{ user_obj.email }}</p>
+                    {% if user_obj.is_active %}
+                        <span class="badge bg-success">{% translate "Active" %}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{% translate "Inactive" %}</span>
+                    {% endif %}
+                </div>
+
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Phone" %}</span>
+                        <span class="info-value">{{ user_obj.phone_number|default:"Not provided" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Job Title" %}</span>
+                        <span class="info-value">{{ user_obj.job_title|default:"Not provided" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Organization" %}</span>
+                        <span class="info-value">{{ user_obj.organization|default:"Not provided" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Date Joined" %}</span>
+                        <span class="info-value">{{ user_obj.date_joined|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Last Login" %}</span>
+                        <span class="info-value">
+                            {% if user_obj.last_login %}
+                                {{ user_obj.last_login|timesince }} ago
+                            {% else %}
+                                {% translate "Never" %}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Stats -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Activity Statistics" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="stat-row">
+                    <span class="stat-label">{% translate "Total Activities" %}</span>
+                    <span class="stat-value">{{ activity_stats.total_activities }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">{% translate "Last 30 Days" %}</span>
+                    <span class="stat-value">{{ activity_stats.activities_30_days }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">{% translate "Login Count" %}</span>
+                    <span class="stat-value">{{ activity_stats.login_count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IPA Profile & Permissions -->
+    <div class="col-md-8">
+        {% if ipa_profile %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "IPA Profile" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <span class="info-label">{% translate "Member State" %}</span>
+                            <span class="info-value">
+                                {% if ipa_profile.member_state %}
+                                    <span class="badge bg-primary">{{ ipa_profile.member_state.country_code }}</span>
+                                    {{ ipa_profile.member_state.country_name }}
+                                {% else %}
+                                    {% translate "Not assigned" %}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <span class="info-label">{% translate "Role" %}</span>
+                            <span class="info-value">
+                                <span class="badge bg-info">{{ ipa_profile.get_role_display }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+
+                <h5 class="mb-3">{% translate "Permissions" %}</h5>
+                <div class="permissions-grid">
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_edit_profile %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Edit Profile" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_create_opportunities %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Create Opportunities" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_publish_opportunities %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Publish Opportunities" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_manage_users %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Manage Users" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_view_analytics %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "View Analytics" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_export_data %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Export Data" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_view_inquiries %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "View Inquiries" %}</span>
+                    </div>
+                    <div class="permission-item">
+                        <i class="fas fa-{% if ipa_profile.can_respond_to_inquiries %}check-circle text-success{% else %}times-circle text-muted{% endif %}"></i>
+                        <span>{% translate "Respond to Inquiries" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Activities -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Recent Activities" %}</h3>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_activities %}
+                <div class="activity-list">
+                    {% for activity in recent_activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas {{ activity.get_icon_class }}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-description">{{ activity.description }}</div>
+                            <div class="activity-meta">
+                                <span class="activity-time">{% blocktranslate trimmed with time_ago=activity.timestamp|timesince %}{{ time_ago }} ago{% endblocktranslate %}</span>
+                                {% if activity.member_state %}
+                                <span class="activity-divider">•</span>
+                                <span class="activity-state">{{ activity.member_state.country_name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-4 text-center text-muted">
+                    <i class="fas fa-history fa-2x mb-2"></i>
+                    <p class="mb-0">{% translate "No recent activities" %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .user-avatar-lg {
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--neutral-600);
+        font-size: 0.875rem;
+    }
+
+    .info-value {
+        text-align: right;
+        color: var(--neutral-800);
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .stat-row:last-child {
+        border-bottom: none;
+    }
+
+    .stat-label {
+        font-weight: 500;
+        color: var(--neutral-600);
+    }
+
+    .stat-value {
+        font-weight: 700;
+        color: var(--primary-green);
+        font-size: 1.125rem;
+    }
+
+    .permissions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .permission-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9375rem;
+    }
+
+    .activity-list {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--neutral-200);
+        transition: background 0.2s;
+    }
+
+    .activity-item:hover {
+        background: var(--neutral-50);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--neutral-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-green);
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-description {
+        font-size: 0.9375rem;
+        color: var(--neutral-800);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+        color: var(--neutral-600);
+    }
+
+    .activity-divider {
+        color: var(--neutral-400);
+    }
+</style>
+{% endblock %}

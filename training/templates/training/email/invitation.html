@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPAWAS Training Invitation</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f7f4;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f7f4;padding:32px 16px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+
+      <!-- Header -->
+      <tr>
+        <td style="background:linear-gradient(135deg,#1b7a4c,#0f6b3f);padding:32px 40px;text-align:center;">
+          <p style="margin:0;color:#D4A520;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">IPAWAS TRAINING PROGRAMME</p>
+          <h1 style="margin:12px 0 0;color:#ffffff;font-size:26px;font-weight:800;line-height:1.3;">You're Invited!</h1>
+        </td>
+      </tr>
+
+      <!-- Body -->
+      <tr>
+        <td style="padding:40px;">
+          <p style="margin:0 0 16px;color:#374151;font-size:16px;">Dear <strong>{{ invitation.name }}</strong>,</p>
+          <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:1.6;">
+            You have been invited to participate in an IPAWAS training session. Please complete
+            the short pre-training assessment so we can tailor the session to your needs.
+          </p>
+
+          <!-- Session card -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0faf5;border:1px solid #d1fae5;border-radius:10px;margin-bottom:28px;">
+            <tr><td style="padding:24px;">
+              <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#1b7a4c;text-transform:uppercase;letter-spacing:1px;">Training Session</p>
+              <h2 style="margin:0 0 16px;font-size:20px;color:#111827;">{{ session.title }}</h2>
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding-right:12px;color:#1b7a4c;">📅</td>
+                  <td style="color:#374151;font-size:14px;padding-bottom:6px;">{{ session.training_date }}</td>
+                </tr>
+                {% if session.location %}
+                <tr>
+                  <td style="padding-right:12px;color:#1b7a4c;">📍</td>
+                  <td style="color:#374151;font-size:14px;">{{ session.location }}</td>
+                </tr>
+                {% endif %}
+              </table>
+            </td></tr>
+          </table>
+
+          <!-- CTA Button -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+            <tr><td align="center">
+              <a href="{{ assess_url }}"
+                 style="display:inline-block;background:linear-gradient(135deg,#1b7a4c,#0f6b3f);color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:16px 40px;border-radius:10px;letter-spacing:0.5px;">
+                Complete Pre-Training Assessment →
+              </a>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 8px;color:#6b7280;font-size:13px;text-align:center;">
+            Or paste this link in your browser:
+          </p>
+          <p style="margin:0 0 24px;font-size:12px;text-align:center;word-break:break-all;">
+            <a href="{{ assess_url }}" style="color:#1b7a4c;">{{ assess_url }}</a>
+          </p>
+
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:24px;">
+            <p style="margin:0;color:#92400e;font-size:13px;">
+              ⚠️ <strong>This link is personal</strong> — it's tied to your email address.
+              After the training, the same link will serve as your feedback form.
+              Please keep it safe.
+            </p>
+          </div>
+
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.6;">
+            If you have any questions, contact your IPAWAS training coordinator.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:24px 40px;text-align:center;">
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#1b7a4c;">IPAWAS</p>
+          <p style="margin:0;font-size:12px;color:#9ca3af;">Investment Promotion Agencies of West Africa</p>
+          <p style="margin:8px 0 0;font-size:11px;color:#d1d5db;">
+            <a href="{{ site_url }}" style="color:#9ca3af;text-decoration:none;">{{ site_url }}</a>
+          </p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

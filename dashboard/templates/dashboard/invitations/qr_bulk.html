@@ -1,0 +1,156 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPAWAS — QR Invitation Cards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f4; padding: 24px; }
+
+  /* ── Screen toolbar ──────────────────────── */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    background: white; border-radius: 12px; padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px;
+  }
+  .toolbar-title { font-size: 1.1rem; font-weight: 800; color: #111827; }
+  .toolbar-sub { font-size: 0.8rem; color: #6b7280; }
+  .btn {
+    padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
+    font-size: 0.875rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+    text-decoration: none;
+  }
+  .btn-primary { background: #1b7a4c; color: white; }
+  .btn-secondary { background: white; color: #374151; border: 1.5px solid #d1d5db; }
+
+  /* ── Cards grid ──────────────────────────── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .qr-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .card-top {
+    background: linear-gradient(135deg, #1b7a4c, #0f6b3f);
+    padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .card-top-brand { font-size: 0.9rem; font-weight: 900; color: white; letter-spacing: 1px; }
+  .card-top-role {
+    font-size: 0.7rem; font-weight: 700; color: #D4A520;
+    background: rgba(255,255,255,0.15); border-radius: 10px;
+    padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .card-qr {
+    display: flex; justify-content: center; padding: 16px 16px 8px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+  .card-qr img { border-radius: 8px; border: 2px solid #f0faf5; }
+
+  .card-body { padding: 14px 16px; }
+  .card-email { font-size: 0.8rem; font-weight: 700; color: #111827; margin-bottom: 4px; word-break: break-all; }
+  .card-country { font-size: 0.75rem; color: #6b7280; margin-bottom: 10px; }
+  .card-url { font-size: 0.65rem; color: #9ca3af; word-break: break-all; line-height: 1.4; background: #f9fafb; border-radius: 6px; padding: 6px 8px; }
+  .card-expiry { font-size: 0.7rem; color: #d97706; margin-top: 6px; }
+
+  .card-footer {
+    background: #f9fafb; border-top: 1px solid #f3f4f6;
+    padding: 8px 16px; text-align: center;
+    font-size: 0.7rem; color: #9ca3af;
+  }
+
+  /* ── Action row per card ─────────────────── */
+  .card-actions { padding: 8px 16px 12px; display: flex; gap: 6px; }
+  .card-actions a {
+    flex: 1; text-align: center; padding: 6px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 600; text-decoration: none;
+    border: 1.5px solid #d1d5db; color: #374151;
+  }
+  .card-actions a:hover { border-color: #1b7a4c; color: #1b7a4c; background: #f0faf5; }
+
+  /* ── Empty state ─────────────────────────── */
+  .empty { text-align: center; padding: 64px 24px; background: white; border-radius: 12px; color: #6b7280; }
+  .empty i { font-size: 3rem; color: #d1d5db; display: block; margin-bottom: 16px; }
+
+  /* ── Print styles ────────────────────────── */
+  @media print {
+    body { background: white; padding: 8mm; }
+    .toolbar, .card-actions { display: none !important; }
+    .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+    .qr-card { box-shadow: none; border: 1px solid #e5e7eb; }
+    @page { margin: 8mm; size: A4; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div>
+    <div class="toolbar-title">IPAWAS Invitation QR Cards</div>
+    <div class="toolbar-sub">{{ invitations|length }} pending invitation{% if invitations|length != 1 %}s{% endif %} — scan to register on the platform</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-primary" onclick="window.print()">
+      🖨️ Print All Cards
+    </button>
+    <a href="{% url 'dashboard:invitations:list' %}" class="btn btn-secondary">← Back to Invitations</a>
+  </div>
+</div>
+
+{% if invitations %}
+<div class="cards-grid">
+  {% for item in invitations %}
+  <div class="qr-card">
+    <div class="card-top">
+      <span class="card-top-brand">IPAWAS</span>
+      <span class="card-top-role">{{ item.invitation.get_role_display }}</span>
+    </div>
+
+    <div class="card-qr">
+      <img src="{{ item.qr_api_url }}" alt="QR Code" width="200" height="200" loading="lazy">
+    </div>
+
+    <div class="card-body">
+      <div class="card-email">{{ item.invitation.email }}</div>
+      {% if item.invitation.member_state %}
+      <div class="card-country">🌍 {{ item.invitation.member_state.country_name }}</div>
+      {% endif %}
+      <div class="card-url">{{ item.registration_url }}</div>
+      <div class="card-expiry">⏱ Expires {{ item.invitation.expires_at|date:"M d, Y" }}</div>
+    </div>
+
+    <!-- Per-card actions (screen only) -->
+    <div class="card-actions">
+      <a href="{% url 'dashboard:invitations:qr' item.invitation.pk %}">🔍 Full Card</a>
+      <a href="{% url 'dashboard:invitations:detail' item.invitation.pk %}">Details</a>
+    </div>
+
+    <div class="card-footer">ipawas.org · Platform Onboarding</div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty">
+  <i>📭</i>
+  <h3 style="font-size:1.1rem;margin-bottom:8px;">No pending invitations</h3>
+  <p>All invitations have been accepted or there are none yet.</p>
+  <a href="{% url 'dashboard:invitations:create' %}" class="btn btn-primary" style="margin-top:16px;display:inline-flex;">+ Create Invitation</a>
+</div>
+{% endif %}
+
+</body>
+</html>

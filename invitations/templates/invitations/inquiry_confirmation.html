@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry Confirmation - IPAWAS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f9f7;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #1B7A4C 0%, #0F6B3F 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .logo {
+            color: #D4A520;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .success-icon {
+            font-size: 60px;
+            margin: 20px 0;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4B5563;
+            margin-bottom: 30px;
+        }
+        .reference-box {
+            background: linear-gradient(135deg, #e8f5f1 0%, #f0f9f5 100%);
+            border-left: 4px solid #1B7A4C;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .reference-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1B7A4C;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .reference-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B7A4C;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+        .reference-note {
+            font-size: 13px;
+            color: #6B7280;
+            margin-top: 10px;
+        }
+        .info-box {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+            min-width: 150px;
+        }
+        .info-value {
+            color: #6B7280;
+        }
+        .response-time {
+            background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.05));
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .response-time .icon {
+            font-size: 32px;
+            color: #D4A520;
+            margin-bottom: 10px;
+        }
+        .response-time .text {
+            font-size: 16px;
+            color: #374151;
+            font-weight: 600;
+        }
+        .response-time .highlight {
+            color: #1B7A4C;
+            font-weight: 700;
+        }
+        .contact-section {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .contact-section h3 {
+            color: #1B7A4C;
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .contact-item {
+            margin: 12px 0;
+            font-size: 15px;
+            color: #4B5563;
+        }
+        .contact-item a {
+            color: #1B7A4C;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer {
+            background: #F3F4F6;
+            padding: 30px;
+            text-align: center;
+            color: #6B7280;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #1B7A4C;
+            text-decoration: none;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #1B7A4C;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+            .reference-number {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">IPAWAS</div>
+            <div class="success-icon">✅</div>
+            <h1>Inquiry Received</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Dear {{ inquiry.full_name }},</p>
+
+            <p class="message">
+                Thank you for contacting IPAWAS (Investment Promotion Agencies of West African States).
+                We have successfully received your inquiry and our team will review it shortly.
+            </p>
+
+            <!-- Reference Number Box -->
+            <div class="reference-box">
+                <div class="reference-label">Your Reference Number</div>
+                <div class="reference-number">{{ reference_number }}</div>
+                <div class="reference-note">Please save this number for your records</div>
+            </div>
+
+            <!-- Inquiry Details -->
+            <div class="info-box">
+                <div class="info-row">
+                    <div class="info-label">Inquiry Type:</div>
+                    <div class="info-value">{{ inquiry_type }}</div>
+                </div>
+                {% if member_state %}
+                <div class="info-row">
+                    <div class="info-label">Country:</div>
+                    <div class="info-value">{{ member_state.country_name }}</div>
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <div class="info-label">Subject:</div>
+                    <div class="info-value">{{ inquiry.subject }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Submitted:</div>
+                    <div class="info-value">{{ inquiry.created_at|date:"F d, Y - g:i A" }}</div>
+                </div>
+            </div>
+
+            <!-- Response Time -->
+            <div class="response-time">
+                <div class="icon">⏱️</div>
+                <div class="text">
+                    Expected Response Time: <span class="highlight">2 Business Days</span>
+                </div>
+            </div>
+
+            <p class="message">
+                Our team will carefully review your inquiry and respond via email at
+                <strong>{{ inquiry.email }}</strong> within 2 business days.
+                {% if inquiry.phone %}
+                We may also contact you by phone at {{ inquiry.phone }}.
+                {% endif %}
+            </p>
+
+            <!-- Contact Section -->
+            <div class="contact-section">
+                <h3>Need Immediate Assistance?</h3>
+                <div class="contact-item">
+                    📧 Email: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+                </div>
+                <div class="contact-item">
+                    📞 Phone: <a href="tel:{{ contact_phone }}">{{ contact_phone }}</a>
+                </div>
+                <div class="contact-item">
+                    🕐 Office Hours: Monday – Friday, 8:00 AM – 4:00 PM (GMT+1)
+                </div>
+            </div>
+
+            <p class="message" style="margin-top: 30px;">
+                Thank you for your interest in investing in West Africa. We look forward to assisting you.
+            </p>
+
+            <p class="message" style="font-weight: 600; margin-bottom: 0;">
+                Best regards,<br>
+                The IPAWAS Team
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p style="margin-top: 0;">
+                <strong>IPAWAS Secretariat</strong><br>
+                c/o Nigerian Investment Promotion Commission (NIPC)<br>
+                Plot 1181, Aguiyi Ironsi Street, Maitama, Abuja, Nigeria
+            </p>
+
+            <div class="social-links">
+                <a href="#">LinkedIn</a> •
+                <a href="#">Twitter</a> •
+                <a href="#">Facebook</a>
+            </div>
+
+            <p style="font-size: 12px; color: #9CA3AF; margin-bottom: 0;">
+                © {{ "now"|date:"Y" }} IPAWAS. All rights reserved.<br>
+                <a href="{{ site_url }}">Visit our website</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

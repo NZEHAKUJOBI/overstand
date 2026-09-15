@@ -1,0 +1,154 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Investment Promotion Training - IPAWAS Programs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, #064E3B 0%, #1B7A4C 60%, #10B981 100%);
+        padding: 130px 0 80px; margin-top: 76px; color: white; position: relative; overflow: hidden;
+    }
+    .page-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 30% 60%, rgba(212,165,32,0.1), transparent 60%); }
+    .page-hero h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+    .breadcrumb-item a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.6); }
+    .breadcrumb-item+.breadcrumb-item::before { color: rgba(255,255,255,0.5); }
+
+    .section-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+    .section-card h2 { font-size: 1.3rem; font-weight: 800; color: var(--primary-green); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid rgba(27,122,76,0.15); }
+
+    .workshop-card {
+        border: 1px solid var(--neutral-200); border-radius: 12px; padding: 1.25rem 1.5rem;
+        margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+        transition: box-shadow 0.2s;
+    }
+    .workshop-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .workshop-quarter {
+        min-width: 80px; text-align: center; background: rgba(27,122,76,0.08);
+        color: var(--primary-green); font-weight: 800; font-size: 0.85rem;
+        padding: 0.5rem; border-radius: 8px;
+    }
+    .workshop-location { font-weight: 700; color: var(--neutral-800); font-size: 0.95rem; }
+    .workshop-date { font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.15rem; }
+    .register-btn { margin-left: auto; }
+
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 0.75rem; }
+    .topic-item {
+        display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.75rem 1rem;
+        background: rgba(27,122,76,0.05); border-radius: 10px;
+        font-size: 0.88rem; color: var(--neutral-700); font-weight: 500;
+    }
+    .topic-item i { color: var(--primary-green); flex-shrink: 0; margin-top: 0.15rem; }
+
+    .apply-cta { background: linear-gradient(135deg, var(--primary-green), #064E3B); border-radius: 16px; padding: 2.5rem; text-align: center; color: white; margin-top: 2rem; }
+    .apply-cta h3 { font-weight: 800; margin-bottom: 0.5rem; }
+    .apply-cta p { opacity: 0.85; margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
+                <li class="breadcrumb-item"><a href="{% url 'programs:hub' %}">{% translate "Programs" %}</a></li>
+                <li class="breadcrumb-item active">{% translate "Investment Promotion Training" %}</li>
+            </ol>
+        </nav>
+        <h1>{% translate "Investment Promotion Training" %}</h1>
+        <p style="opacity:0.9; font-size:1.1rem; max-width:640px; line-height:1.7;">
+            {% translate "Practical workshops building the skills of IPA professionals in investment promotion, investor relations, and project facilitation." %}
+        </p>
+        <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <a href="{% url 'programs:submit_application' 'investment-promotion-training' %}" class="btn btn-warning rounded-pill px-4 fw-bold">
+                <i class="fas fa-paper-plane me-2"></i>{% translate "Register Now" %}
+            </a>
+            <a href="{% url 'about:contact' %}" class="btn btn-outline-light rounded-pill px-4">
+                <i class="fas fa-envelope me-2"></i>{% translate "Enquire" %}
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="section-card">
+                <h2>{% translate "Program Overview" %}</h2>
+                <p style="color:var(--neutral-600); line-height:1.8;">
+                    {% translate "IPAWAS delivers quarterly investment promotion training workshops across West Africa. Each workshop is an intensive 5-day programme covering modern investor targeting, project packaging, and aftercare best practices." %}
+                </p>
+                <p style="color:var(--neutral-600); line-height:1.8; margin:0;">
+                    {% translate "Workshops are held in rotating host cities, giving participants a chance to experience different investment environments while building a regional professional network." %}
+                </p>
+            </div>
+
+            <!-- Upcoming workshops -->
+            <div class="section-card">
+                <h2>{% translate "2025 Workshop Schedule" %}</h2>
+                {% for ws in workshop_dates %}
+                <div class="workshop-card">
+                    <div class="workshop-quarter">{{ ws.quarter }}</div>
+                    <div>
+                        <div class="workshop-location"><i class="fas fa-map-marker-alt text-success me-1"></i>{{ ws.location }}</div>
+                        <div class="workshop-date"><i class="fas fa-calendar-alt me-1"></i>{{ ws.date }}</div>
+                    </div>
+                    <a href="{% url 'programs:submit_application' 'investment-promotion-training' %}" class="btn btn-outline-success btn-sm rounded-pill register-btn">
+                        {% translate "Register" %}
+                    </a>
+                </div>
+                {% empty %}
+                <p style="color:var(--neutral-500); font-size:0.9rem;">{% translate "Schedule for 2025 being finalised. Contact us to be notified." %}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Topics covered -->
+            <div class="section-card">
+                <h2>{% translate "Topics Covered" %}</h2>
+                <div class="topic-grid">
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Investor Targeting & Segmentation" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Investment Project Packaging" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "FDI Trends & Analysis" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Aftercare & Investor Retention" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Digital Investment Promotion" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Investment Climate Communication" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "Sector-Specific Promotion" %}</div>
+                    <div class="topic-item"><i class="fas fa-check-circle"></i>{% translate "M&E for Investment Promotion" %}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <h2>{% translate "Program Details" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <div style="display:flex; gap:0.75rem;"><i class="fas fa-calendar-alt text-success mt-1"></i><div><div style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase;">{% translate "Format" %}</div><div style="font-size:0.92rem; color:var(--neutral-800);">{% translate "5-day intensive workshop" %}</div></div></div>
+                    <div style="display:flex; gap:0.75rem;"><i class="fas fa-users text-success mt-1"></i><div><div style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase;">{% translate "Cohort Size" %}</div><div style="font-size:0.92rem; color:var(--neutral-800);">{% translate "20 participants per workshop" %}</div></div></div>
+                    <div style="display:flex; gap:0.75rem;"><i class="fas fa-sync text-success mt-1"></i><div><div style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase;">{% translate "Frequency" %}</div><div style="font-size:0.92rem; color:var(--neutral-800);">{% translate "Quarterly" %}</div></div></div>
+                    <div style="display:flex; gap:0.75rem;"><i class="fas fa-user-tie text-success mt-1"></i><div><div style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase;">{% translate "Eligibility" %}</div><div style="font-size:0.92rem; color:var(--neutral-800);">{% translate "IPA officers & managers" %}</div></div></div>
+                    <div style="display:flex; gap:0.75rem;"><i class="fas fa-certificate text-success mt-1"></i><div><div style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase;">{% translate "Certification" %}</div><div style="font-size:0.92rem; color:var(--neutral-800);">{% translate "IPAWAS Certificate of Completion" %}</div></div></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>{% translate "Other Programs" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                    <a href="{% url 'programs:ipa-leadership' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-award me-2"></i>{% translate "IPA Leadership Academy" %}</a>
+                    <a href="{% url 'programs:missions' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-plane me-2"></i>{% translate "Investment Missions" %}</a>
+                    <a href="{% url 'programs:benchmarking' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-chart-line me-2"></i>{% translate "IPA Benchmarking" %}</a>
+                    <a href="{% url 'programs:research' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-book me-2"></i>{% translate "Research & Publications" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="apply-cta">
+        <h3>{% translate "Register for the Next Workshop" %}</h3>
+        <p>{% translate "Places are limited. Nominate your IPA's participants early to secure a spot at the next workshop." %}</p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="{% url 'programs:submit_application' 'investment-promotion-training' %}" class="btn btn-warning rounded-pill px-5 fw-bold"><i class="fas fa-paper-plane me-2"></i>{% translate "Register Now" %}</a>
+            <a href="{% url 'about:contact' %}" class="btn btn-outline-light rounded-pill px-5"><i class="fas fa-envelope me-2"></i>{% translate "Contact Us" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

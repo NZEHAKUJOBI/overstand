@@ -1,0 +1,773 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPAWAS Training Assessment</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --green: #1b7a4c;
+    --green-dark: #0f6b3f;
+    --gold: #D4A520;
+    --bg: #f4f7f4;
+    --white: #ffffff;
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: #374151;
+    min-height: 100vh;
+  }
+
+  /* ── Header ─────────────────────────────────── */
+  .assessment-header {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: white;
+    padding: 24px 0;
+  }
+  .header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-brand img { height: 40px; }
+  .header-brand-text h1 { font-size: 1.25rem; font-weight: 800; }
+  .header-brand-text p { font-size: 0.8rem; opacity: 0.85; }
+
+  /* ── Language Switcher ────────────────────── */
+  .lang-switcher {
+    display: flex;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .lang-btn {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.75);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: rgba(255,255,255,0.25);
+    color: white;
+  }
+  .lang-btn.active { background: var(--gold); color: #1a1a1a; }
+
+  /* ── Progress bar ─────────────────────────── */
+  .phase-bar {
+    background: white;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 12px 24px;
+  }
+  .phase-bar-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .phase-badge.pre { background: #dbeafe; color: #1e40af; }
+  .phase-badge.post { background: #d1fae5; color: #065f46; }
+  .phase-session { color: #6b7280; font-size: 0.875rem; }
+
+  /* ── Main content ─────────────────────────── */
+  .assessment-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── Card ─────────────────────────────────── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--green);
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .card-header.gold { background: linear-gradient(135deg, var(--gold), #c49016); color: #1a1a1a; }
+  .card-header.blue { background: linear-gradient(135deg, #1e40af, #1d4ed8); }
+  .card-header h2 { font-size: 1rem; font-weight: 700; }
+  .card-header .section-num {
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 800; flex-shrink: 0;
+  }
+  .card-body { padding: 24px; }
+
+  /* ── Form elements ────────────────────────── */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  .form-group { margin-bottom: 20px; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+  .form-label .required { color: #dc2626; margin-left: 2px; }
+  .form-control, .form-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(27,122,76,0.1);
+  }
+  textarea.form-control { resize: vertical; min-height: 100px; }
+
+  /* ── Rating widget ────────────────────────── */
+  .rating-group { display: flex; gap: 8px; align-items: center; }
+  .rating-group input[type="radio"] { display: none; }
+  .rating-group label {
+    width: 44px; height: 44px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #6b7280;
+  }
+  .rating-group input[type="radio"]:checked + label {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .rating-group label:hover { border-color: var(--green); color: var(--green); }
+  .rating-legend { display: flex; justify-content: space-between; font-size: 0.75rem; color: #9ca3af; margin-top: 4px; }
+
+  /* ── Checkbox group ───────────────────────── */
+  .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 500px) { .checkbox-grid { grid-template-columns: 1fr; } }
+  .checkbox-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.875rem;
+  }
+  .checkbox-item:hover { border-color: var(--green); background: #f0faf5; }
+  .checkbox-item input[type="checkbox"]:checked ~ span { color: var(--green); font-weight: 600; }
+  .checkbox-item input[type="checkbox"] { accent-color: var(--green); width: 16px; height: 16px; }
+
+  /* ── Radio yes/no ─────────────────────────── */
+  .radio-row { display: flex; gap: 12px; }
+  .radio-pill { display: flex; align-items: center; gap: 6px; }
+  .radio-pill input[type="radio"] { accent-color: var(--green); width: 16px; height: 16px; }
+  .radio-pill label { font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+
+  /* ── Submit ───────────────────────────────── */
+  .submit-bar {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 2px solid #e5e7eb;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,122,76,0.3); }
+
+  /* ── Language content blocks ─────────────── */
+  [data-lang] { display: none; }
+  [data-lang].lang-active { display: block; }
+
+  .participant-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    color: white;
+  }
+
+  /* ── Error state ──────────────────────────── */
+  .errorlist { list-style: none; color: #dc2626; font-size: 0.8rem; margin-top: 4px; }
+  .field-error .form-control,
+  .field-error .form-select { border-color: #dc2626; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  HEADER                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header class="assessment-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-brand-text">
+        <h1>IPAWAS</h1>
+        <p>Investment Promotion Agencies of West Africa</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <!-- Language switcher (Decision 2: JS, no page reload) -->
+      <div class="lang-switcher" role="group" aria-label="Language">
+        <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+        <button class="lang-btn" onclick="setLang('fr')" id="btn-fr">FR</button>
+        <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">PT</button>
+      </div>
+      <div class="participant-pill">
+        <i class="fas fa-user-circle"></i>
+        {{ invitation.name }} · {{ invitation.country }}
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Phase badge -->
+<div class="phase-bar">
+  <div class="phase-bar-inner">
+    {% if is_pre_phase %}
+      <span class="phase-badge pre"><i class="fas fa-clipboard-list"></i>
+        <span data-lang="en" class="lang-active">Pre-Training Assessment</span>
+        <span data-lang="fr">Évaluation Pré-Formation</span>
+        <span data-lang="pt">Avaliação Pré-Formação</span>
+      </span>
+    {% else %}
+      <span class="phase-badge post"><i class="fas fa-star"></i>
+        <span data-lang="en" class="lang-active">Post-Training Feedback</span>
+        <span data-lang="fr">Feedback Post-Formation</span>
+        <span data-lang="pt">Feedback Pós-Formação</span>
+      </span>
+    {% endif %}
+    <span class="phase-session">{{ session.title }} · {{ session.training_date }}</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  FORM                                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<form method="post" action="" novalidate>
+{% csrf_token %}
+<div class="assessment-body">
+
+  {% if assess_form.errors %}
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px;margin-bottom:24px;color:#dc2626;">
+    <i class="fas fa-exclamation-circle"></i>
+    <span data-lang="en" class="lang-active">Please correct the errors below and resubmit.</span>
+    <span data-lang="fr">Veuillez corriger les erreurs ci-dessous et soumettre à nouveau.</span>
+    <span data-lang="pt">Por favor, corrija os erros abaixo e submeta novamente.</span>
+  </div>
+  {% endif %}
+
+  <!-- ─── SECTION 0: Confirm Details ─────────────────────────────── -->
+  <div class="card">
+    <div class="card-header gold">
+      <div class="section-num">0</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Confirm Your Details</span>
+        <span data-lang="fr">Confirmez vos coordonnées</span>
+        <span data-lang="pt">Confirme os seus dados</span>
+      </h2>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Full Name</span>
+            <span data-lang="fr">Nom complet</span>
+            <span data-lang="pt">Nome completo</span>
+            <span class="required">*</span>
+          </label>
+          {{ confirm_form.name }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Country</span>
+            <span data-lang="fr">Pays</span>
+            <span data-lang="pt">País</span>
+            <span class="required">*</span>
+          </label>
+          {{ confirm_form.country }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Organization / IPA</span>
+            <span data-lang="fr">Organisation / API</span>
+            <span data-lang="pt">Organização / API</span>
+          </label>
+          {{ confirm_form.organization }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Job Title</span>
+            <span data-lang="fr">Titre du poste</span>
+            <span data-lang="pt">Cargo</span>
+          </label>
+          {{ confirm_form.job_title }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  {% if is_pre_phase %}
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  PRE-TRAINING ASSESSMENT                                     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+
+  <!-- Section A: Background -->
+  <div class="card">
+    <div class="card-header">
+      <div class="section-num">A</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Professional Background</span>
+        <span data-lang="fr">Contexte professionnel</span>
+        <span data-lang="pt">Contexto profissional</span>
+      </h2>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Current Role</span>
+            <span data-lang="fr">Rôle actuel</span>
+            <span data-lang="pt">Função atual</span>
+            <span class="required">*</span>
+          </label>
+          {{ assess_form.current_role }}
+          {% if assess_form.current_role.errors %}<ul class="errorlist">{% for e in assess_form.current_role.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">Years in Current Role</span>
+            <span data-lang="fr">Années dans ce rôle</span>
+            <span data-lang="pt">Anos no cargo atual</span>
+            <span class="required">*</span>
+          </label>
+          {{ assess_form.years_in_role }}
+          {% if assess_form.years_in_role.errors %}<ul class="errorlist">{% for e in assess_form.years_in_role.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section B: Self-Assessment -->
+  <div class="card">
+    <div class="card-header">
+      <div class="section-num">B</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Self-Assessment (1 = None, 5 = Expert)</span>
+        <span data-lang="fr">Auto-évaluation (1 = Aucune, 5 = Expert)</span>
+        <span data-lang="pt">Auto-avaliação (1 = Nenhuma, 5 = Especialista)</span>
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <!-- Rating fields rendered directly -->
+      {% for field in assess_form %}
+        {% if field.name == "knowledge_ipawas" or field.name == "knowledge_investment_promotion" or field.name == "knowledge_data_tools" or field.name == "knowledge_regional_collab" %}
+        <div class="form-group">
+          <label class="form-label">
+            {% if field.name == "knowledge_ipawas" %}
+              <span data-lang="en" class="lang-active">Knowledge of IPAWAS Platform</span>
+              <span data-lang="fr">Connaissance de la plateforme IPAWAS</span>
+              <span data-lang="pt">Conhecimento da Plataforma IPAWAS</span>
+            {% elif field.name == "knowledge_investment_promotion" %}
+              <span data-lang="en" class="lang-active">Investment Promotion Skills</span>
+              <span data-lang="fr">Compétences en promotion de l'investissement</span>
+              <span data-lang="pt">Competências em Promoção do Investimento</span>
+            {% elif field.name == "knowledge_data_tools" %}
+              <span data-lang="en" class="lang-active">Data & Digital Tools Proficiency</span>
+              <span data-lang="fr">Maîtrise des outils numériques et des données</span>
+              <span data-lang="pt">Proficiência em Ferramentas Digitais e Dados</span>
+            {% elif field.name == "knowledge_regional_collab" %}
+              <span data-lang="en" class="lang-active">Regional Collaboration Experience</span>
+              <span data-lang="fr">Expérience de collaboration régionale</span>
+              <span data-lang="pt">Experiência de Colaboração Regional</span>
+            {% endif %}
+            <span class="required">*</span>
+          </label>
+          <div class="rating-group">
+            {% for choice_val, choice_label in field.field.choices %}
+            <input type="radio" name="{{ field.html_name }}" id="{{ field.html_name }}_{{ choice_val }}" value="{{ choice_val }}" {% if field.value == choice_val|stringformat:"s" %}checked{% endif %}>
+            <label for="{{ field.html_name }}_{{ choice_val }}">{{ choice_val }}</label>
+            {% endfor %}
+          </div>
+          <div class="rating-legend">
+            <span data-lang="en" class="lang-active">1 — None</span><span data-lang="fr">1 — Aucune</span><span data-lang="pt">1 — Nenhum</span>
+            &nbsp;&nbsp;
+            <span data-lang="en" class="lang-active">5 — Expert</span><span data-lang="fr">5 — Expert</span><span data-lang="pt">5 — Especialista</span>
+          </div>
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <!-- Section C: Expectations -->
+  <div class="card">
+    <div class="card-header blue">
+      <div class="section-num">C</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Expectations & Challenges</span>
+        <span data-lang="fr">Attentes et défis</span>
+        <span data-lang="pt">Expectativas e desafios</span>
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">What do you hope to achieve from this training?</span>
+          <span data-lang="fr">Qu'espérez-vous tirer de cette formation ?</span>
+          <span data-lang="pt">O que espera alcançar com esta formação?</span>
+          <span class="required">*</span>
+        </label>
+        {{ assess_form.training_expectations }}
+        {% if assess_form.training_expectations.errors %}<ul class="errorlist">{% for e in assess_form.training_expectations.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">Which areas do you find most challenging? (select all that apply)</span>
+          <span data-lang="fr">Quels domaines vous semblent les plus difficiles ? (sélectionnez tout ce qui s'applique)</span>
+          <span data-lang="pt">Que áreas considera mais desafiadoras? (selecione todas que se aplicam)</span>
+        </label>
+        <div class="checkbox-grid">
+          {% for value, display in assess_form.challenging_areas.field.choices %}
+          <label class="checkbox-item">
+            <input type="checkbox" name="challenging_areas" value="{{ value }}"
+                   {% if value in assess_form.challenging_areas.value %}checked{% endif %}>
+            <span>
+              {% if value == "digital_tools" %}
+                <span data-lang="en" class="lang-active">Digital tools & platforms</span>
+                <span data-lang="fr">Outils et plateformes numériques</span>
+                <span data-lang="pt">Ferramentas e plataformas digitais</span>
+              {% elif value == "investor_targeting" %}
+                <span data-lang="en" class="lang-active">Investor targeting & outreach</span>
+                <span data-lang="fr">Ciblage et prospection d'investisseurs</span>
+                <span data-lang="pt">Identificação e alcance de investidores</span>
+              {% elif value == "data_analysis" %}
+                <span data-lang="en" class="lang-active">Data collection & analysis</span>
+                <span data-lang="fr">Collecte et analyse de données</span>
+                <span data-lang="pt">Recolha e análise de dados</span>
+              {% elif value == "policy_advocacy" %}
+                <span data-lang="en" class="lang-active">Policy advocacy</span>
+                <span data-lang="fr">Plaidoyer politique</span>
+                <span data-lang="pt">Advocacia política</span>
+              {% elif value == "deal_facilitation" %}
+                <span data-lang="en" class="lang-active">Deal facilitation & aftercare</span>
+                <span data-lang="fr">Facilitation des projets & suivi</span>
+                <span data-lang="pt">Facilitação de negócios e acompanhamento</span>
+              {% elif value == "communication" %}
+                <span data-lang="en" class="lang-active">Communication & stakeholder engagement</span>
+                <span data-lang="fr">Communication et engagement des parties prenantes</span>
+                <span data-lang="pt">Comunicação e envolvimento de partes interessadas</span>
+              {% elif value == "monitoring" %}
+                <span data-lang="en" class="lang-active">Monitoring & evaluation</span>
+                <span data-lang="fr">Suivi et évaluation</span>
+                <span data-lang="pt">Monitorização e avaliação</span>
+              {% elif value == "regional_cooperation" %}
+                <span data-lang="en" class="lang-active">Regional / ECOWAS cooperation</span>
+                <span data-lang="fr">Coopération régionale / CEDEAO</span>
+                <span data-lang="pt">Cooperação regional / CEDEAO</span>
+              {% endif %}
+            </span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">Describe any prior experience with the IPAWAS platform (leave blank if none)</span>
+          <span data-lang="fr">Décrivez toute expérience préalable avec la plateforme IPAWAS (laissez vide si aucune)</span>
+          <span data-lang="pt">Descreva qualquer experiência anterior com a plataforma IPAWAS (deixe em branco se não tiver)</span>
+        </label>
+        {{ assess_form.prior_ipawas_experience }}
+      </div>
+
+    </div>
+  </div>
+
+
+  {% else %}
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  POST-TRAINING FEEDBACK                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+
+  <!-- Section A: Ratings -->
+  <div class="card">
+    <div class="card-header">
+      <div class="section-num">A</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Training Ratings (1 = Poor, 5 = Excellent)</span>
+        <span data-lang="fr">Évaluations de la formation (1 = Médiocre, 5 = Excellent)</span>
+        <span data-lang="pt">Classificações da Formação (1 = Fraco, 5 = Excelente)</span>
+      </h2>
+    </div>
+    <div class="card-body">
+
+      {% for field in assess_form %}
+        {% if field.name == "overall_rating" or field.name == "content_relevance" or field.name == "trainer_effectiveness" or field.name == "platform_usability" or field.name == "pace_and_structure" %}
+        <div class="form-group">
+          <label class="form-label">
+            {% if field.name == "overall_rating" %}
+              <span data-lang="en" class="lang-active">Overall Training Rating</span>
+              <span data-lang="fr">Évaluation globale de la formation</span>
+              <span data-lang="pt">Classificação Geral da Formação</span>
+            {% elif field.name == "content_relevance" %}
+              <span data-lang="en" class="lang-active">Content Relevance to My Work</span>
+              <span data-lang="fr">Pertinence du contenu par rapport à mon travail</span>
+              <span data-lang="pt">Relevância do Conteúdo para o Meu Trabalho</span>
+            {% elif field.name == "trainer_effectiveness" %}
+              <span data-lang="en" class="lang-active">Facilitator Effectiveness</span>
+              <span data-lang="fr">Efficacité du facilitateur</span>
+              <span data-lang="pt">Eficácia do Facilitador</span>
+            {% elif field.name == "platform_usability" %}
+              <span data-lang="en" class="lang-active">IPAWAS Platform Usability</span>
+              <span data-lang="fr">Convivialité de la plateforme IPAWAS</span>
+              <span data-lang="pt">Usabilidade da Plataforma IPAWAS</span>
+            {% elif field.name == "pace_and_structure" %}
+              <span data-lang="en" class="lang-active">Pace & Structure of the Training</span>
+              <span data-lang="fr">Rythme et structure de la formation</span>
+              <span data-lang="pt">Ritmo e Estrutura da Formação</span>
+            {% endif %}
+            <span class="required">*</span>
+          </label>
+          <div class="rating-group">
+            {% for choice_val, choice_label in field.field.choices %}
+            <input type="radio" name="{{ field.html_name }}" id="{{ field.html_name }}_{{ choice_val }}" value="{{ choice_val }}" {% if field.value == choice_val|stringformat:"s" %}checked{% endif %}>
+            <label for="{{ field.html_name }}_{{ choice_val }}">{{ choice_val }}</label>
+            {% endfor %}
+          </div>
+          <div class="rating-legend">
+            <span data-lang="en" class="lang-active">1 — Poor</span><span data-lang="fr">1 — Médiocre</span><span data-lang="pt">1 — Fraco</span>
+            &nbsp;&nbsp;
+            <span data-lang="en" class="lang-active">5 — Excellent</span><span data-lang="fr">5 — Excellent</span><span data-lang="pt">5 — Excelente</span>
+          </div>
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <!-- Section B: Open Questions -->
+  <div class="card">
+    <div class="card-header blue">
+      <div class="section-num">B</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Reflection & Improvement</span>
+        <span data-lang="fr">Réflexion et amélioration</span>
+        <span data-lang="pt">Reflexão e Melhoria</span>
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">What was the most valuable part of this training?</span>
+          <span data-lang="fr">Quelle a été la partie la plus précieuse de cette formation ?</span>
+          <span data-lang="pt">Qual foi a parte mais valiosa desta formação?</span>
+          <span class="required">*</span>
+        </label>
+        {{ assess_form.most_valuable }}
+        {% if assess_form.most_valuable.errors %}<ul class="errorlist">{% for e in assess_form.most_valuable.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">What could be improved in future sessions?</span>
+          <span data-lang="fr">Qu'est-ce qui pourrait être amélioré lors des futures sessions ?</span>
+          <span data-lang="pt">O que poderia ser melhorado em sessões futuras?</span>
+          <span class="required">*</span>
+        </label>
+        {{ assess_form.needs_improvement }}
+        {% if assess_form.needs_improvement.errors %}<ul class="errorlist">{% for e in assess_form.needs_improvement.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">Describe one concrete action you will take as a result of this training</span>
+          <span data-lang="fr">Décrivez une action concrète que vous prendrez suite à cette formation</span>
+          <span data-lang="pt">Descreva uma ação concreta que tomará como resultado desta formação</span>
+          <span class="required">*</span>
+        </label>
+        {{ assess_form.key_takeaway }}
+        {% if assess_form.key_takeaway.errors %}<ul class="errorlist">{% for e in assess_form.key_takeaway.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="en" class="lang-active">When will you apply what you learned?</span>
+            <span data-lang="fr">Quand appliquerez-vous ce que vous avez appris ?</span>
+            <span data-lang="pt">Quando irá aplicar o que aprendeu?</span>
+            <span class="required">*</span>
+          </label>
+          {{ assess_form.apply_learning_timeline }}
+          {% if assess_form.apply_learning_timeline.errors %}<ul class="errorlist">{% for e in assess_form.apply_learning_timeline.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section C: Recommendation -->
+  <div class="card">
+    <div class="card-header gold">
+      <div class="section-num">C</div>
+      <h2>
+        <span data-lang="en" class="lang-active">Recommendation</span>
+        <span data-lang="fr">Recommandation</span>
+        <span data-lang="pt">Recomendação</span>
+      </h2>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">Would you recommend this training to a colleague?</span>
+          <span data-lang="fr">Recommanderiez-vous cette formation à un collègue ?</span>
+          <span data-lang="pt">Recomendaria esta formação a um colega?</span>
+          <span class="required">*</span>
+        </label>
+        <div class="radio-row">
+          <label class="radio-pill">
+            <input type="radio" name="would_recommend" value="true" {% if assess_form.would_recommend.value == "true" %}checked{% endif %}>
+            <label for="">
+              <span data-lang="en" class="lang-active">Yes</span>
+              <span data-lang="fr">Oui</span>
+              <span data-lang="pt">Sim</span>
+            </label>
+          </label>
+          <label class="radio-pill">
+            <input type="radio" name="would_recommend" value="false" {% if assess_form.would_recommend.value == "false" %}checked{% endif %}>
+            <label for="">
+              <span data-lang="en" class="lang-active">No</span>
+              <span data-lang="fr">Non</span>
+              <span data-lang="pt">Não</span>
+            </label>
+          </label>
+        </div>
+        {% if assess_form.would_recommend.errors %}<ul class="errorlist">{% for e in assess_form.would_recommend.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span data-lang="en" class="lang-active">Additional comments (optional)</span>
+          <span data-lang="fr">Commentaires supplémentaires (facultatif)</span>
+          <span data-lang="pt">Comentários adicionais (opcional)</span>
+        </label>
+        {{ assess_form.additional_comments }}
+      </div>
+
+    </div>
+  </div>
+
+  {% endif %} {# end phase if/else #}
+
+</div>{# end assessment-body #}
+
+<!-- Submit bar -->
+<div class="submit-bar">
+  <button type="submit" class="btn-submit">
+    <i class="fas fa-paper-plane"></i>
+    <span data-lang="en" class="lang-active">Submit</span>
+    <span data-lang="fr">Soumettre</span>
+    <span data-lang="pt">Enviar</span>
+  </button>
+</div>
+
+</form>
+
+<script>
+// ── Language Switcher (Decision 2) ─────────────────────────────────────────
+let currentLang = localStorage.getItem('ipawas_lang') || 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ipawas_lang', lang);
+
+  // Update all [data-lang] blocks
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    if (el.getAttribute('data-lang') === lang) {
+      el.classList.add('lang-active');
+    } else {
+      el.classList.remove('lang-active');
+    }
+  });
+
+  // Update button states
+  ['en','fr','pt'].forEach(l => {
+    document.getElementById('btn-' + l)?.classList.toggle('active', l === lang);
+  });
+}
+
+// Apply on load (respects localStorage preference)
+document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+</script>
+</body>
+</html>

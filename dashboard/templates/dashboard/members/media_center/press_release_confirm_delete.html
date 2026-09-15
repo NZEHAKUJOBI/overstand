@@ -1,0 +1,29 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Delete Press Release" %} - {{ member_state.country_name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-5 text-center">
+                <div class="mb-4">
+                    <i class="fas fa-trash-alt fa-3x text-danger opacity-75"></i>
+                </div>
+                <h4 class="fw-bold mb-2">{% translate "Delete Press Release?" %}</h4>
+                <p class="text-muted mb-1">{% translate "You are about to permanently delete:" %}</p>
+                <p class="fw-bold mb-4">&ldquo;{{ object.title }}&rdquo;</p>
+                <p class="text-danger small mb-4">{% translate "This action cannot be undone." %}</p>
+                <form method="post" class="d-flex gap-3 justify-content-center">
+                    {% csrf_token %}
+                    <a href="{% url 'dashboard:country:media_center:pr_list' member_state_slug=member_state.slug %}" class="btn btn-outline-secondary px-4">
+                        {% translate "Cancel" %}
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-trash-alt me-1"></i>{% translate "Yes, Delete" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

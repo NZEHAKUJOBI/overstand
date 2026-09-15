@@ -1,0 +1,49 @@
+IPAWAS - New Investor Inquiry
+================================
+
+ACTION REQUIRED: New inquiry received and requires review
+
+Dear {{ member_state.ipa_acronym }} Team,
+
+A new investor inquiry has been submitted through the IPAWAS contact form{% if member_state %} for {{ member_state.country_name }}{% endif %}. Please review and respond within 2 business days.
+
+REFERENCE NUMBER: {{ inquiry.reference_number }}
+
+INVESTOR INFORMATION
+--------------------
+Name: {{ inquiry.full_name }}
+Email: {{ inquiry.email }}
+{% if inquiry.phone %}Phone: {{ inquiry.phone }}{% endif %}
+{% if inquiry.company_name %}Company: {{ inquiry.company_name }}{% endif %}
+{% if inquiry.company_country %}Country: {{ inquiry.company_country }}{% endif %}
+
+INQUIRY DETAILS
+---------------
+Inquiry Type: {{ inquiry.get_inquiry_type_display }}
+{% if inquiry.sector_of_interest %}Sector: {{ inquiry.sector_of_interest.name }}{% endif %}
+{% if inquiry.estimated_investment %}Investment Range: {{ inquiry.estimated_investment }}{% endif %}
+Subject: {{ inquiry.subject }}
+Submitted: {{ inquiry.created_at|date:"F d, Y - g:i A" }} GMT
+
+INVESTOR'S MESSAGE
+------------------
+{{ inquiry.message }}
+
+VIEW FULL DETAILS
+-----------------
+{{ inquiry_url }}
+
+RESPONSE TIMELINE
+-----------------
+⏱️ Please respond to this inquiry within 2 business days. The investor has been sent an automatic confirmation email with the reference number above.
+
+NEED HELP?
+----------
+Contact IPAWAS support at infodesk@ipawas.org
+
+---
+IPAWAS Platform
+Investment Promotion Agencies of West African States
+
+This is an automated notification. Please do not reply to this email.
+Visit: {{ site_url }}

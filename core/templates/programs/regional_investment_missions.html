@@ -1,0 +1,205 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Regional Investment Missions - IPAWAS Programs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, #064E3B 0%, #1B7A4C 60%, #10B981 100%);
+        padding: 130px 0 80px; margin-top: 76px; color: white; position: relative; overflow: hidden;
+    }
+    .page-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 80% 30%, rgba(212,165,32,0.12), transparent 60%); }
+    .page-hero h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+    .breadcrumb-item a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.6); }
+    .breadcrumb-item+.breadcrumb-item::before { color: rgba(255,255,255,0.5); }
+
+    .section-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+    .section-card h2 { font-size: 1.3rem; font-weight: 800; color: var(--primary-green); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid rgba(27,122,76,0.15); }
+
+    .mission-card {
+        border: 1px solid var(--neutral-200); border-radius: 14px; padding: 1.5rem;
+        margin-bottom: 1rem; position: relative; overflow: hidden; transition: box-shadow 0.2s;
+    }
+    .mission-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
+    .mission-card.upcoming::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg, var(--primary-green), #10B981); }
+    .mission-badge { display:inline-block; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.65rem; border-radius:20px; margin-bottom:0.75rem; }
+    .mission-badge.upcoming-badge { background:rgba(27,122,76,0.1); color:var(--primary-green); }
+    .mission-badge.past-badge { background:var(--neutral-100); color:var(--neutral-500); }
+    .mission-title { font-size:1.05rem; font-weight:700; color:var(--neutral-800); margin-bottom:0.5rem; }
+    .mission-meta { display:flex; gap:1rem; flex-wrap:wrap; font-size:0.83rem; color:var(--neutral-500); margin-bottom:0.75rem; }
+    .mission-meta span { display:flex; align-items:center; gap:0.3rem; }
+    .country-pill { display:inline-block; background:rgba(27,122,76,0.08); color:var(--primary-green); font-size:0.77rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:20px; margin:0.15rem; }
+    .sector-pill { display:inline-block; background:rgba(212,165,32,0.1); color:#7a5c00; font-size:0.77rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:20px; margin:0.15rem; }
+    .result-stat { text-align:center; padding:1rem; background:rgba(27,122,76,0.06); border-radius:10px; }
+    .result-num { font-size:1.5rem; font-weight:800; color:var(--primary-green); }
+    .result-lbl { font-size:0.75rem; color:var(--neutral-500); text-transform:uppercase; letter-spacing:0.04em; }
+
+    .apply-cta { background: linear-gradient(135deg, var(--primary-green), #064E3B); border-radius: 16px; padding: 2.5rem; text-align: center; color: white; margin-top: 2rem; }
+    .apply-cta h3 { font-weight: 800; margin-bottom: 0.5rem; }
+    .apply-cta p { opacity: 0.85; margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
+                <li class="breadcrumb-item"><a href="{% url 'programs:hub' %}">{% translate "Programs" %}</a></li>
+                <li class="breadcrumb-item active">{% translate "Regional Investment Missions" %}</li>
+            </ol>
+        </nav>
+        <h1>{% translate "Regional Investment Missions" %}</h1>
+        <p style="opacity:0.9; font-size:1.1rem; max-width:640px; line-height:1.7;">
+            {% translate "Curated investor roadshows connecting global capital with high-potential opportunities across West Africa's 15 member states." %}
+        </p>
+        <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <a href="{% url 'about:contact' %}" class="btn btn-warning rounded-pill px-4 fw-bold">
+                <i class="fas fa-handshake me-2"></i>{% translate "Join a Mission" %}
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Upcoming missions -->
+            {% if upcoming_missions %}
+            <div class="section-card">
+                <h2>{% translate "Upcoming Missions" %}</h2>
+                {% for mission in upcoming_missions %}
+                <div class="mission-card upcoming">
+                    <span class="mission-badge upcoming-badge"><i class="fas fa-clock me-1"></i>{% translate "Upcoming" %}</span>
+                    <div class="mission-title">{{ mission.title }}</div>
+                    <div class="mission-meta">
+                        <span><i class="fas fa-calendar-alt text-success"></i>{{ mission.date }}</span>
+                        <span><i class="fas fa-users text-success"></i>~{{ mission.expected_investors }} {% translate "investors expected" %}</span>
+                    </div>
+                    {% if mission.countries %}
+                    <div style="margin-bottom:0.5rem;">
+                        <span style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase; margin-right:0.5rem;">{% translate "Destinations:" %}</span>
+                        {% for country in mission.countries %}<span class="country-pill">{{ country }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if mission.sectors %}
+                    <div style="margin-bottom:0.75rem;">
+                        <span style="font-size:0.78rem; color:var(--neutral-500); font-weight:600; text-transform:uppercase; margin-right:0.5rem;">{% translate "Focus Sectors:" %}</span>
+                        {% for sector in mission.sectors %}<span class="sector-pill">{{ sector }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                    <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm rounded-pill">
+                        <i class="fas fa-paper-plane me-1"></i>{% translate "Express Interest" %}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Past missions -->
+            {% if past_missions %}
+            <div class="section-card">
+                <h2>{% translate "Past Missions" %}</h2>
+                {% for mission in past_missions %}
+                <div class="mission-card">
+                    <span class="mission-badge past-badge">{% translate "Completed" %}</span>
+                    <div class="mission-title">{{ mission.title }}</div>
+                    <div class="mission-meta">
+                        <span><i class="fas fa-calendar-alt"></i>{{ mission.date }}</span>
+                    </div>
+                    {% if mission.investment_secured or mission.projects %}
+                    <div class="row g-2 mt-1">
+                        {% if mission.investment_secured %}
+                        <div class="col-6">
+                            <div class="result-stat">
+                                <div class="result-num">{{ mission.investment_secured }}</div>
+                                <div class="result-lbl">{% translate "Investment Secured" %}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if mission.projects %}
+                        <div class="col-6">
+                            <div class="result-stat">
+                                <div class="result-num">{{ mission.projects }}</div>
+                                <div class="result-lbl">{% translate "Projects Facilitated" %}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if mission.testimonial %}
+                    <blockquote style="border-left:3px solid var(--primary-green); padding-left:1rem; margin:1rem 0 0; font-style:italic; color:var(--neutral-600); font-size:0.88rem; line-height:1.6;">
+                        "{{ mission.testimonial.text }}"
+                        <footer style="font-style:normal; font-size:0.8rem; color:var(--neutral-500); margin-top:0.4rem; font-weight:600;">
+                            — {{ mission.testimonial.author }}, {{ mission.testimonial.company }}
+                        </footer>
+                    </blockquote>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if not upcoming_missions and not past_missions %}
+            <div class="section-card">
+                <h2>{% translate "Investment Missions" %}</h2>
+                <p style="color:var(--neutral-600); line-height:1.8;">
+                    {% translate "IPAWAS organises targeted investment missions that bring international investors directly to West Africa. Each mission is sector-focused and coordinated with host IPAs to maximise investor-project matching." %}
+                </p>
+                <p style="color:var(--neutral-500); font-size:0.9rem;">{% translate "Mission schedule for 2025 coming soon. Contact us to join the investor database." %}</p>
+                <a href="{% url 'about:contact' %}" class="btn btn-success rounded-pill">{% translate "Contact Us" %}</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <h2>{% translate "How It Works" %}</h2>
+                <ol style="padding-left:1.25rem; color:var(--neutral-600); font-size:0.9rem; line-height:1.8;">
+                    <li style="margin-bottom:0.6rem;">{% translate "IPAWAS identifies target investor markets and sectors" %}</li>
+                    <li style="margin-bottom:0.6rem;">{% translate "Member IPAs prepare investment project briefs" %}</li>
+                    <li style="margin-bottom:0.6rem;">{% translate "Investors register and are pre-matched to projects" %}</li>
+                    <li style="margin-bottom:0.6rem;">{% translate "Mission visits take place over 5-7 days" %}</li>
+                    <li>{% translate "IPAWAS facilitates post-mission follow-up" %}</li>
+                </ol>
+            </div>
+            <div class="section-card">
+                <h2>{% translate "Who Should Join" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="display:flex; gap:0.6rem; align-items:flex-start; font-size:0.88rem; color:var(--neutral-700);">
+                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>{% translate "International investors seeking West Africa opportunities" %}
+                    </div>
+                    <div style="display:flex; gap:0.6rem; align-items:flex-start; font-size:0.88rem; color:var(--neutral-700);">
+                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>{% translate "Private equity and venture capital funds" %}
+                    </div>
+                    <div style="display:flex; gap:0.6rem; align-items:flex-start; font-size:0.88rem; color:var(--neutral-700);">
+                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>{% translate "Development finance institutions" %}
+                    </div>
+                    <div style="display:flex; gap:0.6rem; align-items:flex-start; font-size:0.88rem; color:var(--neutral-700);">
+                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>{% translate "Multinational corporations exploring expansion" %}
+                    </div>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>{% translate "Other Programs" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                    <a href="{% url 'programs:ipa-leadership' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-award me-2"></i>{% translate "IPA Leadership Academy" %}</a>
+                    <a href="{% url 'programs:training' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-chalkboard-teacher me-2"></i>{% translate "Investment Promotion Training" %}</a>
+                    <a href="{% url 'programs:benchmarking' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-chart-line me-2"></i>{% translate "IPA Benchmarking" %}</a>
+                    <a href="{% url 'programs:research' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-book me-2"></i>{% translate "Research & Publications" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="apply-cta">
+        <h3>{% translate "Interested in Joining a Mission?" %}</h3>
+        <p>{% translate "Whether you are an investor looking for opportunities or an IPA wanting to host a mission, contact us to get involved." %}</p>
+        <a href="{% url 'about:contact' %}" class="btn btn-warning rounded-pill px-5 fw-bold">
+            <i class="fas fa-envelope me-2"></i>{% translate "Get in Touch" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

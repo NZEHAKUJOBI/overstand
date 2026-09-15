@@ -1,0 +1,202 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load i18n %}
+
+{% block sidebar_nav %}
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Main" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:overview' %}" class="nav-link {% if request.resolver_match.url_name == 'overview' %}active{% endif %}">
+            <i class="fas fa-chart-line"></i>
+            <span>{% translate "Dashboard" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:news:list' %}" class="nav-link {% if request.resolver_match.url_name == 'news' %}active{% endif %}">
+            <i class="fas fa-chart-line"></i>
+            <span>{% translate "News" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:media_center:overview' %}"
+           class="nav-link {% if 'media_center' in request.resolver_match.namespaces %}active{% endif %}">
+            <i class="fas fa-photo-video"></i>
+            <span>Media Center</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Member States" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:member_states' %}" class="nav-link {% if 'member_state' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-globe-africa"></i>
+            <span>{% translate "All Member States" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Engagement" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:inquiries:list' %}"
+           class="nav-link {% if 'inquir' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-inbox"></i>
+            <span>{% translate "All Inquiries" %}</span>
+            {% if new_inquiries_count %}
+            <span class="nav-link-badge pulse">{{ new_inquiries_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:feedback_list' %}"
+           class="nav-link {% if 'feedback' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-comment-alt"></i>
+            <span>Feedback</span>
+            {% if unreviewed_feedback_count %}
+            <span class="nav-link-badge">{{ unreviewed_feedback_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "User Management" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:users' %}" class="nav-link {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-users"></i>
+            <span>{% translate "All Users" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:invitations:list' %}" class="nav-link">
+            <i class="fas fa-envelope"></i>
+            <span>{% translate "Invitations" %}</span>
+            {% if pending_invitations_count %}
+            <span class="nav-link-badge">{{ pending_invitations_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "System" %}</div>
+
+<!--    <div class="nav-item">-->
+<!--        <a href="{% url 'dashboard:hq:media:library' %}" class="nav-link">-->
+<!--            <i class="fas fa-photo-video"></i>-->
+<!--            <span>Media Overview</span>-->
+<!--        </a>-->
+<!--    </div>-->
+
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:training:index' %}" class="nav-link {% if 'training' in request.resolver_match.namespaces %}active{% endif %}">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>{% translate "Training" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:onboarding:index' %}" class="nav-link {% if 'onboarding' in request.resolver_match.namespaces %}active{% endif %}">
+            <i class="fas fa-qrcode"></i>
+            <span>{% translate "Onboarding QR" %}</span>
+            {% if pending_onboarding_count %}
+            <span class="nav-link-badge">{{ pending_onboarding_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:logs' %}" class="nav-link">
+            <i class="fas fa-list-alt"></i>
+            <span>{% translate "Activity Logs" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:reports' %}" class="nav-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-file-alt"></i>
+            <span>{% translate "Reports" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:config' %}" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>{% translate "System Settings" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Other" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:index' %}" class="nav-link {% if 'help' in request.resolver_match.namespace %}active{% endif %}">
+            <i class="fas fa-book-open"></i>
+            <span>User Manual</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'accounts:profile' %}" class="nav-link {% if 'profile' in request.resolver_match.url_name and request.resolver_match.namespace == 'accounts' %}active{% endif %}">
+            <i class="fas fa-user-circle"></i>
+            <span>{% translate "My Profile" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:settings' %}" class="nav-link">
+            <i class="fas fa-user-cog"></i>
+            <span>{% translate "My Settings" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <form method="post" action="{% url 'accounts:logout' %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="nav-link" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;padding:0;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>{% translate "Logout" %}</span>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --hq-primary: #1b7a4c;
+        --hq-accent: #D4A520;
+    }
+
+    .page-title::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 36px;
+        background: linear-gradient(180deg, var(--hq-primary), #25a36a);
+        border-radius: 3px;
+        margin-right: 1rem;
+        vertical-align: middle;
+    }
+
+    .nav-link-badge {
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: auto;
+    }
+
+    .nav-link-badge.pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+    }
+</style>
+{% endblock %}

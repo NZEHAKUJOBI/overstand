@@ -1,0 +1,87 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Reports - HQ Admin" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Reports" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">{% translate "Platform Reports" %}</h1>
+    <p class="page-description">{% translate "Generate and view comprehensive platform reports" %}</p>
+</div>
+
+<div class="row">
+    {% for report in available_reports %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card report-card h-100">
+            <div class="card-body">
+                <div class="report-icon mb-3">
+                    <i class="fas fa-{{ report.icon }}"></i>
+                </div>
+                <h5 class="card-title mb-2">{{ report.title }}</h5>
+                <p class="card-text text-muted mb-4">{{ report.description }}</p>
+                <a href="{% url report.url %}" class="btn btn-primary-green w-100">
+                    <i class="fas fa-chart-bar me-2"></i>{% translate "View Report" %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Export Options" %}</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">{% translate "Export platform data in various formats" %}</p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'dashboard:hq:export' %}?type=member_states" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>{% translate "Member States CSV" %}
+                    </a>
+                    <a href="{% url 'dashboard:hq:export' %}?type=opportunities" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>{% translate "Opportunities CSV" %}
+                    </a>
+                    <a href="{% url 'dashboard:hq:export' %}?type=platform_stats" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>{% translate "Platform Stats CSV" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .report-card {
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .report-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(27,122,76,0.15);
+    }
+
+    .report-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}

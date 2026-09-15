@@ -1,0 +1,665 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}Mission, Vision & Values - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 550px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670065/mission_pzrpjd_szquts.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+
+
+    /* Executive Summary Section */
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+
+
+    .btn-cus {
+        background: #EAE531;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: stretch;
+    }
+
+    .summary-image {
+        flex: 0 0 45%;
+        background: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670064/mission2_b26zsq_m7enc1.webp') center/cover;
+        min-height: 400px;
+    }
+
+    .summary-content {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .summary-content h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-content p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .summary-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 992px) {
+        .summary-card {
+            flex-direction: column;
+        }
+
+        .summary-image {
+            flex: none;
+            min-height: 300px;
+        }
+
+        .executive-summary-section {
+            margin-top: -40px;
+        }
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .vision-mission-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .vision-mission-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--accent-gold), var(--primary-green));
+    }
+
+    .vision-mission-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.2);
+    }
+
+    .vision-mission-card .icon-wrapper {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .vision-mission-card:hover .icon-wrapper {
+        transform: scale(1.1) rotate(-5deg);
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+    }
+
+    .vision-mission-card .icon-wrapper i {
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .vision-mission-card h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1.5rem;
+    }
+
+    .vision-mission-card .statement {
+        font-size: 1.25rem;
+        line-height: 1.9;
+        color: var(--neutral-800);
+        font-weight: 500;
+        font-style: italic;
+        border-left: 4px solid var(--accent-gold);
+        padding-left: 1.5rem;
+        margin-left: 1rem;
+    }
+
+    .values-section {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.03), rgba(212, 165, 32, 0.03));
+    }
+
+    .value-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .value-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .value-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .value-card .icon-circle {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+    }
+
+    .value-card:hover .icon-circle {
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-color: var(--accent-gold);
+        transform: scale(1.1);
+    }
+
+    .value-card .icon-circle i {
+        font-size: 2.5rem;
+        color: var(--primary-green);
+        transition: all 0.3s ease;
+    }
+
+    .value-card:hover .icon-circle i {
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .value-card h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .value-card p {
+        color: var(--neutral-600);
+        line-height: 1.8;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--neutral-600);
+        max-width: 800px;
+        margin: 0 auto 3rem;
+    }
+
+    .commitment-box {
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        border-radius: 20px;
+        padding: 3rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .commitment-box::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(212, 165, 32, 0.2), transparent 70%);
+        animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    .commitment-box h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .commitment-box p {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        opacity: 0.95;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        padding: 80px 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .btn-cta {
+        background: var(--accent-gold);
+        color: var(--dark-green);
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 50px;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cta:hover {
+        background: white;
+        color: var(--primary-green);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "Mission, Vision & Values" %}</h1>
+            <p class="hero-subtitle">
+                Guiding principles that drive our commitment to transforming West Africa into a premier global
+                investment destination.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Vision & Mission Section -->
+<section class="executive-summary-section">
+    <div class="container-fluid px-0">
+        <div class="summary-card">
+            <div class="summary-image"></div>
+            <div class="summary-content">
+                <h2>{% translate "Our Commitment" %}</h2>
+                <p>
+                    We are dedicated to creating an enabling environment for investment across West Africa
+                    by fostering collaboration among Investment Promotion Agencies, strengthening institutional
+                    capacity, and promoting the region as a unified, attractive destination for sustainable
+                    investment. Through strategic partnerships, knowledge sharing, and innovative solutions,
+                    we empower our member states to attract quality investments that drive inclusive economic
+                    growth while addressing development and environmental challenges.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Vision & Mission Section -->
+<section class="content-section ">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <!-- Vision Card -->
+            <div class="col-lg-6">
+                <div class="vision-mission-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>{% translate "Our Vision" %}</h3>
+                    <div class="statement">
+                        To be the leading regional platform for advancing West Africa as the preferred
+                        investment destination.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Card -->
+            <div class="col-lg-6">
+                <div class="vision-mission-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>{% translate "Our Mission" %}</h3>
+                    <div class="statement">
+                        To proactively promote and position West Africa as a reliable and competitive
+                        sub-region for sustainable investment that drives inclusive economic growth and
+                        development.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- Core Values Section -->
+<section class="content-section values-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">{% translate "Our Core Values" %}</h2>
+            <p class="section-subtitle">
+                The fundamental principles that guide our actions, decisions, and relationships as we
+                work to advance West Africa's investment landscape.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Collaboration -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>{% translate "Collaboration" %}</h4>
+                    <p>
+                        Fostering partnership among IPAs and stakeholders across the region. We believe
+                        that working together amplifies our impact and creates synergies that benefit
+                        the entire West African investment ecosystem.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Integrity -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>{% translate "Integrity" %}</h4>
+                    <p>
+                        Upholding transparency, accountability, and ethical standards in all our operations.
+                        We maintain the highest levels of honesty and fairness in our dealings with all
+                        stakeholders.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Innovation -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>{% translate "Innovation" %}</h4>
+                    <p>
+                        Encouraging creative and data-driven investment solutions. We embrace new ideas,
+                        technologies, and approaches to address the evolving needs of investors and
+                        member IPAs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Sustainability -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4>{% translate "Sustainability" %}</h4>
+                    <p>
+                        Promoting responsible and sustainable investment that balances profit with social
+                        and environmental impact. We advocate for investments that create long-term value
+                        for communities and the environment.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Excellence -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4>{% translate "Excellence" %}</h4>
+                    <p>
+                        Striving for high standards in service delivery, performance, and results. We are
+                        committed to continuous improvement and delivering exceptional value to our members
+                        and stakeholders.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Regional Unity -->
+            <div class="col-lg-4 col-md-6">
+                <div class="value-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h4>{% translate "Regional Unity" %}</h4>
+                    <p>
+                        Championing West African solidarity and integration. We recognize that our collective
+                        strength as a region creates unprecedented opportunities for shared prosperity and
+                        sustainable development.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How Values Drive Action Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h2 class="section-title text-center mb-5">{% translate "How Our Values Drive Action" %}</h2>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle"
+                                    style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check" style="color: var(--primary-green); font-size: 1.5rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 style="color: var(--primary-green); font-weight: 700; margin-bottom: 0.5rem;">
+                                    Member-Centric Approach</h5>
+                                <p style="color: var(--neutral-600); margin: 0; line-height: 1.7;">
+                                    We place the needs and success of our member IPAs at the center of everything
+                                    we do, ensuring our programs and services deliver tangible value.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle"
+                                    style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check" style="color: var(--primary-green); font-size: 1.5rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 style="color: var(--primary-green); font-weight: 700; margin-bottom: 0.5rem;">
+                                    Evidence-Based Decision Making</h5>
+                                <p style="color: var(--neutral-600); margin: 0; line-height: 1.7;">
+                                    Through WAIIS and other tools, we leverage data and analytics to inform strategy,
+                                    measure impact, and continuously improve our effectiveness.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle"
+                                    style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check" style="color: var(--primary-green); font-size: 1.5rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 style="color: var(--primary-green); font-weight: 700; margin-bottom: 0.5rem;">
+                                    Inclusive Participation</h5>
+                                <p style="color: var(--neutral-600); margin: 0; line-height: 1.7;">
+                                    We ensure all member states—regardless of size or capacity—have an equal voice
+                                    and opportunity to contribute to and benefit from our collective efforts.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle"
+                                    style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check" style="color: var(--primary-green); font-size: 1.5rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 style="color: var(--primary-green); font-weight: 700; margin-bottom: 0.5rem;">
+                                    Long-Term Impact Focus</h5>
+                                <p style="color: var(--neutral-600); margin: 0; line-height: 1.7;">
+                                    We prioritize initiatives that create lasting positive change for West Africa's
+                                    investment landscape and economic development trajectory.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>{% translate "Join Us in Building West Africa's Future" %}</h2>
+        <p>{% translate "Discover how our values translate into opportunities for sustainable investment and growth." %}</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'about:strategic_priorities' %}" class="btn-cta">{% translate "View Our Strategic Priorities" %}</a>
+            <a href="{% url 'about:who_we_are' %}" class="btn-cta" style="background: white; color: var(--primary-green);">
+                Learn More About Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

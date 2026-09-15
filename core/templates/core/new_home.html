@@ -1,0 +1,1088 @@
+{% extends "core/new_base.html" %}
+
+{% block title %}IPAWAS - Investment Promotion Agencies of West Africa{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enhanced Map Container Styles */
+    .map-container {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.12);
+        border: 2px solid rgba(27, 122, 76, 0.1);
+        overflow: visible;
+        position: relative;
+    }
+
+    .west-africa-map {
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.05));
+    }
+
+    /* Country Path Styles with Smooth Hover Effect */
+    .country-path {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        stroke: #1B7A4C;
+        stroke-width: 2.5;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .country-path.hover {
+        fill: #D4A520 !important;
+        stroke: #B8941E;
+        stroke-width: 3.5;
+        filter: drop-shadow(0 8px 16px rgba(212, 165, 32, 0.4));
+        transform: scale(1.02);
+        transform-origin: center;
+    }
+
+    .country-path.active {
+        fill: #1B7A4C !important;
+        stroke: #0F6B3F;
+        stroke-width: 4;
+        filter: drop-shadow(0 10px 20px rgba(27, 122, 76, 0.5));
+        animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    /* Former member states styling */
+    .former-member {
+        fill: #CBD5E0 !important;
+        stroke: #94A3B8;
+        opacity: 0.5;
+        cursor: not-allowed;
+        stroke-width: 2;
+    }
+
+    .former-member:hover {
+        fill: #CBD5E0 !important;
+        transform: none;
+        filter: none;
+    }
+
+    @keyframes pulse-border {
+        0%, 100% {
+            stroke-width: 4;
+            opacity: 1;
+        }
+        50% {
+            stroke-width: 5;
+            opacity: 0.9;
+        }
+    }
+
+    /* Country Labels */
+    .country-label {
+        pointer-events: none;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8), -1px -1px 3px rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+    }
+
+    .former-member-label {
+        fill: #94A3B8 !important;
+        opacity: 0.6;
+        text-decoration: line-through;
+    }
+
+    /* Enhanced Country Info Panel */
+    .country-info-panel {
+        position: sticky;
+        top: 100px;
+    }
+
+    .country-info-panel .card {
+        border: none;
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .country-info-panel .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 25px 70px rgba(27, 122, 76, 0.2);
+    }
+
+    .country-flag-img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .sector-tag {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(45, 144, 97, 0.1));
+        color: var(--primary-green);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin: 0.25rem;
+        border: 1px solid rgba(27, 122, 76, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .sector-tag:hover {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.2), rgba(45, 144, 97, 0.2));
+        transform: translateY(-2px);
+    }
+
+    /* Map Legend Enhancement */
+    .map-legend {
+        transition: all 0.3s ease;
+    }
+
+    .map-legend:hover {
+        transform: scale(1.05);
+    }
+
+    /* Floating Country Name Tooltip */
+    .country-tooltip {
+        position: fixed;
+        background: rgba(27, 122, 76, 0.95);
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        pointer-events: none;
+        z-index: 10000;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(212, 165, 32, 0.3);
+        transition: opacity 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .country-tooltip img {
+        width: 32px;
+        height: 24px;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .country-tooltip::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid rgba(27, 122, 76, 0.95);
+    }
+
+    .former-member-notice {
+        background: linear-gradient(135deg, rgba(203, 213, 224, 0.2), rgba(148, 163, 184, 0.2));
+        border-left: 4px solid #94A3B8;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #475569;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .country-info-panel {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <!-- Slide 1: Main Welcome -->
+        <div class="carousel-item active slide-1">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title animate-fade-in">
+                                Transforming West Africa into a Global Investment Destination
+                            </h1>
+                            <p class="hero-subtitle animate-slide-up">
+                                IPAWAS unites 12 investment promotion agencies across ECOWAS nations,
+                                facilitating strategic partnerships and unlocking unprecedented opportunities in
+                                Africa's fastest-growing economic region.
+                            </p>
+                            <div class="cta-buttons animate-slide-up">
+                                <button class="btn btn-primary-custom">
+                                    Explore Investment Opportunities
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <button class="btn btn-outline-custom">
+                                    Download Regional Guide
+                                    <i class="fas fa-download ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Regional Strength -->
+        <div class="carousel-item slide-2">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                350M+ Population
+                                <br>Infinite Possibilities
+                            </h1>
+                            <p class="hero-subtitle">
+                                West Africa represents one of the world's most dynamic economic frontiers, with
+                                robust GDP growth, youthful demographics, and rapidly expanding middle class
+                                consumption.
+                            </p>
+                            <div class="hero-stats">
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">$650B+</div>
+                                    <div class="hero-stat-label">Regional GDP</div>
+                                </div>
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">6.2%</div>
+                                    <div class="hero-stat-label">Average Growth Rate</div>
+                                </div>
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">12</div>
+                                    <div class="hero-stat-label">Member Countries</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Strategic Sectors -->
+        <div class="carousel-item slide-3">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                Strategic Investment
+                                <br>Across Key Sectors
+                            </h1>
+                            <p class="hero-subtitle">
+                                From renewable energy and agribusiness to fintech and digital innovation, West
+                                Africa offers diversified opportunities backed by progressive policies and regional
+                                coordination.
+                            </p>
+                            <div class="cta-buttons">
+                                <button class="btn btn-primary-custom">
+                                    View Sector Opportunities
+                                    <i class="fas fa-chart-line ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Partnership Excellence -->
+        <div class="carousel-item slide-4">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                Building Partnerships
+                                <br>Creating Value
+                            </h1>
+                            <p class="hero-subtitle">
+                                Join leading global investors who have discovered sustainable returns through
+                                IPAWAS's coordinated approach to investment facilitation and business development.
+                            </p>
+                            <div class="cta-buttons">
+                                <button class="btn btn-outline-custom">
+                                    Connect With Us
+                                    <i class="fas fa-handshake ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- About Section -->
+<section id="about" class="section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="section-title animate-slide-left">Uniting West Africa for Global Investment</h2>
+                <p class="animate-slide-left" style="font-size: 1.1rem; color: var(--neutral-600); line-height: 1.8;">
+                    The Investment Promotion Agencies of West African States (IPAWAS) represents a historic
+                    collaboration among 12 ECOWAS member nations, established to coordinate regional investment
+                    promotion strategies and amplify West Africa's position as a premier global investment
+                    destination.
+                </p>
+                <p class="animate-slide-left" style="font-size: 1.1rem; color: var(--neutral-600); line-height: 1.8;">
+                    Through strategic coordination, knowledge sharing, and unified policy advocacy, IPAWAS
+                    facilitates seamless cross-border investments while maintaining each nation's unique competitive
+                    advantages and sectoral specializations.
+                </p>
+                <div class="mt-4 animate-slide-left">
+                    <button class="btn btn-primary-custom">
+                        Learn About Our Mission
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-grid">
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-globe-africa"></i>
+                        </div>
+                        <h4 class="feature-title">Regional Integration</h4>
+                        <p class="feature-text">Harmonized investment frameworks across 12 nations creating seamless
+                            market access.</p>
+                    </div>
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4 class="feature-title">Strategic Facilitation</h4>
+                        <p class="feature-text">End-to-end investment support from entry to operational excellence.
+                        </p>
+                    </div>
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="feature-title">Growth Partnership</h4>
+                        <p class="feature-text">Sustainable value creation through coordinated regional development.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title text-white animate-fade-in">West Africa by the Numbers</h2>
+            <p class="section-subtitle text-white animate-fade-in">Discover the scale and potential of Africa's most
+                dynamic economic region.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up" x-data="{ count: 0 }" x-init="
+                        let interval = setInterval(() => {
+                            if (count < 350) {
+                                count += 10;
+                            } else {
+                                clearInterval(interval);
+                                count = 350;
+                            }
+                        }, 50)
+                    ">
+                    <div class="stat-number" x-text="count + 'M+'">350M+</div>
+                    <div class="stat-label">Population</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">$650B+</div>
+                    <div class="stat-label">Combined GDP</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">6.2%</div>
+                    <div class="stat-label">Average Growth Rate</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Active Members</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Interactive Regional Map -->
+<section id="regional-map" class="section section-light" x-data="mapInteraction()">
+    <div class="container">
+        <h2 class="section-title text-center animate-fade-in">🌍 Interactive West Africa Map</h2>
+        <p class="section-subtitle text-center animate-fade-in">
+            Hover over countries to see their flags, click to explore detailed investment opportunities
+        </p>
+
+        <div class="row align-items-start mt-5">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="map-container">
+                    <svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg" class="west-africa-map">
+                        <!-- Background -->
+                        <defs>
+                            <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#C5E8D8;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#9DD4BF;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="1000" height="800" fill="url(#oceanGradient)"/>
+
+                        <!-- Atlantic Ocean Label -->
+                        <text x="80" y="600" font-size="24" fill="#1B7A4C" font-style="italic" opacity="0.6" font-weight="600">Atlantic Ocean</text>
+
+                        <!-- Mauritania -->
+                        <path @mouseenter="hoverCountry('mauritania', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('mauritania')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'mauritania', 'hover': hoveredCountry === 'mauritania'}"
+                              d="M 200 100 L 350 100 L 380 150 L 380 200 L 350 250 L 300 280 L 250 280 L 200 250 Z"
+                              fill="#C5E8D8" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="280" y="190" font-size="16" fill="#1B7A4C" class="country-label" text-anchor="middle">Mauritania</text>
+
+                        <!-- Senegal -->
+                        <path @mouseenter="hoverCountry('senegal', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('senegal')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'senegal', 'hover': hoveredCountry === 'senegal'}"
+                              d="M 220 280 L 280 280 L 300 320 L 280 360 L 240 370 L 200 350 L 190 320 Z"
+                              fill="#8CD3AD" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="245" y="325" font-size="14" fill="#0F6B3F" class="country-label" text-anchor="middle">Senegal</text>
+
+                        <!-- Gambia -->
+                        <path @mouseenter="hoverCountry('gambia', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('gambia')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'gambia', 'hover': hoveredCountry === 'gambia'}"
+                              d="M 210 320 L 250 320 L 255 330 L 250 340 L 210 340 Z"
+                              fill="#56BA83" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="232" y="333" font-size="10" fill="#0F6B3F" class="country-label" text-anchor="middle">Gambia</text>
+
+                        <!-- Guinea-Bissau -->
+                        <path @mouseenter="hoverCountry('guinea-bissau', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('guinea-bissau')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'guinea-bissau', 'hover': hoveredCountry === 'guinea-bissau'}"
+                              d="M 240 370 L 280 360 L 290 380 L 280 400 L 250 410 L 230 400 Z"
+                              fill="#70C598" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="260" y="388" font-size="11" fill="#0F6B3F" class="country-label" text-anchor="middle">G-Bissau</text>
+
+                        <!-- Guinea -->
+                        <path @mouseenter="hoverCountry('guinea', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('guinea')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'guinea', 'hover': hoveredCountry === 'guinea'}"
+                              d="M 250 410 L 320 400 L 360 430 L 360 470 L 330 500 L 290 500 L 260 480 L 240 450 Z"
+                              fill="#A8DFC5" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="300" y="455" font-size="14" fill="#0F6B3F" class="country-label" text-anchor="middle">Guinea</text>
+
+                        <!-- Sierra Leone -->
+                        <path @mouseenter="hoverCountry('sierra-leone', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('sierra-leone')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'sierra-leone', 'hover': hoveredCountry === 'sierra-leone'}"
+                              d="M 290 500 L 330 500 L 345 530 L 330 560 L 300 570 L 280 550 Z"
+                              fill="#8CD3AD" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="310" y="535" font-size="12" fill="#0F6B3F" class="country-label" text-anchor="middle">S. Leone</text>
+
+                        <!-- Liberia -->
+                        <path @mouseenter="hoverCountry('liberia', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('liberia')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'liberia', 'hover': hoveredCountry === 'liberia'}"
+                              d="M 300 570 L 345 550 L 370 570 L 380 600 L 360 620 L 330 615 L 300 600 Z"
+                              fill="#70C598" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="340" y="590" font-size="13" fill="#0F6B3F" class="country-label" text-anchor="middle">Liberia</text>
+
+                        <!-- Côte d'Ivoire -->
+                        <path @mouseenter="hoverCountry('cote-divoire', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('cote-divoire')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'cote-divoire', 'hover': hoveredCountry === 'cote-divoire'}"
+                              d="M 360 470 L 420 460 L 450 490 L 450 540 L 420 570 L 380 600 L 360 580 L 345 550 L 360 510 Z"
+                              fill="#3BA672" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="395" y="525" font-size="15" font-weight="700" fill="#FFFFFF" class="country-label" text-anchor="middle">Côte d'Ivoire</text>
+
+                        <!-- Mali - FORMER MEMBER -->
+                        <path class="former-member"
+                              d="M 300 180 L 420 180 L 480 220 L 500 280 L 480 340 L 430 380 L 380 380 L 350 350 L 320 320 L 300 280 Z"
+                              fill="#CBD5E0" stroke="#94A3B8" stroke-width="2"/>
+                        <text x="390" y="280" font-size="16" font-weight="600" class="country-label former-member-label" text-anchor="middle">Mali</text>
+
+                        <!-- Burkina Faso - FORMER MEMBER -->
+                        <path class="former-member"
+                              d="M 380 350 L 480 340 L 520 370 L 510 410 L 480 430 L 430 430 L 400 410 L 380 380 Z"
+                              fill="#CBD5E0" stroke="#94A3B8" stroke-width="2"/>
+                        <text x="435" y="390" font-size="12" font-weight="600" class="country-label former-member-label" text-anchor="middle">Burkina Faso</text>
+
+                        <!-- Niger - FORMER MEMBER -->
+                        <path class="former-member"
+                              d="M 500 150 L 650 150 L 720 180 L 750 230 L 740 290 L 700 330 L 650 350 L 600 360 L 550 360 L 510 340 L 500 280 Z"
+                              fill="#CBD5E0" stroke="#94A3B8" stroke-width="2"/>
+                        <text x="615" y="260" font-size="16" font-weight="600" class="country-label former-member-label" text-anchor="middle">Niger</text>
+
+                        <!-- Benin -->
+                        <path @mouseenter="hoverCountry('benin', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('benin')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'benin', 'hover': hoveredCountry === 'benin'}"
+                              d="M 510 410 L 550 380 L 570 420 L 570 480 L 550 520 L 520 520 L 500 480 L 490 440 Z"
+                              fill="#8CD3AD" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="530" y="460" font-size="13" fill="#0F6B3F" class="country-label" text-anchor="middle">Benin</text>
+
+                        <!-- Togo -->
+                        <path @mouseenter="hoverCountry('togo', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('togo')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'togo', 'hover': hoveredCountry === 'togo'}"
+                              d="M 480 430 L 510 410 L 520 450 L 510 490 L 490 510 L 470 490 L 470 450 Z"
+                              fill="#70C598" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="493" y="465" font-size="12" fill="#0F6B3F" class="country-label" text-anchor="middle">Togo</text>
+
+                        <!-- Ghana -->
+                        <path @mouseenter="hoverCountry('ghana', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('ghana')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'ghana', 'hover': hoveredCountry === 'ghana'}"
+                              d="M 420 440 L 480 430 L 490 470 L 490 510 L 470 540 L 440 550 L 410 540 L 400 500 Z"
+                              fill="#3BA672" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="442" y="495" font-size="16" font-weight="700" fill="#FFFFFF" class="country-label" text-anchor="middle">Ghana</text>
+
+                        <!-- Nigeria -->
+                        <path @mouseenter="hoverCountry('nigeria', $event)" @mouseleave="clearHover()"
+                              @click="selectCountry('nigeria')"
+                              :class="{'country-path': true, 'active': selectedCountry === 'nigeria', 'hover': hoveredCountry === 'nigeria'}"
+                              d="M 550 360 L 680 350 L 730 380 L 750 430 L 750 490 L 730 540 L 680 560 L 630 550 L 590 540 L 560 520 L 550 480 L 550 420 Z"
+                              fill="#2D9061" stroke="#1B7A4C" stroke-width="2"/>
+                        <text x="640" y="465" font-size="20" font-weight="800" fill="#FFFFFF" class="country-label" text-anchor="middle">Nigeria</text>
+
+                        <!-- Cape Verde (single marker — archipelago off the coast of Senegal) -->
+                        <circle @mouseenter="hoverCountry('cape-verde', $event)" @mouseleave="clearHover()"
+                                @click="selectCountry('cape-verde')"
+                                :class="{'country-path': true, 'active': selectedCountry === 'cape-verde', 'hover': hoveredCountry === 'cape-verde'}"
+                                cx="110" cy="330" r="120"
+                                fill="#2D9061" stroke="#ffffff" stroke-width="2.5"/>
+                        <text x="100" y="425" font-size="12" fill="#0F6B3F" class="country-label" font-weight="600" text-anchor="middle">Cape Verde</text>
+
+                        <!-- Enhanced Map Legend -->
+                        <g class="map-legend">
+                            <rect x="710" y="600" width="270" height="185" fill="white" stroke="#1B7A4C" stroke-width="3" rx="12" opacity="0.95"/>
+                            <text x="845" y="630" font-size="16" font-weight="800" fill="#1B7A4C" text-anchor="middle">🗺️ Map Guide</text>
+
+                            <circle cx="735" cy="660" r="10" fill="#2D9061"/>
+                            <text x="760" y="666" font-size="13" fill="#475569" font-weight="600">Active Member (12)</text>
+
+                            <circle cx="735" cy="690" r="10" fill="#CBD5E0" opacity="0.5"/>
+                            <text x="760" y="696" font-size="13" fill="#94A3B8" font-weight="600">Former Member (3)</text>
+
+                            <circle cx="735" cy="720" r="10" fill="#D4A520"/>
+                            <text x="760" y="726" font-size="13" fill="#475569" font-weight="600">Hovered Country</text>
+
+                            <text x="735" y="752" font-size="12" fill="#475569">🖱️ <tspan font-weight="700">Hover</tspan> to see flag</text>
+                            <text x="735" y="772" font-size="12" fill="#475569">🖱️ <tspan font-weight="700">Click</tspan> for details</text>
+                        </g>
+                    </svg>
+
+                    <div class="former-member-notice">
+                        <strong><i class="fas fa-info-circle me-2"></i>Note:</strong> Mali, Burkina Faso, and Niger announced their withdrawal from ECOWAS. These countries are shown in gray on the map and are not included in current IPAWAS membership statistics.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Country Info Panel -->
+                <div class="country-info-panel" x-show="selectedCountry" x-cloak
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform translate-x-10"
+                     x-transition:enter-end="opacity-100 transform translate-x-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                        <div class="card-header text-white py-4" style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="mb-1 fw-bold" x-text="getCountryInfo(selectedCountry)?.name"></h3>
+                                    <p class="mb-0 opacity-90" style="font-size: 0.95rem;">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        <span x-text="'Capital: ' + getCountryInfo(selectedCountry)?.capital"></span>
+                                    </p>
+                                </div>
+                                <img :src="'https://flagcdn.com/w160/' + getCountryInfo(selectedCountry)?.code + '.png'"
+                                     :alt="getCountryInfo(selectedCountry)?.name + ' flag'"
+                                     class="country-flag-img">
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <h5 class="text-muted mb-3" style="font-size: 0.875rem; font-weight: 700; letter-spacing: 0.5px;">📊 KEY STATISTICS</h5>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="stat-box p-3" style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(27, 122, 76, 0.1)); border-radius: 12px; border: 1px solid rgba(27, 122, 76, 0.15);">
+                                            <div class="text-muted small mb-1"><i class="fas fa-users me-1"></i>Population</div>
+                                            <div class="fw-bold fs-5" style="color: var(--primary-green);" x-text="getCountryInfo(selectedCountry)?.population"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-box p-3" style="background: linear-gradient(135deg, rgba(212, 165, 32, 0.05), rgba(212, 165, 32, 0.1)); border-radius: 12px; border: 1px solid rgba(212, 165, 32, 0.15);">
+                                            <div class="text-muted small mb-1"><i class="fas fa-chart-line me-1"></i>GDP</div>
+                                            <div class="fw-bold fs-5" style="color: var(--accent-gold);" x-text="getCountryInfo(selectedCountry)?.gdp"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <h5 class="text-muted mb-3" style="font-size: 0.875rem; font-weight: 700; letter-spacing: 0.5px;">🎯 TOP INVESTMENT SECTORS</h5>
+                                <div x-html="getCountryInfo(selectedCountry)?.sectors"></div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn w-100 text-white" style="background: linear-gradient(135deg, var(--primary-green), var(--light-green)); border-radius: 12px; padding: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(27, 122, 76, 0.3);">
+                                    <i class="fas fa-external-link-alt me-2"></i>
+                                    Explore Opportunities
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Default State -->
+                <div class="text-center py-5" x-show="!selectedCountry" x-cloak>
+                    <div class="mb-4" style="font-size: 4rem;">🗺️</div>
+                    <h4 style="color: var(--primary-green); font-weight: 700;">Explore ECOWAS Nations</h4>
+                    <p class="text-muted" style="font-size: 1.05rem; line-height: 1.6;">
+                        Click on any active member country (shown in green) to view detailed investment information, key statistics, and opportunities.
+                    </p>
+                    <div class="mt-3 p-3" style="background: rgba(148, 163, 184, 0.1); border-radius: 12px; border-left: 4px solid #94A3B8;">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>12 Active Members</strong> | 3 Former Members (Mali, Burkina Faso, Niger)
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Tooltip with Flag Image -->
+    <div x-show="hoveredCountry"
+         x-cloak
+         class="country-tooltip"
+         :style="`left: ${tooltipX}px; top: ${tooltipY}px; opacity: ${hoveredCountry ? '1' : '0'}`">
+        <img :src="'https://flagcdn.com/w80/' + getCountryInfo(hoveredCountry)?.code + '.png'"
+             :alt="getCountryInfo(hoveredCountry)?.name + ' flag'">
+        <span x-text="getCountryInfo(hoveredCountry)?.name"></span>
+    </div>
+</section>
+
+<!-- Investment Opportunities -->
+<section id="opportunities" class="section section-dark">
+    <div class="container">
+        <h2 class="section-title text-center animate-fade-in">Strategic Investment Opportunities</h2>
+        <p class="section-subtitle text-center animate-fade-in">
+            Discover high-potential sectors backed by progressive policies, regional coordination, and sustainable
+            growth trajectories.
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-solar-panel"></i>
+                </div>
+                <h4 class="feature-title">Renewable Energy</h4>
+                <p class="feature-text">$120B+ investment potential in solar, wind, and hydro projects addressing
+                    regional energy deficits with 220M+ people lacking access.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h4 class="feature-title">Agribusiness & Food Security</h4>
+                <p class="feature-text">Transform 65% of the world's uncultivated arable land through modern farming,
+                    processing, and value-added agricultural innovation.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4 class="feature-title">Digital Innovation & Fintech</h4>
+                <p class="feature-text">Explosive mobile penetration and digital-first solutions creating
+                    opportunities in payments, lending, and financial inclusion.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h4 class="feature-title">Manufacturing & Industrialization</h4>
+                <p class="feature-text">Capitalize on regional value chains, AfCFTA opportunities, and competitive
+                    labor markets for export-oriented production.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4 class="feature-title">Education & Skills Development</h4>
+                <p class="feature-text">Address surging demand for quality education, vocational training, and
+                    digital skills in the world's youngest population.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4 class="feature-title">Healthcare Infrastructure</h4>
+                <p class="feature-text">Critical gaps in hospitals, pharmaceuticals, and telemedicine creating
+                    sustainable investment opportunities with social impact.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-road"></i>
+                </div>
+                <h4 class="feature-title">Transportation & Logistics</h4>
+                <p class="feature-text">Multi-billion dollar infrastructure modernization across ports, railways,
+                    roads, and aviation supporting regional trade expansion.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h4 class="feature-title">Real Estate & Urbanization</h4>
+                <p class="feature-text">Rapid urban growth creating demand for residential, commercial, and
+                    industrial properties across major metropolitan areas.</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4 class="feature-title">Regional Integration Benefits</h4>
+                <p class="feature-text">ECOWAS single market with harmonized policies, free movement of goods, and
+                    coordinated development strategies.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News & Updates -->
+<section id="news" class="section news-section">
+    <div class="container">
+        <h2 class="section-title animate-slide-up">Latest News & Insights</h2>
+        <p class="section-subtitle animate-slide-up">Stay ahead with the latest developments, policy updates, and
+            investment opportunities across West Africa.</p>
+
+        <div class="news-grid">
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-1"></div>
+                <div class="news-content">
+                    <div class="news-date">September 24, 2024</div>
+                    <h3 class="news-title">IPAWAS Statute Validated in Historic Banjul Summit</h3>
+                    <p class="news-excerpt">ECOWAS members formalize regional investment promotion framework,
+                        strengthening coordination and collaboration across West Africa.</p>
+                    <a href="#" class="news-link">Read Full Story <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-2"></div>
+                <div class="news-content">
+                    <div class="news-date">March 30, 2025</div>
+                    <h3 class="news-title">Diaspora Investment Initiative Launched</h3>
+                    <p class="news-excerpt">New program targets $28 billion in diaspora remittances for
+                        infrastructure development across the region.</p>
+                    <a href="#" class="news-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-3"></div>
+                <div class="news-content">
+                    <div class="news-date">February 15, 2025</div>
+                    <h3 class="news-title">Regional Investment Growth Accelerates</h3>
+                    <p class="news-excerpt">FDI flows reach record highs as coordinated promotion efforts drive
+                        investor confidence and market expansion.</p>
+                    <a href="#" class="news-link">View Report <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced Map Interaction with Real Flag Images
+    function mapInteraction() {
+        return {
+            selectedCountry: null,
+            hoveredCountry: null,
+            tooltipX: 0,
+            tooltipY: 0,
+
+            // Country data with ISO 3166-1 alpha-2 codes for flagcdn.com
+            countryData: {
+                'mauritania': {
+                    name: 'Mauritania',
+                    code: 'mr',
+                    capital: 'Nouakchott',
+                    population: '4.7M',
+                    gdp: '$8.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">⛏️ Mining</span>
+                            <span class="sector-tag">🐟 Fisheries</span>
+                            <span class="sector-tag">⚡ Energy</span>
+                        </div>
+                    `
+                },
+                'senegal': {
+                    name: 'Senegal',
+                    code: 'sn',
+                    capital: 'Dakar',
+                    population: '17.2M',
+                    gdp: '$27.6B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🛢️ Oil & Gas</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                            <span class="sector-tag">🏦 Financial Services</span>
+                        </div>
+                    `
+                },
+                'gambia': {
+                    name: 'Gambia',
+                    code: 'gm',
+                    capital: 'Banjul',
+                    population: '2.6M',
+                    gdp: '$2.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🏖️ Tourism</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                            <span class="sector-tag">🐟 Fisheries</span>
+                        </div>
+                    `
+                },
+                'guinea-bissau': {
+                    name: 'Guinea-Bissau',
+                    code: 'gw',
+                    capital: 'Bissau',
+                    population: '2.1M',
+                    gdp: '$1.6B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🥜 Cashew Nuts</span>
+                            <span class="sector-tag">🐟 Fisheries</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                        </div>
+                    `
+                },
+                'guinea': {
+                    name: 'Guinea',
+                    code: 'gn',
+                    capital: 'Conakry',
+                    population: '13.9M',
+                    gdp: '$16.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">⛏️ Mining (Bauxite)</span>
+                            <span class="sector-tag">💧 Hydropower</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                        </div>
+                    `
+                },
+                'sierra-leone': {
+                    name: 'Sierra Leone',
+                    code: 'sl',
+                    capital: 'Freetown',
+                    population: '8.4M',
+                    gdp: '$4.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">💎 Mining (Diamonds)</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                            <span class="sector-tag">🐟 Fisheries</span>
+                        </div>
+                    `
+                },
+                'liberia': {
+                    name: 'Liberia',
+                    code: 'lr',
+                    capital: 'Monrovia',
+                    population: '5.3M',
+                    gdp: '$3.7B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">⛏️ Mining (Iron Ore)</span>
+                            <span class="sector-tag">🌲 Forestry</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                        </div>
+                    `
+                },
+                'cote-divoire': {
+                    name: "Côte d'Ivoire",
+                    code: 'ci',
+                    capital: 'Yamoussoukro',
+                    population: '28.2M',
+                    gdp: '$70.0B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🍫 Cocoa</span>
+                            <span class="sector-tag">🏭 Manufacturing</span>
+                            <span class="sector-tag">🛢️ Oil & Gas</span>
+                            <span class="sector-tag">🏦 Banking</span>
+                        </div>
+                    `
+                },
+                'benin': {
+                    name: 'Benin',
+                    code: 'bj',
+                    capital: 'Porto-Novo',
+                    population: '13.4M',
+                    gdp: '$17.4B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🌾 Agriculture (Cotton)</span>
+                            <span class="sector-tag">🚢 Port Services</span>
+                            <span class="sector-tag">📱 Digital Economy</span>
+                        </div>
+                    `
+                },
+                'togo': {
+                    name: 'Togo',
+                    code: 'tg',
+                    capital: 'Lomé',
+                    population: '8.8M',
+                    gdp: '$8.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🚢 Port & Logistics</span>
+                            <span class="sector-tag">⛏️ Phosphates</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                        </div>
+                    `
+                },
+                'ghana': {
+                    name: 'Ghana',
+                    code: 'gh',
+                    capital: 'Accra',
+                    population: '33.5M',
+                    gdp: '$76.4B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🥇 Gold Mining</span>
+                            <span class="sector-tag">🛢️ Oil & Gas</span>
+                            <span class="sector-tag">🍫 Cocoa</span>
+                            <span class="sector-tag">📱 Tech & Innovation</span>
+                        </div>
+                    `
+                },
+                'nigeria': {
+                    name: 'Nigeria',
+                    code: 'ng',
+                    capital: 'Abuja',
+                    population: '223M',
+                    gdp: '$477B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🛢️ Oil & Gas</span>
+                            <span class="sector-tag">📱 Technology & Fintech</span>
+                            <span class="sector-tag">🏦 Financial Services</span>
+                            <span class="sector-tag">🎬 Entertainment</span>
+                            <span class="sector-tag">🌾 Agriculture</span>
+                        </div>
+                    `
+                },
+                'cape-verde': {
+                    name: 'Cape Verde',
+                    code: 'cv',
+                    capital: 'Praia',
+                    population: '593K',
+                    gdp: '$2.1B',
+                    sectors: `
+                        <div class="d-flex flex-wrap">
+                            <span class="sector-tag">🏖️ Tourism</span>
+                            <span class="sector-tag">🐟 Fisheries</span>
+                            <span class="sector-tag">⚡ Renewable Energy</span>
+                        </div>
+                    `
+                }
+            },
+
+            hoverCountry(country, event) {
+                this.hoveredCountry = country;
+                // Update tooltip position
+                if (event) {
+                    this.tooltipX = event.clientX + 15;
+                    this.tooltipY = event.clientY - 50;
+                }
+            },
+
+            clearHover() {
+                this.hoveredCountry = null;
+            },
+
+            selectCountry(country) {
+                this.selectedCountry = country;
+                // Scroll to info panel on mobile
+                if (window.innerWidth < 992) {
+                    setTimeout(() => {
+                        document.querySelector('.country-info-panel')?.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }, 100);
+                }
+            },
+
+            getCountryInfo(country) {
+                return this.countryData[country] || {};
+            }
+        }
+    }
+
+    // Update tooltip position on mouse move
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('mousemove', function(e) {
+            const tooltip = document.querySelector('.country-tooltip');
+            if (tooltip && tooltip.style.opacity !== '0') {
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY - 50) + 'px';
+            }
+        });
+    });
+</script>
+{% endblock %}

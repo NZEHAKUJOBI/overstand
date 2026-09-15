@@ -1,0 +1,216 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load i18n %}
+
+{% block sidebar_nav %}
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Main" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:overview' member_state.slug %}"
+           class="nav-link {% if request.resolver_match.url_name == 'overview' %}active{% endif %}">
+            <i class="fas fa-th-large"></i>
+            <span>{% translate "Overview" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:analytics' member_state_slug=member_state.slug %}"
+           class="nav-link {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i>
+            <span>Analytics</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Content Management" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:profile' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'profile' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-building"></i>
+            <span>{% translate "Country Profile" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:invitations:list' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'invitations' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-building"></i>
+            <span>{% translate "Invitations" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'media' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-folder-open"></i>
+            <span>{% translate "Media Library" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:media_center:overview' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'media_center' in request.resolver_match.namespaces %}active{% endif %}">
+            <i class="fas fa-photo-video"></i>
+            <span>{% translate "Media Center" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:sectors' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'sector' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-industry"></i>
+            <span>{% translate "Priority Sectors" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:opportunities' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'opportunit' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-lightbulb"></i>
+            <span>{% translate "Opportunities" %}</span>
+            {% if draft_opportunities_count %}
+            <span class="nav-link-badge">{{ draft_opportunities_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:incentives' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'incentive' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-percentage"></i>
+            <span>Incentives</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:success_stories' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'success_stor' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-trophy"></i>
+            <span>Success Stories</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:fdi_data' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'fdi_data' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i>
+            <span>Economic Data</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:leadership' member_state_slug=member_state.slug %}"
+           class="nav-link {% if request.resolver_match.url_name == 'leadership' %}active{% endif %}">
+            <i class="fas fa-user-tie"></i>
+            <span>Leadership</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Engagement" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:inquiries:list' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'inquir' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-inbox"></i>
+            <span>{% translate "Investor Inquiries" %}</span>
+            {% if new_inquiries_count %}
+            <span class="nav-link-badge pulse">{{ new_inquiries_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:team' member_state_slug=member_state.slug %}"
+           class="nav-link {% if request.resolver_match.url_name == 'team' %}active{% endif %}">
+            <i class="fas fa-users"></i>
+            <span>Team Management</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:invitations:list' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'invitations' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-user-plus"></i>
+            <span>{% translate "Team Invitations" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Platform" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:feedback_list' member_state_slug=member_state.slug %}"
+           class="nav-link {% if 'feedback' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-comment-alt"></i>
+            <span>Feedback</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Other" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:index' %}" class="nav-link {% if 'help' in request.resolver_match.namespace %}active{% endif %}">
+            <i class="fas fa-book-open"></i>
+            <span>User Manual</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'accounts:profile' %}" class="nav-link {% if 'profile' in request.resolver_match.url_name and request.resolver_match.namespace == 'accounts' %}active{% endif %}">
+            <i class="fas fa-user-circle"></i>
+            <span>{% translate "My Profile" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <form method="post" action="{% url 'accounts:logout' %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="nav-link" style="background:none;border:none;cursor:pointer;width:100%;text-align:left;padding:0;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>{% translate "Logout" %}</span>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+    .nav-link-badge {
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: auto;
+    }
+
+    .nav-link-badge.pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% translate "{# Template context now includes validated member_state #}" %}
+{% block content %}
+<div class="page-header">
+    <h1>{% blocktranslate trimmed %}{{ member_state.country_name }} Dashboard{% endblocktranslate %}</h1>
+    <p class="text-muted">{% blocktranslate trimmed %}Managing: {{ member_state.ipa_full_name }}{% endblocktranslate %}</p>
+</div>
+
+{% translate "{# Example: Building URLs in templates #}" %}
+<a href="{% url 'dashboard:country:opportunities_create' member_state_slug=member_state.slug %}"
+   class="btn btn-primary">
+    {% translate "Create New Opportunity" %}
+</a>
+
+{% translate "{# Example: Building URLs for specific items #}" %}
+{% for opportunity in opportunities %}
+<a href="{% url 'dashboard:country:opportunities_detail' member_state_slug=member_state.slug pk=opportunity.pk %}">
+    {{ opportunity.title }}
+</a>
+{% endfor %}
+{% endblock %}

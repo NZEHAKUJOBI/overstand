@@ -1,0 +1,531 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ article.title }} - IPAWAS News{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* News Listing Styles */
+    .news-hero {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        padding: 120px 0 80px;
+        margin-top: 76px;
+    }
+
+    .news-hero h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .news-hero p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.25rem;
+    }
+
+    /* Filters Section */
+    .news-filters {
+        background: white;
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+        position: sticky;
+        top: 76px;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-tab {
+        padding: 0.75rem 1.5rem;
+        background: var(--neutral-100);
+        border: 2px solid transparent;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--neutral-600);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .filter-tab:hover {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    .filter-tab.active {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid var(--neutral-200);
+        border-radius: 8px;
+        font-size: 1rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+
+    .search-box {
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 1.5rem 0.75rem 3rem;
+        border: 2px solid var(--neutral-200);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neutral-600);
+    }
+
+    /* Featured News Section */
+    .featured-news-section {
+        padding: 3rem 0;
+        background: var(--neutral-100);
+    }
+
+    .featured-badge {
+        display: inline-block;
+        background: var(--accent-gold);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 2rem;
+    }
+
+    .featured-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .featured-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .featured-card-img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+
+    .featured-card-body {
+        padding: 2rem;
+    }
+
+    /* News Grid */
+    .news-grid-section {
+        padding: 4rem 0;
+    }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .news-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .news-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .news-card-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .news-card-body {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .category-badge {
+        display: inline-block;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .category-badge.investment_news {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+
+    .category-badge.regional_updates {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .category-badge.success_stories {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .category-badge.policy_updates {
+        background: #E0E7FF;
+        color: #3730A3;
+    }
+
+    .category-badge.blog {
+        background: #FCE7F3;
+        color: #831843;
+    }
+
+    .category-badge.event_coverage {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+    .news-card h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--neutral-800);
+        line-height: 1.4;
+    }
+
+    .news-excerpt {
+        color: var(--neutral-600);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        flex: 1;
+    }
+
+    .news-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid var(--neutral-200);
+        font-size: 0.875rem;
+        color: var(--neutral-600);
+    }
+
+    .news-meta i {
+        margin-right: 0.5rem;
+        color: var(--primary-green);
+    }
+
+    .country-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.75rem;
+        background: var(--neutral-100);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--neutral-600);
+        margin-bottom: 0.75rem;
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .page-link {
+        padding: 0.75rem 1.25rem;
+        background: white;
+        border: 2px solid var(--neutral-200);
+        border-radius: 8px;
+        color: var(--primary-green);
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    .page-link.active {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--neutral-200);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: var(--neutral-600);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--neutral-600);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .news-hero h1 {
+            font-size: 2rem;
+        }
+
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-tabs {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="news-hero">
+    <div class="container">
+        <h1>{% translate "Latest News & Updates" %}</h1>
+        <p>{% blocktranslate trimmed %}Stay informed about investment opportunities, policy updates, and success stories across West Africa{% endblocktranslate %}</p>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="news-filters">
+    <div class="container">
+        <!-- Category Tabs -->
+        <div class="filter-tabs">
+            <a href="{% url 'knowledge_hub:news' %}" class="filter-tab {% if not current_category %}active{% endif %}">{% translate "All News" %}</a>
+            {% for value, label in categories %}
+            <a href="?category={{ value }}" class="filter-tab {% if current_category == value %}active{% endif %}">
+                {{ label }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <!-- Country Filter -->
+            <select class="filter-select" onchange="window.location.href='?{% if current_category %}category={{ current_category }}&{% endif %}country=' + this.value">
+                <option value="">All Countries</option>
+                <option value="hq" {% if current_country == 'hq' %}selected{% endif %}>Platform-wide</option>
+                {% for state in member_states %}
+                <option value="{{ state.slug }}" {% if current_country == state.slug %}selected{% endif %}>
+                    {{ state.country_name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <form method="get" style="margin: 0;">
+                    <input type="text" name="q" placeholder="{% translate "Search news..." %}" value="{{ search_query }}">
+                    {% if current_category %}
+                    <input type="hidden" name="category" value="{{ current_category }}">
+                    {% endif %}
+                    {% if current_country %}
+                    <input type="hidden" name="country" value="{{ current_country }}">
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured News Section -->
+{% if featured_news %}
+<section class="featured-news-section">
+    <div class="container">
+        <span class="featured-badge"><i class="fas fa-star"></i> {% translate "Featured News" %}</span>
+        <div class="row g-4">
+            {% for article in featured_news %}
+            <div class="col-lg-4">
+                <a href="{{ article.get_absolute_url }}" class="featured-card">
+                    <img src="{{ article.get_featured_image_medium|default:'/static/images/default-news.jpg' }}"
+                         alt="{{ article.title }}"
+                         class="featured-card-img"
+                         loading="lazy">
+                    <div class="featured-card-body">
+                        <span class="category-badge {{ article.category }}">
+                            {{ article.get_category_display }}
+                        </span>
+                        {% if article.member_state %}
+                        <span class="country-badge">
+                            {{ article.member_state.flag_emoji }} {{ article.member_state.country_name }}
+                        </span>
+                        {% endif %}
+                        <h3>{{ article.title }}</h3>
+                        <p class="news-excerpt">{{ article.excerpt|truncatewords:20 }}</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-calendar"></i>{{ article.publication_date|date:"M d, Y" }}</span>
+                            <span><i class="far fa-clock"></i>{{ article.reading_time }} min read</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- News Grid Section -->
+<section class="news-grid-section">
+    <div class="container">
+        {% if news_articles %}
+        <div class="news-grid">
+            {% for article in news_articles %}
+            <a href="{{ article.get_absolute_url }}" class="news-card">
+                <img src="{{ article.get_featured_image_url|default:'https://res.cloudinary.com/dfs7ghfir/image/upload/v1767063883/default-news_hjan6b.png' }}"
+                     alt="{{ article.title }}"
+                     class="news-card-img"
+                     loading="lazy">
+                <div class="news-card-body">
+                    <span class="category-badge {{ article.category }}">
+                        {{ article.get_category_display }}
+                    </span>
+                    {% if article.member_state %}
+                    <span class="country-badge">
+                        {{ article.member_state.flag_emoji }} {{ article.member_state.country_name }}
+                    </span>
+                    {% endif %}
+                    <h3>{{ article.title }}</h3>
+                    <p class="news-excerpt">{{ article.excerpt|truncatewords:25 }}</p>
+                    <div class="news-meta">
+                        <span><i class="far fa-calendar"></i>{{ article.publication_date|date:"M d, Y" }}</span>
+                        <span><i class="far fa-clock"></i>{{ article.reading_time }} min</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="pagination-wrapper">
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                <a href="?page=1{% if current_category %}&category={{ current_category }}{% endif %}{% if current_country %}&country={{ current_country }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="page-link">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_country %}&country={{ current_country }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="page-link">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+                {% endif %}
+
+                <span class="page-link active">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_country %}&country={{ current_country }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="page-link">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_country %}&country={{ current_country }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="page-link">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <i class="fas fa-newspaper"></i>
+            <h3>{% translate "No news articles found" %}</h3>
+            <p>{% blocktranslate trimmed %}Try adjusting your filters or check back soon for updates.{% endblocktranslate %}</p>
+            <a href="{% url 'knowledge_hub:news' %}" class="btn btn-primary mt-3">{% translate "View All News" %}</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

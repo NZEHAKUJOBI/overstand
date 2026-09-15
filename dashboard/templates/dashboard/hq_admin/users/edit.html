@@ -1,0 +1,267 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Edit User - {{ user.get_full_name }}{% endblocktranslate %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:users' %}">{% translate "Users" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:user_detail' user.pk %}">{{ user.get_full_name }}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Edit" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">{% translate "Edit User" %}</h1>
+            <p class="page-description">{% blocktranslate trimmed %}Update user information for {{ user.get_full_name }}{% endblocktranslate %}</p>
+        </div>
+        <a href="{% url 'dashboard:hq:user_detail' user.pk %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>{% translate "Back to User" %}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "User Information" %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{% translate "Primary contact email for this user" %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "Phone Number" %}</label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                        <div class="invalid-feedback d-block">{{ form.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Job Title" %}</label>
+                            {{ form.job_title }}
+                            {% if form.job_title.errors %}
+                            <div class="invalid-feedback d-block">{{ form.job_title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Organization" %}</label>
+                            {{ form.organization }}
+                            {% if form.organization.errors %}
+                            <div class="invalid-feedback d-block">{{ form.organization.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">{% translate "Preferences" %}</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Language Preference" %}</label>
+                            {{ form.language_preference }}
+                            {% if form.language_preference.errors %}
+                            <div class="invalid-feedback d-block">{{ form.language_preference.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Timezone" %}</label>
+                            {{ form.timezone }}
+                            {% if form.timezone.errors %}
+                            <div class="invalid-feedback d-block">{{ form.timezone.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">{% translate "Account Status" %}</h5>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                {% translate "Active Account" %}
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">{% translate "Inactive users cannot log in" %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.email_notifications }}
+                            <label class="form-check-label" for="{{ form.email_notifications.id_for_label }}">
+                                {% translate "Email Notifications" %}
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">{% translate "Receive email notifications for important updates" %}</small>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard:hq:user_detail' user.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary-green">
+                            <i class="fas fa-save me-2"></i>{% translate "Save Changes" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">{% translate "Quick Info" %}</h6>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">{% translate "User ID" %}</span>
+                        <span class="info-value">#{{ user.id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Date Joined" %}</span>
+                        <span class="info-value">{{ user.date_joined|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% translate "Last Login" %}</span>
+                        <span class="info-value">
+                            {% if user.last_login %}
+                                {{ user.last_login|timesince }} ago
+                            {% else %}
+                                {% translate "Never" %}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-2"><i class="fas fa-info-circle me-2"></i>{% translate "Note" %}</h6>
+                <p class="small mb-0">
+                    {% translate "This form updates basic user information. To manage IPA-specific permissions," %}
+                    use the <a href="{% url 'dashboard:hq:user_permissions' user.pk %}">{% translate "Manage Permissions" %}</a> page.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-label {
+        font-weight: 600;
+        color: var(--neutral-700);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 2px solid var(--neutral-200);
+        padding: 0.625rem 0.875rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.15);
+    }
+
+    .form-check-input {
+        width: 2.5rem;
+        height: 1.25rem;
+        border-radius: 2rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+    }
+
+    .form-check-label {
+        font-weight: 500;
+        margin-left: 0.5rem;
+        cursor: pointer;
+    }
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--neutral-600);
+        font-size: 0.875rem;
+    }
+
+    .info-value {
+        text-align: right;
+        color: var(--neutral-800);
+    }
+</style>
+{% endblock %}

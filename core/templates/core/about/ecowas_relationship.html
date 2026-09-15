@@ -1,0 +1,871 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}ECOWAS Relationship - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 550px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670064/relationship_v85eda_qbkiz4.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+
+
+    /* Executive Summary Section */
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+
+
+    .btn-cus {
+        background: #EAE531;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: stretch;
+    }
+
+    .summary-image {
+        flex: 0 0 45%;
+        background: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1769475636/strategic_patnership_uw1dml.webp') center/cover;
+        min-height: 400px;
+    }
+
+    .summary-content {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .summary-content h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-content p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .summary-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 992px) {
+        .summary-card {
+            flex-direction: column;
+        }
+
+        .summary-image {
+            flex: none;
+            min-height: 300px;
+        }
+
+        .executive-summary-section {
+            margin-top: -40px;
+        }
+    }
+
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .partnership-visual {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        margin: 3rem 0;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .logo-box {
+        text-align: center;
+    }
+
+    .logo-circle {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        transition: all 0.3s ease;
+        border: 5px solid white;
+        box-shadow: 0 10px 30px rgba(27, 122, 76, 0.2);
+    }
+
+    .logo-circle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 15px 40px rgba(27, 122, 76, 0.3);
+    }
+
+    .logo-circle img {
+        width: 80%;
+        height: auto;
+    }
+
+    .logo-box h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-top: 1rem;
+    }
+
+    .connector {
+        font-size: 3rem;
+        color: var(--accent-gold);
+        font-weight: 800;
+    }
+
+    .venn-diagram {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .venn-circle {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 3px solid;
+        transition: all 0.3s ease;
+    }
+
+    .venn-circle.ecowas {
+        border-color: #003893;
+    }
+
+    .venn-circle.ipawas {
+        border-color: var(--primary-green);
+    }
+
+    .venn-circle:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .venn-circle h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .venn-circle.ecowas h4 {
+        color: #003893;
+    }
+
+    .venn-circle.ipawas h4 {
+        color: var(--primary-green);
+    }
+
+    .venn-circle ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .venn-circle ul li {
+        padding-left: 1.8rem;
+        margin-bottom: 1rem;
+        position: relative;
+        color: var(--neutral-600);
+        line-height: 1.6;
+    }
+
+    .venn-circle ul li::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: var(--accent-gold);
+    }
+
+    .shared-goals {
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        margin: 2rem 0;
+        box-shadow: 0 15px 50px rgba(27, 122, 76, 0.3);
+    }
+
+    .shared-goals h4 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .shared-goals p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 0;
+        opacity: 0.95;
+    }
+
+    .collaboration-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        border-top: 4px solid var(--accent-gold);
+    }
+
+    .collaboration-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 45px rgba(27, 122, 76, 0.15);
+    }
+
+    .collaboration-card .icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(212, 165, 32, 0.1));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .collaboration-card:hover .icon {
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    }
+
+    .collaboration-card .icon i {
+        font-size: 2rem;
+        color: var(--primary-green);
+        transition: all 0.3s ease;
+    }
+
+    .collaboration-card:hover .icon i {
+        color: white;
+    }
+
+    .collaboration-card h4 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .collaboration-card p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .support-box {
+        background: linear-gradient(135deg, rgba(212, 165, 32, 0.1), rgba(27, 122, 76, 0.05));
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items-start;
+        transition: all 0.3s ease;
+    }
+
+    .support-box:hover {
+        background: linear-gradient(135deg, rgba(212, 165, 32, 0.15), rgba(27, 122, 76, 0.08));
+        transform: translateX(10px);
+    }
+
+    .support-box .icon {
+        width: 50px;
+        height: 50px;
+        background: var(--accent-gold);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .support-box .icon i {
+        color: white;
+        font-size: 1.3rem;
+    }
+
+    .support-box .content h5 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .support-box .content p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .initiative-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .initiative-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .initiative-card h4 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .initiative-card p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+
+    .status-badge.active {
+        background: linear-gradient(135deg, #10B981, #059669);
+    }
+
+    .status-badge.planned {
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+    }
+
+    .timeline-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(27, 122, 76, 0.1);
+        color: var(--primary-green);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        padding: 80px 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .btn-cta {
+        background: var(--accent-gold);
+        color: var(--dark-green);
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 50px;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cta:hover {
+        background: white;
+        color: var(--primary-green);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .venn-diagram {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "ECOWAS Relationship" %}</h1>
+            <p class="hero-subtitle">
+                A strategic partnership driving regional integration, investment facilitation, and economic
+                development across West Africa.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<!-- Vision & Mission Section -->
+<section class="executive-summary-section">
+    <div class="container-fluid px-0">
+        <div class="summary-card">
+            <div class="summary-image"></div>
+            <div class="summary-content">
+                <h2>{% translate "Independent Yet Aligned: Our ECOWAS Partnership" %}</h2>
+                <p>
+                    IPAWAS operates as an independent regional body headquartered in Abuja, Nigeria, but
+                    aligns closely with ECOWAS objectives on regional integration, investment, and trade
+                    facilitation. It complements ECOWAS' efforts by operationalizing investment promotion
+                    at the Member State level and serving as a bridge between ECOWAS institutions and
+                    national IPAs.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Partnership Overview Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="partnership-visual">
+                    <div class="logo-container">
+                        <div class="logo-box">
+                            <div class="logo-circle">
+                                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768749296/ecowas_realtionship_jcmro0.png"
+                                    alt="{% translate 'ECOWAS Logo' %}">
+                            </div>
+                            <h4>{% translate "ECOWAS" %}</h4>
+                            <p style="color: var(--neutral-600);">{% translate "Regional Integration" %}</p>
+                        </div>
+
+                        <div class="connector">
+                            <i class="fas fa-plus"></i>
+                        </div>
+
+                        <div class="logo-box">
+                            <div class="logo-circle" style="background: #EAE531;">
+                                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768749282/ipawas_relationship_tkc1qc.png"
+                                    alt="{% translate 'IPAWAS Logo' %}">
+                            </div>
+                            <h4>{% translate "IPAWAS" %}</h4>
+                            <p style="color: var(--neutral-600);">{% translate "Investment Promotion" %}</p>
+                        </div>
+
+                        <div class="connector">
+                            <i class="fas fa-equals"></i>
+                        </div>
+
+                        <div class="logo-box">
+                            <div class="logo-circle" style="background: linear-gradient(135deg, #10B981, #059669);">
+                                <i class="fas fa-chart-line" style="font-size: 3rem; color: white;"></i>
+                            </div>
+                            <h4>{% translate "Regional Growth" %}</h4>
+                            <p style="color: var(--neutral-600);">{% translate "Sustainable Development" %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="text-center mt-4">
+                    <p class="lead" style="font-size: 1.2rem; line-height: 1.8; color: var(--neutral-600);">
+                        IPAWAS operates as an independent regional body headquartered in Abuja, Nigeria, but
+                        aligns closely with ECOWAS objectives on regional integration, investment, and trade
+                        facilitation. It complements ECOWAS' efforts by operationalizing investment promotion
+                        at the Member State level and serving as a bridge between ECOWAS institutions and
+                        national IPAs.
+                    </p>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Roles & Responsibilities Section -->
+<section class="content-section" style="background: var(--neutral-100);">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Complementary Roles & Responsibilities" %}</h2>
+
+        <div class="venn-diagram">
+            <div class="venn-circle ecowas">
+                <h4><i class="fas fa-globe-africa me-2"></i>{% translate "ECOWAS Role" %}</h4>
+                <ul>
+                    <li>{% translate "Set regional integration policies and frameworks" %}</li>
+                    <li>{% translate "Establish trade and investment protocols" %}</li>
+                    <li>{% translate "Drive regulatory harmonization initiatives" %}</li>
+                    <li>{% translate "Promote political and economic integration" %}</li>
+                    <li>{% translate "Provide macro-level coordination" %}</li>
+                    <li>{% translate "Facilitate regional cooperation agreements" %}</li>
+                </ul>
+            </div>
+
+            <div class="venn-circle ipawas">
+                <h4><i class="fas fa-briefcase me-2"></i>{% translate "IPAWAS Role" %}</h4>
+                <ul>
+                    <li>{% translate "Operationalize investment promotion at IPA level" %}</li>
+                    <li>{% translate "Bridge ECOWAS institutions and national IPAs" %}</li>
+                    <li>{% translate "Provide investment data and intelligence" %}</li>
+                    <li>{% translate "Build capacity of member IPAs" %}</li>
+                    <li>{% translate "Facilitate investor connections and support" %}</li>
+                    <li>{% translate "Implement ground-level investment initiatives" %}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="shared-goals">
+            <h4><i class="fas fa-handshake me-3"></i>{% translate "Shared Goals" %}</h4>
+            <p>
+                Regional Investment Growth • Economic Integration • Business Environment Improvement •
+                Sustainable Development • Cross-Border Investment Facilitation • Private Sector Development
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Key Collaboration Areas Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Key Collaboration Areas" %}</h2>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="collaboration-card">
+                    <div class="icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h4>{% translate "Regional Integration" %}</h4>
+                    <p>
+                        IPAWAS actively supports the ECOWAS regional integration agenda by promoting
+                        investment opportunities that leverage the free movement of capital and services
+                        across member states. We align our initiatives with ECOWAS Vision 2050 and work
+                        to create awareness about regional integration benefits among investors and IPAs.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="collaboration-card">
+                    <div class="icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h4>{% translate "Investment Promotion" %}</h4>
+                    <p>
+                        Joint promotion of West Africa as a unified investment destination through coordinated
+                        missions to investor markets, regional investment forums, and shared marketing materials.
+                        We work together to showcase the region's collective strengths and competitive advantages
+                        to global investors.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="collaboration-card">
+                    <div class="icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4>{% translate "Data & Intelligence" %}</h4>
+                    <p>
+                        The West Africa Investment Intelligence System (WAIIS) provides critical data and
+                        analytics that support ECOWAS policy decisions. We deliver investment trend analysis,
+                        evidence-based policy recommendations, and consolidated regional statistics that inform
+                        ECOWAS economic planning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="collaboration-card">
+                    <div class="icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4>{% translate "Capacity Building" %}</h4>
+                    <p>
+                        Training IPAs on ECOWAS protocols, investment regulations, and regional opportunities.
+                        We facilitate knowledge sharing on how to leverage ECOWAS frameworks and provide
+                        technical assistance that aligns with ECOWAS priorities and regional development
+                        objectives.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ECOWAS Support Section -->
+<section class="content-section" style="background: var(--neutral-100);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h2 class="section-title text-center mb-5">{% translate "ECOWAS Support and Recognition" %}</h2>
+
+                <div class="support-box">
+                    <div class="icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="content">
+                        <h5>{% translate "Technical Assistance and Guidance" %}</h5>
+                        <p>
+                            ECOWAS provides technical expertise and guidance on regional integration matters,
+                            trade facilitation, and investment policy frameworks that strengthen IPAWAS's
+                            capacity to serve member IPAs effectively.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="support-box">
+                    <div class="icon">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <div class="content">
+                        <h5>{% translate "Platform for Regional Coordination" %}</h5>
+                        <p>
+                            ECOWAS recognizes IPAWAS as the official network of Investment Promotion Agencies
+                            and provides platforms for coordination, dialogue, and collaboration on investment-related
+                            matters across the region.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="support-box">
+                    <div class="icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="content">
+                        <h5>{% translate "Recognition as IPA Network" %}</h5>
+                        <p>
+                            Official recognition by ECOWAS enhances IPAWAS's credibility and authority in
+                            representing member IPAs in regional and international forums, strengthening our
+                            collective voice in investment matters.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="support-box">
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="content">
+                        <h5>{% translate "Access to ECOWAS Platforms and Events" %}</h5>
+                        <p>
+                            IPAWAS participates in ECOWAS meetings, summits, and regional events, ensuring
+                            investment promotion perspectives are integrated into broader regional economic
+                            development strategies and initiatives.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Joint Initiatives Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Current Joint Projects & Initiatives" %}</h2>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "AfCFTA Investment Facilitation" %}</h4>
+                    <p>
+                        Collaborative efforts to promote cross-border investment opportunities under the
+                        African Continental Free Trade Area, including investor awareness campaigns and
+                        facilitation of regional value chain investments.
+                    </p>
+                    <div>
+                        <span class="status-badge active">{% translate "Active" %}</span>
+                        <span class="timeline-badge">2024 - 2027</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "Regional Investment Data Platform" %}</h4>
+                    <p>
+                        Development of comprehensive investment monitoring and reporting systems that serve
+                        both ECOWAS policy needs and IPAWAS operational requirements, including WAIIS
+                        deployment.
+                    </p>
+                    <div>
+                        <span class="status-badge active">{% translate "Active" %}</span>
+                        <span class="timeline-badge">2025 - 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "IPA Capacity Building Program" %}</h4>
+                    <p>
+                        Joint training programs focusing on ECOWAS protocols, regional integration benefits,
+                        and best practices in investment promotion aligned with regional development
+                        priorities.
+                    </p>
+                    <div>
+                        <span class="status-badge active">{% translate "Active" %}</span>
+                        <span class="timeline-badge">{% translate "Ongoing" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "Regional Investment Forums" %}</h4>
+                    <p>
+                        Annual investment promotion events jointly organized to showcase West Africa's
+                        investment opportunities, bringing together member IPAs, ECOWAS institutions,
+                        and international investors.
+                    </p>
+                    <div>
+                        <span class="status-badge active">{% translate "Active" %}</span>
+                        <span class="timeline-badge">{% translate "Annual" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "Business Climate Reform Support" %}</h4>
+                    <p>
+                        Collaborative advocacy for regulatory harmonization and business environment
+                        improvements that align with ECOWAS integration objectives and enhance investor
+                        confidence across the region.
+                    </p>
+                    <div>
+                        <span class="status-badge planned">{% translate "Planned" %}</span>
+                        <span class="timeline-badge">2025 - 2027</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="initiative-card">
+                    <h4>{% translate "Investor Protection Framework" %}</h4>
+                    <p>
+                        Joint development of regional investor protection mechanisms and dispute resolution
+                        procedures that strengthen investor confidence and facilitate cross-border
+                        investment flows.
+                    </p>
+                    <div>
+                        <span class="status-badge planned">{% translate "Planned" %}</span>
+                        <span class="timeline-badge">2026 - 2028</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>{% translate "Stronger Together for West Africa's Investment Future" %}</h2>
+        <p>{% translate "Learn more about how ECOWAS and IPAWAS are transforming the regional investment landscape." %}</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="https://www.ecowas.int" target="_blank" rel="noopener" class="btn-cta">
+                Visit ECOWAS Website <i class="fas fa-external-link-alt ms-2"></i>
+            </a>
+            <a href="{% url 'about:strategic_priorities' %}" class="btn-cta" style="background: white; color: var(--primary-green);">
+                Our Partners
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

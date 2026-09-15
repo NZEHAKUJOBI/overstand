@@ -1,0 +1,482 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load i18n %}
+
+{# ── Sidebar: Manual navigation + JS-populated on-page TOC ──────────────── #}
+{% block sidebar_nav %}
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Manual" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:index' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+            <i class="fas fa-home"></i>
+            <span>{% translate "Welcome" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:getting_started' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'getting_started' %}active{% endif %}">
+            <i class="fas fa-rocket"></i>
+            <span>{% translate "Getting Started" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "HQ Admin" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:hq_dashboard' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'hq_dashboard' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>{% translate "HQ Dashboard Guide" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "IPA Staff" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:ipa_dashboard' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'ipa_dashboard' %}active{% endif %}">
+            <i class="fas fa-globe-africa"></i>
+            <span>{% translate "Country Dashboard Guide" %}</span>
+        </a>
+    </div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Reference" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:quick_reference' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'quick_reference' %}active{% endif %}">
+            <i class="fas fa-bolt"></i>
+            <span>{% translate "Quick Reference" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:help:roles_permissions' %}"
+           class="nav-link {% if request.resolver_match.url_name == 'roles_permissions' %}active{% endif %}">
+            <i class="fas fa-user-shield"></i>
+            <span>{% translate "Roles & Permissions" %}</span>
+        </a>
+    </div>
+</div>
+
+{# JS injects "On this page" section here #}
+<div id="help-on-page-toc" class="nav-section" style="display:none;">
+    <div class="nav-section-title" style="display:flex;align-items:center;gap:.4rem;">
+        <i class="fas fa-list-ul" style="font-size:.7rem;opacity:.7;"></i>
+        {% translate "On This Page" %}
+    </div>
+    <div id="help-toc-links"></div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Back" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'dashboard:index' %}" class="nav-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>{% translate "My Dashboard" %}</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{# ── All help-section CSS ─────────────────────────────────────────────────── #}
+{% block extra_css %}
+<style>
+
+/* ── Reading progress bar (fixed, injected via JS) ────────────────────────── */
+#help-progress-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-green), var(--accent-gold));
+    width: 0%;
+    z-index: 9999;
+    transition: width .1s linear;
+    pointer-events: none;
+}
+
+/* ── Back-to-top button ───────────────────────────────────────────────────── */
+#help-back-top {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem;
+    box-shadow: 0 4px 16px rgba(27,122,76,.4);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .25s ease, transform .25s ease, background .2s;
+    z-index: 1000;
+}
+#help-back-top.visible { opacity: 1; transform: translateY(0); }
+#help-back-top:hover   { background: var(--dark-green); }
+
+/* ── Page scaffold ────────────────────────────────────────────────────────── */
+.dashboard-content { max-width: 900px; }
+
+/* ── Page tag ─────────────────────────────────────────────────────────────── */
+.page-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--neutral-200); color: var(--neutral-700);
+    border-radius: 6px; padding: .3rem .75rem;
+    font-size: .78rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .5px; margin-bottom: 1rem;
+}
+
+/* ── Page title & divider ─────────────────────────────────────────────────── */
+.page-title {
+    font-size: 1.75rem; font-weight: 800;
+    color: var(--dark-green); margin: 0 0 .5rem; line-height: 1.2;
+}
+.help-divider {
+    width: 48px; height: 4px;
+    background: linear-gradient(90deg, var(--primary-green), var(--accent-gold));
+    border-radius: 2px; margin: .75rem 0 1.5rem;
+}
+
+/* ── Intro paragraph ──────────────────────────────────────────────────────── */
+.help-intro {
+    font-size: 1.02rem; color: var(--neutral-600); line-height: 1.75;
+    margin-bottom: 1.75rem; padding: 1.25rem 1.5rem;
+    background: var(--neutral-100);
+    border-left: 4px solid var(--primary-green);
+    border-radius: 0 8px 8px 0;
+}
+
+/* ── Section headings with hover anchor ──────────────────────────────────── */
+h2 { scroll-margin-top: 5rem; position: relative; }
+h2 .help-anchor {
+    opacity: 0; font-size: .7rem; color: var(--primary-green);
+    margin-left: .5rem; text-decoration: none;
+    transition: opacity .2s; vertical-align: middle;
+}
+h2:hover .help-anchor { opacity: 1; }
+
+/* ── Callouts ─────────────────────────────────────────────────────────────── */
+.callout {
+    display: flex; gap: .875rem; align-items: flex-start;
+    padding: 1rem 1.25rem; border-radius: 10px; margin: 1.25rem 0; font-size: .92rem;
+}
+.callout > i { font-size: 1.1rem; margin-top: .15rem; flex-shrink: 0; }
+.callout-body p { margin: .35rem 0 0; color: var(--neutral-600); line-height: 1.65; }
+.callout-tip    { background: #ECFDF5; border-left: 4px solid #10B981; }
+.callout-tip > i  { color: #10B981; }
+.callout-note   { background: #EFF6FF; border-left: 4px solid #3B82F6; }
+.callout-note > i { color: #3B82F6; }
+.callout-warn   { background: #FFFBEB; border-left: 4px solid #F59E0B; }
+.callout-warn > i { color: #F59E0B; }
+.callout-danger { background: #FEF2F2; border-left: 4px solid #EF4444; }
+.callout-danger > i { color: #EF4444; }
+
+/* ── Steps ────────────────────────────────────────────────────────────────── */
+.steps { display: flex; flex-direction: column; gap: 0; margin: 1.25rem 0; }
+.step {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    background: white;
+    border: 1px solid var(--neutral-200);
+    border-bottom: none;
+    transition: background .15s;
+}
+.steps .step:first-child { border-radius: 12px 12px 0 0; }
+.steps .step:last-child  { border-bottom: 1px solid var(--neutral-200); border-radius: 0 0 12px 12px; }
+.steps .step:only-child  { border-radius: 12px; border-bottom: 1px solid var(--neutral-200); }
+.step:hover { background: #f8fffe; }
+.step-num {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; margin-top: .1rem;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; color: var(--dark-green); margin-bottom: .3rem; font-size: .95rem; }
+.step-body p  { margin: 0; font-size: .9rem; color: var(--neutral-600); line-height: 1.65; }
+.step-body ul { margin: .4rem 0 0; padding-left: 1.25rem; font-size: .9rem; color: var(--neutral-600); line-height: 1.9; }
+
+/* ── Feature cards ────────────────────────────────────────────────────────── */
+.feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem; margin: 1.25rem 0;
+}
+.feature-card {
+    background: white; border: 1px solid var(--neutral-200);
+    border-radius: 12px; padding: 1.25rem; text-align: center;
+    transition: box-shadow .2s, transform .2s;
+}
+.feature-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.08); transform: translateY(-2px); }
+.feature-card strong { display: block; margin: .5rem 0 .35rem; color: var(--dark-green); }
+.feature-card p { margin: 0; font-size: .875rem; color: var(--neutral-600); }
+.fc-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, #E8F5EE, #D1FADF);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary-green); font-size: 1.1rem; margin: 0 auto;
+}
+
+/* ── TOC cards ────────────────────────────────────────────────────────────── */
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+.toc-card {
+    background: white; border: 1px solid var(--neutral-200); border-radius: 12px;
+    padding: 1.25rem; text-decoration: none; color: inherit; transition: all .2s; display: block;
+}
+.toc-card:hover { border-color: var(--primary-green); box-shadow: 0 8px 24px rgba(0,0,0,.08); transform: translateY(-2px); color: inherit; }
+.toc-card strong { display: block; margin: .75rem 0 .35rem; color: var(--dark-green); font-size: 1rem; }
+.toc-card p { margin: 0 0 .75rem; font-size: .875rem; color: var(--neutral-600); }
+.toc-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.toc-icon-green { background: #E8F5EE; color: var(--primary-green); }
+.toc-icon-blue  { background: #EFF6FF; color: #3B82F6; }
+.toc-icon-gold  { background: #FFFBEB; color: #D97706; }
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.help-hero {
+    background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 60%, var(--light-green) 100%);
+    border-radius: 16px; padding: 2.5rem; color: white; margin-bottom: 2rem;
+}
+.help-hero h1 { color: white; font-size: 1.9rem; margin: 0; }
+.help-hero p  { color: rgba(255,255,255,.85); margin: .5rem 0 0; }
+.help-hero-meta { font-size: .8rem; color: rgba(255,255,255,.5); margin-top: 1rem; }
+
+/* ── Tables ───────────────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; margin: 1.25rem 0; }
+.table-wrap table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.table-wrap th {
+    background: var(--dark-green); color: white; text-align: left;
+    padding: .75rem 1rem; font-weight: 600; font-size: .8rem;
+    text-transform: uppercase; letter-spacing: .5px;
+}
+.table-wrap td { padding: .75rem 1rem; border-bottom: 1px solid var(--neutral-200); vertical-align: top; }
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap tr:hover td { background: #fafcfc; }
+.perm-yes  { color: var(--primary-green); font-weight: 700; }
+.perm-no   { color: #EF4444; font-weight: 700; }
+.perm-cond { color: #D97706; font-weight: 600; }
+
+/* ── Badges ───────────────────────────────────────────────────────────────── */
+.badge-hq   { background: #EFF6FF; color: #1D4ED8; padding: .2rem .55rem; border-radius: 4px; font-size: .75rem; font-weight: 700; }
+.badge-ipa  { background: #ECFDF5; color: #065F46; padding: .2rem .55rem; border-radius: 4px; font-size: .75rem; font-weight: 700; }
+.badge-both { background: #F5F3FF; color: #5B21B6; padding: .2rem .55rem; border-radius: 4px; font-size: .75rem; font-weight: 700; }
+
+/* ── Code ─────────────────────────────────────────────────────────────────── */
+code {
+    background: var(--neutral-100); color: var(--primary-green);
+    padding: .1rem .4rem; border-radius: 4px; font-size: .875em; border: 1px solid var(--neutral-200);
+}
+
+/* ── Divider ──────────────────────────────────────────────────────────────── */
+.section-divider { border: none; border-top: 1px solid var(--neutral-200); margin: 2rem 0; }
+
+/* ── Prev/Next ────────────────────────────────────────────────────────────── */
+.help-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 2.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--neutral-200); flex-wrap: wrap; gap: .75rem;
+}
+.help-nav a {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: white; border: 1px solid var(--neutral-200);
+    color: var(--primary-green); text-decoration: none;
+    padding: .625rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: .9rem; transition: all .2s;
+}
+.help-nav a:hover { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+/* ── Sidebar on-page TOC links ─────────────────────────────────────────────
+   The sidebar background is dark green, so these links must be light.         */
+.help-toc-item {
+    display: block; padding: .3rem .75rem .3rem 1rem;
+    font-size: .8rem; color: rgba(255,255,255,.6); text-decoration: none;
+    border-left: 2px solid transparent; margin: .1rem 0;
+    border-radius: 0 4px 4px 0; transition: all .15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.5;
+}
+.help-toc-item:hover {
+    color: rgba(255,255,255,.92); border-left-color: rgba(255,255,255,.45);
+    background: rgba(255,255,255,.08);
+}
+.help-toc-item.toc-active {
+    color: #fff; font-weight: 600;
+    border-left-color: rgba(255,255,255,.8); background: rgba(255,255,255,.13);
+}
+
+/* ── Scroll-reveal animation ──────────────────────────────────────────────── */
+.sr-wait {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+}
+.sr-done {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Action card (quick tips) ─────────────────────────────────────────────── */
+.action-card { background: white; border: 1px solid var(--neutral-200); border-radius: 12px; padding: 1.5rem; }
+.action-card h3 { font-size: 1rem; color: var(--dark-green); margin: 0 0 1rem; }
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .toc-grid, .feature-grid { grid-template-columns: 1fr 1fr; }
+    .help-nav { flex-direction: column; align-items: stretch; }
+    .help-nav a { justify-content: center; }
+    .step { padding: .875rem 1rem; }
+    #help-back-top { bottom: 1.25rem; right: 1.25rem; }
+}
+@media (max-width: 480px) {
+    .toc-grid, .feature-grid { grid-template-columns: 1fr; }
+}
+
+</style>
+{% endblock %}
+
+{# ── Interactive JS features (all injected dynamically) ─────────────────── #}
+{% block extra_js %}
+<script>
+(function () {
+    'use strict';
+
+    /* ── Inject reading progress bar ─────────────────────────────── */
+    var bar = document.createElement('div');
+    bar.id = 'help-progress-bar';
+    document.body.appendChild(bar);
+
+    /* ── Inject back-to-top button ───────────────────────────────── */
+    var btn = document.createElement('button');
+    btn.id = 'help-back-top';
+    btn.title = '{% translate "Back to top" %}';
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    document.body.appendChild(btn);
+
+    btn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /* ── Scroll: progress bar + back-to-top visibility ───────────── */
+    window.addEventListener('scroll', function () {
+        var doc = document.documentElement;
+        var scrollTop = doc.scrollTop || document.body.scrollTop;
+        var scrollH = doc.scrollHeight - doc.clientHeight;
+        bar.style.width = (scrollH > 0 ? (scrollTop / scrollH) * 100 : 0) + '%';
+        btn.classList.toggle('visible', scrollTop > 350);
+    }, { passive: true });
+
+    /* ── Smooth scroll all anchor links ──────────────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                history.replaceState(null, '', this.getAttribute('href'));
+            }
+        });
+    });
+
+    /* ── Auto-generate IDs and anchor icons on all H2s ───────────── */
+    var content = document.querySelector('.dashboard-content');
+    if (!content) return;
+
+    content.querySelectorAll('h2').forEach(function (h) {
+        /* auto ID if missing */
+        if (!h.id) {
+            var raw = h.textContent.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-').toLowerCase();
+            h.id = raw.substring(0, 60) || 'section';
+        }
+        /* anchor icon */
+        var a = document.createElement('a');
+        a.className = 'help-anchor';
+        a.href = '#' + h.id;
+        a.innerHTML = '<i class="fas fa-link"></i>';
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(location.origin + location.pathname + '#' + h.id);
+            }
+            history.replaceState(null, '', '#' + h.id);
+            h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        h.appendChild(a);
+    });
+
+    /* ── Build sidebar "On This Page" TOC ────────────────────────── */
+    var tocSection = document.getElementById('help-on-page-toc');
+    var tocLinks   = document.getElementById('help-toc-links');
+    var headings   = Array.from(content.querySelectorAll('h2[id]'));
+
+    if (headings.length >= 2 && tocSection && tocLinks) {
+        headings.forEach(function (h) {
+            var clone = h.cloneNode(true);
+            /* remove injected icon/anchor elements */
+            clone.querySelectorAll('i, a.help-anchor').forEach(function (el) { el.remove(); });
+            var text = clone.textContent.replace(/\s+/g, ' ').trim();
+            if (!text) return;
+
+            var link = document.createElement('a');
+            link.className = 'help-toc-item nav-link';
+            link.href = '#' + h.id;
+            link.textContent = text;
+            link.title = text;
+            tocLinks.appendChild(link);
+        });
+        tocSection.style.display = '';
+    }
+
+    /* ── Highlight active TOC item on scroll ─────────────────────── */
+    if (headings.length >= 2 && tocLinks) {
+        var allLinks = tocLinks.querySelectorAll('.help-toc-item');
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    allLinks.forEach(function (l) { l.classList.remove('toc-active'); });
+                    var active = tocLinks.querySelector('[href="#' + entry.target.id + '"]');
+                    if (active) active.classList.add('toc-active');
+                }
+            });
+        }, { rootMargin: '-15% 0px -70% 0px' });
+        headings.forEach(function (h) { observer.observe(h); });
+    }
+
+    /* ── Keyboard shortcut: ? → quick reference ──────────────────── */
+    document.addEventListener('keydown', function (e) {
+        if (e.key === '?' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+            var qr = document.querySelector('a[href*="quick-reference"]');
+            if (qr) qr.click();
+        }
+    });
+
+    /* ── Scroll-reveal: fade up as elements enter the viewport ───── */
+    if ('IntersectionObserver' in window && content) {
+        var srTargets = Array.from(content.querySelectorAll(
+            '.feature-card, .toc-card, .step, .callout, .table-wrap, .action-card'
+        ));
+        var srObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var el = entry.target;
+                    var delay = Number(el.getAttribute('data-sr-delay') || 0);
+                    setTimeout(function () {
+                        el.classList.remove('sr-wait');
+                        el.classList.add('sr-done');
+                    }, delay);
+                    srObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+
+        srTargets.forEach(function (el, i) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top > window.innerHeight * 0.9) {
+                el.setAttribute('data-sr-delay', (i % 4) * 65);
+                el.classList.add('sr-wait');
+                srObserver.observe(el);
+            }
+        });
+    }
+
+})();
+</script>
+{% endblock %}

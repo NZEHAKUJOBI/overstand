@@ -1,0 +1,170 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ session.title }} — Training — IPAWAS{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:24px;">
+  <div>
+    <a href="{% url 'dashboard:hq:training:index' %}" style="font-size:0.875rem;color:#6b7280;text-decoration:none;">
+      <i class="fas fa-arrow-left me-1"></i>{% translate "All Sessions" %}
+    </a>
+    <h1 class="page-title mt-1">{{ session.title }}</h1>
+    <p class="text-muted">{{ session.training_date }}{% if session.location %} · {{ session.location }}{% endif %}</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+    <!-- Phase toggle (Decision 3) -->
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="hidden" name="toggle_phase" value="1">
+      <button type="submit" class="btn {% if session.phase == 'pre' %}btn-outline-primary{% else %}btn-outline-success{% endif %}"
+              onclick="return confirm('Switch phase to {{ session.get_phase_display|default:"opposite" }}?')">
+        <i class="fas fa-toggle-on me-2"></i>
+        {% if session.phase == 'pre' %}
+          {% translate "Switch to Post-Training" %}
+        {% else %}
+          {% translate "Switch to Pre-Training" %}
+        {% endif %}
+      </button>
+    </form>
+    <a href="{% url 'dashboard:hq:training:responses' session.pk %}" class="btn btn-outline-secondary">
+      <i class="fas fa-chart-bar me-2"></i>{% translate "View Responses" %}
+    </a>
+  </div>
+</div>
+
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-{{ msg.tags }} mb-3" style="border-radius:10px;padding:12px 16px;">
+  {{ msg }}
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- ── Summary stats ─────────────────────────────────────────────── -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:28px;">
+  {% for label, value, color in stats_cards %}
+  <div style="background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:2rem;font-weight:800;color:{{ color }};">{{ value }}</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{{ label }}</div>
+  </div>
+  {% endfor %}
+  <div style="background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:2rem;font-weight:800;color:#1b7a4c;">{{ session.total_invited }}</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{% translate "Invited" %}</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:2rem;font-weight:800;color:#1e40af;">{{ session.total_registered }}</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{% translate "Registered" %}</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:2rem;font-weight:800;color:#7c3aed;">{{ pre_count }}</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{% translate "Pre Responses" %}</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:2rem;font-weight:800;color:#d97706;">{{ post_count }}</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{% translate "Post Responses" %}</div>
+  </div>
+  <div style="background:{% if session.phase == 'pre' %}#dbeafe{% else %}#d1fae5{% endif %};border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div style="font-size:0.9rem;font-weight:800;color:{% if session.phase == 'pre' %}#1e40af{% else %}#065f46{% endif %};">
+      {{ session.get_phase_display }}
+    </div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">{% translate "Current Phase" %}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+
+  <!-- ── Invitees list ─────────────────────────────────────────── -->
+  <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;">
+    <div style="padding:20px 24px;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="margin:0;font-size:1rem;font-weight:700;">
+        {% translate "Invitees" %} <span style="color:#6b7280;font-weight:400;">({{ invitations.count }})</span>
+      </h3>
+    </div>
+    {% if invitations %}
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f9fafb;font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">
+          <th style="padding:12px 16px;text-align:left;font-weight:600;">{% translate "Name" %}</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;">{% translate "Country" %}</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;">{% translate "Status" %}</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;">{% translate "Pre" %}</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;">{% translate "Post" %}</th>
+          <th style="padding:12px 16px;text-align:right;font-weight:600;">{% translate "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inv in invitations %}
+        <tr style="border-top:1px solid #f3f4f6;">
+          <td style="padding:14px 16px;">
+            <div style="font-weight:600;font-size:0.9rem;">{{ inv.name }}</div>
+            <div style="font-size:0.8rem;color:#6b7280;">{{ inv.email }}</div>
+          </td>
+          <td style="padding:14px 16px;font-size:0.875rem;color:#374151;">{{ inv.country }}</td>
+          <td style="padding:14px 16px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;
+              {% if inv.status == 'completed' %}background:#d1fae5;color:#065f46;
+              {% elif inv.status == 'registered' %}background:#dbeafe;color:#1e40af;
+              {% elif inv.status == 'sent' %}background:#fef3c7;color:#92400e;
+              {% else %}background:#f3f4f6;color:#6b7280;{% endif %}">
+              {{ inv.get_status_display }}
+            </span>
+          </td>
+          <td style="padding:14px 16px;text-align:center;">
+            {% if inv.has_pre_assessment %}<i class="fas fa-check-circle" style="color:#1b7a4c;"></i>{% else %}<i class="fas fa-minus" style="color:#d1d5db;"></i>{% endif %}
+          </td>
+          <td style="padding:14px 16px;text-align:center;">
+            {% if inv.has_post_feedback %}<i class="fas fa-check-circle" style="color:#1b7a4c;"></i>{% else %}<i class="fas fa-minus" style="color:#d1d5db;"></i>{% endif %}
+          </td>
+          <td style="padding:14px 16px;text-align:right;">
+            <form method="post" action="" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="resend_invite" value="1">
+              <input type="hidden" name="invitation_id" value="{{ inv.pk }}">
+              <button type="submit" class="btn btn-sm btn-outline-primary" title="Resend invitation email">
+                <i class="fas fa-envelope"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center;padding:48px;color:#6b7280;">
+      <i class="fas fa-users" style="font-size:2rem;margin-bottom:12px;display:block;color:#d1d5db;"></i>
+      {% translate "No invitees yet. Add them using the form." %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── Add invitee form ──────────────────────────────────────── -->
+  <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;position:sticky;top:16px;">
+    <div style="padding:20px 24px;border-bottom:1px solid #f3f4f6;background:linear-gradient(135deg,#1b7a4c,#0f6b3f);color:white;">
+      <h3 style="margin:0;font-size:1rem;font-weight:700;">
+        <i class="fas fa-user-plus me-2"></i>{% translate "Add Invitee" %}
+      </h3>
+      <p style="margin:6px 0 0;font-size:0.8rem;opacity:0.85;">{% translate "Email will be sent automatically" %}</p>
+    </div>
+    <div style="padding:24px;">
+      <form method="post" action="">
+        {% csrf_token %}
+        {% for field in invite_form %}
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.8rem;font-weight:600;color:#374151;margin-bottom:5px;">
+            {{ field.label }}{% if field.field.required %} <span style="color:#dc2626">*</span>{% endif %}
+          </label>
+          {{ field }}
+          {% if field.errors %}<div style="color:#dc2626;font-size:0.75rem;margin-top:3px;">{{ field.errors.0 }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary w-100" style="margin-top:8px;">
+          <i class="fas fa-paper-plane me-2"></i>{% translate "Add & Send Email" %}
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

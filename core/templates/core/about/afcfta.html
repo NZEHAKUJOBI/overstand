@@ -1,0 +1,1490 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}AfCFTA & IPAWAS - Africa Continental Free Trade Area{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes countUp {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-on-scroll {
+        opacity: 0;
+        transition: all 0.6s ease;
+    }
+
+    .animate-on-scroll.animated {
+        opacity: 1;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 600px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.5), rgba(15, 107, 63, 0.4)),
+                    url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664298/afcfta_qpjkcw.png') center/cover;
+        color: white;
+        margin-top: 76px;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 1s ease;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        line-height: 1.7;
+        animation: fadeInUp 1.4s ease;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        animation: fadeInUp 1.6s ease;
+    }
+
+    .hero-stat-item {
+        text-align: center;
+    }
+
+    .hero-stat-item .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        display: block;
+        color: var(--accent-gold);
+    }
+
+    .hero-stat-item .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Executive Summary Section */
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+    .btn-cus {
+        background: #EAE531;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: stretch;
+    }
+
+    .summary-image {
+        flex: 0 0 45%;
+        background: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664286/afcfta__ywusew.png') center/cover;
+        min-height: 400px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.2), rgba(15, 107, 63, 0.3));
+    }
+
+    .summary-content {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .summary-content h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-content p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .summary-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 992px) {
+        .summary-card {
+            flex-direction: column;
+        }
+
+        .summary-image {
+            flex: none;
+            min-height: 300px;
+        }
+
+        .executive-summary-section {
+            margin-top: -40px;
+        }
+    }
+
+    .case-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.08);
+        border-left: 5px solid var(--primary-green);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .case-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(27, 122, 76, 0.15);
+        border-left-color: var(--accent-gold);
+    }
+
+    .metric-box {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(45, 144, 97, 0.05));
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        border: 2px solid rgba(27, 122, 76, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .metric-box:hover {
+        transform: scale(1.05);
+        border-color: var(--accent-gold);
+    }
+
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-green);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-box {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(27, 122, 76, 0.06);
+        border: 1px solid rgba(27, 122, 76, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .feature-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(27, 122, 76, 0.12);
+        border-color: var(--accent-gold);
+    }
+
+    .feature-box .icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        color: white;
+        font-size: 1.8rem;
+    }
+
+    .feature-box h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .feature-box p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .content-section {
+        padding: 5rem 0;
+    }
+
+    .section-title {
+        color: var(--primary-green);
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .highlight-box {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(45, 144, 97, 0.05));
+        border-left: 5px solid var(--primary-green);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 3rem;
+    }
+
+    .highlight-box p {
+        color: var(--neutral-700);
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .highlight-box p:last-child {
+        margin-bottom: 0;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        padding: 5rem 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .btn-cta {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        background: var(--accent-gold);
+        color: var(--neutral-900);
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        color: var(--neutral-900);
+    }
+
+    .stat-highlight {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(27, 122, 76, 0.08);
+    }
+
+    .stat-highlight .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary-green);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-highlight .stat-label {
+        color: var(--neutral-600);
+        font-size: 0.95rem;
+    }
+
+    /* Interactive Tabs */
+    .content-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        padding: 1rem 2rem;
+        border: 2px solid rgba(27, 122, 76, 0.3);
+        background: white;
+        color: var(--primary-green);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .tab-btn:hover {
+        border-color: var(--primary-green);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(27, 122, 76, 0.2);
+    }
+
+    .tab-btn.active {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Progress Circle */
+    .progress-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: conic-gradient(var(--primary-green) 0deg, var(--primary-green) 270deg, rgba(27, 122, 76, 0.1) 270deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: 0 auto 1rem;
+    }
+
+    .progress-circle::before {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .progress-circle-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    /* Image Grid */
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+
+    .image-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        height: 300px;
+        transition: all 0.3s ease;
+    }
+
+    .image-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .image-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        padding: 2rem 1.5rem 1.5rem;
+        color: white;
+    }
+
+    /* Interactive Icon Box */
+    .interactive-icon-box {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .interactive-icon-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(27, 122, 76, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .interactive-icon-box:hover::before {
+        left: 100%;
+    }
+
+    .interactive-icon-box:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(27, 122, 76, 0.2);
+    }
+
+    .interactive-icon-box .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .interactive-icon-box:hover .icon-wrapper {
+        transform: rotate(360deg);
+        background: linear-gradient(135deg, var(--accent-gold), #f4d03f);
+    }
+
+    .interactive-icon-box .icon-wrapper i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    /* Timeline Enhancement */
+    .timeline-enhanced {
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .timeline-enhanced::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--primary-green), var(--accent-gold));
+        transform: translateX(-50%);
+    }
+
+    .timeline-item-enhanced {
+        display: flex;
+        align-items: center;
+        margin-bottom: 3rem;
+        position: relative;
+        animation: slideInLeft 0.6s ease;
+    }
+
+    .timeline-item-enhanced:nth-child(even) {
+        flex-direction: row-reverse;
+        animation: slideInRight 0.6s ease;
+    }
+
+    .timeline-content {
+        flex: 0 0 45%;
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(27, 122, 76, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-content:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(27, 122, 76, 0.2);
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 30px;
+        background: var(--accent-gold);
+        border: 5px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px var(--primary-green);
+        z-index: 2;
+    }
+
+    /* Video Container */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        margin: 3rem 0;
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Counter Animation */
+    .counter {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-green);
+    }
+
+    /* Accordion */
+    .accordion-item {
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), transparent);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .accordion-header:hover {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), transparent);
+    }
+
+    .accordion-header h4 {
+        margin: 0;
+        color: var(--primary-green);
+        font-weight: 700;
+    }
+
+    .accordion-icon {
+        transition: transform 0.3s ease;
+        font-size: 1.5rem;
+        color: var(--primary-green);
+    }
+
+    .accordion-item.active .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    .accordion-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .accordion-item.active .accordion-body {
+        max-height: 500px;
+    }
+
+    .accordion-content {
+        padding: 1.5rem;
+        color: var(--neutral-600);
+        line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+        .timeline-enhanced::before {
+            left: 30px;
+        }
+
+        .timeline-item-enhanced,
+        .timeline-item-enhanced:nth-child(even) {
+            flex-direction: column;
+            padding-left: 60px;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-marker {
+            left: 30px;
+        }
+
+        .hero-stats {
+            gap: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "Africa Continental Free Trade Area" %}</h1>
+            <p class="hero-subtitle">
+                Building the world's largest free trade area by connecting 1.3 billion people across 55 African nations
+                with a combined GDP of $3.4 trillion through seamless trade and investment flows.
+            </p>
+<!--            <div class="hero-stats">-->
+<!--                <div class="hero-stat-item">-->
+<!--                    <span class="stat-number counter" data-target="55">0</span>-->
+<!--                    <span class="stat-label">{% translate "Countries" %}</span>-->
+<!--                </div>-->
+<!--                <div class="hero-stat-item">-->
+<!--                    <span class="stat-number counter" data-target="1.3">0</span>-->
+<!--                    <span class="stat-label">{% translate "Billion People" %}</span>-->
+<!--                </div>-->
+<!--                <div class="hero-stat-item">-->
+<!--                    <span class="stat-number">$<span class="counter" data-target="3.4">0</span>T</span>-->
+<!--                    <span class="stat-label">{% translate "Combined GDP" %}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+    </div>
+</section>
+
+<!-- Executive Summary -->
+<section class="executive-summary-section">
+    <div class="container">
+        <div class="summary-card">
+            <div class="summary-image"></div>
+            <div class="summary-content">
+                <h2>{% translate "What is AfCFTA?" %}</h2>
+                <p>
+                    The African Continental Free Trade Area (AfCFTA) is a landmark trade agreement that came into
+                    effect on January 1, 2021, creating a single continental market for goods and services with free
+                    movement of business persons and investments.
+                </p>
+                <p>
+                    AfCFTA aims to progressively eliminate tariffs and non-tariff barriers to trade, liberalize trade
+                    in services, and establish mechanisms for the settlement of disputes. It represents Africa's
+                    collective ambition to deepen regional integration, boost intra-African trade, and position the
+                    continent as a major player in the global economy.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Statistics -->
+<section class="content-section" style="background: var(--neutral-100);">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "AfCFTA at a Glance" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 700px; margin-left: auto; margin-right: auto;">
+            The largest free trade area in the world by number of participating countries
+        </p>
+
+
+
+
+<!--        <div class="row g-4 mb-5">-->
+<!--            <div class="col-md-3 col-sm-6 animate-on-scroll">-->
+<!--                <div class="stat-highlight">-->
+<!--                    <span class="stat-value counter" data-target="55">0</span>-->
+<!--                    <span class="stat-label">{% translate "Member Countries" %}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-6 animate-on-scroll">-->
+<!--                <div class="stat-highlight">-->
+<!--                    <span class="stat-value"><span class="counter" data-target="1.3">0</span>B</span>-->
+<!--                    <span class="stat-label">{% translate "People Connected" %}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-6 animate-on-scroll">-->
+<!--                <div class="stat-highlight">-->
+<!--                    <span class="stat-value">$<span class="counter" data-target="3.4">0</span>T</span>-->
+<!--                    <span class="stat-label">{% translate "Combined GDP" %}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-6 animate-on-scroll">-->
+<!--                <div class="stat-highlight">-->
+<!--                    <span class="stat-value"><span class="counter" data-target="30">0</span>{% translate "M km²" %}</span>-->
+<!--                    <span class="stat-label">{% translate "Market Area" %}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <!-- Visual Showcase -->
+        <div class="image-grid">
+            <div class="image-card animate-on-scroll">
+                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664300/afcfta_2_sg22f2.png" alt="{% translate 'African Trade' %}">
+                <div class="image-card-overlay">
+                    <h5 style="margin: 0; font-weight: 700;">{% translate "Cross-Border Trade" %}</h5>
+                </div>
+            </div>
+            <div class="image-card animate-on-scroll">
+                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664285/afcfta_3_wmqsee.png" alt="{% translate 'Manufacturing' %}">
+                <div class="image-card-overlay">
+                    <h5 style="margin: 0; font-weight: 700;">{% translate "Manufacturing Hub" %}</h5>
+                </div>
+            </div>
+            <div class="image-card animate-on-scroll">
+                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664286/afcfta_4_w8jxq4.png" alt="{% translate 'Agriculture' %}">
+                <div class="image-card-overlay">
+                    <h5 style="margin: 0; font-weight: 700;">{% translate "Agro-processing" %}</h5>
+                </div>
+            </div>
+            <div class="image-card animate-on-scroll">
+                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664279/afcfta_5_ebcmvy.png" alt="{% translate 'Technology' %}">
+                <div class="image-card-overlay">
+                    <h5 style="margin: 0; font-weight: 700;">{% translate "Digital Innovation" %}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Objectives Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "AfCFTA Objectives" %}</h2>
+
+        <div class="highlight-box animate-on-scroll">
+            <p>
+                The African Continental Free Trade Area is guided by strategic objectives that drive Africa's
+                economic transformation and integration agenda. These objectives provide the framework for
+                creating a unified economic space that benefits all African nations and their citizens.
+            </p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="content-tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'market')">
+                <i class="fas fa-exchange-alt me-2"></i>Single Market
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'trade')">
+                <i class="fas fa-chart-line me-2"></i>Boost Trade
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'competitive')">
+                <i class="fas fa-trophy me-2"></i>Competitiveness
+            </button>
+        </div>
+
+        <!-- Tab Content: Market -->
+        <div id="market" class="tab-content active">
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-exchange-alt me-2"></i>Create a Single Continental Market
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Establish a unified market for goods, services, and free movement of business persons
+                            and investments across Africa, facilitating deeper economic integration and accelerating
+                            the establishment of the Continental Customs Union.
+                        </p>
+                        <div class="progress-circle mt-4">
+                            <div class="progress-circle-content">
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--primary-green);">75%</div>
+                                <div style="font-size: 0.85rem; color: var(--neutral-600);">{% translate "Progress" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-balance-scale me-2"></i>Resolve Inconsistencies
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Address the challenges of multiple and overlapping memberships in Regional Economic
+                            Communities (RECs), harmonize trade regimes, and create coherent policies that facilitate
+                            seamless cross-border economic activities.
+                        </p>
+                        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664287/afcfta_7_weukzf.png"
+                             alt="{% translate 'Policy harmonization' %}" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Trade -->
+        <div id="trade" class="tab-content">
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-chart-line me-2"></i>Boost Intra-African Trade
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Expand trade among African countries by progressively eliminating tariffs and non-tariff
+                            barriers, with the goal of increasing intra-African trade from the current 15-18% to over
+                            50% of Africa's total trade volume.
+                        </p>
+                        <div style="margin-top: 2rem;">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span style="font-weight: 600; color: var(--neutral-700);">{% translate "Current Intra-African Trade" %}</span>
+                                <span style="font-weight: 700; color: var(--primary-green);">18%</span>
+                            </div>
+                            <div style="background: rgba(27, 122, 76, 0.1); height: 10px; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 18%; height: 100%; background: linear-gradient(90deg, var(--primary-green), var(--emerald));"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 mt-3">
+                                <span style="font-weight: 600; color: var(--neutral-700);">{% translate "Target by 2035" %}</span>
+                                <span style="font-weight: 700; color: var(--accent-gold);">50%</span>
+                            </div>
+                            <div style="background: rgba(234, 229, 49, 0.2); height: 10px; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 50%; height: 100%; background: linear-gradient(90deg, var(--accent-gold), #f4d03f);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-handshake me-2"></i>Promote Investment
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Enhance the continental market's attractiveness to both domestic and foreign investors
+                            by providing predictable regulatory frameworks, improved market access, and opportunities
+                            for productive integration across borders.
+                        </p>
+                        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768565878/8_s02j8c.jpg"
+                             alt="{% translate 'Investment growth' %}" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Competitive -->
+        <div id="competitive" class="tab-content">
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-industry me-2"></i>Enhance Competitiveness
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Improve the competitiveness of African enterprises, particularly micro, small, and
+                            medium-sized enterprises, by exploiting opportunities for economies of scale through
+                            continental market access and value chain integration.
+                        </p>
+                        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768711491/afcfta_biz_mwko4a.jpg"
+                             alt="{% translate 'Business growth' %}" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="case-card animate-on-scroll">
+                        <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">
+                            <i class="fas fa-cogs me-2"></i>Support Industrialization
+                        </h4>
+                        <p style="color: var(--neutral-600); line-height: 1.8;">
+                            Promote industrial development, value addition, and economic diversification by enabling
+                            African countries to participate in regional and global value chains, fostering technology
+                            transfer and skills development.
+                        </p>
+                        <div class="mt-3">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(45, 144, 97, 0.05)); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: 800; color: var(--primary-green);">+40%</div>
+                                        <div style="font-size: 0.85rem; color: var(--neutral-600);">{% translate "Manufacturing Growth" %}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="background: linear-gradient(135deg, rgba(234, 229, 49, 0.1), rgba(244, 208, 63, 0.05)); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: 800; color: var(--accent-gold);">+25%</div>
+                                        <div style="font-size: 0.85rem; color: var(--neutral-600);">{% translate "Export Value" %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="content-section" style="background: var(--neutral-100);">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "Benefits of AfCFTA to Africa" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 800px; margin-left: auto; margin-right: auto;">
+            Transforming Africa's economic landscape through integration, opportunity, and sustainable growth
+        </p>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Economic Growth" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        AfCFTA is projected to boost Africa's income by <strong>{% translate "$450 billion by 2035" %}</strong>, increasing regional
+                        GDP and creating significant opportunities for economic expansion across all member states.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Job Creation" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        The expanded market is expected to create <strong>{% translate "millions of jobs" %}</strong>, particularly for youth and
+                        women, through new business opportunities, industrial development, and value chain participation.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Poverty Reduction" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        By 2035, AfCFTA could lift <strong>{% translate "30 million people out of extreme poverty" %}</strong> and 68 million from
+                        moderate poverty through increased economic opportunities and inclusive growth.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Foreign Investment" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        A unified continental market makes Africa more attractive to foreign investors, providing
+                        access to 1.3 billion consumers and creating predictable regulatory environments.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Global Positioning" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        AfCFTA strengthens Africa's collective bargaining power in international trade negotiations
+                        and positions the continent as a significant player in global value chains.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Innovation & Technology" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        The larger market incentivizes innovation, technology adoption, and knowledge transfer,
+                        accelerating Africa's digital transformation and technological advancement.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Trade Facilitation" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        Reduced tariffs, simplified customs procedures, and harmonized standards lower the cost
+                        of doing business, making African products more competitive both regionally and globally.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "Sustainable Development" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        AfCFTA promotes inclusive and sustainable industrialization, supporting Africa's achievement
+                        of the UN Sustainable Development Goals and the African Union's Agenda 2063.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="interactive-icon-box animate-on-scroll">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1rem;">{% translate "SME Empowerment" %}</h4>
+                    <p style="color: var(--neutral-600); line-height: 1.7;">
+                        Small and medium enterprises gain access to larger markets, enabling them to scale operations,
+                        access financing, and participate in regional supply chains.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- IPAWAS Role Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "The Role of IPAWAS in AfCFTA Implementation" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 800px; margin-left: auto; margin-right: auto;">
+            As the Investment Promotion Agencies Association of West Africa, IPAWAS plays a crucial strategic role
+            in facilitating investment flows and economic integration under the AfCFTA framework.
+        </p>
+
+        <div class="highlight-box animate-on-scroll">
+            <p>
+                IPAWAS serves as a vital bridge between the aspirations of AfCFTA and the practical implementation
+                of investment promotion strategies across West Africa. Through coordinated action and strategic
+                partnerships, we ensure that the free trade area translates into tangible investment opportunities
+                and sustainable economic development for our member states.
+            </p>
+        </div>
+
+        <!-- Accordion -->
+        <div class="mt-5">
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-map-marked-alt me-2"></i>{% translate "Regional Investment Facilitation" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-lg-7">
+                                <p>
+                                    IPAWAS coordinates investment promotion activities across West African IPAs, facilitating
+                                    cross-border investments and helping investors navigate the opportunities created by AfCFTA.
+                                    We provide comprehensive information on investment climates, regulatory frameworks, and
+                                    sectoral opportunities across the sub-region.
+                                </p>
+                                <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+                                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-check-circle me-2" style="color: var(--primary-green);"></i>{% translate "One-stop investment information portal" %}</li>
+                                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-check-circle me-2" style="color: var(--primary-green);"></i>{% translate "Cross-border investment matchmaking" %}</li>
+                                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-check-circle me-2" style="color: var(--primary-green);"></i>{% translate "Regulatory navigation support" %}</li>
+                                    <li><i class="fas fa-check-circle me-2" style="color: var(--primary-green);"></i>{% translate "Market intelligence and opportunity mapping" %}</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-5">
+                                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768664288/afcfta_8_h1zdrc.png"
+                                     alt="{% translate 'Investment facilitation' %}" style="width: 100%; border-radius: 12px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-link me-2"></i>{% translate "Value Chain Integration Support" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-lg-5">
+                                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768712577/fethi-benattallah-K2YghSroNsY-unsplash_1_sjatju.jpg"
+                                     alt="{% translate 'Value chains' %}" style="width: 100%; border-radius: 12px;">
+                            </div>
+                            <div class="col-lg-7">
+                                <p>
+                                    We identify and promote regional value chain opportunities that leverage AfCFTA provisions,
+                                    connecting businesses across borders and facilitating the development of integrated production
+                                    networks. This includes supporting clusters in key sectors like agriculture, manufacturing,
+                                    and renewable energy.
+                                </p>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-6">
+                                        <div style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), transparent); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary-green);">
+                                            <h5 style="color: var(--primary-green); margin-bottom: 0.5rem;">12+</h5>
+                                            <p style="margin: 0; font-size: 0.9rem; color: var(--neutral-600);">{% translate "Active Value Chains" %}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="background: linear-gradient(135deg, rgba(234, 229, 49, 0.1), transparent); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-gold);">
+                                            <h5 style="color: var(--accent-gold); margin-bottom: 0.5rem;">500+</h5>
+                                            <p style="margin: 0; font-size: 0.9rem; color: var(--neutral-600);">{% translate "Connected Businesses" %}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-chalkboard-teacher me-2"></i>{% translate "Capacity Building Programs" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <p>
+                            IPAWAS implements targeted capacity building initiatives for member IPAs, ensuring they have
+                            the knowledge and tools to effectively leverage AfCFTA opportunities. We organize workshops,
+                            training sessions, and knowledge-sharing platforms focused on AfCFTA implementation strategies
+                            and best practices.
+                        </p>
+                        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768566202/12_wksdow.jpg"
+                             alt="{% translate 'Capacity building' %}" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-file-contract me-2"></i>{% translate "Policy Advocacy & Harmonization" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <p>
+                            We advocate for investment-friendly policies and regulatory harmonization that align with
+                            AfCFTA objectives, working closely with ECOWAS institutions and member governments to
+                            streamline investment procedures, reduce barriers, and create conducive business environments
+                            across West Africa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-database me-2"></i>{% translate "Investment Intelligence & Analytics" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <p>
+                            Through the West Africa Investment Intelligence System (WAIIS), IPAWAS provides comprehensive
+                            data and analytics on AfCFTA-related investment opportunities, trends, and cross-border
+                            investment flows. This intelligence helps investors make informed decisions and enables
+                            member IPAs to develop targeted promotion strategies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-globe-africa me-2"></i>{% translate "Continental & Global Marketing" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-lg-7">
+                                <p>
+                                    IPAWAS promotes West Africa as a unified investment destination within the larger AfCFTA
+                                    market, organizing joint investment missions, trade fairs, and investor forums that showcase
+                                    the sub-region's collective value proposition to continental and international investors.
+                                </p>
+                            </div>
+                            <div class="col-lg-5">
+                                <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768566203/13_hhusns.jpg"
+                                     alt="{% translate 'Global marketing' %}" style="width: 100%; border-radius: 12px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-people-arrows me-2"></i>{% translate "Public-Private Partnerships" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <p>
+                            We facilitate partnerships between public institutions and private sector actors to develop
+                            infrastructure, special economic zones, and industrial parks that support AfCFTA implementation.
+                            These partnerships help mobilize resources and expertise for transformative regional projects.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h4><i class="fas fa-hands-helping me-2"></i>{% translate "Aftercare & Expansion Support" %}</h4>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-content">
+                        <p>
+                            IPAWAS supports existing investors looking to expand their operations across West African
+                            borders under AfCFTA, providing aftercare services, facilitating market access, and helping
+                            businesses navigate regulatory requirements in multiple jurisdictions simultaneously.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Focus -->
+        <div class="mt-5">
+            <div class="case-card animate-on-scroll" style="border-left-color: var(--accent-gold); background: linear-gradient(135deg, rgba(234, 229, 49, 0.05), white);">
+                <h4 style="color: var(--primary-green); font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                    <i class="fas fa-bullseye me-2"></i>Strategic Focus Areas
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-seedling" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Agriculture & Agro-processing" %}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-industry" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Manufacturing" %}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-bolt" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Renewable Energy" %}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-laptop-code" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Digital Economy" %}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-plane" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Tourism & Hospitality" %}</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <i class="fas fa-road" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 0.5rem;"></i>
+                            <h6 style="margin: 0; color: var(--neutral-700);">{% translate "Infrastructure Development" %}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>{% translate "Explore AfCFTA Investment Opportunities" %}</h2>
+        <p>{% translate "Partner with IPAWAS to access West Africa's AfCFTA-enabled investment ecosystem." %}</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'opportunities:listing' %}" class="btn-cta">{% translate "View Investment Opportunities" %}</a>
+            <a href="{% url 'about:contact' %}" class="btn-cta" style="background: white; color: var(--primary-green);">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Counter Animation
+function animateCounter(element) {
+    const target = parseFloat(element.getAttribute('data-target'));
+    const duration = 2000;
+    const increment = target / (duration / 16);
+    let current = 0;
+
+    const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+            element.textContent = target % 1 === 0 ? Math.floor(current) : current.toFixed(1);
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = target % 1 === 0 ? target : target.toFixed(1);
+        }
+    };
+
+    updateCounter();
+}
+
+// Tab Switching
+function switchTab(event, tabId) {
+    // Remove active class from all tabs and contents
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    // Add active class to clicked tab and corresponding content
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Accordion Toggle
+function toggleAccordion(header) {
+    const accordionItem = header.parentElement;
+    const isActive = accordionItem.classList.contains('active');
+
+    // Close all accordions
+    document.querySelectorAll('.accordion-item').forEach(item => {
+        item.classList.remove('active');
+        item.querySelector('.accordion-body').style.maxHeight = '0';
+    });
+
+    // Open clicked accordion if it wasn't active
+    if (!isActive) {
+        accordionItem.classList.add('active');
+        const body = accordionItem.querySelector('.accordion-body');
+        body.style.maxHeight = body.scrollHeight + 'px';
+    }
+}
+
+// Scroll Animation Observer
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+
+            // Trigger counter animation
+            if (entry.target.classList.contains('stat-highlight') || entry.target.classList.contains('hero-stats')) {
+                const counters = entry.target.querySelectorAll('.counter');
+                counters.forEach(counter => {
+                    if (!counter.classList.contains('counted')) {
+                        counter.classList.add('counted');
+                        animateCounter(counter);
+                    }
+                });
+            }
+        }
+    });
+}, observerOptions);
+
+// Observe all animated elements
+document.addEventListener('DOMContentLoaded', () => {
+    // Animate elements on scroll
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // Also observe stat highlights for counter animation
+    document.querySelectorAll('.stat-highlight').forEach(el => observer.observe(el));
+
+    // Trigger hero stats counter immediately
+    document.querySelectorAll('.hero-stats .counter').forEach(counter => {
+        animateCounter(counter);
+    });
+
+    // Open first accordion by default
+    const firstAccordion = document.querySelector('.accordion-item');
+    if (firstAccordion) {
+        firstAccordion.classList.add('active');
+        const body = firstAccordion.querySelector('.accordion-body');
+        body.style.maxHeight = body.scrollHeight + 'px';
+    }
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

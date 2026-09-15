@@ -1,0 +1,1180 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate "Member Directory - IPAWAS" %}</title>
+    <meta name="description"
+        content="Explore our comprehensive directory of Investment Promotion Agencies across 15 ECOWAS member countries, connecting you with the right investment partners.">
+
+    <!-- Stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+
+    <!-- Base Styles (inherited from template) -->
+    <style>
+        :root {
+            --primary-blue: #0F172A;
+            --secondary-gold: #F59E0B;
+            --accent-green: #10B981;
+            --light-blue: #3B82F6;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --orange: #F97316;
+            --neutral-100: #F8FAFC;
+            --neutral-200: #E2E8F0;
+            --neutral-600: #475569;
+            --neutral-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #F59E0B, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--secondary-gold) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--neutral-800) 100%);
+            color: white;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v40c11.046 0 20-8.954 20-20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 700px;
+        }
+
+        .breadcrumb-nav {
+            margin-top: 2rem;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--secondary-gold);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--secondary-gold);
+        }
+
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: var(--neutral-100);
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--neutral-200);
+        }
+
+        .search-filter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .search-input {
+            border: 2px solid var(--neutral-200);
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+        .filter-select {
+            border: 2px solid var(--neutral-200);
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+        /* Interactive Map */
+        .map-section {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .interactive-map {
+            background: linear-gradient(135deg, var(--light-blue), var(--purple));
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .map-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Member Cards */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--neutral-200);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border-color: var(--light-blue);
+        }
+
+        .member-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--neutral-800));
+            color: white;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .member-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='15' cy='15' r='1'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .member-flag {
+            width: 60px;
+            height: 40px;
+            background: var(--secondary-gold);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-country {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-agency {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-body {
+            padding: 2rem;
+        }
+
+        .member-services {
+            margin-bottom: 1.5rem;
+        }
+
+        .service-tag {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--light-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .member-contact {
+            border-top: 1px solid var(--neutral-200);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: var(--neutral-600);
+            font-size: 0.9rem;
+        }
+
+        .contact-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 0.75rem;
+            color: var(--light-blue);
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-contact {
+            flex: 1;
+            background: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contact:hover {
+            background: var(--purple);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-contact-secondary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--light-blue);
+            border: 1px solid var(--light-blue);
+        }
+
+        .btn-contact-secondary:hover {
+            background: var(--light-blue);
+            color: white;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: var(--primary-blue);
+            color: white;
+            padding: 4rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary-gold);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-blue), var(--neutral-800));
+            color: white;
+            padding: 80px 0 30px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary-gold), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-title {
+            color: var(--secondary-gold);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-gold);
+        }
+
+        .social-icons a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .social-icons a:hover {
+            background: var(--secondary-gold);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        .animate-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 100px 0 60px;
+                text-align: center;
+            }
+
+            .members-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .search-filter-card {
+                padding: 1.5rem;
+            }
+
+            .contact-buttons {
+                flex-direction: column;
+            }
+
+            .interactive-map {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body x-data="memberDirectory()">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'ipawas_home' %}">{% translate "IPAWAS" %}</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ipawas_home' %}">{% translate "Home" %}</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if current_section == 'about_mission' %}active{% endif %}"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            {% translate "About" %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'about_our_story' %}">{% translate "Our Story" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_mission' %}">{% translate "Mission & Vision" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_leadership' %}">{% translate "Leadership & Governance" %}</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'about_strategy_patnerships' %}">{% translate "Strategic Partnerships" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "Invest" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'invest_regional_overview' %}">{% translate "Regional Overview" %}</a></li>
+                                    Overview</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_sectors' %}">{% translate "Investment Sectors" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_countries' %}">{% translate "Country Profiles" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_process' %}">{% translate "Investment Process" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_success_stories' %}">{% translate "Success Stories" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% block nav_members_active %}{% endblock %}" href="#"
+                            role="button" data-bs-toggle="dropdown">{% translate "Members" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'members_directory' %}">{% translate "Member Directory" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_benefits' %}">{% translate "Member Benefits" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_join' %}">{% translate "Join IPAWAS" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_portal' %}">{% translate "Member Portal" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown">{% translate "Resources" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="resources-research.html">{% translate "Research & Reports" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-guides.html">{% translate "Investment Guides" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-policy.html">{% translate "Policy Documents" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-multimedia.html">{% translate "Multimedia Library" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "Events" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="events-upcoming.html">{% translate "Upcoming Events" %}</a></li>
+                            <li><a class="dropdown-item" href="events-conference.html">{% translate "Annual Conference" %}</a></li>
+                            <li><a class="dropdown-item" href="events-past.html">{% translate "Past Events" %}</a></li>
+                            <li><a class="dropdown-item" href="events-register.html">{% translate "Event Registration" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "News" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="news-latest.html">{% translate "Latest News" %}</a></li>
+                            <li><a class="dropdown-item" href="news-press.html">{% translate "Press Releases" %}</a></li>
+                            <li><a class="dropdown-item" href="news-analysis.html">{% translate "Industry Analysis" %}</a></li>
+                            <li><a class="dropdown-item" href="news-newsletter.html">{% translate "Newsletter" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">{% translate "Contact" %}</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h1 class="page-title">{% translate "Member Directory" %}</h1>
+                        <p class="page-subtitle">{% blocktranslate trimmed %}Connect with Investment Promotion Agencies across 15 ECOWAS member
+                            countries. Find the right partners for your investment needs and explore comprehensive
+                            agency profiles.{% endblocktranslate %}</p>
+
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'ipawas_home' %}">{% translate "Home" %}</a></li>
+                                <li class="breadcrumb-item"><a href="#members">{% translate "Members" %}</a></li>
+                                <li class="breadcrumb-item active">{% translate "Member Directory" %}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="stats-section text-center">
+                            <div class="stat-item">
+                                <div class="stat-number">15</div>
+                                <div class="stat-label">{% translate "Member Countries" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="search-filter-section">
+        <div class="container">
+            <div class="search-filter-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 mb-3 mb-lg-0">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0"
+                                style="border: 2px solid var(--neutral-200); border-right: none; border-radius: 50px 0 0 50px;">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control search-input border-start-0"
+                                placeholder="Search agencies, countries, or services..." x-model="searchTerm"
+                                style="border-radius: 0 50px 50px 0;">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 mb-3 mb-lg-0">
+                        <select class="form-select filter-select" x-model="selectedCountry">
+                            <option value="">{% translate "All Countries" %}</option>
+                            <option value="benin">{% translate "Benin" %}</option>
+                            <option value="burkina-faso">{% translate "Burkina Faso" %}</option>
+                            <option value="cape-verde">{% translate "Cape Verde" %}</option>
+                            <option value="cote-divoire">{% translate "Côte d'Ivoire" %}</option>
+                            <option value="gambia">{% translate "Gambia" %}</option>
+                            <option value="ghana">{% translate "Ghana" %}</option>
+                            <option value="guinea">{% translate "Guinea" %}</option>
+                            <option value="guinea-bissau">{% translate "Guinea-Bissau" %}</option>
+                            <option value="liberia">{% translate "Liberia" %}</option>
+                            <option value="mali">{% translate "Mali" %}</option>
+                            <option value="niger">{% translate "Niger" %}</option>
+                            <option value="nigeria">{% translate "Nigeria" %}</option>
+                            <option value="senegal">{% translate "Senegal" %}</option>
+                            <option value="sierra-leone">{% translate "Sierra Leone" %}</option>
+                            <option value="togo">{% translate "Togo" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 mb-3 mb-lg-0">
+                        <select class="form-select filter-select" x-model="selectedSector">
+                            <option value="">{% translate "All Sectors" %}</option>
+                            <option value="agriculture">{% translate "Agriculture" %}</option>
+                            <option value="energy">{% translate "Energy" %}</option>
+                            <option value="infrastructure">{% translate "Infrastructure" %}</option>
+                            <option value="manufacturing">{% translate "Manufacturing" %}</option>
+                            <option value="technology">{% translate "Technology" %}</option>
+                            <option value="financial">{% translate "Financial Services" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 mb-3 mb-lg-0">
+                        <select class="form-select filter-select" x-model="selectedService">
+                            <option value="">{% translate "All Services" %}</option>
+                            <option value="investment-promotion">{% translate "Investment Promotion" %}</option>
+                            <option value="aftercare">{% translate "Aftercare Services" %}</option>
+                            <option value="policy-advocacy">{% translate "Policy Advocacy" %}</option>
+                            <option value="market-research">{% translate "Market Research" %}</option>
+                            <option value="partnership">{% translate "Partnership Development" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <button class="btn btn-primary w-100"
+                            style="background: linear-gradient(135deg, var(--light-blue), var(--purple)); border: none; border-radius: 15px; padding: 12px;"
+                            @click="resetFilters()">
+                            <i class="fas fa-refresh me-2"></i>Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="section-title" style="color: var(--primary-blue);">{% translate "ECOWAS Regional Coverage" %}</h2>
+                <p class="section-subtitle" style="color: var(--neutral-600);">{% blocktranslate trimmed %}Click on countries to explore member
+                    Investment Promotion Agencies{% endblocktranslate %}</p>
+            </div>
+
+            <div class="interactive-map">
+                <div class="map-content">
+                    <i class="fas fa-map-marked-alt mb-3" style="font-size: 3rem;"></i>
+                    <h3>{% translate "Interactive West Africa Map" %}</h3>
+                    <p class="mb-0">{% translate "Explore our 15 member countries and their Investment Promotion Agencies" %}</p>
+                    <small style="opacity: 0.8;">{% translate "Map functionality powered by advanced geospatial visualization" %}</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Members Grid -->
+    <section class="main-content">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title mb-0">{% translate "Investment Promotion Agencies" %}</h2>
+                <div class="d-flex align-items-center">
+                    <span class="text-muted me-3"
+                        x-text="`Showing ${filteredMembers.length} of ${members.length} agencies`"></span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" :class="{ 'active': viewMode === 'grid' }"
+                            @click="viewMode = 'grid'">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" :class="{ 'active': viewMode === 'list' }"
+                            @click="viewMode = 'list'">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="members-grid" :class="{ 'row': viewMode === 'list' }">
+                <template x-for="member in filteredMembers" :key="member.id">
+                    <div class="member-card animate-slide-up" :class="{ 'col-12 mb-3': viewMode === 'list' }">
+                        <div class="member-header">
+                            <div class="member-flag" x-text="member.countryCode"></div>
+                            <h3 class="member-country" x-text="member.country"></h3>
+                            <p class="member-agency" x-text="member.agency"></p>
+                        </div>
+
+                        <div class="member-body">
+                            <div class="member-services">
+                                <h5 style="color: var(--primary-blue); margin-bottom: 1rem; font-weight: 600;">Key
+                                    Services</h5>
+                                <template x-for="service in member.services">
+                                    <span class="service-tag" x-text="service"></span>
+                                </template>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6 style="color: var(--primary-blue); margin-bottom: 0.75rem;">Sector Specializations
+                                </h6>
+                                <p class="text-muted small" x-text="member.sectors.join(', ')"></p>
+                            </div>
+
+                            <div class="member-contact">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span x-text="member.email"></span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span x-text="member.phone"></span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-globe"></i>
+                                    <a :href="member.website" class="text-decoration-none" x-text="member.website"
+                                        target="_blank"></a>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span x-text="member.location"></span>
+                                </div>
+
+                                <div class="contact-buttons">
+                                    <button class="btn btn-contact">
+                                        <i class="fas fa-envelope me-2"></i>{% translate "Contact" %}
+                                    </button>
+                                    <button class="btn btn-contact btn-contact-secondary">
+                                        <i class="fas fa-eye me-2"></i>{% translate "View Profile" %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- No Results Message -->
+            <div x-show="filteredMembers.length === 0" class="text-center py-5">
+                <i class="fas fa-search mb-3" style="font-size: 3rem; color: var(--neutral-300);"></i>
+                <h4 style="color: var(--neutral-600);">{% translate "No agencies found" %}</h4>
+                <p class="text-muted">{% translate "Try adjusting your search criteria or filters" %}</p>
+                <button class="btn btn-primary" @click="resetFilters()">
+                    <i class="fas fa-refresh me-2"></i>{% translate "Reset Filters" %}
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">{% translate "ECOWAS Countries" %}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">400M+</div>
+                        <div class="stat-label">{% translate "Total Population" %}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">$1.8T</div>
+                        <div class="stat-label">{% translate "Combined GDP" %}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">{% translate "Support Available" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h3 class="footer-brand">{% translate "IPAWAS" %}</h3>
+                    <p class="text-white-75 mb-4">{% blocktranslate trimmed %}Investment Promotion Agencies of West Africa - Connecting global
+                        investors with transformative opportunities across 15 ECOWAS nations.{% endblocktranslate %}</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="{% translate 'Twitter' %}"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="{% translate 'LinkedIn' %}"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="{% translate 'Facebook' %}"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="{% translate 'Instagram' %}"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Organization" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="about-story.html" class="footer-link">{% translate "About IPAWAS" %}</a></li>
+                        <li class="mb-2"><a href="about-mission.html" class="footer-link">{% translate "Our Mission" %}</a></li>
+                        <li class="mb-2"><a href="about-leadership.html" class="footer-link">{% translate "Leadership" %}</a></li>
+                        <li class="mb-2"><a href="about-partnerships.html" class="footer-link">{% translate "Partnerships" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Investors" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="invest-process.html" class="footer-link">{% translate "Investment Guide" %}</a></li>
+                        <li class="mb-2"><a href="invest-sectors.html" class="footer-link">{% translate "Sector Opportunities" %}</a></li>
+                        <li class="mb-2"><a href="invest-countries.html" class="footer-link">{% translate "Country Profiles" %}</a></li>
+                        <li class="mb-2"><a href="invest-success.html" class="footer-link">{% translate "Success Stories" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Resources" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="resources-research.html" class="footer-link">{% translate "Research Reports" %}</a></li>
+                        <li class="mb-2"><a href="resources-policy.html" class="footer-link">{% translate "Policy Documents" %}</a></li>
+                        <li class="mb-2"><a href="resources-guides.html" class="footer-link">{% translate "Investment Tools" %}</a></li>
+                        <li class="mb-2"><a href="resources-multimedia.html" class="footer-link">{% translate "Media Center" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Connect" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="contact.html" class="footer-link">{% translate "Contact Us" %}</a></li>
+                        <li class="mb-2"><a href="events-upcoming.html" class="footer-link">{% translate "Events" %}</a></li>
+                        <li class="mb-2"><a href="news-newsletter.html" class="footer-link">{% translate "Newsletter" %}</a></li>
+                        <li class="mb-2"><a href="members-portal.html" class="footer-link">{% translate "Member Portal" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-white-50 mb-0">&copy; {% now "Y" %} IPAWAS. {% translate "All rights reserved." %}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="privacy.html" class="footer-link me-4">{% translate "Privacy Policy" %}</a>
+                    <a href="terms.html" class="footer-link">{% translate "Terms of Service" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function memberDirectory() {
+            return {
+                searchTerm: '',
+                selectedCountry: '',
+                selectedSector: '',
+                selectedService: '',
+                viewMode: 'grid',
+                members: [
+                    {
+                        id: 1,
+                        country: 'Nigeria',
+                        countryCode: 'NG',
+                        agency: 'Nigerian Investment Promotion Commission (NIPC)',
+                        services: ['Investment Promotion', 'Aftercare Services', 'Policy Advocacy'],
+                        sectors: ['Oil & Gas', 'Agriculture', 'Technology', 'Manufacturing'],
+                        email: 'info@nipc.gov.ng',
+                        phone: '+234 9 461 0691',
+                        website: 'www.nipc.gov.ng',
+                        location: 'Abuja, Nigeria'
+                    },
+                    {
+                        id: 2,
+                        country: 'Senegal',
+                        countryCode: 'SN',
+                        agency: 'Agence de Promotion des Investissements et des Grands Travaux (APIX)',
+                        services: ['Investment Promotion', 'Project Development', 'Market Research'],
+                        sectors: ['Agriculture', 'Energy', 'Infrastructure', 'Tourism'],
+                        email: 'contact@apix.sn',
+                        phone: '+221 33 849 05 55',
+                        website: 'www.apix.sn',
+                        location: 'Dakar, Senegal'
+                    },
+                    {
+                        id: 3,
+                        country: 'Ghana',
+                        countryCode: 'GH',
+                        agency: 'Ghana Investment Promotion Centre (GIPC)',
+                        services: ['Investment Promotion', 'Aftercare Services', 'Partnership Development'],
+                        sectors: ['Mining', 'Agriculture', 'Manufacturing', 'Services'],
+                        email: 'info@gipcghana.com',
+                        phone: '+233 30 266 5125',
+                        website: 'www.gipcghana.com',
+                        location: 'Accra, Ghana'
+                    },
+                    {
+                        id: 4,
+                        country: 'Côte d\'Ivoire',
+                        countryCode: 'CI',
+                        agency: 'Centre de Promotion des Investissements en Côte d\'Ivoire (CEPICI)',
+                        services: ['Investment Promotion', 'Business Registration', 'Policy Advocacy'],
+                        sectors: ['Agriculture', 'Manufacturing', 'Energy', 'Infrastructure'],
+                        email: 'info@cepici.gouv.ci',
+                        phone: '+225 20 31 80 00',
+                        website: 'www.cepici.gouv.ci',
+                        location: 'Abidjan, Côte d\'Ivoire'
+                    },
+                    {
+                        id: 5,
+                        country: 'Mali',
+                        countryCode: 'ML',
+                        agency: 'Agence pour la Promotion des Investissements au Mali (API-Mali)',
+                        services: ['Investment Promotion', 'Market Research', 'Aftercare Services'],
+                        sectors: ['Mining', 'Agriculture', 'Energy', 'Tourism'],
+                        email: 'info@apimali.gov.ml',
+                        phone: '+223 20 29 90 90',
+                        website: 'www.apimali.gov.ml',
+                        location: 'Bamako, Mali'
+                    },
+                    {
+                        id: 6,
+                        country: 'Burkina Faso',
+                        countryCode: 'BF',
+                        agency: 'Maison de l\'Entreprise du Burkina Faso (MEBF)',
+                        services: ['Investment Promotion', 'Business Support', 'Training'],
+                        sectors: ['Agriculture', 'Mining', 'Manufacturing', 'Services'],
+                        email: 'info@mebf.gov.bf',
+                        phone: '+226 25 31 14 14',
+                        website: 'www.mebf.gov.bf',
+                        location: 'Ouagadougou, Burkina Faso'
+                    },
+                    {
+                        id: 7,
+                        country: 'Niger',
+                        countryCode: 'NE',
+                        agency: 'Agence Nationale de Promotion des Investissements (ANPIP)',
+                        services: ['Investment Promotion', 'Project Facilitation', 'Market Research'],
+                        sectors: ['Mining', 'Agriculture', 'Energy', 'Infrastructure'],
+                        email: 'contact@anpip.ne',
+                        phone: '+227 20 73 35 86',
+                        website: 'www.anpip.ne',
+                        location: 'Niamey, Niger'
+                    },
+                    {
+                        id: 8,
+                        country: 'Guinea',
+                        countryCode: 'GN',
+                        agency: 'Guinea Development Board (GDB)',
+                        services: ['Investment Promotion', 'Business Registration', 'Aftercare Services'],
+                        sectors: ['Mining', 'Agriculture', 'Energy', 'Manufacturing'],
+                        email: 'info@apip-guinee.org',
+                        phone: '+224 30 45 12 34',
+                        website: 'www.apip-guinee.org',
+                        location: 'Conakry, Guinea'
+                    },
+                    {
+                        id: 9,
+                        country: 'Benin',
+                        countryCode: 'BJ',
+                        agency: 'Agence de Promotion des Investissements et des Exportations (APIEx)',
+                        services: ['Investment Promotion', 'Export Promotion', 'Market Research'],
+                        sectors: ['Agriculture', 'Manufacturing', 'Services', 'Tourism'],
+                        email: 'info@apiex.bj',
+                        phone: '+229 21 30 04 31',
+                        website: 'www.apiex.bj',
+                        location: 'Cotonou, Benin'
+                    },
+                    {
+                        id: 10,
+                        country: 'Togo',
+                        countryCode: 'TG',
+                        agency: 'Zone Franche Industrielle du Togo (SAZOF)',
+                        services: ['Investment Promotion', 'Zone Development', 'Business Support'],
+                        sectors: ['Manufacturing', 'Logistics', 'Agriculture', 'Services'],
+                        email: 'info@sazof.tg',
+                        phone: '+228 22 27 10 00',
+                        website: 'www.sazof.tg',
+                        location: 'Lomé, Togo'
+                    },
+                    {
+                        id: 11,
+                        country: 'Sierra Leone',
+                        countryCode: 'SL',
+                        agency: 'National Investment Board (NIB)',
+                        services: ['Investment Promotion', 'Export Promotion', 'Aftercare Services'],
+                        sectors: ['Mining', 'Agriculture', 'Tourism', 'Manufacturing'],
+                        email: 'Info@nib.gov.sl',
+                        phone: '+23273952144',
+                        website: 'www.nib.gov.sl',
+                        location: 'Freetown, Sierra Leone'
+                    },
+                    {
+                        id: 12,
+                        country: 'Liberia',
+                        countryCode: 'LR',
+                        agency: 'National Investment Commission (NIC)',
+                        services: ['Investment Promotion', 'Policy Advocacy', 'Business Support'],
+                        sectors: ['Agriculture', 'Mining', 'Manufacturing', 'Services'],
+                        email: 'info@nic.gov.lr',
+                        phone: '+231 77 111 222',
+                        website: 'www.nic.gov.lr',
+                        location: 'Monrovia, Liberia'
+                    },
+                    {
+                        id: 13,
+                        country: 'Gambia',
+                        countryCode: 'GM',
+                        agency: 'Gambia Investment and Export Promotion Agency (GIEPA)',
+                        services: ['Investment Promotion', 'Export Promotion', 'Market Research'],
+                        sectors: ['Agriculture', 'Tourism', 'Manufacturing', 'Services'],
+                        email: 'info@giepa.gm',
+                        phone: '+220 437 6377',
+                        website: 'www.giepa.gm',
+                        location: 'Banjul, Gambia'
+                    },
+                    {
+                        id: 14,
+                        country: 'Guinea-Bissau',
+                        countryCode: 'GW',
+                        agency: 'Centre de Promotion des Investissements (CPI)',
+                        services: ['Investment Promotion', 'Business Registration', 'Market Research'],
+                        sectors: ['Agriculture', 'Fisheries', 'Tourism', 'Energy'],
+                        email: 'info@cpi.gw',
+                        phone: '+245 320 1030',
+                        website: 'www.cpi.gw',
+                        location: 'Bissau, Guinea-Bissau'
+                    },
+                    {
+                        id: 15,
+                        country: 'Cape Verde',
+                        countryCode: 'CV',
+                        agency: 'Cabo Verde Investimentos (CVI)',
+                        services: ['Investment Promotion', 'Business Support', 'Aftercare Services'],
+                        sectors: ['Tourism', 'Services', 'Renewable Energy', 'Technology'],
+                        email: 'info@cvi.cv',
+                        phone: '+238 260 3700',
+                        website: 'www.cvi.cv',
+                        location: 'Praia, Cape Verde'
+                    }
+                ],
+
+                get filteredMembers() {
+                    return this.members.filter(member => {
+                        const matchesSearch = !this.searchTerm ||
+                            member.country.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                            member.agency.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                            member.services.some(service => service.toLowerCase().includes(this.searchTerm.toLowerCase()));
+
+                        const matchesCountry = !this.selectedCountry ||
+                            member.country.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '') === this.selectedCountry;
+
+                        const matchesSector = !this.selectedSector ||
+                            member.sectors.some(sector => sector.toLowerCase().includes(this.selectedSector.toLowerCase()));
+
+                        const matchesService = !this.selectedService ||
+                            member.services.some(service => service.toLowerCase().replace(/\s+/g, '-') === this.selectedService);
+
+                        return matchesSearch && matchesCountry && matchesSector && matchesService;
+                    });
+                },
+
+                resetFilters() {
+                    this.searchTerm = '';
+                    this.selectedCountry = '';
+                    this.selectedSector = '';
+                    this.selectedService = '';
+                }
+            }
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('[class*="animate-"]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Navbar collapse on mobile link click
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const navCollapse = document.querySelector('.navbar-collapse');
+                if (navCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navCollapse, {
+                        toggle: true
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

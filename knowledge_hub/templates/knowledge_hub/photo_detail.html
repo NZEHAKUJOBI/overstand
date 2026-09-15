@@ -1,0 +1,115 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{{ photo.name }} - IPAWAS Photo Gallery{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, rgba(27,122,76,0.95) 0%, rgba(15,107,63,0.9) 100%),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773654099/investment_case_wbhcgs.webp') center/cover;
+        padding: 130px 0 70px; margin-top: 76px; color: white;
+    }
+    .page-hero h1 { font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+    .breadcrumb-item a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.6); }
+    .breadcrumb-item+.breadcrumb-item::before { color: rgba(255,255,255,0.5); }
+
+    .photo-frame {
+        background: #1a1a1a; border-radius: 16px; overflow: hidden;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.2); margin-bottom: 2rem;
+        max-height: 70vh; display: flex; align-items: center; justify-content: center;
+    }
+    .photo-frame img { max-width: 100%; max-height: 70vh; object-fit: contain; display: block; }
+    .info-card {
+        background: white; border-radius: 16px; padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 1.5rem;
+    }
+    .meta-row { display: flex; gap: 1.5rem; flex-wrap: wrap; padding: 1rem 0; border-bottom: 1px solid var(--neutral-100); }
+    .meta-row:last-child { border-bottom: none; }
+    .meta-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--neutral-500); font-weight: 600; margin-bottom: 0.2rem; }
+    .meta-value { font-size: 0.92rem; color: var(--neutral-800); font-weight: 500; }
+    .sidebar-card {
+        background: white; border-radius: 16px; padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
+                <li class="breadcrumb-item"><a href="{% url 'media_center:hub' %}">{% translate "Media Center" %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'media_center:photo_gallery' %}">{% translate "Photo Gallery" %}</a></li>
+                <li class="breadcrumb-item active">{{ photo.name|truncatechars:40 }}</li>
+            </ol>
+        </nav>
+        <h1>{{ photo.name }}</h1>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="photo-frame">
+                {% if photo.cloudinary_secure_url %}
+                <img src="{{ photo.cloudinary_secure_url }}" alt="{{ photo.alt_text|default:photo.name }}">
+                {% elif photo.medium_url %}
+                <img src="{{ photo.medium_url }}" alt="{{ photo.alt_text|default:photo.name }}">
+                {% else %}
+                <div style="color:white; text-align:center; padding:4rem;">
+                    <i class="fas fa-image" style="font-size:4rem; opacity:0.3;"></i>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                {% if photo.caption %}
+                <p style="font-size:0.95rem; color:var(--neutral-600); line-height:1.7; margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:1px solid var(--neutral-100);">
+                    {{ photo.caption }}
+                </p>
+                {% endif %}
+                <div class="meta-row">
+                    {% if photo.member_state %}
+                    <div>
+                        <div class="meta-label">{% translate "Country" %}</div>
+                        <div class="meta-value">{{ photo.member_state.country_name }}</div>
+                    </div>
+                    {% endif %}
+                    {% if photo.uploaded_at %}
+                    <div>
+                        <div class="meta-label">{% translate "Date" %}</div>
+                        <div class="meta-value">{{ photo.uploaded_at|date:"d F Y" }}</div>
+                    </div>
+                    {% endif %}
+                    {% if photo.folder %}
+                    <div>
+                        <div class="meta-label">{% translate "Category" %}</div>
+                        <div class="meta-value">{{ photo.folder.name }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar-card">
+                <a href="{{ photo.cloudinary_secure_url|default:photo.medium_url }}" download class="btn btn-success rounded-pill w-100 mb-3" {% if not photo.cloudinary_secure_url and not photo.medium_url %}style="pointer-events:none;opacity:0.5;"{% endif %}>
+                    <i class="fas fa-download me-2"></i>{% translate "Download Photo" %}
+                </a>
+                <a href="{% url 'media_center:photo_gallery' %}" class="btn btn-outline-secondary rounded-pill w-100">
+                    <i class="fas fa-arrow-left me-2"></i>{% translate "Back to Gallery" %}
+                </a>
+
+                <hr style="margin: 1.5rem 0;">
+                <p style="font-size:0.82rem; color:var(--neutral-500); text-align:center; margin:0;">
+                    {% translate "For high-resolution versions or licensing enquiries, contact" %}<br>
+                    <a href="{% url 'about:contact' %}" style="color:var(--primary-green);">{% translate "IPAWAS Communications" %}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

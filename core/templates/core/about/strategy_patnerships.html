@@ -1,0 +1,1198 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate "Strategic Partnerships - IPAWAS" %}</title>
+    <meta name="description"
+        content="Discover IPAWAS's strategic partnerships with international organizations, development partners, and private sector leaders driving investment promotion in West Africa.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <style>
+        :root {
+            --primary-blue: #0F172A;
+            --secondary-gold: #F59E0B;
+            --accent-green: #10B981;
+            --light-blue: #3B82F6;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --orange: #F97316;
+            --neutral-100: #F8FAFC;
+            --neutral-200: #E2E8F0;
+            --neutral-600: #475569;
+            --neutral-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #F59E0B, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-gold) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .dropdown-menu {
+            background: var(--primary-blue);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-item {
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary-gold);
+        }
+
+        /* Page Hero */
+        .page-hero {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            color: white;
+            padding: 120px 0 80px;
+            margin-top: 76px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M40 40c0-22.091-17.909-40-40-40v80c22.091 0 40-17.909 40-40z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .page-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .breadcrumb-modern {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb-modern a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-modern a:hover {
+            color: white;
+        }
+
+        .breadcrumb-modern .current {
+            color: white;
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .content-section.alternate {
+            background: linear-gradient(135deg, var(--neutral-100) 0%, white 100%);
+        }
+
+        .content-section.dark {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--neutral-800) 100%);
+            color: white;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+        }
+
+        .section-title.text-white {
+            color: white;
+        }
+
+        /* Partner Cards */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .partner-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--neutral-200);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .partner-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .partner-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .partner-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .partner-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .partner-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .partner-type {
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .partner-description {
+            color: var(--neutral-600);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .partner-benefits {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .partner-benefits li {
+            padding: 0.5rem 0;
+            color: var(--neutral-600);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .partner-benefits li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .partner-link {
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .partner-link:hover {
+            color: #047857;
+            gap: 1rem;
+        }
+
+        /* Partnership Framework */
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .framework-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .framework-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .framework-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--secondary-gold), var(--orange));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .framework-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .framework-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* Statistics Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--neutral-200);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-label {
+            color: var(--neutral-600);
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Development Partners Grid */
+        .dev-partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .dev-partner-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--neutral-200);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .dev-partner-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--light-blue), var(--purple));
+            border-radius: 0 4px 4px 0;
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .dev-partner-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dev-partner-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .dev-partner-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--light-blue), var(--purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .dev-partner-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .dev-partner-focus {
+            color: var(--light-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .dev-partner-description {
+            color: var(--neutral-600);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Animations */
+        .animate-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .animate-fade-in.visible {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-blue), var(--neutral-800));
+            color: white;
+            padding: 80px 0 30px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary-gold), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-title {
+            color: var(--secondary-gold);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-gold);
+        }
+
+        .social-icons a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: var(--secondary-gold);
+            transform: translateY(-3px);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-hero {
+                padding: 100px 0 60px;
+                margin-top: 70px;
+            }
+
+            .content-section {
+                padding: 60px 0;
+            }
+
+            .partners-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .framework-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .dev-partners-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'ipawas_home' %}">{% translate "IPAWAS" %}</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ipawas_home' %}">{% translate "Home" %}</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if current_section == 'about_mission' %}active{% endif %}"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'about_our_story' %}">{% translate "Our Story" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_mission' %}">{% translate "Mission & Vision" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_leadership' %}">{% translate "Leadership & Governance" %}</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'about_strategy_patnerships' %}">Strategic
+                                    Partnerships</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "Invest" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'invest_regional_overview' %}">Regional
+                                    Overview</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_sectors' %}">{% translate "Investment Sectors" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_countries' %}">{% translate "Country Profiles" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_process' %}">{% translate "Investment Process" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_success_stories' %}">{% translate "Success Stories" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% block nav_members_active %}{% endblock %}" href="#"
+                            role="button" data-bs-toggle="dropdown">{% translate "Members" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'members_directory' %}">{% translate "Member Directory" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_benefits' %}">{% translate "Member Benefits" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_join' %}">{% translate "Join IPAWAS" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_portal' %}">{% translate "Member Portal" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'knowledge_hub:resources' %}">{% translate "Resources" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'knowledge_hub:news' %}">{% translate "Events" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'knowledge_hub:news' %}">{% translate "News" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about:contact' %}">{% translate "Contact" %}</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="page-hero-content">
+                <nav class="breadcrumb-modern">
+                    <a href="{% url 'home' %}">{% translate "Home" %}</a>
+                    <i class="fas fa-chevron-right" style="color: rgba(255, 255, 255, 0.6);"></i>
+                    <a href="/about">{% translate "About" %}</a>
+                    <i class="fas fa-chevron-right" style="color: rgba(255, 255, 255, 0.6);"></i>
+                    <span class="current">{% translate "Strategic Partnerships" %}</span>
+                </nav>
+                <h1 class="page-title animate-slide-up">{% translate "Strategic Partnerships" %}</h1>
+                <p class="page-subtitle animate-slide-up">Building powerful alliances that amplify West Africa's
+                    investment promotion impact through collaboration, knowledge sharing, and coordinated action</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Overview -->
+    <section class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="section-title animate-slide-up">{% translate "Collaborative Network for Regional Success" %}</h2>
+                    <p class="lead animate-slide-up" style="color: var(--neutral-600); margin-bottom: 3rem;">
+                        IPAWAS leverages strategic partnerships with international organizations, development partners,
+                        private sector leaders, and academic institutions to enhance our capacity, expand our reach, and
+                        deliver exceptional value to both investors and member countries.
+                    </p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card animate-slide-up">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">{% translate "Strategic Partners" %}</div>
+                </div>
+
+                <div class="stat-card animate-slide-up">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">{% translate "International Organizations" %}</div>
+                </div>
+
+                <div class="stat-card animate-slide-up">
+                    <div class="stat-number">25</div>
+                    <div class="stat-label">{% translate "Development Partners" %}</div>
+                </div>
+
+                <div class="stat-card animate-slide-up">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">{% translate "Private Sector Partners" %}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Primary Partners -->
+    <section class="content-section alternate">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title animate-slide-up">{% translate "Primary Partners" %}</h2>
+                <p class="lead animate-slide-up" style="color: var(--neutral-600);">Our foundational relationships with
+                    key international organizations and institutions</p>
+            </div>
+
+            <div class="partners-grid">
+                <div class="partner-card animate-slide-up">
+                    <div class="partner-logo">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h3 class="partner-name">{% translate "ECOWAS Commission" %}</h3>
+                    <div class="partner-type">{% translate "Umbrella Organization" %}</div>
+                    <p class="partner-description">
+                        Our foundational relationship with the Economic Community of West African States provides the
+                        regulatory framework, political backing, and institutional support that enables IPAWAS to
+                        operate effectively across all 15 member countries.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>{% translate "Political and institutional mandate" %}</li>
+                        <li>{% translate "Regional integration framework" %}</li>
+                        <li>{% translate "Policy harmonization support" %}</li>
+                        <li>{% translate "High-level advocacy platform" %}</li>
+                    </ul>
+                    <a href="#" class="partner-link">{% translate "Learn More" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="partner-card animate-slide-up">
+                    <div class="partner-logo">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3 class="partner-name">{% translate "WAIPA" %}</h3>
+                    <div class="partner-type">{% translate "Global Network" %}</div>
+                    <p class="partner-description">
+                        As a member of the World Association of Investment Promotion Agencies, IPAWAS connects with the
+                        global investment promotion community, sharing best practices and accessing cutting-edge
+                        knowledge and tools.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>{% translate "Global best practices access" %}</li>
+                        <li>{% translate "International networking opportunities" %}</li>
+                        <li>{% translate "Capacity building programs" %}</li>
+                        <li>{% translate "Research and publications" %}</li>
+                    </ul>
+                    <a href="#" class="partner-link">{% translate "Explore Partnership" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="partner-card animate-slide-up">
+                    <div class="partner-logo">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3 class="partner-name">{% translate "African Development Bank" %}</h3>
+                    <div class="partner-type">{% translate "Development Finance" %}</div>
+                    <p class="partner-description">
+                        Strategic partnership with AfDB provides development finance expertise, project funding support,
+                        and access to continental development strategies that align with IPAWAS investment promotion
+                        goals.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>{% translate "Development finance expertise" %}</li>
+                        <li>{% translate "Project funding opportunities" %}</li>
+                        <li>{% translate "Continental development strategies" %}</li>
+                        <li>{% translate "Technical assistance programs" %}</li>
+                    </ul>
+                    <a href="#" class="partner-link">{% translate "Partnership Details" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="partner-card animate-slide-up">
+                    <div class="partner-logo">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="partner-name">{% translate "World Bank Group" %}</h3>
+                    <div class="partner-type">{% translate "Technical Assistance" %}</div>
+                    <p class="partner-description">
+                        Collaboration with the World Bank Group brings world-class technical assistance, analytical
+                        support, and access to global investment promotion methodologies and innovations.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>{% translate "Technical assistance programs" %}</li>
+                        <li>{% translate "Analytical and research support" %}</li>
+                        <li>{% translate "Global methodology access" %}</li>
+                        <li>{% translate "Policy advisory services" %}</li>
+                    </ul>
+                    <a href="#" class="partner-link">{% translate "Technical Programs" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="partner-card animate-slide-up">
+                    <div class="partner-logo">
+                        <i class="fas fa-star-of-david"></i>
+                    </div>
+                    <h3 class="partner-name">{% translate "European Union" %}</h3>
+                    <div class="partner-type">{% translate "Capacity Building" %}</div>
+                    <p class="partner-description">
+                        EU development cooperation programs provide substantial capacity building support, technical
+                        expertise, and funding for IPAWAS initiatives that strengthen regional investment promotion
+                        capabilities.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>{% translate "Capacity building funding" %}</li>
+                        <li>{% translate "Technical expertise sharing" %}</li>
+                        <li>{% translate "Trade and investment facilitation" %}</li>
+                        <li>{% translate "Regional integration support" %}</li>
+                    </ul>
+                    <a href="#" class="partner-link">{% translate "EU Cooperation" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Partners -->
+    <section class="content-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title animate-slide-up">{% translate "Development Partners" %}</h2>
+                <p class="lead animate-slide-up" style="color: var(--neutral-600);">Specialized organizations providing
+                    targeted support for capacity building and institutional development</p>
+            </div>
+
+            <div class="dev-partners-grid">
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "GIZ" %}</h4>
+                    <div class="dev-partner-focus">{% translate "German Cooperation" %}</div>
+                    <p class="dev-partner-description">
+                        German development cooperation providing technical assistance, capacity building programs, and
+                        institutional strengthening support for IPAWAS member agencies.
+                    </p>
+                </div>
+
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "OECD Investment" %}</h4>
+                    <div class="dev-partner-focus">{% translate "Policy & Standards" %}</div>
+                    <p class="dev-partner-description">
+                        OECD Investment Network collaboration brings international investment policy expertise and
+                        access to global standards and best practices.
+                    </p>
+                </div>
+
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "UNCTAD" %}</h4>
+                    <div class="dev-partner-focus">{% translate "Investment Division" %}</div>
+                    <p class="dev-partner-description">
+                        UN Conference on Trade and Development provides research, analysis, and policy advisory services
+                        for investment promotion and development.
+                    </p>
+                </div>
+
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "UNIDO" %}</h4>
+                    <div class="dev-partner-focus">{% translate "Industrial Development" %}</div>
+                    <p class="dev-partner-description">
+                        United Nations Industrial Development Organization supports industrial investment promotion and
+                        sustainable development initiatives.
+                    </p>
+                </div>
+
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "ITC" %}</h4>
+                    <div class="dev-partner-focus">{% translate "Trade Development" %}</div>
+                    <p class="dev-partner-description">
+                        International Trade Centre provides trade promotion expertise and export development support
+                        that complements investment attraction efforts.
+                    </p>
+                </div>
+
+                <div class="dev-partner-card animate-slide-up">
+                    <div class="dev-partner-logo">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4 class="dev-partner-name">{% translate "Academic Partners" %}</h4>
+                    <div class="dev-partner-focus">{% translate "Research & Training" %}</div>
+                    <p class="dev-partner-description">
+                        Leading universities and research institutions across West Africa and globally providing
+                        research support and training programs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Framework */
+    <section class="content-section dark">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title text-white animate-slide-up">{% translate "How Partnerships Operate" %}</h2>
+                <p class="lead text-white-75 animate-slide-up">{% translate "Our structured approach to partnership management and collaboration" %}</p>
+            </div>
+
+            <div class="framework-grid">
+                <div class="framework-card animate-slide-up">
+                    <div class="framework-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h4 class="framework-title">{% translate "Formal Agreements" %}</h4>
+                    <p class="framework-description">
+                        Structured partnership agreements define roles, responsibilities, deliverables, and mutual commitments to ensure effective collaboration and measurable outcomes.
+                    </p>
+                </div>
+
+                <div class="framework-card animate-slide-up">
+                    <div class="framework-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h4 class="framework-title">{% translate "Joint Working Groups" %}</h4>
+                    <p class="framework-description">
+                        Collaborative working groups bring together experts from IPAWAS and partner organizations to develop programs, share knowledge, and coordinate activities.
+                    </p>
+                </div>
+
+                <div class="framework-card animate-slide-up">
+                    <div class="framework-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h4 class="framework-title">{% translate "Resource Sharing" %}</h4>
+                    <p class="framework-description">
+                        Partners contribute financial resources, technical expertise, knowledge products, and institutional capacity to amplify collective impact and efficiency.
+                    </p>
+                </div>
+
+                <div class="framework-card animate-slide-up">
+                    <div class="framework-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4 class="framework-title">{% translate "Performance Monitoring" %}</h4>
+                    <p class="framework-description">
+                        Regular assessment of partnership outcomes, impact measurement, and continuous improvement processes ensure partnerships deliver maximum value for all stakeholders.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Benefits -->
+    <section class="content-section alternate">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="section-title animate-slide-up">{% translate "Partnership Benefits" %}</h2>
+                    <p class="lead mb-4 animate-slide-up" style="color: var(--neutral-600);">
+                        Our strategic partnerships create a multiplier effect that enhances IPAWAS capabilities and
+                        delivers exceptional value to all stakeholders.
+                    </p>
+                    <div class="animate-slide-up">
+                        <h5 style="color: var(--primary-blue); margin-bottom: 1rem;">{% translate "For IPAWAS Members:" %}</h5>
+                        <ul style="color: var(--neutral-600); line-height: 1.8; margin-bottom: 2rem;">
+                            <li>{% translate "Access to world-class expertise and knowledge" %}</li>
+                            <li>{% translate "Enhanced capacity building opportunities" %}</li>
+                            <li>{% translate "Increased visibility and credibility" %}</li>
+                            <li>{% translate "Resource mobilization support" %}</li>
+                            <li>{% translate "Technology and innovation access" %}</li>
+                        </ul>
+
+                        <h5 style="color: var(--primary-blue); margin-bottom: 1rem;">{% translate "For Partners:" %}</h5>
+                        <ul style="color: var(--neutral-600); line-height: 1.8;">
+                            <li>{% translate "Access to 15 integrated markets" %}</li>
+                            <li>{% translate "Coordinated implementation platforms" %}</li>
+                            <li>{% translate "Regional impact amplification" %}</li>
+                            <li>{% translate "Shared expertise and learning" %}</li>
+                            <li>{% translate "Strategic influence and presence" %}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="partner-card animate-slide-up" style="margin-top: 0;">
+                        <h4 style="color: var(--primary-blue); margin-bottom: 2rem;">{% translate "Partnership Impact Metrics" %}</h4>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="text-center">
+                                    <div class="h3 fw-bold" style="color: var(--accent-green);">$500M+</div>
+                                    <div class="text-muted">{% translate "Leveraged Funding" %}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="text-center">
+                                    <div class="h3 fw-bold" style="color: var(--accent-green);">2,000+</div>
+                                    <div class="text-muted">{% translate "Capacity Building Participants" %}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="text-center">
+                                    <div class="h3 fw-bold" style="color: var(--accent-green);">150+</div>
+                                    <div class="text-muted">{% translate "Joint Initiatives" %}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="text-center">
+                                    <div class="h3 fw-bold" style="color: var(--accent-green);">95%</div>
+                                    <div class="text-muted">{% translate "Partner Satisfaction" %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="content-section dark">
+        <div class="container text-center">
+            <div class="animate-slide-up">
+                <h2 class="section-title text-white mb-4">{% translate "Partner with IPAWAS" %}</h2>
+                <p class="lead text-white-75 mb-4">
+                    Join our network of strategic partners and help shape the future of investment promotion in West
+                    Africa
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'about:contact' %}" class="btn btn-lg"
+                        style="background: linear-gradient(135deg, var(--secondary-gold), var(--orange)); color: white; border: none; padding: 15px 35px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">
+                        <i class="fas fa-handshake me-2"></i>Explore Partnership
+                    </a>
+                    <a href="{% url 'about:strategic_priorities' %}" class="btn btn-lg"
+                        style="background: rgba(255, 255, 255, 0.15); color: white; border: 2px solid rgba(255, 255, 255, 0.3); padding: 15px 35px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">
+                        <i class="fas fa-file-alt me-2"></i>Partnership Framework
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h3 class="footer-brand">{% translate "IPAWAS" %}</h3>
+                    <p class="text-white-75 mb-4">Investment Promotion Agencies of West Africa - Connecting global
+                        investors with transformative opportunities across 15 ECOWAS nations.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Organization" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'about:who_we_are' %}" class="footer-link">{% translate "About IPAWAS" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'about:mission_vision_values' %}" class="footer-link">{% translate "Our Mission" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'about:governance' %}" class="footer-link">{% translate "Leadership" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'about:strategic_priorities' %}" class="footer-link">{% translate "Partnerships" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Investors" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'investor_services:hub' %}" class="footer-link">{% translate "Investment Guide" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'why_west_africa:hub' %}" class="footer-link">{% translate "Sector Opportunities" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'members:hub' %}" class="footer-link">{% translate "Country Profiles" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'why_west_africa:success-stories' %}" class="footer-link">{% translate "Success Stories" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Resources" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'knowledge_hub:resources' %}" class="footer-link">{% translate "Research Reports" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'knowledge_hub:resources' %}" class="footer-link">{% translate "Policy Documents" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'knowledge_hub:resources' %}" class="footer-link">{% translate "Investment Tools" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'media_center:hub' %}" class="footer-link">{% translate "Media Center" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Connect" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'about:contact' %}" class="footer-link">{% translate "Contact Us" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'knowledge_hub:news' %}" class="footer-link">{% translate "Events" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'knowledge_hub:news' %}"newsletter" class="footer-link">{% translate "Newsletter" %}</a></li>
+                        <li class="mb-2"><a href="{% url 'members_portal' %}" class="footer-link">{% translate "Member Portal" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-white-50 mb-0">&copy; {% now "Y" %} IPAWAS. {% translate "All rights reserved." %}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="{% url 'about:privacy_policy' %}" class="footer-link me-4">{% translate "Privacy Policy" %}</a>
+                    <a href="{% url 'about:terms_of_use' %}" class="footer-link">{% translate "Terms of Service" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animation elements
+        document.querySelectorAll('[class*="animate-"]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Navbar collapse on mobile link click
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const navCollapse = document.querySelector('.navbar-collapse');
+                if (navCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navCollapse, {
+                        toggle: true
+                    });
+                }
+            });
+        });
+
+        // Button hover effects
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+            });
+
+            button.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

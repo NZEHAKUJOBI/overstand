@@ -1,0 +1,78 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Success Stories" %}{% endblock %}
+{% block page_title %}{% translate "Success Stories" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> / {% translate "Success Stories" %}
+{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-lg-8">
+        <p class="text-muted mb-0">{% translate "Showcase investment success stories to build investor confidence" %}</p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'dashboard:country:success_stories_add' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-plus me-2"></i>{% translate "Add Story" %}
+        </a>
+    </div>
+</div>
+
+{% if stories %}
+<div class="row g-4">
+    {% for story in stories %}
+    <div class="col-lg-6">
+        <div class="content-card h-100">
+            {% if story.image %}
+            <div style="height:180px;overflow:hidden;border-radius:12px 12px 0 0;">
+                <img src="{{ story.image }}" alt="{{ story.title }}" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            {% endif %}
+            <div class="content-card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge" style="background:#EFF6FF;color:#1D4ED8;">{{ story.year }}</span>
+                    <div class="d-flex gap-2">
+                        {% if story.featured %}<span class="badge" style="background:#FFFBEB;color:#D97706;">{% translate "Featured" %}</span>{% endif %}
+                        {% if story.published %}<span class="badge" style="background:#ECFDF5;color:#065F46;">{% translate "Published" %}</span>{% else %}<span class="badge" style="background:#F3F4F6;color:#6B7280;">{% translate "Draft" %}</span>{% endif %}
+                    </div>
+                </div>
+                <h5 style="color:var(--dark-green);margin-bottom:.25rem;">{{ story.title }}</h5>
+                <p class="text-muted small mb-2">{{ story.company_name }}{% if story.company_origin %} &middot; {{ story.company_origin }}{% endif %}{% if story.sector %} &middot; {{ story.sector.name }}{% endif %}</p>
+                <div class="d-flex gap-3 mb-3 small">
+                    {% if story.investment_amount_display %}
+                    <span><i class="fas fa-dollar-sign text-success me-1"></i>{{ story.investment_amount_display }}</span>
+                    {% endif %}
+                    {% if story.jobs_created %}
+                    <span><i class="fas fa-users text-primary me-1"></i>{% blocktranslate with count=story.jobs_created %}{{ count }} jobs{% endblocktranslate %}</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted small mb-3">{{ story.summary|truncatewords:25 }}</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'dashboard:country:success_stories_edit' member_state.slug story.pk %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                    </a>
+                    <a href="{% url 'dashboard:country:success_stories_delete' member_state.slug story.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="content-card">
+    <div class="content-card-body text-center py-5">
+        <i class="fas fa-trophy fa-4x mb-3" style="color:var(--neutral-300);"></i>
+        <h4 style="color:var(--dark-green);">{% translate "No Success Stories Yet" %}</h4>
+        <p class="text-muted mb-4">{% translate "Add case studies of successful investments to demonstrate your country's track record to potential investors." %}</p>
+        <a href="{% url 'dashboard:country:success_stories_add' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-plus me-2"></i>{% translate "Add Your First Story" %}
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

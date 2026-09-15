@@ -1,0 +1,668 @@
+{% load i18n %}
+<!-- Contact IPA Tab -->
+<div class="contact-tab">
+    <div class="contact-intro mb-5">
+        <h2 class="mb-3">Contact {{ member_state.ipa_acronym }}</h2>
+        <p class="lead text-muted">{% blocktranslate trimmed %}
+            Get in touch with {{ member_state.ipa_full_name }} for investment guidance,
+            information, and support services.
+        {% endblocktranslate %}</p>
+    </div>
+
+    <div class="row g-5">
+        <!-- Contact Information Column -->
+        <div class="col-lg-5">
+            <!-- IPA Profile Card -->
+            <div class="ipa-profile-card mb-4">
+                {% if member_state.ipa_logo %}
+                <div class="ipa-logo">
+                    <img src="{{ member_state.ipa_logo }}" alt="{{ member_state.ipa_acronym }}">
+                </div>
+                {% endif %}
+                <h3>{{ member_state.ipa_full_name }}</h3>
+                <p class="ipa-acronym">{% blocktranslate trimmed %}({{ member_state.ipa_acronym }}){% endblocktranslate %}</p>
+                {% if member_state.ipa_website %}
+                <a href="{{ member_state.ipa_website }}"
+                   target="_blank"
+                   class="website-link">
+                    <i class="fas fa-external-link-alt me-2"></i>
+                    Visit Official Website
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Contact Details -->
+            <div class="contact-details-card mb-4">
+                <h4><i class="fas fa-info-circle me-2"></i>Contact Information</h4>
+
+                {% if member_state.contact_email %}
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <label>Email</label>
+                        <a href="mailto:{{ member_state.contact_email }}">
+                            {{ member_state.contact_email }}
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if member_state.contact_phone %}
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <label>Phone</label>
+                        <a href="tel:{{ member_state.contact_phone }}">
+                            {{ member_state.contact_phone }}
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if member_state.physical_address %}
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <label>Address</label>
+                        <p>{% blocktranslate trimmed %}{{ member_state.physical_address }}{% endblocktranslate %}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if member_state.office_hours %}
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <label>Office Hours</label>
+                        <p>{% blocktranslate trimmed %}{{ member_state.office_hours }}{% endblocktranslate %}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Social Media Links -->
+            {% if member_state.linkedin_url or member_state.twitter_url or member_state.facebook_url or member_state.instagram_url %}
+            <div class="social-media-card">
+                <h4><i class="fas fa-share-alt me-2"></i>Follow Us</h4>
+                <div class="social-links">
+                    {% if member_state.linkedin_url %}
+                    <a href="{{ member_state.linkedin_url }}" target="_blank" class="social-link linkedin">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    {% endif %}
+                    {% if member_state.twitter_url %}
+                    <a href="{{ member_state.twitter_url }}" target="_blank" class="social-link twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    {% endif %}
+                    {% if member_state.facebook_url %}
+                    <a href="{{ member_state.facebook_url }}" target="_blank" class="social-link facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    {% endif %}
+                    {% if member_state.instagram_url %}
+                    <a href="{{ member_state.instagram_url }}" target="_blank" class="social-link instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Key Staff (if available) -->
+            {% if staff %}
+            <div class="staff-card mt-4">
+                <h4><i class="fas fa-users me-2"></i>Key Personnel</h4>
+                {% for staff_member in staff %}
+                <div class="staff-member">
+                    {% if staff_member.photo %}
+                    <img src="{{ staff_member.photo }}" alt="{{ staff_member.full_name }}">
+                    {% else %}
+                    <div class="staff-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                    <div class="staff-info">
+                        <h5>{{ staff_member.full_name }}</h5>
+                        <p class="staff-title">{% blocktranslate trimmed %}{{ staff_member.position }}{% endblocktranslate %}</p>
+                        {% if staff_member.email %}
+                        <a href="mailto:{{ staff_member.email }}" class="staff-email">
+                            <i class="fas fa-envelope me-1"></i>{{ staff_member.email }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Contact Form Column -->
+        <div class="col-lg-7">
+            {% if inquiry_success %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Thank you for your inquiry!</strong>
+                {{ member_state.ipa_acronym }} will review your message and respond within 2-3 business days.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <div class="inquiry-form-card">
+                <h3>Send Us an Inquiry</h3>
+                <p class="form-description">{% blocktranslate trimmed %}
+                    Complete the form below and our investment promotion team will get back to you promptly.
+                    All fields marked with <span class="required">*</span> are required.
+                {% endblocktranslate %}</p>
+
+                <form method="post"
+                      action="{% url 'members:inquiry_create' country_slug=member_state.slug %}"
+                      class="inquiry-form">
+                    {% csrf_token %}
+
+                    {# Honeypot — visually hidden, never filled by real users. #}
+                    {# Position offscreen rather than display:none so bots can't skip it. #}
+                    <div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+                        <label for="{{ inquiry_form.website.id_for_label }}">Website</label>
+                        {{ inquiry_form.website }}
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-user me-2"></i>Your Information</h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_full_name" class="form-label">
+                                    Full Name <span class="required">*</span>
+                                </label>
+                                {{ inquiry_form.full_name }}
+                                {% if inquiry_form.full_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ inquiry_form.full_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_email" class="form-label">
+                                    Email Address <span class="required">*</span>
+                                </label>
+                                {{ inquiry_form.email }}
+                                {% if inquiry_form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ inquiry_form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="id_phone" class="form-label">Phone Number</label>
+                                {{ inquiry_form.phone }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_country" class="form-label">
+                                    Your Country <span class="required">*</span>
+                                </label>
+                                {{ inquiry_form.country }}
+                                {% if inquiry_form.country.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ inquiry_form.country.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="id_company" class="form-label">Company/Organization</label>
+                                {{ inquiry_form.company }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_job_title" class="form-label">Job Title</label>
+                                {{ inquiry_form.job_title }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Investment Details -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-briefcase me-2"></i>Investment Inquiry</h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_inquiry_type" class="form-label">
+                                    Inquiry Type <span class="required">*</span>
+                                </label>
+                                {{ inquiry_form.inquiry_type }}
+                                {% if inquiry_form.inquiry_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ inquiry_form.inquiry_type.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_sector_of_interest" class="form-label">
+                                    Sector of Interest
+                                </label>
+                                {{ inquiry_form.sector_of_interest }}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="id_investment_size" class="form-label">
+                                Estimated Investment Size
+                            </label>
+                            {{ inquiry_form.investment_size }}
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="id_message" class="form-label">
+                                Your Message <span class="required">*</span>
+                            </label>
+                            {{ inquiry_form.message }}
+                            {% if inquiry_form.message.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ inquiry_form.message.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Please provide details about your investment plans and any specific questions.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Privacy & Consent -->
+                    <div class="form-section">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="privacy_consent" required>
+                            <label class="form-check-label" for="privacy_consent">
+                                I agree to {{ member_state.ipa_acronym }} collecting and processing my information
+                                for the purpose of responding to my inquiry. <span class="required">*</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-submit-inquiry">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Send Inquiry
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary">
+                            <i class="fas fa-redo me-2"></i>
+                            Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Support Section -->
+    <div class="support-section mt-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-headset me-2"></i>
+            Other Ways to Get Support
+        </h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="support-card">
+                    <i class="fas fa-file-download"></i>
+                    <h5>Download Investment Guide</h5>
+                    <p>{% blocktranslate trimmed %}Get comprehensive information about investing in {{ member_state.country_name }}{% endblocktranslate %}</p>
+                    {% if member_state.investment_guide_pdf %}
+                    <a href="{{ member_state.investment_guide_pdf }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                        Download PDF
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="support-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h5>Schedule a Meeting</h5>
+                    <p>{% blocktranslate trimmed %}Book a one-on-one consultation with our investment team{% endblocktranslate %}</p>
+                    <a href="{% url 'about:contact' %}" class="btn btn-sm btn-outline-primary">
+                        Book Appointment
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="support-card">
+                    <i class="fas fa-question-circle"></i>
+                    <h5>View FAQs</h5>
+                    <p>{% blocktranslate trimmed %}Find answers to commonly asked questions about investing{% endblocktranslate %}</p>
+                    <a href="{% url 'about:contact' %}" class="btn btn-sm btn-outline-primary">
+                        View FAQs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ipa-profile-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.ipa-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-green, #1B7A4C);
+}
+
+.ipa-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ipa-profile-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.ipa-acronym {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.website-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-green, #1B7A4C);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.website-link:hover {
+    background: var(--dark-green, #0D4A2E);
+    color: white;
+}
+
+.contact-details-card,
+.social-media-card,
+.staff-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.contact-details-card h4,
+.social-media-card h4,
+.staff-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: var(--primary-green, #1B7A4C);
+    flex-shrink: 0;
+}
+
+.contact-item label {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.contact-item a {
+    color: var(--primary-green, #1B7A4C);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
+.contact-item p {
+    color: #495057;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.social-link {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    color: white;
+}
+
+.social-link.linkedin {
+    background: #0077B5;
+}
+
+.social-link.twitter {
+    background: #1DA1F2;
+}
+
+.social-link.facebook {
+    background: #4267B2;
+}
+
+.social-link.instagram {
+    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+}
+
+.staff-member {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.staff-member:last-child {
+    margin-bottom: 0;
+}
+
+.staff-member img,
+.staff-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.staff-avatar {
+    background: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.5rem;
+}
+
+.staff-info h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.25rem;
+}
+
+.staff-title {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.staff-email {
+    font-size: 0.85rem;
+    color: var(--primary-green, #1B7A4C);
+    text-decoration: none;
+}
+
+.inquiry-form-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.inquiry-form-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 1rem;
+}
+
+.form-description {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 1.5rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-green, #1B7A4C);
+    box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.15);
+}
+
+textarea.form-control {
+    min-height: 150px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-submit-inquiry {
+    background: var(--primary-green, #1B7A4C);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-inquiry:hover {
+    background: var(--dark-green, #0D4A2E);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.support-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.support-card i {
+    font-size: 2.5rem;
+    color: var(--primary-green, #1B7A4C);
+    margin-bottom: 1rem;
+}
+
+.support-card h5 {
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.75rem;
+}
+
+.support-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    border-bottom: 3px solid var(--primary-green, #1B7A4C);
+    padding-bottom: 0.5rem;
+}
+</style>

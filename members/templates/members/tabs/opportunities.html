@@ -1,0 +1,399 @@
+{% load i18n %}
+<!-- Investment Opportunities Tab -->
+<div class="opportunities-tab">
+    <div class="opportunities-intro mb-5">
+        <h2 class="mb-3">Investment Opportunities in {{ member_state.country_name }}</h2>
+        <p class="lead text-muted">
+            Discover vetted investment opportunities across priority sectors.
+            {% if opportunities_count %}
+                Currently {{ opportunities_count }} active opportunities available.
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="opportunities-filters mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <select class="form-select" id="sectorFilter">
+                    <option value="">All Sectors</option>
+                    {% for sector_rel in priority_sectors %}
+                        <option value="{{ sector_rel.sector.slug }}">{{ sector_rel.sector.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="investmentSizeFilter">
+                    <option value="">Investment Size</option>
+                    <option value="0-1000000">Under $1M</option>
+                    <option value="1000000-5000000">$1M - $5M</option>
+                    <option value="5000000-10000000">$5M - $10M</option>
+                    <option value="10000000-50000000">$10M - $50M</option>
+                    <option value="50000000-999999999">$50M+</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="projectStageFilter">
+                    <option value="">Project Stage</option>
+                    <option value="pre_feasibility">Pre-Feasibility</option>
+                    <option value="feasibility">Feasibility</option>
+                    <option value="ready_to_implement">Ready to Implement</option>
+                    <option value="under_implementation">Under Implementation</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="sortBy">
+                    <option value="published_date">Latest First</option>
+                    <option value="investment_required_min">Investment (Low to High)</option>
+                    <option value="-investment_required_min">Investment (High to Low)</option>
+                    <option value="title">Name (A-Z)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opportunities Grid -->
+    {% if opportunities %}
+    <div class="opportunities-grid">
+        {% for opportunity in opportunities %}
+        <div class="opportunity-card"
+             data-sector="{{ opportunity.primary_sector.slug }}"
+             data-investment="{{ opportunity.investment_required_min }}"
+             data-stage="{{ opportunity.project_stage }}">
+
+            <!-- Thumbnail -->
+            <div class="opportunity-thumbnail">
+                {% if opportunity.thumbnail_image %}
+                    <img src="{{ opportunity.thumbnail_image }}" alt="{{ opportunity.title }}">
+                {% else %}
+                    <div class="thumbnail-placeholder">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                {% endif %}
+
+                <!-- Badges -->
+                <div class="opportunity-badges">
+                    {% if opportunity.featured %}
+                        <span class="badge badge-featured">
+                            <i class="fas fa-star"></i> Featured
+                        </span>
+                    {% endif %}
+                    {% if opportunity.priority_level == 'high' %}
+                        <span class="badge badge-priority">High Priority</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="opportunity-content">
+                <h3>{{ opportunity.title }}</h3>
+
+                <div class="opportunity-meta">
+                    <span class="meta-item">
+                        <i class="fas fa-industry me-1"></i>
+                        {{ opportunity.primary_sector.name }}
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        {{ opportunity.specific_location|default:member_state.country_name }}
+                    </span>
+                </div>
+
+                <p class="opportunity-summary">{% blocktranslate trimmed %}{{ opportunity.summary|truncatewords:25 }}{% endblocktranslate %}</p>
+
+                <!-- Investment Details -->
+                <div class="investment-details">
+                    <div class="detail-item">
+                        <label>Investment Required</label>
+                        <span class="value">
+                            ${{ opportunity.investment_required_min|floatformat:0 }}
+                            {% if opportunity.investment_required_max %}
+                                - ${{ opportunity.investment_required_max|floatformat:0 }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% if opportunity.expected_roi %}
+                    <div class="detail-item">
+                        <label>Expected ROI</label>
+                        <span class="value">{{ opportunity.expected_roi }}%</span>
+                    </div>
+                    {% endif %}
+                    {% if opportunity.payback_period %}
+                    <div class="detail-item">
+                        <label>Payback Period</label>
+                        <span class="value">{{ opportunity.payback_period }} years</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Project Stage -->
+                <div class="project-stage">
+                    <span class="stage-badge stage-{{ opportunity.project_stage }}">
+                        {{ opportunity.get_project_stage_display }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="opportunity-footer">
+                <a href="{{ opportunity.get_absolute_url }}" class="btn btn-view-opportunity">
+                    View Full Details
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if opportunities_count > 9 %}
+    <div class="text-center mt-5">
+        <a href="{% url 'opportunities:listing' %}"?country={{ member_state.slug }}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-th me-2"></i>
+            View All {{ opportunities_count }} Opportunities
+        </a>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="no-opportunities">
+        <div class="no-opportunities-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>No Active Opportunities Yet</h3>
+        <p>{% blocktranslate trimmed %}Investment opportunities for {{ member_state.country_name }} are being compiled. Check back soon!{% endblocktranslate %}</p>
+        <a href="{% url 'members:detail' country_slug=member_state.slug %}?tab=contact"
+           class="btn btn-primary">
+            <i class="fas fa-envelope me-2"></i>
+            Contact {{ member_state.ipa_acronym }} for Information
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.opportunities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.opportunity-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.opportunity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.opportunity-thumbnail {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+}
+
+.opportunity-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.opportunity-card:hover .opportunity-thumbnail img {
+    transform: scale(1.05);
+}
+
+.thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-placeholder i {
+    font-size: 4rem;
+    color: #adb5bd;
+}
+
+.opportunity-badges {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-featured {
+    background: var(--accent-gold, #D4AF37);
+    color: white;
+}
+
+.badge-priority {
+    background: #dc3545;
+    color: white;
+}
+
+.opportunity-content {
+    padding: 1.5rem;
+}
+
+.opportunity-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.opportunity-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.opportunity-summary {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.investment-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.detail-item .value {
+    font-weight: 700;
+    color: var(--primary-green, #1B7A4C);
+}
+
+.project-stage {
+    margin-bottom: 1rem;
+}
+
+.stage-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.stage-pre_feasibility {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.stage-feasibility {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.stage-ready_to_implement {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.stage-under_implementation {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.opportunity-footer {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-view-opportunity {
+    width: 100%;
+    background: var(--primary-green, #1B7A4C);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-view-opportunity:hover {
+    background: var(--dark-green, #0D4A2E);
+    color: white;
+    transform: translateX(5px);
+}
+
+.no-opportunities {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.no-opportunities-icon {
+    font-size: 5rem;
+    color: #dee2e6;
+    margin-bottom: 2rem;
+}
+
+.no-opportunities h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--dark-green, #0D4A2E);
+}
+
+.no-opportunities p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.opportunities-filters .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+.opportunities-filters .form-select:focus {
+    border-color: var(--primary-green, #1B7A4C);
+    box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.15);
+}
+</style>

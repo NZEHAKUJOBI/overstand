@@ -1,0 +1,995 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Knowledge Hub - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animations from AfCFTA page */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-on-scroll {
+        opacity: 0;
+        transition: all 0.6s ease;
+    }
+
+    .animate-on-scroll.animated {
+        opacity: 1;
+    }
+
+    /* Hero Section - Solid Green Background */
+
+    .hero-section {
+        position: relative;
+        min-height: 550px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+                    url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670074/knowledge_hub_k6bacq_nmarzj.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+    /* Featured Card - Pulled Up */
+    .featured-card-section {
+        margin: -120px auto 3rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+    .featured-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: stretch;
+        position: relative;
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        background: #EAE531;
+        color: #064E3B;
+        padding: 0.6rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .featured-image {
+        flex: 0 0 45%;
+        background: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768739982/west_africa_jkvp23.jpg') center/cover;
+        min-height: 400px;
+        position: relative;
+    }
+
+    .featured-content {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .featured-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .featured-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+
+    .featured-meta-item i {
+        color: var(--primary-green);
+    }
+
+    .featured-content h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .featured-content p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+    }
+
+    .featured-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+        background: var(--primary-green);
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom:hover {
+        background: var(--secondary-green);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(27, 122, 76, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline-custom {
+        background: white;
+        color: var(--primary-green);
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        border: 2px solid var(--primary-green);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--primary-green);
+        color: white;
+        text-decoration: none;
+    }
+
+    @media (max-width: 992px) {
+        .featured-card {
+            flex-direction: column;
+        }
+
+        .featured-image {
+            flex: none;
+            min-height: 300px;
+        }
+
+        .featured-card-section {
+            margin-top: -60px;
+        }
+    }
+
+    /* Search Bar */
+    .search-section {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 15px;
+    }
+
+    .search-bar {
+        position: relative;
+        animation: fadeInUp 1.2s ease;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 1.25rem 5rem 1.25rem 1.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 50px;
+        font-size: 1rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 5px 30px rgba(27, 122, 76, 0.2);
+    }
+
+    .search-bar button {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .search-bar button:hover {
+        background: var(--secondary-green);
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Explore Content Section */
+    .explore-section {
+        padding: 4rem 0;
+        background: white;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    .section-subtitle p {
+        text-align: center;
+    }
+
+    .content-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        border: 1px solid #f0f0f0;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.15);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .category-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .category-icon.publications { color: #1B7A4C; }
+    .category-icon.news { color: #10B981; }
+    .category-icon.blog { color: #059669; }
+
+    .category-card h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .category-card p {
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .category-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .category-stat {
+        text-align: center;
+    }
+
+    .category-stat-icon {
+        color: var(--primary-green);
+        margin-right: 0.3rem;
+    }
+
+    .category-stat-value {
+        display: block;
+        font-weight: 700;
+        color: var(--primary-green);
+        font-size: 1rem;
+    }
+
+    .category-stat-label {
+        font-size: 0.85rem;
+        color: #6B7280;
+    }
+
+    /* Latest Content Section */
+    .latest-content-section {
+        padding: 4rem 0;
+        background: #e4f3ec;
+    }
+
+    /* Tabs */
+    .content-tabs {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: white;
+        padding: 1rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .tab-btn {
+        background: transparent;
+        border: none;
+        color: #6B7280;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .tab-btn:hover {
+        color: var(--primary-green);
+        background: rgba(27, 122, 76, 0.05);
+    }
+
+    .tab-btn.active {
+        background: var(--primary-green);
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Content Grid */
+    .content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.15);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .content-card-image {
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .content-type-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        color: var(--primary-green);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .content-card-body {
+        padding: 1.5rem;
+    }
+
+    .content-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        color: #6B7280;
+        font-size: 0.85rem;
+    }
+
+    .content-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .content-card h5 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+
+    .content-excerpt {
+        color: #6B7280;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    .view-all-btn {
+        text-align: center;
+        margin-top: 2.5rem;
+    }
+
+    .btn-view-all {
+        background: transparent;
+        color: var(--primary-green);
+        padding: 0.875rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        border: 2px solid var(--primary-green);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-all:hover {
+        background: var(--primary-green);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Trending Topics */
+    .trending-section {
+        padding: 3rem 0;
+        background: white;
+    }
+
+    .topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .topic-tag {
+        background: #F0FDF4;
+        color: var(--primary-green);
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 1px solid rgba(27, 122, 76, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .topic-tag:hover {
+        background: var(--primary-green);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Newsletter Section */
+    .newsletter-section {
+        background: linear-gradient(135deg, #1B7A4C 0%, #10B981 100%);
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .newsletter-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .newsletter-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 30px;
+        padding: 3rem;
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .newsletter-icon {
+        font-size: 3.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .newsletter-card h2 {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .newsletter-card p {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .newsletter-form {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .newsletter-form input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+    }
+
+    .newsletter-form button {
+        background: #EAE531;
+        color: #064E3B;
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .newsletter-form button:hover {
+        background: #d4c100;
+        transform: translateY(-2px);
+    }
+
+    .newsletter-preferences {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        color: white;
+    }
+
+    .newsletter-preferences label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .newsletter-preferences input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+        .newsletter-form {
+            flex-direction: column;
+        }
+
+        .newsletter-form button {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "Knowledge Hub" %}</h1>
+            <p class="hero-subtitle">{% blocktranslate trimmed %}Your gateway to investment intelligence, research, and insights on West Africa{% endblocktranslate %}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Card -->
+<section class="featured-card-section">
+    <div class="container">
+        <div class="featured-card animate-on-scroll">
+            <span class="featured-badge"><i class="fas fa-star"></i> {% translate "Featured" %}</span>
+            <div class="featured-image"></div>
+            <div class="featured-content">
+                <div class="featured-meta">
+                    <span class="featured-meta-item"><i class="fas fa-file-alt"></i> {% translate "Annual Report" %}</span>
+                    <span class="featured-meta-item"><i class="fas fa-calendar"></i> {% translate "December 2024" %}</span>
+                    <span class="featured-meta-item"><i class="fas fa-download"></i> {% translate "2,547 Downloads" %}</span>
+                </div>
+                <h2>{% translate "West Africa Investment Report 2024" %}</h2>
+                <p>{% blocktranslate trimmed %}Comprehensive analysis of FDI trends, sectoral performance, and investment opportunities
+                    across 15 ECOWAS member states. Includes exclusive data from the WAIIS platform and
+                    insights from leading investment promotion experts.{% endblocktranslate %}</p>
+                <div class="featured-buttons">
+                    <a href="{% url 'knowledge_hub:publications' %}" class="btn-primary-custom"><i class="fas fa-eye"></i> {% translate "Read Report" %}</a>
+                    <a href="{% url 'knowledge_hub:publications' %}" class="btn-outline-custom"><i class="fas fa-download"></i> {% translate "Download PDF" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" placeholder="{% translate "Search publications, news, resources..." %}">
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Explore Our Content -->
+<section class="explore-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "Explore Our Content" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 700px; margin-left: auto; margin-right: auto;">{% blocktranslate trimmed %}Access comprehensive resources on investment promotion, policy, and regional opportunities{% endblocktranslate %}</p>
+        <div class="content-categories">
+            <a href="{% url 'knowledge_hub:publications' %}" class="category-card animate-on-scroll">
+                <i class="fas fa-book category-icon publications"></i>
+                <h4>{% translate "Publications" %}</h4>
+                <p>{% blocktranslate trimmed %}Research reports, policy briefs, investment guides, and comprehensive studies on
+                    West Africa's investment landscape.{% endblocktranslate %}</p>
+                <div class="category-stats">
+                    <div class="category-stat">
+                        <span class="category-stat-value">
+                            <i class="fas fa-file-pdf category-stat-icon"></i> {{ stats.publications_count }} Publications
+                        </span>
+                        <span class="category-stat-label">Updated Daily</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'knowledge_hub:news' %}" class="category-card animate-on-scroll">
+                <i class="fas fa-newspaper category-icon news"></i>
+                <h4>{% translate "News & Updates" %}</h4>
+                <p>{% blocktranslate trimmed %}Latest investment news, regional updates, success stories, and policy developments
+                    across West Africa.{% endblocktranslate %}</p>
+                <div class="category-stats">
+                    <div class="category-stat">
+                        <span class="category-stat-value">
+                            <i class="fas fa-rss category-stat-icon"></i> {{ stats.news_count }} Articles
+                        </span>
+                        <span class="category-stat-label">Trending Now</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="" class="category-card animate-on-scroll">
+                <i class="fas fa-pen-fancy category-icon blog"></i>
+                <h4>{% translate "Expert Blog" %}</h4>
+                <p>{% blocktranslate trimmed %}Insights and perspectives from IPA leaders, investment experts, and policy makers
+                    across the region.{% endblocktranslate %}</p>
+                <div class="category-stats">
+                    <div class="category-stat">
+                        <span class="category-stat-value">
+                            <i class="fas fa-users category-stat-icon"></i> {{ stats.contributors_count }} Contributors
+                        </span>
+                        <span class="category-stat-label">Active</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Content -->
+<section class="latest-content-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "Latest Content" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 700px; margin-left: auto; margin-right: auto;">{% blocktranslate trimmed %}Stay updated with our most recent publications, news, and insights{% endblocktranslate %}</p>
+
+        <!-- Tabs -->
+        <div class="content-tabs animate-on-scroll">
+            <button class="tab-btn active" onclick="switchTab(event, 'all-content')">{% translate "All Content" %}</button>
+            <button class="tab-btn" onclick="switchTab(event, 'publications')">{% translate "Publications" %}</button>
+            <button class="tab-btn" onclick="switchTab(event, 'news')">{% translate "News" %}</button>
+            <button class="tab-btn" onclick="switchTab(event, 'blog')">{% translate "Blog" %}</button>
+            <button class="tab-btn" onclick="switchTab(event, 'press')">{% translate "Press Releases" %}</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="all-content" class="tab-content active">
+            <div class="content-categories">
+                <a href="{% url 'knowledge_hub:publications' %}" class="content-card">
+                    <div class="content-card-image" style="background-image: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768743002/renewable_energy_pmxmmm.jpg');">
+                        <span class="content-type-badge">{% translate "Publication" %}</span>
+                    </div>
+                    <div class="content-card-body">
+                        <div class="content-meta">
+                            <span><i class="fas fa-calendar"></i> {% translate "Dec 10, 2024" %}</span>
+                            <span><i class="fas fa-download"></i> 245</span>
+                        </div>
+                        <h5>{% translate "Renewable Energy Investment Guide for West Africa" %}</h5>
+                        <p class="content-excerpt">{% blocktranslate trimmed %}Comprehensive guide covering policy frameworks, incentives, and opportunities...{% endblocktranslate %}</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'knowledge_hub:news' %}" class="content-card">
+                    <div class="content-card-image" style="background-image: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768743227/factory_fjinud.jpg');">
+                        <span class="content-type-badge">{% translate "News" %}</span>
+                    </div>
+                    <div class="content-card-body">
+                        <div class="content-meta">
+                            <span><i class="fas fa-calendar"></i> {% translate "Dec 11, 2024" %}</span>
+                            <span><i class="fas fa-eye"></i> 1,234</span>
+                        </div>
+                        <h5>{% translate "Nigeria Signs $2.5B Manufacturing Deal with UAE Investors" %}</h5>
+                        <p class="content-excerpt">{% blocktranslate trimmed %}Major investment agreement to establish industrial parks across three states...{% endblocktranslate %}</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'knowledge_hub:hub' %}" class="content-card">
+                    <div class="content-card-image" style="background-image: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1768744281/regional_s6ypk8.jpg');">
+                        <span class="content-type-badge">{% translate "Blog" %}</span>
+                    </div>
+                    <div class="content-card-body">
+                        <div class="content-meta">
+                            <span><i class="fas fa-calendar"></i> {% translate "Dec 9, 2024" %}</span>
+                            <span><i class="fas fa-comment"></i> 12</span>
+                        </div>
+                        <h5>{% translate "Leveraging AfCFTA for Regional Investment Growth" %}</h5>
+                        <p class="content-excerpt">{% blocktranslate trimmed %}Expert insights on maximizing opportunities under the African Continental Free Trade Area...{% endblocktranslate %}</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="view-all-btn">
+                <a href="{% url 'knowledge_hub:publications' %}" class="btn-view-all"><i class="fas fa-th-large"></i> {% translate "View All Content" %}</a>
+            </div>
+        </div>
+
+        <div id="publications" class="tab-content">
+            <div class="content-grid">
+                <!-- Publications content -->
+            </div>
+        </div>
+
+        <div id="news" class="tab-content">
+            <div class="content-grid">
+                <!-- News content -->
+            </div>
+        </div>
+
+        <div id="blog" class="tab-content">
+            <div class="content-grid">
+                <!-- Blog content -->
+            </div>
+        </div>
+
+        <div id="press" class="tab-content">
+            <div class="content-grid">
+                <!-- Press releases content -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trending Topics -->
+<section class="trending-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">{% translate "Trending Topics" %}</h2>
+        <p class="text-center mb-5" style="font-size: 1.1rem; color: var(--neutral-600); max-width: 700px; margin-left: auto; margin-right: auto;">{% blocktranslate trimmed %}Explore popular topics and emerging trends in West African investment{% endblocktranslate %}</p>
+
+        <div class="topic-tags animate-on-scroll">
+            <span class="topic-tag">{% translate "FDI Trends" %}</span>
+            <span class="topic-tag">{% translate "Renewable Energy" %}</span>
+            <span class="topic-tag">{% translate "Digital Economy" %}</span>
+            <span class="topic-tag">{% translate "Agriculture" %}</span>
+            <span class="topic-tag">{% translate "Manufacturing" %}</span>
+            <span class="topic-tag">{% translate "Infrastructure" %}</span>
+            <span class="topic-tag">{% translate "AfCFTA" %}</span>
+            <span class="topic-tag">{% translate "Policy Reform" %}</span>
+            <span class="topic-tag">{% translate "Fintech" %}</span>
+            <span class="topic-tag">{% translate "Mining" %}</span>
+            <span class="topic-tag">{% translate "Regional Integration" %}</span>
+            <span class="topic-tag">{% translate "Investment Climate" %}</span>
+            <span class="topic-tag">{% translate "Tourism" %}</span>
+            <span class="topic-tag">{% translate "Trade Facilitation" %}</span>
+            <span class="topic-tag">{% translate "ICT" %}</span>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section" id="newsletter">
+    <div class="container">
+        <div class="newsletter-card">
+            <i class="fas fa-envelope-open-text newsletter-icon"></i>
+            <h2>{% translate "Stay Informed" %}</h2>
+            <p>{% blocktranslate trimmed %}Subscribe to receive our latest publications, news, and investment insights directly to your inbox{% endblocktranslate %}</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="{% translate "Enter your email address" %}" required>
+                <button type="submit"><i class="fas fa-paper-plane"></i> {% translate "Subscribe" %}</button>
+            </form>
+            <div class="newsletter-preferences">
+                <label>
+                    <input type="checkbox" checked>
+                    <span>{% translate "Publications" %}</span>
+                </label>
+                <label>
+                    <input type="checkbox" checked>
+                    <span>{% translate "News Updates" %}</span>
+                </label>
+                <label>
+                    <input type="checkbox">
+                    <span>{% translate "Event Invitations" %}</span>
+                </label>
+                <label>
+                    <input type="checkbox">
+                    <span>{% translate "Data Reports" %}</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Tab Switching
+function switchTab(event, tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Scroll Animation Observer
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+        }
+    });
+}, observerOptions);
+
+// Initialize animations
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

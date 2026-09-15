@@ -1,0 +1,101 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Edit File - {{ member_state.country_name }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <a href="{% url 'dashboard:country:media:file_detail' member_state_slug=member_state.slug pk=file.id %}"
+           class="btn btn-outline-secondary btn-sm me-3">
+            <i class="fas fa-arrow-left"></i>{% translate "Back" %}
+        </a>
+        <div>
+            <h1 class="page-title mb-0">{% translate "Edit File" %}</h1>
+            <p class="text-muted mb-0">{{ file.name }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">{% translate "File Name" %}</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.alt_text.id_for_label }}" class="form-label">{% translate "Alt Text" %}</label>
+                        {{ form.alt_text }}
+                        {% if form.alt_text.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.alt_text.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.caption.id_for_label }}" class="form-label">{% translate "Caption" %}</label>
+                        {{ form.caption }}
+                        {% if form.caption.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.caption.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.tags_input.id_for_label }}" class="form-label">{% translate "Tags" %}</label>
+                        {{ form.tags_input }}
+                        <div class="form-text">{{ form.tags_input.help_text }}</div>
+                        {% if form.tags_input.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.tags_input.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>{% translate "Save Changes" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:media:file_detail' member_state_slug=member_state.slug pk=file.id %}"
+                           class="btn btn-outline-secondary">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if file.is_image %}
+                <img src="{{ file.get_thumbnail }}"
+                     alt="{{ file.alt_text|default:file.name }}"
+                     class="img-fluid mb-3"
+                     style="max-height: 200px;">
+                {% else %}
+                <div class="py-4">
+                    <i class="fas {{ file.get_file_icon }} fa-4x text-muted"></i>
+                </div>
+                {% endif %}
+                <h6 class="mb-2">{{ file.name }}</h6>
+                <p class="small text-muted mb-0">{{ file.get_display_size }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

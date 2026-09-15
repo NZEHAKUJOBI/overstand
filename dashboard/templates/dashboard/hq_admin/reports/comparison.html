@@ -1,0 +1,217 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Member State Comparison - Reports" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:reports' %}">{% translate "Reports" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Comparison" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">{% translate "Member State Comparison" %}</h1>
+            <p class="page-description">{% translate "Compare performance metrics across member states" %}</p>
+        </div>
+        <a href="{% url 'dashboard:hq:export' %}?type=member_states" class="btn btn-primary-green">
+            <i class="fas fa-download me-2"></i>{% translate "Export CSV" %}
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% translate "Member State" %}</th>
+                        <th class="text-center">{% translate "Status" %}</th>
+                        <th class="text-center">{% translate "Opportunities" %}</th>
+                        <th class="text-center">{% translate "Published" %}</th>
+                        <th class="text-center">{% translate "Inquiries" %}</th>
+                        <th class="text-center">{% translate "Team Size" %}</th>
+                        <th class="text-center">{% translate "Activity Score" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for state in member_states %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="flag-icon me-2">{{ state.country_code }}</span>
+                                <div>
+                                    <div class="fw-semibold">{{ state.country_name }}</div>
+                                    <div class="text-muted small">{{ state.ipa_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            {% if state.is_active %}
+                                <span class="badge bg-success">{% translate "Active" %}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{% translate "Inactive" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <span class="metric-value">{{ state.opportunity_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="metric-value text-success">{{ state.published_opp_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="metric-value">{{ state.inquiry_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="metric-value">{{ state.team_size }}</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="progress" style="height: 8px;">
+                                {% widthratio state.opportunity_count 100 100 as score %}
+                                <div class="progress-bar bg-primary"
+                                     style="width: {% if score > 100 %}100{% else %}{{ score }}{% endif %}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <i class="fas fa-globe-africa fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">{% translate "No member states found" %}</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">{% translate "Top Performers" %}</h5>
+            </div>
+            <div class="card-body">
+                {% for state in member_states|slice:":5" %}
+                <div class="performer-item">
+                    <div class="rank-badge">{{ forloop.counter }}</div>
+                    <div class="performer-info">
+                        <div class="fw-semibold">{{ state.country_name }}</div>
+                        <small class="text-muted">{% blocktranslate trimmed %}{{ state.opportunity_count }} opportunities{% endblocktranslate %}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">{% translate "Performance Metrics" %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="metric-row">
+                    <span>{% translate "Average Opportunities per State" %}</span>
+                    <strong>{{ member_states|length|default:0 }}</strong>
+                </div>
+                <div class="metric-row">
+                    <span>{% translate "Average Team Size" %}</span>
+                    <strong>{{ member_states|length|default:0 }}</strong>
+                </div>
+                <div class="metric-row">
+                    <span>{% translate "Total Inquiries" %}</span>
+                    <strong>{{ member_states|length|default:0 }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .flag-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--primary-green);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+
+    .metric-value {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--dark-green);
+    }
+
+    .performer-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .performer-item:last-child {
+        border-bottom: none;
+    }
+
+    .rank-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .performer-info {
+        flex: 1;
+    }
+
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .metric-row:last-child {
+        border-bottom: none;
+    }
+
+    .table thead th {
+        background: var(--neutral-100);
+        border-bottom: 2px solid var(--neutral-300);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        color: var(--neutral-700);
+        padding: 1rem;
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,441 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Member States | HQ Dashboard" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:overview' %}">{% translate "Dashboard" %}</a></span>
+<span class="breadcrumb-item active">{% translate "Member States" %}</span>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-2">{% translate "Member States" %}</h1>
+        <p class="page-description mb-0">{% translate "Manage and monitor all IPAWAS member states" %}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" onclick="exportMemberStates()">
+            <i class="fas fa-download me-2"></i>{% translate "Export" %}
+        </button>
+        <a href="{% url 'dashboard:hq:member_states' %}?view=grid" class="btn btn-outline-secondary">
+            <i class="fas fa-th"></i>
+        </a>
+        <a href="{% url 'dashboard:hq:member_states' %}?view=list" class="btn btn-outline-secondary active">
+            <i class="fas fa-list"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card">
+            <div class="summary-icon bg-primary-soft">
+                <i class="fas fa-globe-africa"></i>
+            </div>
+            <div class="summary-content">
+                <div class="summary-value">{{ total_count }}</div>
+                <div class="summary-label">{% translate "Total Member States" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card">
+            <div class="summary-icon bg-success-soft">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="summary-content">
+                <div class="summary-value">{{ active_count }}</div>
+                <div class="summary-label">{% translate "Active States" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card">
+            <div class="summary-icon bg-info-soft">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="summary-content">
+                <div class="summary-value">{{ published_count|default:0 }}</div>
+                <div class="summary-label">{% translate "Published Profiles" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card">
+            <div class="summary-icon bg-warning-soft">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="summary-content">
+                <div class="summary-value">{{ total_count|add:"-"|add:active_count }}</div>
+                <div class="summary-label">{% translate "Inactive States" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters & Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-lg-4">
+                <label class="form-label">{% translate "Search" %}</label>
+                <input type="text" name="search" class="form-control"
+                       placeholder="{% translate "Search by name, acronym or country..." %}"
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-lg-2">
+                <label class="form-label">{% translate "Status" %}</label>
+                <select name="is_active" class="form-select">
+                    <option value="">{% translate "All States" %}</option>
+                    <option value="true" {% if request.GET.is_active == 'true' %}selected{% endif %}>{% translate "Active" %}</option>
+                    <option value="false" {% if request.GET.is_active == 'false' %}selected{% endif %}>{% translate "Inactive" %}</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <label class="form-label">{% translate "Sort By" %}</label>
+                <select name="sort" class="form-select">
+                    <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>{% translate "Newest First" %}</option>
+                    <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>{% translate "Oldest First" %}</option>
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>{% translate "Name (A-Z)" %}</option>
+                    <option value="-name" {% if sort == '-name' %}selected{% endif %}>{% translate "Name (Z-A)" %}</option>
+                    <option value="-opportunity_count" {% if sort == '-opportunity_count' %}selected{% endif %}>{% translate "Most Opportunities" %}</option>
+                    <option value="-inquiry_count" {% if sort == '-inquiry_count' %}selected{% endif %}>{% translate "Most Inquiries" %}</option>
+                </select>
+            </div>
+            <div class="col-lg-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>{% translate "Filter" %}
+                </button>
+                <a href="{% url 'dashboard:hq:member_states' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-2"></i>{% translate "Clear" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Member States Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 30%">{% translate "Member State" %}</th>
+                        <th class="text-center" style="width: 12%">{% translate "Team Size" %}</th>
+                        <th class="text-center" style="width: 12%">{% translate "Opportunities" %}</th>
+                        <th class="text-center" style="width: 12%">{% translate "Inquiries" %}</th>
+                        <th class="text-center" style="width: 14%">{% translate "Status" %}</th>
+                        <th class="text-center" style="width: 15%">{% translate "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for state in member_states %}
+                    <tr>
+                        <td class="fw-bold text-muted">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if state.ipa_logo %}
+                                <div class="country-flag me-3">
+                                    <img src="{{ state.ipa_logo }}"
+                                         alt="{{ state.ipa_acronym }} logo"
+                                         loading="lazy"
+                                         style="object-fit:contain;"
+                                         onerror="this.onerror=null; this.parentElement.outerHTML='<div class=\'country-flag me-3\'><img src=\'https://flagcdn.com/w80/{{ state.country_code|lower }}.png\' alt=\'{{ state.country_name }} flag\' loading=\'lazy\'></div>';">
+                                </div>
+                                {% elif state.country_code %}
+                                <div class="country-flag me-3">
+                                    <img src="https://flagcdn.com/w80/{{ state.country_code|lower }}.png"
+                                         srcset="https://flagcdn.com/w160/{{ state.country_code|lower }}.png 2x"
+                                         alt="{{ state.country_name }} flag"
+                                         loading="lazy"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22%3E%3Crect fill=%22%23E5E7EB%22 width=%2248%22 height=%2248%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22 fill=%22%236B7280%22%3E{{ state.acronym|slice:":2"|upper }}%3C/text%3E%3C/svg%3E';">
+                                </div>
+                                {% else %}
+                                <div class="member-logo-placeholder me-3">
+                                    {{ state.acronym|slice:":2"|upper }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-bold mb-1">{{ state.country_name }}</div>
+                                    <div class="text-muted small">{{ state.ipa_acronym }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-soft-primary fs-6">
+                                <i class="fas fa-users me-1"></i>
+                                {{ state.team_member_count }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="mb-1">
+                                <span class="badge badge-soft-success">
+                                    {{ state.published_opportunity_count }}
+                                </span>
+                            </div>
+                            <small class="text-muted">{% blocktranslate trimmed %}of {{ state.opportunity_count }} total{% endblocktranslate %}</small>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-soft-info fs-6">
+                                {{ state.inquiry_count }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {% if state.is_active %}
+                            <span class="status-badge status-active">
+                                <i class="fas fa-check-circle me-1"></i>{% translate "Active" %}
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-inactive">
+                                <i class="fas fa-times-circle me-1"></i>{% translate "Inactive" %}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'dashboard:hq:member_state_detail' state.slug %}"
+                                   class="btn btn-outline-primary" title="{% translate "View Details" %}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'dashboard:hq:member_state_users' state.slug %}"
+                                   class="btn btn-outline-secondary" title="{% translate "View Users" %}">
+                                    <i class="fas fa-users"></i>
+                                </a>
+                                <a href="{% url 'dashboard:hq:member_state_analytics' state.slug %}"
+                                   class="btn btn-outline-info" title="{% translate "Analytics" %}">
+                                    <i class="fas fa-chart-bar"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="fas fa-globe-africa fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">{% translate "No member states found" %}</h5>
+                                <p class="text-muted">{% translate "Try adjusting your filters" %}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                {% blocktranslate trimmed %}Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ paginator.count }} states{% endblocktranslate %}
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .summary-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .bg-primary-soft {
+        background: rgba(139,111,71,0.1);
+        color: #8B6F47;
+    }
+
+    .bg-success-soft {
+        background: rgba(16,185,129,0.1);
+        color: #10B981;
+    }
+
+    .bg-info-soft {
+        background: rgba(59,130,246,0.1);
+        color: #3B82F6;
+    }
+
+    .bg-warning-soft {
+        background: rgba(251,191,36,0.1);
+        color: #FBBF24;
+    }
+
+    .summary-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1F2937;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .summary-label {
+        font-size: 0.875rem;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    .member-logo-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .country-flag {
+        width: 48px;
+        height: 36px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 1px solid #E5E7EB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .country-flag img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .member-logo-placeholder {
+        background: linear-gradient(135deg, #8B6F47, #D4A520);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    .badge-soft-primary {
+        background: rgba(139,111,71,0.1);
+        color: #8B6F47;
+        font-weight: 600;
+    }
+
+    .badge-soft-success {
+        background: rgba(16,185,129,0.1);
+        color: #10B981;
+        font-weight: 600;
+    }
+
+    .badge-soft-info {
+        background: rgba(59,130,246,0.1);
+        color: #3B82F6;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        padding: 0.35rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: rgba(16,185,129,0.1);
+        color: #10B981;
+    }
+
+    .status-inactive {
+        background: rgba(156,163,175,0.1);
+        color: #9CA3AF;
+    }
+
+    .empty-state {
+        padding: 3rem 1rem;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        font-size: 0.8125rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6B7280;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function exportMemberStates() {
+    const params = new URLSearchParams(window.location.search);
+    params.set('export', 'csv');
+    window.location.href = '{% url "dashboard:hq:member_states" %}?' + params.toString();
+}
+</script>
+{% endblock %}

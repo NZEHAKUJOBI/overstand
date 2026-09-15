@@ -1,0 +1,192 @@
+{% extends "dashboard/help/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "User Manual" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "User Manual" %}</span>
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="help-hero">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+        <div style="width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div>
+            <h1>{% translate "IPAWAS Platform" %}</h1>
+            <p>{% translate "Official User Manual & Training Guide" %}</p>
+        </div>
+    </div>
+    <p style="margin:0;color:rgba(255,255,255,.8);">
+        {% blocktranslate trimmed %}
+        Everything you need to use the IPAWAS platform — from your very first login to publishing investment opportunities and managing your team. Step-by-step instructions written for all experience levels.
+        {% endblocktranslate %}
+    </p>
+    <div class="help-hero-meta">{% translate "Version 1.0" %} &bull; {% translate "April 2026" %} &bull; {% translate "IPAWAS Secretariat" %}</div>
+</div>
+
+<!-- Intro -->
+<p class="help-intro">
+    {% blocktranslate trimmed %}
+    The IPAWAS Digital Platform is the central hub for all Investment Promotion Agencies (IPAs) across West Africa.
+    It allows each member state to manage and publish their investment profile, opportunities, and respond to investor
+    inquiries — all in one place.
+    {% endblocktranslate %}
+</p>
+
+<!-- Two roles -->
+<h2 style="font-size:1.35rem;margin-bottom:.5rem;"><i class="fas fa-users" style="color:var(--primary-green);margin-right:.5rem;"></i>{% translate "Who Uses This Platform?" %}</h2>
+<p style="color:var(--neutral-600);margin-bottom:1.25rem;">{% blocktranslate trimmed %}There are <strong>two types of users</strong> on the IPAWAS platform. Your account type determines which dashboard you see and what you can do.{% endblocktranslate %}</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.75rem;">
+    <div style="background:white;border:2px solid #3B82F6;border-radius:12px;padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+            <div style="width:44px;height:44px;background:#EFF6FF;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#2563EB;">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+                <strong style="display:block;">{% translate "HQ Admin" %}</strong>
+                <span class="badge-hq">{% translate "IPAWAS Headquarters" %}</span>
+            </div>
+        </div>
+        <p style="font-size:.875rem;color:var(--neutral-600);margin:0;">{% blocktranslate trimmed %}Full system access. Manages all member states, all users, platform-wide reports, analytics, and system settings. Typically 1–3 people at the IPAWAS Secretariat.{% endblocktranslate %}</p>
+    </div>
+
+    <div style="background:white;border:2px solid var(--primary-green);border-radius:12px;padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+            <div style="width:44px;height:44px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--primary-green);">
+                <i class="fas fa-globe-africa"></i>
+            </div>
+            <div>
+                <strong style="display:block;">{% translate "IPA Staff" %}</strong>
+                <span class="badge-ipa">{% translate "Country / Member State" %}</span>
+            </div>
+        </div>
+        <p style="font-size:.875rem;color:var(--neutral-600);margin:0;">{% blocktranslate trimmed %}Access limited to their own country's dashboard. Manages opportunities, investor inquiries, country profile, and their team. Each IPA has its own staff.{% endblocktranslate %}</p>
+    </div>
+</div>
+
+<div class="callout callout-note">
+    <i class="fas fa-info-circle"></i>
+    <div class="callout-body">
+        <strong>{% translate "Not sure which type you are?" %}</strong>
+        <p>{% blocktranslate trimmed %}When you log in, the platform automatically sends you to your correct dashboard. HQ Admins go to <code>/dashboard/hq/</code> and IPA Staff go to <code>/dashboard/your-country/</code>.{% endblocktranslate %}</p>
+    </div>
+</div>
+
+<!-- TOC -->
+<h2 style="font-size:1.35rem;margin:2rem 0 .5rem;"><i class="fas fa-list" style="color:var(--primary-green);margin-right:.5rem;"></i>{% translate "Manual Sections" %}</h2>
+<p style="color:var(--neutral-600);margin-bottom:1.25rem;">{% blocktranslate trimmed %}Choose the section that matches your role. If you are new to the platform, start with <strong>Getting Started</strong>.{% endblocktranslate %}</p>
+
+<div class="toc-grid">
+    <a href="{% url 'dashboard:help:getting_started' %}" class="toc-card">
+        <div class="toc-icon toc-icon-green"><i class="fas fa-rocket"></i></div>
+        <strong>{% translate "Getting Started" %}</strong>
+        <p>{% translate "Accepting your invitation, setting your password, logging in, and navigating the platform for the first time." %}</p>
+        <span style="font-size:.78rem;color:var(--primary-green);font-weight:600;">{% translate "For everyone" %} →</span>
+    </a>
+    <a href="{% url 'dashboard:help:hq_dashboard' %}" class="toc-card">
+        <div class="toc-icon toc-icon-blue"><i class="fas fa-tachometer-alt"></i></div>
+        <strong>{% translate "HQ Admin Guide" %}</strong>
+        <p>{% translate "Managing member states, platform-wide analytics, user management, reports, system settings and news." %}</p>
+        <span style="font-size:.78rem;font-weight:600;"><span class="badge-hq">{% translate "HQ Admin" %}</span> {% translate "only" %} →</span>
+    </a>
+    <a href="{% url 'dashboard:help:ipa_dashboard' %}" class="toc-card">
+        <div class="toc-icon toc-icon-green"><i class="fas fa-globe-africa"></i></div>
+        <strong>{% translate "Country Dashboard Guide" %}</strong>
+        <p>{% translate "Managing your country's profile, investment opportunities, inquiries, sectors, and your team." %}</p>
+        <span style="font-size:.78rem;font-weight:600;"><span class="badge-ipa">{% translate "IPA Staff" %}</span> →</span>
+    </a>
+    <a href="{% url 'dashboard:help:quick_reference' %}" class="toc-card">
+        <div class="toc-icon toc-icon-gold"><i class="fas fa-bolt"></i></div>
+        <strong>{% translate "Quick Reference" %}</strong>
+        <p>{% translate "Common tasks, status labels, and keyboard shortcuts at a glance. Your daily cheat sheet." %}</p>
+        <span style="font-size:.78rem;color:#92660A;font-weight:600;">{% translate "For everyone" %} →</span>
+    </a>
+    <a href="{% url 'dashboard:help:roles_permissions' %}" class="toc-card">
+        <div class="toc-icon" style="background:#F5F3FF;color:#7C3AED;"><i class="fas fa-user-shield"></i></div>
+        <strong>{% translate "Roles & Permissions" %}</strong>
+        <p>{% translate "Interactive explorer: click any role to see exactly what it can and cannot do. Full matrix included." %}</p>
+        <span style="font-size:.78rem;font-weight:600;"><span class="badge-both">{% translate "All users" %}</span> →</span>
+    </a>
+</div>
+
+<!-- Platform Overview -->
+<h2 style="font-size:1.35rem;margin:2rem 0 .5rem;"><i class="fas fa-map" style="color:var(--primary-green);margin-right:.5rem;"></i>{% translate "Platform Overview" %}</h2>
+<p style="color:var(--neutral-600);margin-bottom:1.25rem;">{% translate "Here's how the IPAWAS platform is structured and what each part does:" %}</p>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="fc-icon"><i class="fas fa-globe"></i></div>
+        <strong>{% translate "Public Website" %}</strong>
+        <p>{% translate "Visible to all visitors. Showcases member states and investment opportunities." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="fc-icon"><i class="fas fa-envelope"></i></div>
+        <strong>{% translate "Investor Inquiries" %}</strong>
+        <p>{% translate "Investors submit interest forms. These appear in the relevant country's dashboard." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="fc-icon"><i class="fas fa-flag"></i></div>
+        <strong>{% translate "Member State Dashboards" %}</strong>
+        <p>{% translate "Each IPA manages their own country's content, opportunities, and team." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="fc-icon"><i class="fas fa-cogs"></i></div>
+        <strong>{% translate "HQ Admin Dashboard" %}</strong>
+        <p>{% translate "Headquarters oversight: all countries, all data, system management." %}</p>
+    </div>
+</div>
+
+<!-- Visual cue legend -->
+<h2 style="font-size:1.35rem;margin:2rem 0 .5rem;"><i class="fas fa-book-open" style="color:var(--primary-green);margin-right:.5rem;"></i>{% translate "How to Use This Manual" %}</h2>
+
+<div class="callout callout-tip">
+    <i class="fas fa-lightbulb"></i>
+    <div class="callout-body">
+        <strong>{% translate "Look for these visual cues throughout the manual" %}</strong>
+        <p>{% translate "Green boxes offer helpful advice. Blue boxes are informational notes. Yellow boxes are cautions. Red boxes are critical warnings." %}</p>
+    </div>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>{% translate "Symbol" %}</th><th>{% translate "Meaning" %}</th></tr></thead>
+        <tbody>
+            <tr><td><i class="fas fa-lightbulb" style="color:var(--primary-green)"></i> <strong>{% translate "Tip" %}</strong></td><td>{% translate "Helpful advice to make your work easier" %}</td></tr>
+            <tr><td><i class="fas fa-info-circle" style="color:#3B82F6"></i> <strong>{% translate "Note" %}</strong></td><td>{% translate "Important information to be aware of" %}</td></tr>
+            <tr><td><i class="fas fa-exclamation-triangle" style="color:#F59E0B"></i> <strong>{% translate "Caution" %}</strong></td><td>{% translate "Be careful — mistakes here may cause issues" %}</td></tr>
+            <tr><td><i class="fas fa-times-circle" style="color:#EF4444"></i> <strong>{% translate "Warning" %}</strong></td><td>{% translate "Critical — read before proceeding" %}</td></tr>
+            <tr><td><span class="badge-hq">{% translate "HQ Admin" %}</span></td><td>{% translate "This feature is for HQ Administrators only" %}</td></tr>
+            <tr><td><span class="badge-ipa">{% translate "IPA Staff" %}</span></td><td>{% translate "This feature is for country IPA Staff" %}</td></tr>
+            <tr><td><span class="badge-both">{% translate "Both" %}</span></td><td>{% translate "Available to all users" %}</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Support -->
+<h2 style="font-size:1.35rem;margin:2rem 0 .5rem;"><i class="fas fa-headset" style="color:var(--primary-green);margin-right:.5rem;"></i>{% translate "Getting Help" %}</h2>
+<p style="color:var(--neutral-600);">{% translate "If you encounter an issue not covered in this manual, here's how to get help:" %}</p>
+<ul style="color:var(--neutral-600);line-height:2;">
+    <li><strong>{% translate "Technical issues" %}</strong> {% translate "(login problems, errors): Contact the IPAWAS IT team" %}</li>
+    <li><strong>{% translate "Content questions" %}</strong> {% translate "(what to publish, how to write opportunities): Contact your supervisor or the HQ team" %}</li>
+    <li><strong>{% translate "Password reset" %}</strong>: {% translate 'Click "Forgot password?" on the login page' %}</li>
+</ul>
+
+<div class="callout callout-note">
+    <i class="fas fa-info-circle"></i>
+    <div class="callout-body">
+        <strong>{% translate "First time using the platform?" %}</strong>
+        <p>{% translate "Start with the" %} <a href="{% url 'dashboard:help:getting_started' %}" style="color:#3B82F6;font-weight:600;">{% translate "Getting Started" %}</a> {% translate "guide. It walks you through accepting your invitation and logging in for the first time." %}</p>
+    </div>
+</div>
+
+<div class="help-nav">
+    <span></span>
+    <a href="{% url 'dashboard:help:getting_started' %}">{% translate "Getting Started" %} <i class="fas fa-arrow-right"></i></a>
+</div>
+{% endblock %}

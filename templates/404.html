@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | IPAWAS</title>
+    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #1B7A4C;
+            --accent-gold: #D4A520;
+            --dark-green: #0A4428;
+            --neutral-100: #F8FAFC;
+            --neutral-600: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--neutral-100);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 3rem 2rem;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1;
+            margin-bottom: 1rem;
+            opacity: 0.15;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .error-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: var(--neutral-600);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .logo {
+            max-width: 140px;
+            margin-bottom: 2rem;
+        }
+
+        .btn-home {
+            background: var(--primary-green);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0.5rem;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .btn-home:hover {
+            background: var(--dark-green);
+            color: white;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0.5rem;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .divider {
+            width: 60px;
+            height: 4px;
+            background: var(--accent-gold);
+            margin: 1.5rem auto;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp"
+             alt="IPAWAS Logo" class="logo">
+
+        <div class="error-icon">
+            <i class="fas fa-map-signs"></i>
+        </div>
+
+        <div class="error-code">404</div>
+        <div class="divider"></div>
+
+        <h1 class="error-title">Page Not Found</h1>
+        <p class="error-message">
+            The page you're looking for doesn't exist or has been moved.
+            Please check the URL or navigate back to the homepage.
+        </p>
+
+        <div>
+            <a href="/" class="btn-home">
+                <i class="fas fa-home me-2"></i>Go to Homepage
+            </a>
+            <a href="javascript:history.back()" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Go Back
+            </a>
+        </div>
+
+        <p class="mt-4 text-muted small">
+            Need help? <a href="/contact/" style="color: var(--primary-green);">Contact us</a>
+        </p>
+    </div>
+</body>
+</html>

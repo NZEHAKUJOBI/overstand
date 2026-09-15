@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPAWAS — Request Submitted</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0faf5 0%, #e8f4f8 100%);
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .card {
+    background: white; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    width: 100%; max-width: 480px; text-align: center; padding: 48px 40px;
+  }
+  .icon {
+    width: 72px; height: 72px; background: #d1fae5; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
+  }
+  .icon svg { width: 36px; height: 36px; color: #1b7a4c; }
+  h1 { font-size: 1.5rem; font-weight: 800; color: #111827; margin-bottom: 14px; }
+  p { color: #6b7280; font-size: 0.95rem; line-height: 1.7; margin-bottom: 12px; }
+  .highlight { color: #1b7a4c; font-weight: 700; }
+  .steps {
+    background: #f9fafb; border-radius: 12px; padding: 20px 24px;
+    text-align: left; margin: 24px 0; border: 1px solid #f3f4f6;
+  }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px;
+  }
+  .step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 26px; height: 26px; min-width: 26px; background: #1b7a4c; color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 800;
+  }
+  .step-text { font-size: 0.875rem; color: #374151; line-height: 1.5; padding-top: 3px; }
+  .footer-note { font-size: 0.75rem; color: #9ca3af; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:#1b7a4c;">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+    </svg>
+  </div>
+  <h1>Request Submitted!</h1>
+  <p>
+    Thank you for your interest in the <span class="highlight">IPAWAS Platform</span>.
+    Your access request has been received and is now under review.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Review</strong> — Our team will review your request (typically within 1–2 business days).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Invitation</strong> — If approved, you will receive a personal invitation link at the email address you provided.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>Registration</strong> — Click the link in the email to complete your account setup and gain access to the platform.</div>
+    </div>
+  </div>
+
+  <p>Please check your inbox <em>(including your spam/junk folder)</em> for the invitation email.</p>
+  <p class="footer-note">IPAWAS · Investment Promotion Agencies of West Africa</p>
+</div>
+</body>
+</html>

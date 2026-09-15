@@ -1,0 +1,116 @@
+{% extends 'dashboard/members/base.html' %}
+{% load i18n %}
+
+{% block title %}{% if object %}{% translate "Edit" %}{% else %}{% translate "Add" %}{% endif %} {% translate "Data Point" %}{% endblock %}
+{% block page_title %}{% if object %}{% translate "Edit" %}{% else %}{% translate "Add" %}{% endif %} {% translate "Economic Data Point" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> /
+<a href="{% url 'dashboard:country:fdi_data' member_state.slug %}">{% translate "Economic Data" %}</a> /
+{% if object %}{% translate "Edit" %}{% else %}{% translate "Add" %}{% endif %}
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mb-4">
+        <strong>{% translate "Please fix the errors below before saving." %}</strong>
+        <ul class="mb-0 mt-2">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-chart-bar me-2"></i>{% translate "Data Point" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.data_type.id_for_label }}">{% translate "Data Type" %} <span class="required-star">*</span></label>
+                            {{ form.data_type }}
+                            {% if form.data_type.errors %}<div class="field-error">{{ form.data_type.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.year.id_for_label }}">{% translate "Year" %} <span class="required-star">*</span></label>
+                            {{ form.year }}
+                            {% if form.year.errors %}<div class="field-error">{{ form.year.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.value.id_for_label }}">{% translate "Value (USD millions)" %} <span class="required-star">*</span></label>
+                            {{ form.value }}
+                            <small class="form-text text-muted">{% translate "Numeric value in millions USD" %}</small>
+                            {% if form.value.errors %}<div class="field-error">{{ form.value.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.value_display.id_for_label }}">{% translate "Display Value" %}</label>
+                            {{ form.value_display }}
+                            <small class="form-text text-muted">{% translate "e.g., \"$4.2B\" — shown on charts" %}</small>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.data_source.id_for_label }}">{% translate "Data Source" %}</label>
+                        {{ form.data_source }}
+                        <small class="form-text text-muted">{% translate "e.g., \"UNCTAD World Investment Report 2024\", \"World Bank\"" %}</small>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.notes.id_for_label }}">{% translate "Notes" %}</label>
+                        {{ form.notes }}
+                        <small class="form-text text-muted">{% translate "Any caveats, methodology notes, or additional context" %}</small>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.validation_status.id_for_label }}">{% translate "Validation Status" %}</label>
+                        {{ form.validation_status }}
+                        <small class="form-text text-muted">{% translate "Only \"Published\" data points appear on the public profile" %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="content-card sticky-sidebar">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-save me-2"></i>{% translate "Save" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary-green btn-lg">
+                            <i class="fas fa-check me-2"></i>{% if object %}{% translate "Update" %}{% else %}{% translate "Add" %}{% endif %} {% translate "Data Point" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:fdi_data' member_state.slug %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+.form-label { color: var(--dark-green); font-weight: 600; display: block; margin-bottom: .4rem; }
+.required-star { color: #EF4444; }
+.form-control, .form-select {
+    border: 2px solid var(--neutral-200); border-radius: 10px;
+    padding: .75rem 1rem; width: 100%;
+    transition: border-color .15s, box-shadow .15s; font-size: .95rem;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(27,122,76,.1); outline: none;
+}
+textarea.form-control { resize: vertical; }
+.field-error { color: #EF4444; font-size: .825rem; margin-top: .3rem; }
+.form-text { font-size: .825rem; }
+.sticky-sidebar { position: sticky; top: 100px; }
+@media (max-width: 991px) { .sticky-sidebar { position: static; } }
+</style>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}Onboarding Request — {{ req.full_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom:24px;">
+  <a href="{% url 'dashboard:hq:onboarding:requests' %}" style="color:#6b7280;font-size:0.85rem;">← Back to Requests</a>
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px;">
+    <h1 class="page-title">{{ req.full_name }}</h1>
+    {% if req.status == "pending" %}
+      <span class="badge badge-warning">Pending Review</span>
+    {% elif req.status == "approved" %}
+      <span class="badge badge-success">Approved</span>
+    {% else %}
+      <span class="badge badge-danger">Rejected</span>
+    {% endif %}
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+
+  <!-- Left: Applicant details -->
+  <div class="card" style="padding:24px 28px;">
+    <h2 style="font-size:1rem;font-weight:800;color:#374151;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+      Applicant Details
+    </h2>
+
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Full Name" value=req.full_name %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Email" value=req.email %}
+    {% if req.phone %}{% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Phone" value=req.phone %}{% endif %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Member State" value=req.member_state.country_name %}
+    {% if req.organization %}{% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Organization" value=req.organization %}{% endif %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Job Title" value=req.job_title %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Requested Role" value=req.get_requested_role_display %}
+
+    <h2 style="font-size:1rem;font-weight:800;color:#374151;margin:20px 0 14px;padding-top:16px;border-top:1px solid #f3f4f6;">
+      Submission Metadata
+    </h2>
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Session" value=req.session.label %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Submitted At" value=req.submitted_at %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="IP Address" value=req.ip_address|default:"Unknown" %}
+
+    {% if req.status != "pending" %}
+    <h2 style="font-size:1rem;font-weight:800;color:#374151;margin:20px 0 14px;padding-top:16px;border-top:1px solid #f3f4f6;">
+      Review Details
+    </h2>
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Reviewed By" value=req.reviewed_by %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Reviewed At" value=req.reviewed_at %}
+    {% if req.rejection_reason %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Rejection Reason" value=req.rejection_reason %}
+    {% endif %}
+    {% if req.admin_notes %}
+    {% include "dashboard/hq_admin/onboarding/_detail_row.html" with label="Admin Notes" value=req.admin_notes %}
+    {% endif %}
+    {% if req.invitation %}
+    <div style="display:flex;gap:16px;padding:8px 0;border-bottom:1px solid #f9fafb;">
+      <div style="width:140px;min-width:140px;font-size:0.8rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.04em;padding-top:2px;">Invitation</div>
+      <div style="flex:1;font-size:0.9rem;color:#111827;">
+        <a href="{% url 'dashboard:hq:invitations:detail' req.invitation.pk %}" style="color:#1b7a4c;">
+          View Invitation ({{ req.invitation.get_status_display }})
+        </a>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+
+  <!-- Right: Actions (only if pending) -->
+  <div>
+    {% if req.is_pending %}
+    <!-- Approve -->
+    <div class="card" style="padding:22px 24px;margin-bottom:16px;border:2px solid #d1fae5;">
+      <h3 style="font-size:0.95rem;font-weight:800;color:#065f46;margin-bottom:10px;">✅ Approve Request</h3>
+      <p style="font-size:0.85rem;color:#374151;margin-bottom:16px;line-height:1.6;">
+        Approving will immediately create an invitation and send a registration link to
+        <strong>{{ req.email }}</strong>. The link expires in 7 days.
+      </p>
+      <form method="post" action="{% url 'dashboard:hq:onboarding:approve' req.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success" style="width:100%;"
+                onclick="return confirm('Approve and send invitation to {{ req.email }}?')">
+          Approve & Send Invitation
+        </button>
+      </form>
+    </div>
+
+    <!-- Reject -->
+    <div class="card" style="padding:22px 24px;border:2px solid #fee2e2;">
+      <h3 style="font-size:0.95rem;font-weight:800;color:#991b1b;margin-bottom:10px;">❌ Reject Request</h3>
+      <form method="post" action="{% url 'dashboard:hq:onboarding:reject' req.pk %}">
+        {% csrf_token %}
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">
+            Reason for Rejection <span style="font-weight:400;color:#9ca3af;">(optional — shown to applicant)</span>
+          </label>
+          {{ reject_form.rejection_reason }}
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:0.8rem;font-weight:700;color:#374151;display:block;margin-bottom:6px;">
+            Internal Notes <span style="font-weight:400;color:#9ca3af;">(not sent to applicant)</span>
+          </label>
+          {{ reject_form.admin_notes }}
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          {{ reject_form.notify_applicant }}
+          <label style="font-size:0.85rem;color:#374151;cursor:pointer;">
+            Send rejection email to {{ req.email }}
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-danger" style="width:100%;"
+                onclick="return confirm('Reject this request?')">
+          Reject Request
+        </button>
+      </form>
+    </div>
+
+    {% else %}
+    <div class="card" style="padding:22px 24px;text-align:center;color:#6b7280;">
+      <p style="font-size:0.9rem;">This request has already been {{ req.get_status_display|lower }}.</p>
+      {% if req.invitation %}
+      <a href="{% url 'dashboard:hq:invitations:detail' req.invitation.pk %}" class="btn btn-outline-primary" style="margin-top:12px;">
+        View Invitation
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

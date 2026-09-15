@@ -1,0 +1,604 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}IPA Connection Hub | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ipa-hero {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.95), rgba(15, 107, 63, 0.98)),
+                    url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200');
+        background-size: cover;
+        background-position: center;
+        padding: 120px 0 80px;
+        margin-top: 76px;
+        color: white;
+    }
+
+    .ipa-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+        height: 100%;
+        border: 2px solid transparent;
+        position: relative;
+    }
+
+    .ipa-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .ipa-flag {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+
+    .ipa-logo {
+        height: 50px;
+        margin-bottom: 1rem;
+        object-fit: contain;
+    }
+
+    .contact-info {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: start;
+        margin-bottom: 0.75rem;
+    }
+
+    .contact-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .contact-item i {
+        color: var(--primary-green);
+        margin-right: 0.5rem;
+        margin-top: 0.25rem;
+        width: 20px;
+    }
+
+    .feature-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--accent-gold);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ipa-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">{% translate "IPA Connection Hub" %}</h1>
+        <p class="lead mb-4">{% translate "Direct access to Investment Promotion Agencies across 12 West African nations" %}</p>
+        <p class="mb-0">{% translate "Connect with the right IPA for personalized investment support" %}</p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <!-- Introduction -->
+    <section class="mb-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="mb-4">{% translate "Your Gateway to West African Markets" %}</h2>
+                <p class="lead">{% translate "Investment Promotion Agencies (IPAs) are your primary contact points for investment facilitation in each ECOWAS member state. They provide essential services including:" %}</p>
+                <div class="row g-3 mt-4">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-file-alt fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Licensing & Permits" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-gift fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Incentives Access" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-users fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Partner Connections" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-map-marker-alt fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Site Selection" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Market Intelligence" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-handshake fa-2x text-success mb-2"></i>
+                            <p class="mb-0 fw-bold">{% translate "Aftercare Support" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IPA Directory -->
+    <section class="mb-5">
+        <h2 class="text-center mb-5">{% translate "ECOWAS Investment Promotion Agencies" %}</h2>
+
+        <div class="row g-4">
+            <!-- Benin -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/bj.png" alt="{% translate 'Benin Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇧🇯 Benin" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "API-Bénin" %}</h5>
+                    <p class="small text-muted">{% translate "Agence de Promotion des Investissements et des Exportations" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">contact@apibenin.bj</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+229 21 30 08 10</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.apibenin.bj" target="_blank" class="small">www.apibenin.bj</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Cotonou, Benin" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cabo Verde -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/cv.png" alt="{% translate 'Cabo Verde Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇨🇻 Cabo Verde" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "Cabo Verde TradeInvest" %}</h5>
+                    <p class="small text-muted">{% translate "Investment & Export Promotion Agency" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@cvtradeinvest.cv</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+238 260 3700</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.cvtradeinvest.cv" target="_blank" class="small">www.cvtradeinvest.cv</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Praia, Cabo Verde" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Côte d'Ivoire -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <span class="feature-badge">{% translate "Most Active" %}</span>
+                    <img src="https://flagcdn.com/w320/ci.png" alt="{% translate 'Côte d\'Ivoire Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇨🇮 Côte d'Ivoire" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "CEPICI" %}</h5>
+                    <p class="small text-muted">{% translate "Centre de Promotion des Investissements en Côte d'Ivoire" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@cepici.gouv.ci</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+225 20 31 20 00</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.cepici.gouv.ci" target="_blank" class="small">www.cepici.gouv.ci</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Abidjan, Côte d'Ivoire" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Gambia -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/gm.png" alt="{% translate 'The Gambia Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇬🇲 The Gambia" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "GIEPA" %}</h5>
+                    <p class="small text-muted">{% translate "Gambia Investment & Export Promotion Agency" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@giepa.gm</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+220 439 2232</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.giepa.gm" target="_blank" class="small">www.giepa.gm</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Banjul, The Gambia" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ghana -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <span class="feature-badge">{% translate "Featured" %}</span>
+                    <img src="https://flagcdn.com/w320/gh.png" alt="{% translate 'Ghana Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇬🇭 Ghana" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "GIPC" %}</h5>
+                    <p class="small text-muted">{% translate "Ghana Investment Promotion Centre" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@gipcghana.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+233 302 665 125</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.gipcghana.com" target="_blank" class="small">www.gipcghana.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Accra, Ghana" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guinea -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/gn.png" alt="{% translate 'Guinea Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇬🇳 Guinea" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "GDB" %}</h5>
+                    <p class="small text-muted">{% translate "Guinea Development Board" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">contact@apipguinee.org</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+224 622 20 00 20</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.apipguinee.org" target="_blank" class="small">www.apipguinee.org</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Conakry, Guinea" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guinea-Bissau -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/gw.png" alt="{% translate 'Guinea-Bissau Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇬🇼 Guinea-Bissau" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "CCI-GB" %}</h5>
+                    <p class="small text-muted">{% translate "Chamber of Commerce, Industry & Services" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@ccigb.org</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+245 320 5820</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="{% url 'about:contact' %}" class="small">{% translate "Contact for website" %}</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Bissau, Guinea-Bissau" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liberia -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/lr.png" alt="{% translate 'Liberia Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇱🇷 Liberia" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "NIC" %}</h5>
+                    <p class="small text-muted">{% translate "National Investment Commission" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@investliberia.gov.lr</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+231 886 527 626</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.investliberia.gov.lr" target="_blank" class="small">www.investliberia.gov.lr</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Monrovia, Liberia" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nigeria -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <span class="feature-badge">{% translate "Largest Market" %}</span>
+                    <img src="https://flagcdn.com/w320/ng.png" alt="{% translate 'Nigeria Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇳🇬 Nigeria" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "NIPC" %}</h5>
+                    <p class="small text-muted">{% translate "Nigerian Investment Promotion Commission" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@nipc.gov.ng</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+234 9 461 3000</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.nipc.gov.ng" target="_blank" class="small">www.nipc.gov.ng</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Abuja, Nigeria" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Senegal -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/sn.png" alt="{% translate 'Senegal Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇸🇳 Senegal" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "APIX" %}</h5>
+                    <p class="small text-muted">{% translate "Agence de Promotion des Investissements et Grands Travaux" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">contact@apix.sn</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+221 33 849 05 55</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.apix.sn" target="_blank" class="small">www.apix.sn</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Dakar, Senegal" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sierra Leone -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/sl.png" alt="{% translate 'Sierra Leone Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇸🇱 Sierra Leone" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "NIB-SL" %}</h5>
+                    <p class="small text-muted">{% translate "National Investment Board" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@nib.gov.sl</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+23273952144</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.nib.gov.sl" target="_blank" class="small">www.nib.gov.sl</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Freetown, Sierra Leone" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Togo -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ipa-card">
+                    <img src="https://flagcdn.com/w320/tg.png" alt="{% translate 'Togo Flag' %}" class="ipa-flag">
+                    <h4 class="mb-2">{% translate "🇹🇬 Togo" %}</h4>
+                    <h5 class="text-muted mb-3">{% translate "SAZOF" %}</h5>
+                    <p class="small text-muted">{% translate "Société d'Administration de la Zone Franche" %}</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span class="small">info@sazof.tg</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="small">+228 22 27 36 75</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="https://www.sazof.tg" target="_blank" class="small">www.sazof.tg</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="small">{% translate "Lomé, Togo" %}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'about:contact' %}" class="btn btn-success btn-sm w-100">{% translate "Contact IPA" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Work with IPAs -->
+    <section class="my-5 py-5" style="background: linear-gradient(to right, rgba(212, 165, 32, 0.05), rgba(27, 122, 76, 0.05)); border-radius: 16px;">
+        <div class="container">
+            <h2 class="text-center mb-5">{% translate "How to Work with IPAs" %}</h2>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="text-center p-4 bg-white rounded shadow-sm">
+                                <div class="mb-3">
+                                    <i class="fas fa-comments fa-3x text-success"></i>
+                                </div>
+                                <h5>{% translate "1. Initial Contact" %}</h5>
+                                <p class="text-muted small">{% translate "Reach out to the IPA in your target country. Share your investment interests and requirements." %}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-4 bg-white rounded shadow-sm">
+                                <div class="mb-3">
+                                    <i class="fas fa-calendar-check fa-3x text-success"></i>
+                                </div>
+                                <h5>{% translate "2. Consultation" %}</h5>
+                                <p class="text-muted small">{% translate "Schedule a detailed consultation to discuss opportunities, incentives, and requirements." %}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-4 bg-white rounded shadow-sm">
+                                <div class="mb-3">
+                                    <i class="fas fa-rocket fa-3x text-success"></i>
+                                </div>
+                                <h5>{% translate "3. Implementation" %}</h5>
+                                <p class="text-muted small">{% translate "Work with the IPA for licensing, permits, partner connections, and operational setup." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="text-center my-5 py-5" style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); border-radius: 16px; color: white;">
+        <div class="container">
+            <h2 class="mb-3">{% translate "Need Help Connecting with the Right IPA?" %}</h2>
+            <p class="lead mb-4">{% translate "Our team can facilitate introductions and guide you through the process" %}</p>
+            <a href="{% url 'investor_services:advisory' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-tie me-2"></i>{% translate "Request Advisory Support" %}
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

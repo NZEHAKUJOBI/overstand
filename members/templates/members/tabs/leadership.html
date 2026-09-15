@@ -1,0 +1,331 @@
+{% load static %}
+{% load i18n %}
+
+<style>
+    /* IPA Leadership Card Styles */
+    .ipa-leadership-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        border: 2px solid rgba(27, 122, 76, 0.1);
+    }
+
+    .leadership-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .leader-photo-frame {
+        flex: 0 0 180px;
+    }
+
+    .leader-photo {
+        width: 180px;
+        height: 225px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 4px solid var(--primary-green);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .leader-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .leader-info {
+        flex: 1;
+    }
+
+    .leader-info h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 0.5rem;
+    }
+
+    .leader-title {
+        font-size: 1.15rem;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .leader-organization {
+        font-size: 1rem;
+        color: var(--accent-gold);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .leader-bio {
+        color: #495057;
+        line-height: 1.8;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .ipa-contact-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .contact-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ipa-logo-container {
+        flex: 0 0 120px;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .ipa-logo-container img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .contact-info {
+        flex: 1;
+    }
+
+    .contact-info h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+    }
+
+    .contact-info .agency-name {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .contact-item i {
+        color: var(--primary-green);
+        font-size: 1.1rem;
+        margin-top: 0.25rem;
+        width: 20px;
+    }
+
+    .contact-item-content {
+        flex: 1;
+    }
+
+    .contact-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #6c757d;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .contact-value {
+        color: #212529;
+        font-weight: 500;
+    }
+
+    .contact-value a {
+        color: var(--primary-green);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .contact-value a:hover {
+        color: var(--accent-gold);
+    }
+
+    @media (max-width: 768px) {
+        .leadership-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .leader-photo-frame {
+            flex: none;
+        }
+
+        .contact-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .ipa-logo-container {
+            flex: none;
+        }
+    }
+
+    /* Adjustments to hero section for IPA leadership */
+    .hero-section {
+        padding-bottom: 60px;
+    }
+</style>
+
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- NEW: IPA Leadership Section -->
+        <section id="ipa-leadership" class="content-section">
+            <h2 class="section-title">{% translate "Investment Promotion Agency Leadership" %}</h2>
+
+            <div class="ipa-leadership-section">
+                <!-- If IPA Leadership exists in database -->
+                <div class="leadership-header">
+                    <div class="leader-photo-frame">
+                        <div class="leader-photo">
+                            <img src="{{ member_state.ipa_leadership.official_photograph }}"
+                                 alt="{{ member_state.ipa_leadership.full_name }}">
+                        </div>
+                    </div>
+                    <div class="leader-info">
+                        <h3>{{ member_state.ipa_leadership.full_name }}</h3>
+                        <div class="leader-title">{{ member_state.ipa_leadership.get_official_title_display }}</div>
+                        <div class="leader-organization">{{ member_state.ipa_full_name }}</div>
+                        <p class="leader-bio">
+                            {{ member_state.ipa_leadership.biography }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<style>
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--primary-green, #1B7A4C);
+    margin-bottom: 1rem;
+}
+
+.stat-content h4 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.stat-content p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.profile-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary-green, #1B7A4C);
+}
+
+.profile-card h5 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.profile-card p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.climate-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.climate-icon {
+    font-size: 3rem;
+    color: var(--accent-gold, #D4AF37);
+}
+
+.climate-content h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.download-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.download-card:hover {
+    border-color: var(--primary-green, #1B7A4C);
+    background: #f8f9fa;
+    color: var(--primary-green, #1B7A4C);
+}
+
+.download-card i:first-child {
+    font-size: 2rem;
+    color: #dc3545;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    border-bottom: 3px solid var(--primary-green, #1B7A4C);
+    padding-bottom: 0.5rem;
+}
+</style>

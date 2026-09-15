@@ -1,0 +1,262 @@
+{% load i18n %}
+<!-- Priority Sectors Tab -->
+<div class="sectors-tab">
+    <div class="sectors-intro mb-5">
+        <h2 class="mb-3">{% translate "Priority Investment Sectors" %}</h2>
+        <p class="lead text-muted">
+            {% blocktranslate trimmed with country=member_state.country_name acronym=member_state.ipa_acronym %}
+                Explore high-potential sectors for investment in {{ country }}.
+                These sectors have been identified as priorities by {{ acronym }}.
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    {% if priority_sectors %}
+    <div class="sectors-grid">
+        {% for sector_rel in priority_sectors %}
+        <div class="sector-card">
+            <div class="sector-header">
+                {% if sector_rel.sector.icon_class %}
+                    <div class="sector-icon">
+                        <i class="{{ sector_rel.sector.icon_class }}"></i>
+                    </div>
+                {% elif sector_rel.sector.icon_image %}
+                    <img src="{{ sector_rel.sector.icon_image }}"
+                         alt="{{ sector_rel.sector.name }}"
+                         class="sector-icon-img">
+                {% else %}
+                    <div class="sector-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                {% endif %}
+                <h3>{{ sector_rel.sector.name }}</h3>
+                {% if sector_rel.is_priority %}
+                    <span class="priority-badge">
+                        <i class="fas fa-star"></i> {% translate "Priority Sector" %}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="sector-body">
+                {% if sector_rel.sector.description %}
+                    <p class="sector-description">{{ sector_rel.sector.description }}</p>
+                {% endif %}
+
+                {% if sector_rel.investment_potential %}
+                    <div class="opportunities-overview">
+                        <h5><i class="fas fa-lightbulb me-2"></i>{% translate "Investment Potential" %}</h5>
+                        <p>{{ sector_rel.investment_potential }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="sector-footer">
+                <a href="{% url 'members:detail' country_slug=member_state.slug %}?tab=opportunities&sector={{ sector_rel.sector.slug }}"
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-arrow-right me-1"></i>
+                    {% translate "View Opportunities" %}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        {% translate "Priority sector information is being updated. Please check back soon." %}
+    </div>
+    {% endif %}
+
+    <!-- Sector Statistics -->
+    {% if sector_distribution %}
+    <div class="sector-statistics mt-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-chart-pie me-2"></i>
+            {% translate "Investment Distribution by Sector" %}
+        </h3>
+        <div class="row">
+            <div class="col-lg-6">
+                <canvas id="sectorDistributionChart"></canvas>
+            </div>
+            <div class="col-lg-6">
+                <div class="sector-stats-list">
+                    {% for sector, percentage in sector_distribution.items %}
+                    <div class="sector-stat-item">
+                        <span class="sector-name">{{ sector }}</span>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: {{ percentage }}%"
+                                 aria-valuenow="{{ percentage }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ percentage }}%
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Call to Action -->
+    <div class="sectors-cta mt-5">
+        <div class="cta-card">
+            <h3>{% translate "Interested in investing in these sectors?" %}</h3>
+            <p>{% blocktranslate trimmed with acronym=member_state.ipa_acronym %}Contact {{ acronym }} for detailed sector briefs and investment guidance.{% endblocktranslate %}</p>
+            <a href="{% url 'members:detail' country_slug=member_state.slug %}?tab=contact"
+               class="btn btn-primary btn-lg">
+                <i class="fas fa-envelope me-2"></i>
+                {% blocktranslate trimmed with acronym=member_state.ipa_acronym %}Contact {{ acronym }}{% endblocktranslate %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.sectors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.sector-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sector-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.sector-header {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    text-align: center;
+    position: relative;
+}
+
+.sector-icon {
+    font-size: 3rem;
+    color: var(--primary-green, #1B7A4C);
+    margin-bottom: 1rem;
+}
+
+.sector-icon-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.sector-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.priority-badge {
+    display: inline-block;
+    background: var(--accent-gold, #D4AF37);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sector-body {
+    padding: 2rem;
+}
+
+.sector-description {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.opportunities-overview,
+.investment-range,
+.key-players {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.opportunities-overview h5,
+.investment-range h5,
+.key-players h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.range-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-green, #1B7A4C);
+    margin: 0;
+}
+
+.sector-footer {
+    padding: 1.5rem 2rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.sector-stat-item {
+    margin-bottom: 1.5rem;
+}
+
+.sector-name {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.progress {
+    height: 25px;
+    border-radius: 8px;
+}
+
+.progress-bar {
+    background: linear-gradient(135deg, var(--primary-green, #1B7A4C), var(--light-green, #2EA86A));
+    font-weight: 600;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, var(--primary-green, #1B7A4C), var(--dark-green, #0D4A2E));
+    color: white;
+    padding: 3rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.cta-card h3 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.cta-card p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    border-bottom: 3px solid var(--primary-green, #1B7A4C);
+    padding-bottom: 0.5rem;
+}
+</style>

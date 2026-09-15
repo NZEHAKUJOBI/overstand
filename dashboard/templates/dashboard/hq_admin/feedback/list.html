@@ -1,0 +1,131 @@
+{% extends 'dashboard/hq_admin/base.html' %}
+{% load i18n %}
+
+{% block title %}Feedback{% endblock %}
+{% block page_title %}Platform Feedback{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <p class="text-muted mb-0">Ideas, suggestions and observations from member state teams.</p>
+    {% if unreviewed_count %}
+    <span class="badge" style="background: #EF4444; color:#fff; font-size:.85rem; padding:.4rem .85rem; border-radius:20px;">
+        {{ unreviewed_count }} new
+    </span>
+    {% endif %}
+</div>
+
+<div class="content-card mb-4">
+    <div class="content-card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label-sm">Country</label>
+                <select name="country" class="form-select form-select-sm">
+                    <option value="">All countries</option>
+                    {% for ms in member_states %}
+                    <option value="{{ ms.slug }}" {% if selected_country == ms.slug %}selected{% endif %}>{{ ms.country_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-sm">Type</label>
+                <select name="category" class="form-select form-select-sm">
+                    <option value="">All types</option>
+                    {% for val, label in category_choices %}
+                    <option value="{{ val }}" {% if selected_category == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-sm">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for val, label in status_choices %}
+                    <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary-green btn-sm">Filter</button>
+                <a href="{% url 'dashboard:hq:feedback_list' %}" class="btn btn-outline-secondary btn-sm">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if submissions %}
+<div class="content-card">
+    <div class="content-card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr style="background: var(--neutral-50); border-bottom: 2px solid var(--neutral-200);">
+                    <th class="th">Title</th>
+                    <th class="th">Country</th>
+                    <th class="th">Type</th>
+                    <th class="th">Status</th>
+                    <th class="th">Submitted</th>
+                    <th class="th"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in submissions %}
+                <tr style="border-bottom: 1px solid var(--neutral-100); {% if item.status == 'new' %}background: #FFFBEB;{% endif %}">
+                    <td class="td fw-600">
+                        <i class="fas {{ item.category_icon }} me-2" style="color: var(--primary-green); opacity:.7;"></i>
+                        {{ item.title }}
+                        {% if item.status == 'new' %}<i class="fas fa-circle ms-2" style="font-size:.45rem; color:#F59E0B; vertical-align:middle;"></i>{% endif %}
+                    </td>
+                    <td class="td text-muted">{{ item.member_state.country_name }}</td>
+                    <td class="td"><span class="category-badge category-{{ item.category }}">{{ item.get_category_display }}</span></td>
+                    <td class="td">
+                        <span class="status-badge" style="background:{{ item.status_color }}20; color:{{ item.status_color }}; border:1px solid {{ item.status_color }}40;">
+                            {{ item.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="td text-muted small">{{ item.created_at|date:"M j, Y" }}</td>
+                    <td class="td">
+                        <a href="{% url 'dashboard:hq:feedback_detail' pk=item.pk %}" class="btn btn-sm btn-outline-secondary">Review</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_country %}&country={{ selected_country }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">Previous</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_country %}&country={{ selected_country }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="content-card">
+    <div class="content-card-body text-center py-5">
+        <i class="fas fa-comment-alt mb-3" style="font-size:3rem; color: var(--neutral-300);"></i>
+        <h4 style="color: var(--dark-green);">No feedback yet</h4>
+        <p class="text-muted mb-0">Submissions from member state teams will appear here.</p>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.form-label-sm { font-size:.8rem; font-weight:600; color: var(--dark-green); margin-bottom:.3rem; display:block; }
+.th { padding:.875rem 1.25rem; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--dark-green); font-weight:700; }
+.td { padding:.9rem 1.25rem; }
+.fw-600 { font-weight:600; color:var(--dark-green); }
+.category-badge, .status-badge { display:inline-block; padding:.25rem .65rem; border-radius:20px; font-size:.8rem; font-weight:600; }
+.category-idea { background:#EEF2FF; color:#4338CA; border:1px solid #C7D2FE; }
+.category-suggestion { background:#F0FDF4; color:#15803D; border:1px solid #BBF7D0; }
+.category-observation { background:#FFF7ED; color:#C2410C; border:1px solid #FED7AA; }
+.category-bug_report { background:#FEF2F2; color:#B91C1C; border:1px solid #FECACA; }
+.table-hover tbody tr:hover { background: var(--neutral-50) !important; }
+</style>
+{% endblock %}

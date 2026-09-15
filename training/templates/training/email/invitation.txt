@@ -1,0 +1,23 @@
+Dear {{ invitation.name }},
+
+You have been invited to participate in the IPAWAS training session:
+
+  {{ session.title }}
+  Date: {{ session.training_date }}
+  {% if session.location %}Location: {{ session.location }}{% endif %}
+
+COMPLETE YOUR PRE-TRAINING ASSESSMENT
+──────────────────────────────────────
+Please complete the short pre-training assessment before the session.
+It takes approximately 5 minutes.
+
+Your personal assessment link:
+{{ assess_url }}
+
+This link is unique to you — please do not share it.
+
+After the training you will use the same link to submit your feedback.
+
+──────────────────────────────────────
+IPAWAS – Investment Promotion Agencies of West Africa
+{{ site_url }}

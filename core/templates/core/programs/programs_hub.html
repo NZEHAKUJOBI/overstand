@@ -1,0 +1,910 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Programs & Initiatives - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-green: #1B7A4C;
+        --emerald: #10B981;
+        --light-green: #34D399;
+        --secondary-green: #059669;
+        --gold: #D4A520;
+        --forest-green: #064E3B;
+        --mint-green: #F0FDF4;
+    }
+
+    /* Hero Section */
+    .programs-hero {
+        background: linear-gradient(135deg, var(--forest-green) 0%, var(--primary-green) 50%, var(--emerald) 100%);
+        padding: 100px 0 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .programs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .programs-hero h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 3.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .programs-hero p.lead {
+        font-size: 1.4rem;
+        color: rgba(255,255,255,0.95);
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        line-height: 1.8;
+    }
+
+    /* Category Cards */
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.12);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(27, 122, 76, 0.1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-green), var(--emerald));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.2);
+        border-color: var(--primary-green);
+    }
+
+    .category-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .category-icon {
+        font-size: 3rem;
+        color: var(--primary-green);
+        margin-bottom: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(16, 185, 129, 0.1));
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover .category-icon {
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        color: white;
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .category-card h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--forest-green);
+        margin-bottom: 1rem;
+    }
+
+    .category-card p {
+        color: #6B7280;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+    }
+
+    .program-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--mint-green);
+        color: var(--primary-green);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Featured Programs Carousel */
+    .featured-carousel {
+        background: var(--mint-green);
+        padding: 80px 0;
+    }
+
+    .program-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .program-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.2);
+    }
+
+    .program-img {
+        height: 250px;
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        position: relative;
+        overflow: hidden;
+    }
+
+    .program-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+        transition: all 0.4s ease;
+    }
+
+    .program-card:hover .program-img img {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    .program-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(212, 165, 32, 0.95);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .program-content {
+        padding: 2rem;
+    }
+
+    .program-content h4 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--forest-green);
+        margin-bottom: 1rem;
+    }
+
+    .program-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .program-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+
+    .program-meta-item i {
+        color: var(--primary-green);
+    }
+
+    /* Filter System */
+    .filter-section {
+        background: white;
+        padding: 60px 0;
+    }
+
+    .filter-bar {
+        background: white;
+        border: 2px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #E5E7EB;
+        background: white;
+        border-radius: 25px;
+        font-weight: 600;
+        color: #6B7280;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    /* Impact Metrics */
+    .impact-metrics {
+        background: linear-gradient(135deg, var(--forest-green), var(--primary-green));
+        padding: 80px 0;
+        color: white;
+    }
+
+    .metric-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+        background: rgba(255,255,255,0.15);
+        transform: translateY(-5px);
+    }
+
+    .metric-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        font-family: 'Montserrat', sans-serif;
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .metric-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 600;
+    }
+
+    /* Success Stories */
+    .success-stories {
+        background: white;
+        padding: 80px 0;
+    }
+
+    .story-card {
+        background: var(--mint-green);
+        border-radius: 20px;
+        padding: 2.5rem;
+        border-left: 5px solid var(--primary-green);
+        position: relative;
+    }
+
+    .story-quote {
+        font-size: 1.2rem;
+        font-style: italic;
+        color: var(--forest-green);
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .story-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 3px solid var(--primary-green);
+    }
+
+    .author-info h5 {
+        font-weight: 700;
+        color: var(--forest-green);
+        margin-bottom: 0.25rem;
+    }
+
+    .author-info p {
+        color: #6B7280;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Timeline */
+    .timeline-section {
+        background: var(--mint-green);
+        padding: 80px 0;
+    }
+
+    .timeline-item {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary-green);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover {
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.15);
+        transform: translateX(5px);
+    }
+
+    .timeline-date {
+        display: inline-block;
+        background: var(--primary-green);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        padding: 80px 0;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-cta {
+        background: var(--gold);
+        color: white;
+        padding: 1rem 3rem;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        box-shadow: 0 8px 24px rgba(212, 165, 32, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-cta:hover {
+        background: #C59819;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(212, 165, 32, 0.4);
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .programs-hero h1 {
+            font-size: 2.5rem;
+        }
+        .programs-hero p.lead {
+            font-size: 1.2rem;
+        }
+        .metric-number {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="programs-hero">
+    <div class="container position-relative">
+        <div class="text-center">
+            <h1 data-aos="fade-down">{% translate "Programs & Initiatives" %}</h1>
+            <p class="lead" data-aos="fade-up" data-aos-delay="100">{% blocktranslate trimmed %}Building capacity, fostering collaboration, and strengthening investment promotion across West Africa{% endblocktranslate %}</p>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <a href="#programs" class="btn btn-light btn-lg rounded-pill px-4 py-3 me-3"><i class="fas fa-search me-2"></i>{% translate "Explore Programs" %}</a>
+                <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-4 py-3"><i class="fas fa-paper-plane me-2"></i>{% translate "Submit Proposal" %}</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Program Categories -->
+<section class="py-5" style="background: white;">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="mb-3" style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--forest-green);">{% translate "Program Categories" %}</h2>
+            <p class="lead" style="color: #6B7280; max-width: 700px; margin: 0 auto;">{% blocktranslate trimmed %}Our initiatives span capacity building, regional collaboration, research, and innovation{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Capacity Building -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>{% translate "Capacity Building" %}</h3>
+                    <p>{% blocktranslate trimmed %}Comprehensive training programs to enhance IPA capabilities in investment promotion and facilitation.{% endblocktranslate %}</p>
+                    <span class="program-count"><i class="fas fa-folder"></i>
+                        <span>{% translate "4 Programs" %}</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Regional Collaboration -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>{% translate "Regional Collaboration" %}</h3>
+                    <p>{% blocktranslate trimmed %}Joint initiatives fostering cooperation and knowledge sharing among West African IPAs.{% endblocktranslate %}</p>
+                    <span class="program-count"><i class="fas fa-folder"></i>
+                        <span>{% translate "3 Programs" %}</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Research & Innovation -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>{% translate "Research & Innovation" %}</h3>
+                    <p>{% blocktranslate trimmed %}Data-driven research and innovative approaches to investment promotion challenges.{% endblocktranslate %}</p>
+                    <span class="program-count"><i class="fas fa-folder"></i>
+                        <span>{% translate "2 Programs" %}</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Policy Advocacy -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>{% translate "Policy Advocacy" %}</h3>
+                    <p>{% blocktranslate trimmed %}Supporting regulatory reforms to improve the regional investment climate.{% endblocktranslate %}</p>
+                    <span class="program-count"><i class="fas fa-folder"></i>
+                        <span>{% translate "2 Programs" %}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Programs Carousel -->
+<section class="featured-carousel">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--forest-green);">{% translate "Featured Programs" %}</h2>
+            <p class="lead" style="color: #6B7280;">{% blocktranslate trimmed %}Flagship initiatives transforming investment promotion in West Africa{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- IPA Leadership Academy -->
+            <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+                <div class="program-card">
+                    <div class="program-img">
+                        <img src="{% static 'images/programs/leadership_academy.jpg' %}" alt="{% translate "IPA Leadership Academy" %}">
+                        <span class="program-badge">{% translate "Flagship Program" %}</span>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "IPA Leadership Academy" %}</h4>
+                        <div class="program-meta">
+                            <span class="program-meta-item"><i class="fas fa-clock"></i>
+                                {% translate "6 Months" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-users"></i>
+                                {% translate "30 Participants" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-map-marker-alt"></i>
+                                {% translate "Multi-location" %}</span>
+                        </div>
+                        <p style="color: #6B7280; margin-bottom: 1.5rem;">{% blocktranslate trimmed %}Executive development program for senior IPA leaders focusing on strategic investment promotion, stakeholder management, and organizational transformation.{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:ipa-leadership' %}" class="btn btn-outline-success rounded-pill px-4">
+                            Learn More <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Promotion Training -->
+            <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+                <div class="program-card">
+                    <div class="program-img">
+                        <img src="{% static 'images/programs/training_workshop.jpg' %}" alt="{% translate "Investment Promotion Training" %}">
+                        <span class="program-badge">{% translate "Popular" %}</span>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "Investment Promotion Training" %}</h4>
+                        <div class="program-meta">
+                            <span class="program-meta-item"><i class="fas fa-clock"></i>
+                                {% translate "5 Days" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-users"></i>
+                                {% translate "50 Participants" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-map-marker-alt"></i>
+                                {% translate "Quarterly" %}</span>
+                        </div>
+                        <p style="color: #6B7280; margin-bottom: 1.5rem;">{% blocktranslate trimmed %}Intensive workshops covering modern investment promotion techniques, investor targeting strategies, and project packaging methodologies.{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:training' %}" class="btn btn-outline-success rounded-pill px-4">
+                            Learn More <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regional Investment Missions -->
+            <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="300">
+                <div class="program-card">
+                    <div class="program-img">
+                        <img src="{% static 'images/programs/investment_missions.jpg' %}" alt="{% translate "Regional Investment Missions" %}">
+                        <span class="program-badge">{% translate "New" %}</span>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "Regional Investment Missions" %}</h4>
+                        <div class="program-meta">
+                            <span class="program-meta-item"><i class="fas fa-clock"></i>
+                                {% translate "7-10 Days" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-users"></i>
+                                {% translate "15-20 Investors" %}</span>
+                            <span class="program-meta-item"><i class="fas fa-map-marker-alt"></i>
+                                {% translate "3+ Countries" %}</span>
+                        </div>
+                        <p style="color: #6B7280; margin-bottom: 1.5rem;">{% blocktranslate trimmed %}Collaborative missions connecting international investors with opportunities across multiple West African countries through structured site visits and B2B meetings.{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:missions' %}" class="btn btn-outline-success rounded-pill px-4">
+                            Learn More <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- All Programs with Filters -->
+<section class="filter-section" id="programs">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--forest-green);">{% translate "All Programs" %}</h2>
+            <p class="lead" style="color: #6B7280;">{% blocktranslate trimmed %}Explore our comprehensive portfolio of capacity building initiatives{% endblocktranslate %}</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" x-data="{ category: 'all', status: 'all', year: 'all' }">
+            <div class="filter-group mb-3">
+                <strong style="color: var(--forest-green); margin-right: 1rem;">Category:</strong>
+                <button class="filter-btn" :class="{ 'active': category === 'all' }" @click="category = 'all'">{% translate "All" %}</button>
+                <button class="filter-btn" :class="{ 'active': category === 'capacity' }" @click="category = 'capacity'">{% translate "Capacity Building" %}</button>
+                <button class="filter-btn" :class="{ 'active': category === 'collaboration' }" @click="category = 'collaboration'">{% translate "Regional Collaboration" %}</button>
+                <button class="filter-btn" :class="{ 'active': category === 'research' }" @click="category = 'research'">{% translate "Research & Innovation" %}</button>
+            </div>
+
+            <div class="filter-group">
+                <strong style="color: var(--forest-green); margin-right: 1rem;">Status:</strong>
+                <button class="filter-btn" :class="{ 'active': status === 'all' }" @click="status = 'all'">{% translate "All" %}</button>
+                <button class="filter-btn" :class="{ 'active': status === 'open' }" @click="status = 'open'">{% translate "Registration Open" %}</button>
+                <button class="filter-btn" :class="{ 'active': status === 'upcoming' }" @click="status = 'upcoming'">{% translate "Upcoming" %}</button>
+                <button class="filter-btn" :class="{ 'active': status === 'ongoing' }" @click="status = 'ongoing'">{% translate "Ongoing" %}</button>
+            </div>
+        </div>
+
+        <!-- Programs Grid -->
+        <div class="row g-4">
+            <!-- This would be dynamically generated from database in production -->
+            <div class="col-md-6 col-lg-4">
+                <div class="program-card">
+                    <div class="program-img" style="height: 200px; background: linear-gradient(135deg, var(--primary-green), var(--emerald)); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-graduate" style="font-size: 4rem; color: rgba(255,255,255,0.9);"></i>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "IPA Leadership Academy" %}</h4>
+                        <p style="color: #6B7280; font-size: 0.95rem;">{% blocktranslate trimmed %}Executive development for senior IPA leaders{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:ipa-leadership' %}" class="btn btn-outline-success rounded-pill w-100">{% translate "View Details" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="program-card">
+                    <div class="program-img" style="height: 200px; background: linear-gradient(135deg, #059669, #10B981); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-chalkboard-teacher" style="font-size: 4rem; color: rgba(255,255,255,0.9);"></i>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "Investment Promotion Training" %}</h4>
+                        <p style="color: #6B7280; font-size: 0.95rem;">{% blocktranslate trimmed %}Modern techniques for attracting investors{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:training' %}" class="btn btn-outline-success rounded-pill w-100">{% translate "View Details" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="program-card">
+                    <div class="program-img" style="height: 200px; background: linear-gradient(135deg, #064E3B, #1B7A4C); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-plane-departure" style="font-size: 4rem; color: rgba(255,255,255,0.9);"></i>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "Regional Investment Missions" %}</h4>
+                        <p style="color: #6B7280; font-size: 0.95rem;">{% blocktranslate trimmed %}Connect investors with multi-country opportunities{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:missions' %}" class="btn btn-outline-success rounded-pill w-100">{% translate "View Details" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="program-card">
+                    <div class="program-img" style="height: 200px; background: linear-gradient(135deg, #10B981, #34D399); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-chart-line" style="font-size: 4rem; color: rgba(255,255,255,0.9);"></i>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "IPA Performance Benchmarking" %}</h4>
+                        <p style="color: #6B7280; font-size: 0.95rem;">{% blocktranslate trimmed %}Measure and improve IPA effectiveness{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:benchmarking' %}" class="btn btn-outline-success rounded-pill w-100">{% translate "View Details" %}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="program-card">
+                    <div class="program-img" style="height: 200px; background: linear-gradient(135deg, #1B7A4C, #059669); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-book-open" style="font-size: 4rem; color: rgba(255,255,255,0.9);"></i>
+                    </div>
+                    <div class="program-content">
+                        <h4>{% translate "Research & Publications" %}</h4>
+                        <p style="color: #6B7280; font-size: 0.95rem;">{% blocktranslate trimmed %}Investment intelligence and policy research{% endblocktranslate %}</p>
+                        <a href="{% url 'programs:research' %}" class="btn btn-outline-success rounded-pill w-100">{% translate "View Details" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Metrics -->
+<section class="impact-metrics">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-3" style="font-family: 'Montserrat', sans-serif; font-weight: 800;">{% translate "Our Impact" %}</h2>
+            <p style="font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto;">{% blocktranslate trimmed %}Transforming investment promotion capacity across West Africa{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="metric-card">
+                    <span class="metric-number" data-count="47">0</span>
+                    <div class="metric-label">Programs Launched</div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="metric-card">
+                    <span class="metric-number" data-count="1250">0</span>
+                    <div class="metric-label">Staff Trained</div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="metric-card">
+                    <span class="metric-number">{% translate "$2.3B" %}</span>
+                    <div class="metric-label">Investment Facilitated</div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="metric-card">
+                    <span class="metric-number" data-count="15">0</span>
+                    <div class="metric-label">Member IPAs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories -->
+<section class="success-stories">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--forest-green);">{% translate "Success Stories" %}</h2>
+            <p class="lead" style="color: #6B7280;">{% blocktranslate trimmed %}Hear from IPA professionals who have benefited from our programs{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="story-card">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--primary-green); opacity: 0.5;"></i>
+                    </div>
+                    <p class="story-quote">{% blocktranslate trimmed %}"The IPA Leadership Academy transformed my approach to investment promotion. The networking opportunities and strategic insights gained were invaluable for positioning our agency as a competitive player in the global investment landscape."{% endblocktranslate %}</p>
+                    <div class="story-author">
+                        <img src="{% static 'images/avatars/placeholder.jpg' %}" alt="{% translate "Author" %}" class="author-img">
+                        <div class="author-info">
+                            <h5>{% translate "Amina Okonkwo" %}</h5>
+                            <p>{% blocktranslate trimmed %}Director of Investor Relations, NIPC Nigeria{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="story-card">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--primary-green); opacity: 0.5;"></i>
+                    </div>
+                    <p class="story-quote">{% blocktranslate trimmed %}"The Investment Promotion Training Workshop equipped our team with modern tools and techniques. We've since restructured our investor outreach strategy and seen a 40% increase in serious investor inquiries."{% endblocktranslate %}</p>
+                    <div class="story-author">
+                        <img src="{% static 'images/avatars/placeholder.jpg' %}" alt="{% translate "Author" %}" class="author-img">
+                        <div class="author-info">
+                            <h5>{% translate "Kwame Mensah" %}</h5>
+                            <p>{% blocktranslate trimmed %}Investment Promotion Officer, GIPC Ghana{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Programs Timeline -->
+<section class="timeline-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--forest-green);">{% translate "Upcoming Programs" %}</h2>
+            <p class="lead" style="color: #6B7280;">{% blocktranslate trimmed %}Mark your calendar for these exciting opportunities{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="timeline-item">
+                    <span class="timeline-date"><i class="fas fa-calendar-alt me-2"></i>{% translate "March 2025" %}</span>
+                    <h4 style="color: var(--forest-green); font-weight: 700;">{% translate "IPA Leadership Academy Cohort 6" %}</h4>
+                    <p style="color: #6B7280; margin: 0;">{% blocktranslate trimmed %}Applications opening soon for our flagship executive development program{% endblocktranslate %}</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-date"><i class="fas fa-calendar-alt me-2"></i>{% translate "April 2025" %}</span>
+                    <h4 style="color: var(--forest-green); font-weight: 700;">{% translate "Investment Promotion Training - Abuja" %}</h4>
+                    <p style="color: #6B7280; margin: 0;">{% blocktranslate trimmed %}Five-day intensive workshop on modern investment promotion techniques{% endblocktranslate %}</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-date"><i class="fas fa-calendar-alt me-2"></i>{% translate "June 2025" %}</span>
+                    <h4 style="color: var(--forest-green); font-weight: 700;">{% translate "Regional Investment Mission - UAE" %}</h4>
+                    <p style="color: #6B7280; margin: 0;">{% blocktranslate trimmed %}Connecting Middle Eastern investors with West African opportunities{% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 data-aos="fade-up">{% translate "Ready to Submit a Program Proposal?" %}</h2>
+        <p data-aos="fade-up" data-aos-delay="100" style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2.5rem; opacity: 0.95;">{% blocktranslate trimmed %}Share your ideas for new programs that can strengthen investment promotion in West Africa{% endblocktranslate %}</p>
+        <button class="btn btn-cta" data-aos="fade-up" data-aos-delay="200" data-bs-toggle="modal" data-bs-target="#proposalModal"><i class="fas fa-lightbulb me-2"></i>{% translate "Submit Proposal" %}</button>
+    </div>
+</section>
+
+<!-- Proposal Modal -->
+<div class="modal fade" id="proposalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 20px; border: none;">
+            <div class="modal-header" style="background: var(--primary-green); color: white; border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title" style="font-family: 'Montserrat', sans-serif; font-weight: 700;"><i class="fas fa-lightbulb me-2"></i>{% translate "Submit Program Proposal" %}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Program Title" %}</label>
+                        <input type="text" class="form-control" placeholder="{% translate "Enter program title" %}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Category" %}</label>
+                        <select class="form-select">
+                            <option>Capacity Building</option>
+                            <option>Regional Collaboration</option>
+                            <option>Research & Innovation</option>
+                            <option>Policy Advocacy</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Description" %}</label>
+                        <textarea class="form-control" rows="4" placeholder="{% translate "Describe your program proposal..." %}"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">{% translate "Your Name" %}</label>
+                            <input type="text" class="form-control" placeholder="{% translate "Full name" %}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">{% translate "Email" %}</label>
+                            <input type="email" class="form-control" placeholder="your.email@example.com">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Organization" %}</label>
+                        <input type="text" class="form-control" placeholder="{% translate "Organization name" %}">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 rounded-pill py-3" style="font-weight: 700;"><i class="fas fa-paper-plane me-2"></i>{% translate "Submit Proposal" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script>
+    // Initialize AOS (Animate on Scroll)
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+
+    // Animated Counter
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.metric-number[data-count]');
+
+        const animateCounter = (counter) => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.floor(current).toLocaleString();
+                }
+            }, duration / steps);
+        };
+
+        // Intersection Observer for counters
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
+{% endblock %}

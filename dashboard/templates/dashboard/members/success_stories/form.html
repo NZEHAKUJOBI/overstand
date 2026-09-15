@@ -1,0 +1,180 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if object %}{% translate "Edit Success Story" %}{% else %}{% translate "Add Success Story" %}{% endif %}{% endblock %}
+{% block page_title %}{% if object %}{% translate "Edit Success Story" %}{% else %}{% translate "Add Success Story" %}{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> /
+<a href="{% url 'dashboard:country:success_stories' member_state.slug %}">{% translate "Success Stories" %}</a> /
+{% if object %}{% translate "Edit" %}{% else %}{% translate "Add" %}{% endif %}
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mb-4">
+        <strong>{% translate "Please fix the errors below before saving." %}</strong>
+        <ul class="mb-0 mt-2">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+
+            <!-- Story Details -->
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-trophy me-2"></i>{% translate "Story Details" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.title.id_for_label }}">{% translate "Headline" %} <span class="required-star">*</span></label>
+                        {{ form.title }}
+                        {% if form.title.errors %}<div class="field-error">{{ form.title.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.company_name.id_for_label }}">{% translate "Company Name" %} <span class="required-star">*</span></label>
+                            {{ form.company_name }}
+                            {% if form.company_name.errors %}<div class="field-error">{{ form.company_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.company_origin.id_for_label }}">{% translate "Company Origin" %}</label>
+                            {{ form.company_origin }}
+                            <small class="form-text text-muted">{% translate "Country the company is from" %}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.sector.id_for_label }}">{% translate "Sector" %}</label>
+                            {{ form.sector }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.year.id_for_label }}">{% translate "Year" %} <span class="required-star">*</span></label>
+                            {{ form.year }}
+                            {% if form.year.errors %}<div class="field-error">{{ form.year.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.summary.id_for_label }}">{% translate "Summary" %} <span class="required-star">*</span></label>
+                        {{ form.summary }}
+                        <small class="form-text text-muted">{% translate "2–3 sentences shown on the public profile card" %}</small>
+                        {% if form.summary.errors %}<div class="field-error">{{ form.summary.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.full_story.id_for_label }}">{% translate "Full Story" %}</label>
+                        {{ form.full_story }}
+                        <small class="form-text text-muted">{% translate "Complete narrative (optional)" %}</small>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.impact.id_for_label }}">{% translate "Impact" %}</label>
+                        {{ form.impact }}
+                        <small class="form-text text-muted">{% translate "Economic or social impact of this investment" %}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Figures -->
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-chart-line me-2"></i>{% translate "Investment Figures" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label" for="{{ form.investment_amount.id_for_label }}">{% translate "Amount (USD)" %}</label>
+                            {{ form.investment_amount }}
+                            <small class="form-text text-muted">{% translate "Numeric value" %}</small>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label" for="{{ form.investment_amount_display.id_for_label }}">{% translate "Amount Display" %}</label>
+                            {{ form.investment_amount_display }}
+                            <small class="form-text text-muted">{% translate "e.g., \"$50M\"" %}</small>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label" for="{{ form.jobs_created.id_for_label }}">{% translate "Jobs Created" %}</label>
+                            {{ form.jobs_created }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image -->
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-image me-2"></i>{% translate "Image" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    {% if object.image %}
+                    <div class="mb-3">
+                        <img src="{{ object.image }}" alt="{% translate "Current image" %}"
+                             style="max-height:180px;border-radius:10px;object-fit:cover;">
+                    </div>
+                    {% endif %}
+                    <label class="form-label" for="id_image">{% if object.image %}{% translate "Replace Image" %}{% else %}{% translate "Upload Image" %}{% endif %}</label>
+                    {{ form.image }}
+                    <small class="form-text text-muted">{% translate "Company or project photo (JPEG/PNG, recommended 800×500px)" %}</small>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="content-card sticky-sidebar">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-save me-2"></i>{% translate "Save" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.display_order.id_for_label }}">{% translate "Display Order" %}</label>
+                        {{ form.display_order }}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.published }}
+                        <label class="form-check-label" for="{{ form.published.id_for_label }}">{% translate "Published (visible to investors)" %}</label>
+                    </div>
+                    <div class="mb-4 form-check">
+                        {{ form.featured }}
+                        <label class="form-check-label" for="{{ form.featured.id_for_label }}">{% translate "Featured (shown prominently)" %}</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary-green btn-lg">
+                            <i class="fas fa-check me-2"></i>{% if object %}{% translate "Update Story" %}{% else %}{% translate "Create Story" %}{% endif %}
+                        </button>
+                        <a href="{% url 'dashboard:country:success_stories' member_state.slug %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+.form-label { color: var(--dark-green); font-weight: 600; display: block; margin-bottom: .4rem; }
+.required-star { color: #EF4444; }
+.form-control, .form-select {
+    border: 2px solid var(--neutral-200); border-radius: 10px;
+    padding: .75rem 1rem; width: 100%;
+    transition: border-color .15s, box-shadow .15s; font-size: .95rem;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(27,122,76,.1); outline: none;
+}
+textarea.form-control { resize: vertical; }
+.field-error { color: #EF4444; font-size: .825rem; margin-top: .3rem; }
+.form-text { font-size: .825rem; }
+.form-check-input { width: 1.1em; height: 1.1em; margin-right: .5rem; }
+.sticky-sidebar { position: sticky; top: 100px; }
+@media (max-width: 991px) { .sticky-sidebar { position: static; } }
+</style>
+{% endblock %}

@@ -1,0 +1,978 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Why Invest in West Africa | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section with Parallax */
+    .hero-section {
+        position: relative;
+        height: 75vh;
+        min-height: 600px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.55), rgba(15, 107, 63, 0.52)),
+                    url('/static/images/why_west_africa/west-africa-skyline.png') center/cover fixed;
+        display: flex;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></svg>');
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-100px); }
+    }
+
+    /* Animated Stats Counter */
+    .stat-card {
+        text-align: center;
+        padding: 2.5rem 2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .stat-card:hover::before {
+        left: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: var(--accent-gold);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #D4A520, #F5C842);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .stat-label {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        opacity: 0.95;
+        font-weight: 600;
+    }
+
+    /* Interactive Reason Cards */
+    .reason-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 30px rgba(27, 122, 76, 0.08);
+        border: 2px solid rgba(27, 122, 76, 0.05);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .reason-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-green), var(--accent-gold));
+        transform: scaleX(0);
+        transition: transform 0.4s;
+    }
+
+    .reason-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.18);
+        border-color: var(--accent-gold);
+    }
+
+    .reason-card:hover::after {
+        transform: scaleX(1);
+    }
+
+    .reason-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.4s;
+    }
+
+    .reason-card:hover .reason-icon {
+        transform: rotateY(360deg) scale(1.1);
+        background: linear-gradient(135deg, var(--accent-gold), #F5C842);
+    }
+
+    /* Image with Overlay Cards */
+    .image-card {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        height: 400px;
+        transition: all 0.4s;
+    }
+
+    .image-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .image-card:hover img {
+        transform: scale(1.1);
+    }
+
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent, rgba(27, 122, 76, 0.95));
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 2rem;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    .image-card:hover .image-overlay {
+        opacity: 1;
+    }
+
+    /* Interactive Sector Cards */
+    .sector-showcase {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        height: 450px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sector-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sector-showcase:hover .sector-bg {
+        transform: scale(1.15);
+    }
+
+    .sector-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(27, 122, 76, 0.2), rgba(15, 107, 63, 0.95));
+        z-index: 1;
+        transition: background 0.4s;
+    }
+
+    .sector-showcase:hover .sector-overlay {
+        background: linear-gradient(180deg, rgba(212, 165, 32, 0.3), rgba(27, 122, 76, 0.97));
+    }
+
+    .sector-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+        padding: 2.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .sector-icon-lg {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        transition: transform 0.4s;
+    }
+
+    .sector-showcase:hover .sector-icon-lg {
+        transform: scale(1.2) rotate(5deg);
+    }
+
+    /* Interactive Comparison Chart */
+    .comparison-bar {
+        height: 40px;
+        background: linear-gradient(90deg, var(--primary-green), var(--light-green));
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .comparison-bar::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+
+    .comparison-bar:hover::before {
+        transform: translateX(100%);
+    }
+
+    .comparison-bar:hover {
+        background: linear-gradient(90deg, var(--accent-gold), #F5C842);
+        transform: scaleX(1.05);
+    }
+
+    .comparison-value {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: 800;
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    /* Success Stories Timeline */
+    .timeline-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.1);
+        border-left: 5px solid var(--primary-green);
+        transition: all 0.4s;
+        position: relative;
+    }
+
+    .timeline-card::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        background: var(--accent-gold);
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 0 0 3px var(--primary-green);
+    }
+
+    .timeline-card:hover {
+        transform: translateX(10px);
+        border-left-color: var(--accent-gold);
+        box-shadow: 0 15px 50px rgba(27, 122, 76, 0.15);
+    }
+
+    /* Incentives Grid */
+    .incentive-item {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(45, 144, 97, 0.03));
+        border-radius: 16px;
+        padding: 2rem;
+        border: 2px solid rgba(27, 122, 76, 0.1);
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .incentive-item:hover {
+        transform: translateY(-8px);
+        border-color: var(--accent-gold);
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(45, 144, 97, 0.08));
+        box-shadow: 0 15px 40px rgba(27, 122, 76, 0.12);
+    }
+
+    .incentive-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s;
+    }
+
+    .incentive-item:hover .incentive-icon {
+        transform: rotate(360deg);
+        background: linear-gradient(135deg, var(--accent-gold), #F5C842);
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+        .hero-section {
+            height: auto;
+            min-height: 500px;
+            padding: 3rem 0;
+        }
+
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .reason-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .sector-showcase {
+            height: 350px;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-card {
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-bar {
+            height: 35px;
+            margin-bottom: 1rem;
+        }
+
+        .incentive-item {
+            margin-bottom: 1rem;
+        }
+    }
+
+    /* Smooth scroll animations */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Pulse effect for CTAs */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .pulse-cta {
+        animation: pulse 2s infinite;
+    }
+
+    /* Final CTA Section */
+    .final-cta-section {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.32)),
+                    url('/static/images/why_west_africa/west-africa-success.png') center/cover fixed;
+        padding: 6rem 0;
+        position: relative;
+        overflow: hidden;
+        color: white;
+    }
+
+    .final-cta-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.33));
+    }
+
+    .final-cta-section::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="3" fill="rgba(212,165,32,0.1)"/></svg>');
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container position-relative" style="z-index: 10;">
+        <div class="row justify-content-center text-center pt-5">
+            <div class="col-lg-10 pt-5">
+                <h1 class="display-2 fw-bold mb-4 animate-on-scroll" style="font-size: clamp(2rem, 5vw, 3.5rem);">{% translate "Africa's Investment Frontier" %}</h1>
+                <p class="lead mb-5 animate-on-scroll" style="font-size: clamp(1.1rem, 2.5vw, 1.5rem); max-width: 800px; margin: 0 auto;">{% blocktranslate trimmed %}400M+ consumers, $800B economy, 6.5% growth.<br>
+                    The opportunity is now.{% endblocktranslate %}</p>
+
+                <!-- Key Stats -->
+                <div class="row g-4 mb-5">
+                    <div class="col-6 col-md-3 animate-on-scroll">
+                        <div class="stat-card">
+                            <div class="stat-number" data-count="400">0</div>
+                            <div class="stat-label">{% translate "Million People" %}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 animate-on-scroll">
+                        <div class="stat-card">
+                            <div class="stat-number" data-count="800">0</div>
+                            <div class="stat-label">{% translate "Billion GDP" %}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 animate-on-scroll">
+                        <div class="stat-card">
+                            <div class="stat-number" data-count="6.5">0</div>
+                            <div class="stat-label">{% translate "Avg. Growth %" %}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 animate-on-scroll">
+                        <div class="stat-card">
+                            <div class="stat-number" data-count="15">0</div>
+                            <div class="stat-label">{% translate "ECOWAS Nations" %}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 justify-content-center flex-wrap animate-on-scroll">
+                    <a href="#sectors" class="btn btn-light btn-lg px-5 py-3 pulse-cta"><i class="fas fa-rocket me-2"></i>{% translate "Explore Now" %}</a>
+                    <a href="{% url 'investor_services:hub' %}" class="btn btn-outline-light btn-lg px-5 py-3"><i class="fas fa-handshake me-2"></i>{% translate "Connect With IPAs" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why West Africa - Visual Grid -->
+<section class="py-5" style="background: linear-gradient(180deg, #f8fafc, white);">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="display-4 fw-bold mb-3" style="color: var(--primary-green);">{% translate "Why West Africa" %}</h2>
+            <p class="lead text-muted" style="max-width: 700px; margin: 0 auto;">{% blocktranslate trimmed %}Strategic advantages driving exceptional returns{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Reason 1: Market Size -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-users" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Massive Consumer Market" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}400M+ population with 60% under 25. Rapidly growing middle class spending $800B+ annually.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--emerald); padding: 0.5rem 1rem;">{% translate "60% Youth" %}</span>
+                        <span class="badge" style="background: var(--accent-gold); padding: 0.5rem 1rem;">{% translate "Rising Incomes" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 2: Natural Resources -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-gem" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Rich Natural Resources" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}Oil, gas, gold, cocoa, lithium, and 65% of world's arable land. Untapped potential.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--primary-green); padding: 0.5rem 1rem;">{% translate "Energy" %}</span>
+                        <span class="badge" style="background: var(--light-green); padding: 0.5rem 1rem;">{% translate "Agriculture" %}</span>
+                        <span class="badge" style="background: var(--accent-gold); padding: 0.5rem 1rem;">{% translate "Mining" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 3: Strategic Location -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-globe-africa" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Gateway to Africa" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}Access AfCFTA's 1.3B consumers. Strategic ports connecting Africa, Europe, and Americas.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--emerald); padding: 0.5rem 1rem;">{% translate "AfCFTA Hub" %}</span>
+                        <span class="badge" style="background: var(--primary-green); padding: 0.5rem 1rem;">{% translate "Major Ports" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 4: Economic Growth -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-chart-line" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Robust GDP Growth" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}6.5% average growth outpacing global averages. Diversifying economies reducing dependency.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--accent-gold); padding: 0.5rem 1rem;">{% translate "High Returns" %}</span>
+                        <span class="badge" style="background: var(--emerald); padding: 0.5rem 1rem;">{% translate "Stable Macro" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 5: Digital Innovation -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-mobile-alt" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Digital Leapfrogging" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}Mobile-first economy with 80%+ penetration. Thriving fintech, e-commerce, and tech startups.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--primary-green); padding: 0.5rem 1rem;">{% translate "Fintech" %}</span>
+                        <span class="badge" style="background: var(--light-green); padding: 0.5rem 1rem;">{% translate "Mobile Money" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 6: Policy Support -->
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="reason-card">
+                    <div class="reason-icon">
+                        <i class="fas fa-shield-alt" style="color: white;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3" style="color: var(--primary-green);">{% translate "Progressive Policies" %}</h4>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}Tax incentives, investment protection, simplified regulations. ECOWAS harmonization.{% endblocktranslate %}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge" style="background: var(--emerald); padding: 0.5rem 1rem;">{% translate "Tax Breaks" %}</span>
+                        <span class="badge" style="background: var(--accent-gold); padding: 0.5rem 1rem;">{% translate "BITs" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sectors with Visual Impact -->
+<section id="sectors" class="py-5" style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.03), rgba(45, 144, 97, 0.03));">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="display-4 fw-bold mb-3" style="color: var(--primary-green);">{% translate "High-Potential Investment Sectors" %}</h2>
+            <p class="lead text-muted" style="max-width: 700px; margin: 0 auto;">{% blocktranslate trimmed %}Diversified opportunities across transformative industries{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Renewable Energy -->
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="sector-showcase">
+                    <div class="sector-bg" style="background-image: url('/static/images/why_west_africa/renewable-energy-sector.png');"></div>
+                    <div class="sector-overlay"></div>
+                    <div class="sector-content">
+                        <i class="fas fa-solar-panel sector-icon-lg"></i>
+                        <h3 class="fw-bold mb-3">{% translate "Renewable Energy" %}</h3>
+                        <p class="mb-3" style="font-size: 1.1rem;">{% blocktranslate trimmed %}$120B+ potential. 220M without power. Solar, wind, hydro projects.{% endblocktranslate %}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Solar Farms" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Wind Power" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Hydroelectric" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agribusiness -->
+            <a href="{% url 'why_west_africa:agriculture-sector' %}" class="col-lg-6 animate-on-scroll" style="text-decoration: none">
+                <div class="sector-showcase">
+                    <div class="sector-bg" style="background-image: url('/static/images/why_west_africa/agribusiness-sector.png');"></div>
+                    <div class="sector-overlay"></div>
+                    <div class="sector-content">
+                        <i class="fas fa-seedling sector-icon-lg"></i>
+                        <h3 class="fw-bold mb-3">{% translate "Agribusiness" %}</h3>
+                        <p class="mb-3" style="font-size: 1.1rem;">{% blocktranslate trimmed %}65% of uncultivated arable land. Modern farming, processing, export.{% endblocktranslate %}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Food Processing" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Export Crops" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Livestock" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Infrastructure -->
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="sector-showcase">
+                    <div class="sector-bg" style="background-image: url('/static/images/why_west_africa/infrastructure-sector.png');"></div>
+                    <div class="sector-overlay"></div>
+                    <div class="sector-content">
+                        <i class="fas fa-road sector-icon-lg"></i>
+                        <h3 class="fw-bold mb-3">{% translate "Infrastructure" %}</h3>
+                        <p class="mb-3" style="font-size: 1.1rem;">{% blocktranslate trimmed %}Roads, ports, railways, airports. Massive development pipeline.{% endblocktranslate %}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Ports" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Highways" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Railways" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech & Innovation -->
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="sector-showcase">
+                    <div class="sector-bg" style="background-image: url('/static/images/why_west_africa/tech-innovation-sector.png');"></div>
+                    <div class="sector-overlay"></div>
+                    <div class="sector-content">
+                        <i class="fas fa-microchip sector-icon-lg"></i>
+                        <h3 class="fw-bold mb-3">{% translate "Tech & Fintech" %}</h3>
+                        <p class="mb-3" style="font-size: 1.1rem;">{% blocktranslate trimmed %}Digital-first economy. Payments, lending, e-commerce scaling rapidly.{% endblocktranslate %}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Fintech" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "E-Commerce" %}</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% translate "Mobile Apps" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 animate-on-scroll">
+            <a href="{% url 'opportunities:listing' %}" class="btn btn-lg px-5 py-3" style="background: linear-gradient(135deg, var(--primary-green), var(--light-green)); color: white; border: none;"><i class="fas fa-chart-bar me-2"></i>{% translate "View All Opportunities" %}</a>
+        </div>
+    </div>
+</section>
+
+<!-- Competitive Advantage Visual Comparison -->
+<section class="py-5" style="background: white;">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="display-4 fw-bold mb-3" style="color: var(--primary-green);">{% translate "West Africa vs. Other Regions" %}</h2>
+            <p class="lead text-muted">{% blocktranslate trimmed %}Key competitive advantages{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-10 mx-auto">
+                <!-- Labor Cost -->
+                <div class="mb-4 animate-on-scroll">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong style="color: var(--primary-green);">Labor Cost Advantage</strong>
+                        <span class="text-muted">{% translate "Lower is Better" %}</span>
+                    </div>
+                    <div class="comparison-bar" style="width: 85%;">{% translate "<div class=\"comparison-value\">85% Competitive" %}</div>
+                    </div>
+                </div>
+
+                <!-- GDP Growth -->
+                <div class="mb-4 animate-on-scroll">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong style="color: var(--primary-green);">GDP Growth Rate</strong>
+                        <span class="text-muted">{% translate "6.5% Annual" %}</span>
+                    </div>
+                    <div class="comparison-bar" style="width: 92%;">
+                        <div class="comparison-value">92/100</div>
+                    </div>
+                </div>
+
+                <!-- Natural Resources -->
+                <div class="mb-4 animate-on-scroll">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong style="color: var(--primary-green);">Natural Resource Abundance</strong>
+                        <span class="text-muted">{% translate "Abundant" %}</span>
+                    </div>
+                    <div class="comparison-bar" style="width: 95%;">
+                        <div class="comparison-value">95/100</div>
+                    </div>
+                </div>
+
+                <!-- Youth Population -->
+                <div class="mb-4 animate-on-scroll">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong style="color: var(--primary-green);">Youth Population (&lt;25 years)</strong>
+                        <span class="text-muted">{% translate "60% of Total" %}</span>
+                    </div>
+                    <div class="comparison-bar" style="width: 98%;">{% translate "<div class=\"comparison-value\">World Leading" %}</div>
+                    </div>
+                </div>
+
+                <!-- Market Access -->
+                <div class="mb-4 animate-on-scroll">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong style="color: var(--primary-green);">Trade Agreement Access</strong>
+                        <span class="text-muted">{% translate "AfCFTA, ECOWAS, EU, US" %}</span>
+                    </div>
+                    <div class="comparison-bar" style="width: 90%;">{% translate "<div class=\"comparison-value\">Excellent" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories with Visual Cards -->
+<section class="py-5" style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.02), rgba(45, 144, 97, 0.02));">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="display-4 fw-bold mb-3" style="color: var(--primary-green);">{% translate "Real Success, Real Returns" %}</h2>
+            <p class="lead text-muted">{% blocktranslate trimmed %}Proven investments delivering results{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Success Story 1 -->
+            <div class="col-lg-4 animate-on-scroll">
+                <div class="timeline-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="/static/images/solar-company-logo.png" alt="{% translate 'Solar' %}" loading="lazy" style="height: 40px; object-fit: contain;">
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "$45M Solar Farm" %}</h5>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}UK investor in Senegal{% endblocktranslate %}</p>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "🏭 50MW Capacity" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "💰 18% Annual Returns" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>{% translate "⚡ 50K Homes Powered" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Story 2 -->
+            <div class="col-lg-4 animate-on-scroll">
+                <div class="timeline-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="/static/images/processing-company-logo.png" alt="{% translate 'Processing' %}" loading="lazy" style="height: 40px; object-fit: contain;">
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "$80M Food Processing" %}</h5>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}Indian conglomerate in Ghana{% endblocktranslate %}</p>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "🏭 5 Processing Plants" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "💼 2,000+ Jobs Created" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>{% translate "📈 22% Growth Rate" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Story 3 -->
+            <div class="col-lg-4 animate-on-scroll">
+                <div class="timeline-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="/static/images/tech-company-logo.png" alt="{% translate 'Tech' %}" loading="lazy" style="height: 40px; object-fit: contain;">
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "$25M Fintech Scale-up" %}</h5>
+                    <p class="text-muted mb-3">{% blocktranslate trimmed %}US venture capital in Nigeria{% endblocktranslate %}</p>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "👥 8M+ Users" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{% translate "💰 3x ROI in 24 months" %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>{% translate "🚀 Unicorn Trajectory" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 animate-on-scroll">
+            <a href="{% url 'why_west_africa:success-stories' %}" class="btn btn-outline-dark btn-lg px-5 py-3"><i class="fas fa-star me-2"></i>{% translate "Read More Success Stories" %}</a>
+        </div>
+    </div>
+</section>
+
+<!-- Investment Incentives -->
+<section class="py-5" style="background: white;">
+    <div class="container py-5">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="display-4 fw-bold mb-3" style="color: var(--primary-green);">{% translate "Investment Incentives" %}</h2>
+            <p class="lead text-muted" style="max-width: 700px; margin: 0 auto;">{% blocktranslate trimmed %}Competitive packages designed to maximize returns{% endblocktranslate %}</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Tax Holidays" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}3-10 years corporate tax exemptions{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Duty-Free Imports" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}Equipment & raw materials{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Land Subsidies" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}Preferential rates in zones{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Investment Protection" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}BITs with 50+ countries{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-money-bill-transfer"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Free Repatriation" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}Profits & capital transfers{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Fast-Track Permits" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}One-stop approval centers{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Skills Training" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}Government co-funded programs{% endblocktranslate %}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 animate-on-scroll">
+                <div class="incentive-item text-center">
+                    <div class="incentive-icon mx-auto">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "Infrastructure" %}</h5>
+                    <p class="text-muted mb-0">{% blocktranslate trimmed %}Subsidized power & utilities{% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta-section">
+    <div class="container position-relative" style="z-index: 10;">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-3 fw-bold mb-4" style="color: white; font-size: clamp(2rem, 4vw, 3rem);">{% translate "Start Your West Africa Journey" %}</h2>
+                <p class="lead mb-5" style="color: rgba(255, 255, 255, 0.95); font-size: clamp(1rem, 2vw, 1.3rem);">{% blocktranslate trimmed %}15 Investment Promotion Agencies ready to guide you from opportunity to execution.{% endblocktranslate %}</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'opportunities:listing' %}" class="btn btn-light btn-lg px-5 py-3"><i class="fas fa-rocket me-2"></i>{% translate "View Opportunities" %}</a>
+                    <a href="{% url 'members:hub' %}" class="btn btn-outline-light btn-lg px-5 py-3"><i class="fas fa-map-marked-alt me-2"></i>{% translate "Explore Countries" %}</a>
+                    <a href="{% url 'investor_services:hub' %}" class="btn btn-outline-light btn-lg px-5 py-3"><i class="fas fa-comments me-2"></i>{% translate "Get Support" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Animated Counter
+function animateCounter(element) {
+    const target = parseFloat(element.getAttribute('data-count'));
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+    const isDecimal = target % 1 !== 0;
+
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
+    }, 16);
+}
+
+// Intersection Observer for scroll animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+
+            // Trigger counter animation
+            if (entry.target.querySelector('[data-count]')) {
+                entry.target.querySelectorAll('[data-count]').forEach(counter => {
+                    animateCounter(counter);
+                });
+            }
+        }
+    });
+}, { threshold: 0.1 });
+
+// Observe all animated elements
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Navbar scroll effect
+<!--    window.addEventListener('scroll', () => {-->
+<!--        const navbar = document.querySelector('.navbar');-->
+<!--        if (window.scrollY > 50) {-->
+<!--            navbar?.classList.add('scrolled');-->
+<!--        } else {-->
+<!--            navbar?.classList.remove('scrolled');-->
+<!--        }-->
+<!--    });-->
+});
+</script>
+{% endblock %}

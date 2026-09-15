@@ -1,0 +1,187 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "My Settings - HQ Admin" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Settings" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">{% translate "My Settings" %}</h1>
+    <p class="page-description">{% translate "Manage your account preferences and security" %}</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Profile Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Profile Information" %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "First Name" %}</label>
+                            <input type="text" class="form-control" value="{{ request.user.first_name }}" name="first_name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Last Name" %}</label>
+                            <input type="text" class="form-control" value="{{ request.user.last_name }}" name="last_name">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "Email" %}</label>
+                        <input type="email" class="form-control" value="{{ request.user.email }}" disabled>
+                        <small class="form-text text-muted">{% translate "Email cannot be changed" %}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "Phone Number" %}</label>
+                        <input type="text" class="form-control" value="{{ request.user.phone_number }}" name="phone_number">
+                    </div>
+                    <button type="submit" class="btn btn-primary-green">
+                        <i class="fas fa-save me-2"></i>{% translate "Save Changes" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Preferences" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">{% translate "Language" %}</label>
+                    <select class="form-select">
+                        <option>{% translate "English" %}</option>
+                        <option>{% translate "French" %}</option>
+                        <option>{% translate "Portuguese" %}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{% translate "Timezone" %}</label>
+                    <select class="form-select">
+                        <option>{% translate "GMT" %}</option>
+                        <option>{% translate "WAT (West Africa Time)" %}</option>
+                        <option>{% translate "EAT (East Africa Time)" %}</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary-green">
+                    <i class="fas fa-save me-2"></i>{% translate "Save Preferences" %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Security" %}</h3>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'dashboard:hq:password' %}" class="setting-link">
+                    <i class="fas fa-key"></i>
+                    <div>
+                        <h6>{% translate "Change Password" %}</h6>
+                        <p>{% translate "Update your password" %}</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <a href="{% url 'dashboard:hq:2fa' %}" class="setting-link">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <h6>{% translate "Two-Factor Authentication" %}</h6>
+                        <p>{% translate "Enable 2FA for extra security" %}</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Notifications" %}</h3>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'dashboard:hq:notifications' %}" class="setting-link">
+                    <i class="fas fa-bell"></i>
+                    <div>
+                        <h6>{% translate "Notification Preferences" %}</h6>
+                        <p>{% translate "Manage email notifications" %}</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .setting-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s;
+        margin-bottom: 0.5rem;
+    }
+
+    .setting-link:hover {
+        background: var(--neutral-100);
+        color: inherit;
+    }
+
+    .setting-link:last-child {
+        margin-bottom: 0;
+    }
+
+    .setting-link > i:first-child {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--neutral-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-green);
+        flex-shrink: 0;
+    }
+
+    .setting-link div {
+        flex: 1;
+    }
+
+    .setting-link h6 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--neutral-800);
+    }
+
+    .setting-link p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--neutral-600);
+    }
+
+    .setting-link > i:last-child {
+        color: var(--neutral-400);
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

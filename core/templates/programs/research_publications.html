@@ -1,0 +1,205 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Research & Publications - IPAWAS Programs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, #064E3B 0%, #1B7A4C 60%, #10B981 100%);
+        padding: 130px 0 80px; margin-top: 76px; color: white; position: relative; overflow: hidden;
+    }
+    .page-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 60% 20%, rgba(212,165,32,0.12), transparent 60%); }
+    .page-hero h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+    .breadcrumb-item a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.6); }
+    .breadcrumb-item+.breadcrumb-item::before { color: rgba(255,255,255,0.5); }
+
+    .section-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+    .section-card h2 { font-size: 1.3rem; font-weight: 800; color: var(--primary-green); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid rgba(27,122,76,0.15); }
+
+    .pub-card {
+        border: 1px solid var(--neutral-200); border-radius: 12px; padding: 1.25rem 1.5rem;
+        margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1.25rem;
+        transition: box-shadow 0.2s;
+    }
+    .pub-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .pub-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(27,122,76,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pub-icon i { color: var(--primary-green); font-size: 1.1rem; }
+    .pub-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary-green); margin-bottom: 0.2rem; }
+    .pub-title { font-size: 0.95rem; font-weight: 700; color: var(--neutral-800); margin-bottom: 0.25rem; }
+    .pub-meta { font-size: 0.82rem; color: var(--neutral-500); }
+    .pub-actions { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+
+    .area-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+    .area-item {
+        display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem;
+        background: rgba(27,122,76,0.05); border-radius: 10px;
+        font-size: 0.88rem; color: var(--neutral-700); font-weight: 500;
+    }
+    .area-item i { color: var(--primary-green); flex-shrink: 0; }
+
+    .apply-cta { background: linear-gradient(135deg, var(--primary-green), #064E3B); border-radius: 16px; padding: 2.5rem; text-align: center; color: white; margin-top: 2rem; }
+    .apply-cta h3 { font-weight: 800; margin-bottom: 0.5rem; }
+    .apply-cta p { opacity: 0.85; margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
+                <li class="breadcrumb-item"><a href="{% url 'programs:hub' %}">{% translate "Programs" %}</a></li>
+                <li class="breadcrumb-item active">{% translate "Research & Publications" %}</li>
+            </ol>
+        </nav>
+        <h1>{% translate "Research & Publications" %}</h1>
+        <p style="opacity:0.9; font-size:1.1rem; max-width:640px; line-height:1.7;">
+            {% translate "Evidence-based research and policy analysis supporting investment promotion across West Africa's ECOWAS member states." %}
+        </p>
+        <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-warning rounded-pill px-4 fw-bold">
+                <i class="fas fa-book-open me-2"></i>{% translate "Browse Publications" %}
+            </a>
+            <a href="{% url 'about:contact' %}" class="btn btn-outline-light rounded-pill px-4">
+                <i class="fas fa-envelope me-2"></i>{% translate "Research Enquiries" %}
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Overview -->
+            <div class="section-card">
+                <h2>{% translate "About the Research Program" %}</h2>
+                <p style="color:var(--neutral-600); line-height:1.8;">
+                    {% translate "IPAWAS produces original research on investment trends, IPA performance, and the West African business environment. Our publications provide data and analysis to help member IPAs make evidence-based decisions and communicate effectively with investors." %}
+                </p>
+                <p style="color:var(--neutral-600); line-height:1.8; margin:0;">
+                    {% translate "Reports are made available to member IPAs and selected outputs are published publicly to promote West Africa as an investment destination." %}
+                </p>
+            </div>
+
+            <!-- Recent publications -->
+            <div class="section-card">
+                <h2>{% translate "Recent Publications" %}</h2>
+                {% for pub in recent_publications %}
+                <div class="pub-card">
+                    <div class="pub-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div class="pub-type">{{ pub.type }}</div>
+                        <div class="pub-title">{{ pub.title }}</div>
+                        <div class="pub-meta">
+                            <i class="fas fa-calendar-alt me-1"></i>{{ pub.date }}
+                            {% if pub.pages %}&nbsp;·&nbsp;<i class="fas fa-file me-1"></i>{{ pub.pages }} {% translate "pages" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="pub-actions">
+                        <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-outline-success btn-sm rounded-pill">
+                            <i class="fas fa-arrow-right me-1"></i>{% translate "View" %}
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="pub-card">
+                    <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+                    <div style="flex:1;">
+                        <div class="pub-type">{% translate "Annual Report" %}</div>
+                        <div class="pub-title">{% translate "West Africa Investment Report 2024" %}</div>
+                        <div class="pub-meta"><i class="fas fa-calendar-alt me-1"></i>{% translate "December 2024" %}&nbsp;·&nbsp;<i class="fas fa-file me-1"></i>150 {% translate "pages" %}</div>
+                    </div>
+                    <div class="pub-actions">
+                        <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-outline-success btn-sm rounded-pill"><i class="fas fa-arrow-right me-1"></i>{% translate "View" %}</a>
+                    </div>
+                </div>
+                <div class="pub-card">
+                    <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+                    <div style="flex:1;">
+                        <div class="pub-type">{% translate "Policy Brief" %}</div>
+                        <div class="pub-title">{% translate "Renewable Energy Investment in ECOWAS" %}</div>
+                        <div class="pub-meta"><i class="fas fa-calendar-alt me-1"></i>{% translate "November 2024" %}&nbsp;·&nbsp;<i class="fas fa-file me-1"></i>25 {% translate "pages" %}</div>
+                    </div>
+                    <div class="pub-actions">
+                        <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-outline-success btn-sm rounded-pill"><i class="fas fa-arrow-right me-1"></i>{% translate "View" %}</a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div style="text-align:center; margin-top:1rem;">
+                    <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-success rounded-pill px-4">
+                        <i class="fas fa-book me-2"></i>{% translate "View All Publications" %}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Research areas -->
+            <div class="section-card">
+                <h2>{% translate "Research Areas" %}</h2>
+                <div class="area-grid">
+                    {% for area in research_areas %}
+                    <div class="area-item"><i class="fas fa-microscope"></i>{{ area }}</div>
+                    {% empty %}
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "FDI Trends & Analysis" %}</div>
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "Sector-Specific Investment Studies" %}</div>
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "IPA Performance Research" %}</div>
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "Investment Climate Assessment" %}</div>
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "Policy & Regulatory Analysis" %}</div>
+                    <div class="area-item"><i class="fas fa-microscope"></i>{% translate "Regional Economic Integration" %}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <h2>{% translate "Publication Types" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.65rem;">
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <i class="fas fa-book text-success"></i>
+                        <div><div style="font-size:0.9rem; font-weight:700; color:var(--neutral-800);">{% translate "Annual Investment Report" %}</div><div style="font-size:0.8rem; color:var(--neutral-500);">{% translate "Flagship yearly publication" %}</div></div>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <i class="fas fa-file-alt text-success"></i>
+                        <div><div style="font-size:0.9rem; font-weight:700; color:var(--neutral-800);">{% translate "Policy Briefs" %}</div><div style="font-size:0.8rem; color:var(--neutral-500);">{% translate "Concise thematic analyses" %}</div></div>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <i class="fas fa-chart-bar text-success"></i>
+                        <div><div style="font-size:0.9rem; font-weight:700; color:var(--neutral-800);">{% translate "Benchmarking Reports" %}</div><div style="font-size:0.8rem; color:var(--neutral-500);">{% translate "IPA performance comparisons" %}</div></div>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <i class="fas fa-map text-success"></i>
+                        <div><div style="font-size:0.9rem; font-weight:700; color:var(--neutral-800);">{% translate "Country Profiles" %}</div><div style="font-size:0.8rem; color:var(--neutral-500);">{% translate "Investment landscape overviews" %}</div></div>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <i class="fas fa-industry text-success"></i>
+                        <div><div style="font-size:0.9rem; font-weight:700; color:var(--neutral-800);">{% translate "Sector Studies" %}</div><div style="font-size:0.8rem; color:var(--neutral-500);">{% translate "Deep-dives by industry" %}</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2>{% translate "Other Programs" %}</h2>
+                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                    <a href="{% url 'programs:ipa-leadership' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-award me-2"></i>{% translate "IPA Leadership Academy" %}</a>
+                    <a href="{% url 'programs:training' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-chalkboard-teacher me-2"></i>{% translate "Investment Promotion Training" %}</a>
+                    <a href="{% url 'programs:missions' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-plane me-2"></i>{% translate "Investment Missions" %}</a>
+                    <a href="{% url 'programs:benchmarking' %}" style="font-size:0.88rem; color:var(--primary-green); text-decoration:none; font-weight:600;"><i class="fas fa-chart-line me-2"></i>{% translate "IPA Benchmarking" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="apply-cta">
+        <h3>{% translate "Access IPAWAS Research" %}</h3>
+        <p>{% translate "Member IPAs have full access to the research library. Contact us to subscribe to new publication alerts or to commission custom research." %}</p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-warning rounded-pill px-5 fw-bold"><i class="fas fa-book-open me-2"></i>{% translate "Browse Publications" %}</a>
+            <a href="{% url 'about:contact' %}" class="btn btn-outline-light rounded-pill px-5"><i class="fas fa-envelope me-2"></i>{% translate "Contact Us" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

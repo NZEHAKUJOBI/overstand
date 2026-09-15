@@ -1,0 +1,343 @@
+{% extends base_template %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Investor Inquiries" %}{% if member_state %} - {{ member_state.country_name }}{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item"><a href="{% if request.user.user_type == 'ipa_staff' %}{% url 'dashboard:country:overview' member_state.slug %}{% else %}{% url 'dashboard:hq:overview' %}{% endif %}">{% translate "Dashboard" %}</a></span>
+<span class="breadcrumb-item active">{% translate "Investor Inquiries" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="page-header-left">
+        <h1 class="page-title">
+            <i class="fas fa-inbox me-2"></i>
+            {% translate "Investor Inquiries" %}
+        </h1>
+        <p class="page-subtitle text-muted">{% translate "Manage and respond to investor inquiries" %}</p>
+    </div>
+</div>
+
+<!-- Status Filter Tabs -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="inquiry-filters">
+            <div class="filter-tabs">
+                <a href="?{% if search_query %}q={{ search_query }}{% endif %}"
+                   class="filter-tab {% if current_status == 'all' %}active{% endif %}">
+                    {% translate "All Inquiries" %}
+                    <span class="badge">{{ status_counts.all }}</span>
+                </a>
+                <a href="?status=new{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="filter-tab {% if current_status == 'new' %}active{% endif %}">
+                    {% translate "New" %}
+                    <span class="badge badge-red">{{ status_counts.new }}</span>
+                </a>
+                <a href="?status=in_progress{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="filter-tab {% if current_status == 'in_progress' %}active{% endif %}">
+                    {% translate "In Progress" %}
+                    <span class="badge badge-blue">{{ status_counts.in_progress }}</span>
+                </a>
+                <a href="?status=responded{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="filter-tab {% if current_status == 'responded' %}active{% endif %}">
+                    {% translate "Responded" %}
+                    <span class="badge badge-green">{{ status_counts.responded }}</span>
+                </a>
+                <a href="?status=closed{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="filter-tab {% if current_status == 'closed' %}active{% endif %}">
+                    {% translate "Closed" %}
+                    <span class="badge badge-gray">{{ status_counts.closed }}</span>
+                </a>
+            </div>
+
+            <!-- Search Form -->
+            <div class="filter-search">
+                <form method="get" class="search-form">
+                    {% if current_status != 'all' %}
+                    <input type="hidden" name="status" value="{{ current_status }}">
+                    {% endif %}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control"
+                               placeholder="{% translate "Search by reference, name, email, company..." %}"
+                               value="{{ search_query }}">
+                        {% if search_query %}
+                        <a href="?{% if current_status != 'all' %}status={{ current_status }}{% endif %}"
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inquiries List -->
+<div class="card">
+    <div class="card-body p-0">
+        {% if inquiries %}
+        <div class="table-responsive">
+            <table class="table table-hover inquiry-table">
+                <thead>
+                    <tr>
+                        <th>{% translate "Reference" %}</th>
+                        <th>{% translate "Investor" %}</th>
+                        <th>{% translate "Company/Country" %}</th>
+                        <th>{% translate "Type & Sector" %}</th>
+                        <th>{% translate "Subject" %}</th>
+                        <th>{% translate "Status" %}</th>
+                        <th>{% translate "Assigned" %}</th>
+                        <th>{% translate "Date" %}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in inquiries %}
+                    <tr>
+                        <td>
+                            <a href="{% if request.user.user_type == 'ipa_staff' %}{% url 'dashboard:country:inquiries:detail' member_state_slug=member_state.slug pk=inquiry.pk %}{% else %}{% url 'dashboard:hq:inquiries:detail' pk=inquiry.pk %}{% endif %}"
+                               class="reference-link">
+                                {{ inquiry.reference_number }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="investor-info">
+                                <strong>{{ inquiry.full_name }}</strong>
+                                <small class="d-block text-muted">
+                                    <i class="far fa-envelope"></i> {{ inquiry.email }}
+                                </small>
+                                {% if inquiry.phone %}
+                                <small class="d-block text-muted">
+                                    <i class="fas fa-phone"></i> {{ inquiry.phone }}
+                                </small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if inquiry.company_name %}
+                            <div>{{ inquiry.company_name }}</div>
+                            {% endif %}
+                            {% if inquiry.company_country %}
+                            <small class="text-muted">{{ inquiry.company_country }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>
+                                <span class="badge badge-primary">{{ inquiry.get_inquiry_type_display }}</span>
+                            </div>
+                            {% if inquiry.sector_of_interest %}
+                            <small class="text-muted d-block mt-1">{{ inquiry.sector_of_interest.name }}</small>
+                            {% endif %}
+                            {% if inquiry.estimated_investment %}
+                            <small class="text-success d-block mt-1">
+                                <i class="fas fa-dollar-sign"></i> {{ inquiry.estimated_investment }}
+                            </small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="inquiry-subject">{{ inquiry.subject|truncatewords:8 }}</div>
+                        </td>
+                        <td>
+                            <span class="badge inquiry-status-{{ inquiry.status }}">
+                                {{ inquiry.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if inquiry.assigned_to %}
+                            <small>{{ inquiry.assigned_to.get_full_name }}</small>
+                            {% else %}
+                            <small class="text-muted">{% translate "Unassigned" %}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {{ inquiry.created_at|date:"M d, Y" }}<br>
+                                {{ inquiry.created_at|time:"g:i A" }}
+                            </small>
+                        </td>
+                        <td>
+                            <a href="{% if request.user.user_type == 'ipa_staff' %}{% url 'dashboard:country:inquiries:detail' member_state_slug=member_state.slug pk=inquiry.pk %}{% else %}{% url 'dashboard:hq:inquiries:detail' pk=inquiry.pk %}{% endif %}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>{% translate "View" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">
+                            {% translate "Previous" %}
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">{% blocktranslate trimmed %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktranslate %}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">
+                            {% translate "Next" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state py-5">
+            <i class="fas fa-inbox fa-4x mb-3 text-muted"></i>
+            <h4>{% translate "No Inquiries Found" %}</h4>
+            <p class="text-muted">
+                {% if search_query %}
+                {% blocktranslate trimmed %}No inquiries match your search "{{ search_query }}"{% endblocktranslate %}
+                {% elif current_status != 'all' %}
+                {% blocktranslate trimmed %}No {{ current_status }} inquiries at the moment{% endblocktranslate %}
+                {% else %}
+                {% translate "No investor inquiries have been submitted yet" %}
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .inquiry-filters {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex: 1;
+        flex-wrap: wrap;
+    }
+
+    .filter-tab {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: var(--neutral-50, #F9FAFB);
+        color: var(--neutral-700, #374151);
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .filter-tab:hover {
+        background: var(--neutral-100, #F3F4F6);
+    }
+
+    .filter-tab.active {
+        background: var(--primary-green, #1B7A4C);
+        color: white;
+    }
+
+    .filter-tab .badge {
+        background: rgba(0,0,0,0.1);
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+    }
+
+    .filter-tab.active .badge {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .filter-search {
+        min-width: 300px;
+    }
+
+    .search-form .input-group {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .reference-link {
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        color: var(--primary-green, #1B7A4C);
+        text-decoration: none;
+    }
+
+    .reference-link:hover {
+        text-decoration: underline;
+    }
+
+    .investor-info strong {
+        color: var(--neutral-800, #1F2937);
+    }
+
+    .inquiry-subject {
+        max-width: 200px;
+    }
+
+    .inquiry-status-new {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+    .inquiry-status-in_progress {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+
+    .inquiry-status-responded {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .inquiry-status-closed {
+        background: #F3F4F6;
+        color: #4B5563;
+    }
+
+    .inquiry-table th {
+        background: var(--neutral-50, #F9FAFB);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--neutral-600, #6B7280);
+    }
+
+    .inquiry-table tbody tr {
+        cursor: pointer;
+    }
+
+    .inquiry-table tbody tr:hover {
+        background: var(--neutral-50, #F9FAFB);
+    }
+
+    .empty-state {
+        text-align: center;
+        color: var(--neutral-500, #6B7280);
+    }
+</style>
+{% endblock %}

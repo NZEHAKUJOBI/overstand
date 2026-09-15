@@ -1,0 +1,686 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "HQ Dashboard" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item active">{% translate "HQ Dashboard" %}</span>
+{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="welcome-banner mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h1 class="page-title mb-2">
+                {% blocktranslate trimmed %}Welcome back, {{ request.user.first_name }}!{% endblocktranslate %}
+            </h1>
+            <p class="page-description mb-0">
+                {% translate "Here's what's happening across the IPAWAS platform today." %}
+            </p>
+        </div>
+        <div class="col-lg-4 text-end">
+            <button class="btn btn-primary-green" onclick="window.print()">
+                <i class="fas fa-download me-2"></i>
+                {% translate "Export Report" %}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-primary p-4 b-r-2">
+            <div class="stat-card-icon">
+                <i class="fas fa-globe-africa"></i>
+            </div>
+            <div class="stat-card-content">
+                <div class="stat-card-value">{{ total_member_states }}</div>
+                <div class="stat-card-label">{% translate "Member States" %}</div>
+                <div class="stat-card-meta">
+                    <span class="text-success">
+                        <i class="fas fa-check-circle"></i>{% blocktranslate trimmed %}{{ active_member_states }} Active{% endblocktranslate %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-success p-4 b-r-2">
+            <div class="stat-card-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="stat-card-content">
+                <div class="stat-card-value">{{ total_opportunities }}</div>
+                <div class="stat-card-label">{% translate "Opportunities" %}</div>
+                <div class="stat-card-meta">
+                    <span class="{% if opportunities_trend > 0 %}text-success{% else %}text-danger{% endif %}">
+                        <i class="fas fa-arrow-{% if opportunities_trend > 0 %}up{% else %}down{% endif %}"></i>
+                        {{ opportunities_trend|floatformat:1 }}%
+                    </span>
+                    <span class="text-muted ms-2">{% translate "vs last month" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-warning p-4 b-r-2">
+            <div class="stat-card-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div class="stat-card-content">
+                <div class="stat-card-value">{{ total_inquiries }}</div>
+                <div class="stat-card-label">{% translate "Inquiries" %}</div>
+                <div class="stat-card-meta">
+                    <span class="text-warning">
+                        <i class="fas fa-clock"></i>{% blocktranslate trimmed %}{{ pending_inquiries }} Pending{% endblocktranslate %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-info p-4 b-r-2">
+            <div class="stat-card-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-card-content">
+                <div class="stat-card-value">{{ total_users }}</div>
+                <div class="stat-card-label">{% translate "Platform Users" %}</div>
+                <div class="stat-card-meta">
+                    <span class="text-info">
+                        <i class="fas fa-user-check"></i>{% blocktranslate trimmed %}{{ active_users_7_days }} Active this week{% endblocktranslate %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- Top Member States -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-star text-warning me-2"></i>
+                    {% translate "Top Performing Member States" %}
+                </h3>
+                <a href="{% url 'dashboard:hq:member_states' %}" class="btn btn-sm btn-outline-primary">
+                    {% translate "View All" %} <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>{% translate "Rank" %}</th>
+                                <th>{% translate "Member State" %}</th>
+                                <th class="text-center">{% translate "Opportunities" %}</th>
+                                <th class="text-center">{% translate "Inquiries" %}</th>
+                                <th class="text-center">{% translate "Team Size" %}</th>
+                                <th class="text-center">{% translate "Status" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for state in top_member_states %}
+                            <tr>
+                                <td>
+                                    <div class="rank-badge rank-{{ forloop.counter }}">
+                                        #{{ forloop.counter }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="country-flag me-3" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            {% if state.ipa_logo %}
+                                            <img src="{{ state.ipa_logo }}" alt="{{ state.ipa_acronym }}"
+                                                 style="max-width:40px;max-height:40px;object-fit:contain;border-radius:4px;">
+                                            {% elif state.country_code %}
+                                            <img src="https://flagcdn.com/w80/{{ state.country_code|lower }}.png"
+                                                 alt="{{ state.country_name }}"
+                                                 style="width:40px;height:27px;object-fit:cover;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,0.15);">
+                                            {% else %}
+                                            <span style="font-size:1.75rem;line-height:1;">{{ state.flag_emoji }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ state.country_name }}</div>
+                                            <small class="text-muted">{{ state.ipa_acronym }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-soft-success">
+                                        {{ state.opportunity_count }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-soft-info">
+                                        {{ state.inquiry_count }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-soft-primary">
+                                        {{ state.team_size }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if state.is_active %}
+                                    <span class="status-badge status-active">Active</span>
+                                    {% else %}
+                                    <span class="status-badge status-draft">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    {% translate "No member states yet" %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-heartbeat text-danger me-2"></i>
+                    {% translate "System Health" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="health-indicator mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="health-label">{% translate "Platform Utilization" %}</span>
+                        <span class="health-value">{{ health_indicators.member_states_with_opportunities }}/{{ total_member_states }}</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-bar-fill" style="width: {% widthratio health_indicators.member_states_with_opportunities total_member_states 100 %}%"></div>
+                    </div>
+                </div>
+
+                <div class="health-indicator mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="health-label">{% translate "Published Profiles" %}</span>
+                        <span class="health-value">{{ health_indicators.member_states_published }}/{{ total_member_states }}</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-bar-fill bg-success" style="width: {% widthratio health_indicators.member_states_published total_member_states 100 %}%"></div>
+                    </div>
+                </div>
+
+                <div class="health-indicator">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="health-label">{% translate "Avg Opportunities/State" %}</span>
+                        <span class="health-value">{{ health_indicators.avg_opportunities_per_state|floatformat:1 }}</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-bar-fill bg-info" style="width: {% if health_indicators.avg_opportunities_per_state > 10 %}100{% else %}{% widthratio health_indicators.avg_opportunities_per_state 10 100 %}{% endif %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-bolt text-warning me-2"></i>
+                    {% translate "Quick Actions" %}
+                </h3>
+            </div>
+            <div class="card-body p-4 b-r-2">
+                <div class="quick-actions-grid">
+                    {% for action in quick_actions %}
+                    <a href="{% url action.url %}" class="quick-action-btn quick-action-{{ action.color }}">
+                        <i class="fas fa-{{ action.icon }}"></i>
+                        <span>{{ action.title }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row g-4 mt-2">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-history text-primary me-2"></i>
+                    {% translate "Recent Platform Activities" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="activity-timeline">
+                    {% for activity in recent_activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon activity-icon-{{ activity.action|slice:':6' }}">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <strong>{{ activity.user.get_full_name }}</strong>
+                                <span class="activity-meta">
+                                    {{ activity.member_state.acronym|default:"System" }}
+                                </span>
+                            </div>
+                            <div class="activity-description">
+                                {{ activity.description }}
+                            </div>
+                            <div class="activity-time">
+                                <i class="far fa-clock"></i>{% blocktranslate trimmed with time_ago=activity.created_at|timesince %}{{ time_ago }} ago{% endblocktranslate %}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center text-muted py-4">{% translate "No recent activities" %}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Invitations -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-envelope text-info me-2"></i>
+                    {% translate "Pending Invitations" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% for invitation in recent_invitations %}
+                <div class="invitation-item">
+                    <div class="invitation-avatar">
+                        {{ invitation.email.0|upper }}
+                    </div>
+                    <div class="invitation-info">
+                        <div class="invitation-email">{{ invitation.email }}</div>
+                        <div class="invitation-meta">
+                            <span class="badge badge-soft-primary">{{ invitation.get_role_display }}</span>
+                            <span class="text-muted">• {{ invitation.member_state.acronym }}</span>
+                        </div>
+                    </div>
+                    <div class="invitation-actions">
+                        <button class="btn btn-sm btn-outline-success" title="{% translate "Resend" %}">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted py-4">{% translate "No pending invitations" %}</p>
+                {% endfor %}
+
+                {% if recent_invitations %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'dashboard:invitations:list' %}" class="btn btn-sm btn-outline-primary">
+                        {% translate "View All Invitations" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Stats Cards */
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        align-items: flex-start;
+        gap: 1.25rem;
+        transition: var(--transition-fast);
+        border-top: 4px solid;
+    }
+
+    .stat-card-primary { border-color: var(--hq-primary); }
+    .stat-card-success { border-color: var(--emerald); }
+    .stat-card-warning { border-color: var(--accent-gold); }
+    .stat-card-info { border-color: #3B82F6; }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-card-primary .stat-card-icon {
+        background: linear-gradient(135deg, rgba(139,111,71,0.1), rgba(139,111,71,0.15));
+        color: var(--hq-primary);
+    }
+
+    .stat-card-success .stat-card-icon {
+        background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.15));
+        color: var(--emerald);
+    }
+
+    .stat-card-warning .stat-card-icon {
+        background: linear-gradient(135deg, rgba(212,165,32,0.1), rgba(212,165,32,0.15));
+        color: var(--accent-gold);
+    }
+
+    .stat-card-info .stat-card-icon {
+        background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.15));
+        color: #3B82F6;
+    }
+
+    .stat-card-content {
+        flex: 1;
+    }
+
+    .stat-card-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark-green);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card-label {
+        font-size: 0.9rem;
+        color: var(--neutral-600);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card-meta {
+        font-size: 0.85rem;
+    }
+
+    /* Rank Badge */
+    .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .rank-1 {
+        background: linear-gradient(135deg, #FFD700, #FFC107);
+        color: white;
+    }
+
+    .rank-2 {
+        background: linear-gradient(135deg, #C0C0C0, #9E9E9E);
+        color: white;
+    }
+
+    .rank-3 {
+        background: linear-gradient(135deg, #CD7F32, #B87333);
+        color: white;
+    }
+
+    .rank-badge:not(.rank-1):not(.rank-2):not(.rank-3) {
+        background: var(--neutral-200);
+        color: var(--neutral-700);
+    }
+
+    /* Country Flag */
+    .country-flag {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--neutral-100);
+    }
+
+    .country-flag img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Badges */
+    .badge-soft-success {
+        background: rgba(16,185,129,0.1);
+        color: var(--emerald);
+        font-weight: 600;
+    }
+
+    .badge-soft-info {
+        background: rgba(59,130,246,0.1);
+        color: #3B82F6;
+        font-weight: 600;
+    }
+
+    .badge-soft-primary {
+        background: rgba(139,111,71,0.1);
+        color: var(--hq-primary);
+        font-weight: 600;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: rgba(16,185,129,0.1);
+        color: var(--emerald);
+    }
+
+    .status-draft {
+        background: rgba(251,191,36,0.1);
+        color: #F59E0B;
+    }
+
+    /* Health Indicators */
+    .health-indicator {
+        padding: 1rem;
+        background: var(--neutral-50);
+        border-radius: 12px;
+    }
+
+    .health-label {
+        font-size: 0.875rem;
+        color: var(--neutral-700);
+        font-weight: 500;
+    }
+
+    .health-value {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--dark-green);
+    }
+
+    .progress-bar-custom {
+        height: 8px;
+        background: var(--neutral-200);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--hq-primary), var(--hq-accent));
+        border-radius: 4px;
+        transition: width 0.6s ease;
+    }
+
+    /* Quick Actions */
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .quick-action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: white;
+        border: 2px solid var(--neutral-200);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--neutral-700);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        transition: var(--transition-fast);
+    }
+
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-green);
+    }
+
+    .quick-action-btn i {
+        font-size: 1.5rem;
+    }
+
+    .quick-action-primary i { color: var(--hq-primary); }
+    .quick-action-success i { color: var(--emerald); }
+    .quick-action-info i { color: #3B82F6; }
+    .quick-action-warning i { color: var(--accent-gold); }
+    .quick-action-secondary i { color: var(--neutral-600); }
+
+    /* Activity Timeline */
+    .activity-timeline {
+        position: relative;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.5rem;
+    }
+
+    .activity-icon-create { background: rgba(16,185,129,0.1); color: var(--emerald); }
+    .activity-icon-update { background: rgba(59,130,246,0.1); color: #3B82F6; }
+    .activity-icon-delete { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .activity-icon-invite { background: rgba(168,85,247,0.1); color: #A855F7; }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-meta {
+        font-size: 0.75rem;
+        color: var(--neutral-500);
+        background: var(--neutral-100);
+        padding: 0.125rem 0.5rem;
+        border-radius: 4px;
+    }
+
+    .activity-description {
+        font-size: 0.875rem;
+        color: var(--neutral-700);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.75rem;
+        color: var(--neutral-500);
+    }
+
+    /* Invitations */
+    .invitation-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--neutral-50);
+        border-radius: 12px;
+        margin-bottom: 0.75rem;
+    }
+
+    .invitation-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--hq-primary), var(--hq-accent));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .invitation-info {
+        flex: 1;
+    }
+
+    .invitation-email {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--neutral-800);
+        margin-bottom: 0.25rem;
+    }
+
+    .invitation-meta {
+        font-size: 0.75rem;
+        color: var(--neutral-600);
+    }
+</style>
+{% endblock %}

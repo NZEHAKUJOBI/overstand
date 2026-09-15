@@ -1,0 +1,333 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Success Stories | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        padding: 8rem 0 5rem;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.95), rgba(15, 107, 63, 0.9)),
+                    url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670079/investment_case_fof8e1.webp') center/cover;
+        color: white;
+    }
+
+    .story-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+    }
+
+    .story-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.15);
+    }
+
+    .story-header {
+        position: relative;
+        height: 200px;
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        overflow: hidden;
+    }
+
+    .story-header img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.85;
+    }
+
+    .story-content {
+        padding: 2rem;
+    }
+
+    .impact-metric {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(45, 144, 97, 0.05));
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 2px solid rgba(27, 122, 76, 0.1);
+    }
+
+    .impact-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary-green);
+        line-height: 1;
+    }
+
+    .quote-block {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.03), rgba(45, 144, 97, 0.03));
+        border-left: 5px solid var(--accent-gold);
+        border-radius: 12px;
+        padding: 2rem;
+        font-style: italic;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--neutral-600);
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid rgba(27, 122, 76, 0.2);
+        border-radius: 25px;
+        background: white;
+        color: var(--primary-green);
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--primary-green);
+        color: white;
+        border-color: var(--primary-green);
+    }
+
+    .story-metric-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .story-metric {
+        background: rgba(27, 122, 76, 0.04);
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+
+    .story-metric .label {
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .story-metric .value {
+        font-weight: 700;
+        color: #1a1a1a;
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        color: rgba(27, 122, 76, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1 class="display-2 fw-bold mb-4">{% translate "Investment Success Stories" %}</h1>
+                <p class="lead mb-5" style="font-size: 22px;">{% translate "Real investors sharing their experiences and achievements in West Africa" %}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Overview Stats -->
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="impact-metric">
+                    <div class="impact-value">
+                        {% if success_stats.total_fdi %}
+                            {{ success_stats.total_fdi_display }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                    <div class="text-muted mt-2">{% translate "Total FDI Featured" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="impact-metric">
+                    <div class="impact-value">
+                        {% if success_stats.total_jobs %}
+                            {{ success_stats.total_jobs_display }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                    <div class="text-muted mt-2">{% translate "Jobs Created" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="impact-metric">
+                    <div class="impact-value">{{ success_stats.countries|default:"—" }}</div>
+                    <div class="text-muted mt-2">{% translate "Countries" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="impact-metric">
+                    <div class="impact-value">{{ success_stats.sectors|default:"—" }}</div>
+                    <div class="text-muted mt-2">{% translate "Sectors" %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters -->
+<section class="py-4" style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.02), rgba(45, 144, 97, 0.02));">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="?" class="filter-btn {% if not active_filter %}active{% endif %}">{% translate "All Stories" %}</a>
+            {% for sector in filter_sectors %}
+            <a href="?sector={{ sector.slug }}" class="filter-btn {% if active_filter == sector.slug %}active{% endif %}">{{ sector.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories Grid -->
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="row g-4">
+            {% for story in success_stories %}
+            <div class="col-lg-4 col-md-6">
+                <div class="story-card">
+                    <div class="story-header">
+                        {% if story.image %}
+                        <img src="{{ story.image }}" alt="{{ story.company_name }}">
+                        {% endif %}
+                    </div>
+                    <div class="story-content">
+                        <div class="mb-3">
+                            {% if story.sector %}
+                            <span class="badge bg-success me-2">{{ story.sector.name }}</span>
+                            {% endif %}
+                            <span class="badge" style="background: var(--primary-green);">
+                                {{ story.member_state.flag_emoji }} {{ story.member_state.country_name }}
+                            </span>
+                        </div>
+                        <h3 class="h4 fw-bold mb-2">{{ story.title }}</h3>
+                        <p class="text-muted small mb-1"><strong>{{ story.company_name }}</strong>{% if story.company_origin %} · {{ story.company_origin }}{% endif %}</p>
+                        <p class="text-muted mb-4" style="font-size: 0.95rem; line-height: 1.6;">{{ story.summary|truncatewords:30 }}</p>
+
+                        <div class="story-metric-row">
+                            {% if story.investment_amount_display or story.investment_amount %}
+                            <div class="story-metric">
+                                <div class="label">{% translate "Investment" %}</div>
+                                <div class="value">{{ story.investment_amount_display|default:story.investment_amount }}</div>
+                            </div>
+                            {% endif %}
+                            {% if story.jobs_created %}
+                            <div class="story-metric">
+                                <div class="label">{% translate "Jobs Created" %}</div>
+                                <div class="value">{{ story.jobs_created|floatformat:0 }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="story-metric">
+                                <div class="label">{% translate "Year" %}</div>
+                                <div class="value">{{ story.year }}</div>
+                            </div>
+                            {% if story.sector %}
+                            <div class="story-metric">
+                                <div class="label">{% translate "Sector" %}</div>
+                                <div class="value">{{ story.sector.name }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if story.impact %}
+                        <p class="text-muted small mb-3" style="font-size: 0.88rem;">
+                            <i class="fas fa-chart-line me-1" style="color: var(--primary-green);"></i>
+                            {{ story.impact|truncatewords:20 }}
+                        </p>
+                        {% endif %}
+
+                        <a href="{% url 'opportunities:listing' %}" class="btn btn-outline-success btn-sm">
+                            {% translate "Explore Related Opportunities" %} <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-star"></i>
+                    <h4 class="mb-3">{% translate "No Stories Yet" %}</h4>
+                    <p class="mb-4">{% translate "Success stories from investors across West Africa will be featured here." %}</p>
+                    <a href="{% url 'opportunities:listing' %}" class="btn btn-success px-4">{% translate "Explore Investment Opportunities" %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Testimonial — only show if we have featured stories -->
+{% if featured_stories %}
+<section class="py-5" style="background: linear-gradient(135deg, rgba(27, 122, 76, 0.03), rgba(45, 144, 97, 0.03));">
+    <div class="container py-5">
+        {% for story in featured_stories %}
+        {% if story.full_story or story.impact %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <div class="quote-block">
+                    <p class="mb-4">{{ story.full_story|default:story.impact|truncatewords:80 }}</p>
+                    <div class="d-flex align-items-center">
+                        {% if story.image %}
+                        <img src="{{ story.image }}" alt="{{ story.company_name }}" class="rounded-circle me-3"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                        {% else %}
+                        <div class="rounded-circle me-3 d-flex align-items-center justify-content-center"
+                             style="width:60px;height:60px;background:var(--primary-green);color:white;font-weight:700;font-size:1.25rem;">
+                            {{ story.company_name.0 }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <strong style="color: var(--primary-green);">{{ story.company_name }}</strong><br>
+                            <span class="text-muted">{{ story.member_state.country_name }}{% if story.sector %} · {{ story.sector.name }}{% endif %} · {{ story.year }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); color: white;">
+    <div class="container py-5">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h2 class="display-4 fw-bold mb-4">{% translate "Write Your Own Success Story" %}</h2>
+                <p class="lead mb-5">{% translate "Join these successful investors in West Africa. Our IPAs are ready to support your journey." %}</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'opportunities:listing' %}" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-search me-2"></i>{% translate "Explore Opportunities" %}
+                    </a>
+                    <a href="{% url 'investor_services:advisory' %}" class="btn btn-outline-light btn-lg px-5">
+                        <i class="fas fa-comments me-2"></i>{% translate "Request Advisory" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

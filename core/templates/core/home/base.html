@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IPAWAS - Investment Promotion Agencies of West Africa{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <style>
+        :root {
+            --primary-green: #1B7A4C;
+            --secondary-green: #0F6B3F;
+            --accent-gold: #D4A520;
+            --light-green: #2D9061;
+            --dark-green: #0A4428;
+            --earth-brown: #8B6F47;
+            --emerald: #10B981;
+            --neutral-100: #F8FAFC;
+            --neutral-200: #E2E8F0;
+            --neutral-600: #475569;
+            --neutral-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(27, 122, 76, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 107, 63, 0.98);
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #D4A520, #F5C842);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-gold) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Hero Carousel */
+        .hero-carousel {
+            margin-top: 76px;
+        }
+
+        .carousel-item {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(27, 122, 76, 0.85) 0%, rgba(15, 107, 63, 0.7) 100%);
+            z-index: 1;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-item.slide-1 .hero-bg {
+            background: linear-gradient(135deg, #1B7A4C 0%, #0F6B3F 50%, #2D9061 100%);
+        }
+
+        .carousel-item.slide-2 .hero-bg {
+            background: linear-gradient(135deg, #2D9061 0%, #1B7A4C 50%, #0A4428 100%);
+        }
+
+        .carousel-item.slide-3 .hero-bg {
+            background: linear-gradient(135deg, #D4A520 0%, #B8941E 50%, #8B6F47 100%);
+        }
+
+        .carousel-item.slide-4 .hero-bg {
+            background: linear-gradient(135deg, #10B981 0%, #1B7A4C 50%, #0F6B3F 100%);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            line-height: 1.6;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-stat {
+            text-align: center;
+            color: white;
+        }
+
+        .hero-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, var(--accent-gold), #F5C842);
+            color: var(--dark-green);
+            padding: 16px 40px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(212, 165, 32, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(212, 165, 32, 0.5);
+            background: linear-gradient(135deg, #F5C842, var(--accent-gold));
+        }
+
+        .btn-hero-secondary {
+            background: transparent;
+            color: white;
+            padding: 16px 40px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border: 2px solid white;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero-secondary:hover {
+            background: white;
+            color: var(--primary-green);
+            transform: translateY(-3px);
+        }
+
+        /* Sections */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-light {
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+        }
+
+        .section-dark {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            color: white;
+        }
+
+        .section-title {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--neutral-600);
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            line-height: 1.7;
+        }
+
+        .section-dark .section-subtitle {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Stats Cards */
+        .stat-card-modern {
+            background: linear-gradient(135deg, rgba(27, 122, 76, 0.05), rgba(45, 144, 97, 0.05));
+            border: 2px solid rgba(27, 122, 76, 0.15);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+
+        .stat-card-modern:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(27, 122, 76, 0.2);
+            background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(45, 144, 97, 0.1));
+            border-color: var(--primary-green);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1;
+            margin-bottom: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--neutral-600);
+            font-weight: 600;
+        }
+
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(212, 165, 32, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon-modern {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-gold), #F5C842);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            box-shadow: 0 10px 30px rgba(212, 165, 32, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .feature-text {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0A4428 0%, var(--dark-green) 50%, #052315 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #D4A520, #F5C842);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 0.5rem 0;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 8px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            margin-right: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-gold);
+            color: var(--dark-green);
+            transform: translateY(-4px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="">
+                IPAWAS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#regional-map">Member Countries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#opportunities">Opportunities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h3 class="footer-brand mb-3">IPAWAS</h3>
+                    <p class="mb-4" style="color: rgba(255, 255, 255, 0.7); line-height: 1.7;">
+                        Uniting West African Investment Promotion Agencies to drive sustainable economic growth and
+                        cross-border investment excellence.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3" style="color: var(--accent-gold); font-weight: 700;">Quick Links</h5>
+                    <div class="footer-links">
+                        <a href="">Home</a>
+                        <a href="#regional-map">Member Countries</a>
+                        <a href="#opportunities">Opportunities</a>
+                        <a href="#about">About</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="mb-3" style="color: var(--accent-gold); font-weight: 700;">Resources</h5>
+                    <div class="footer-links">
+                        <a href="#">Investment Guide</a>
+                        <a href="#">Policy Documents</a>
+                        <a href="#">Success Stories</a>
+                        <a href="#">Reports & Data</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="mb-3" style="color: var(--accent-gold); font-weight: 700;">Contact</h5>
+                    <div class="footer-links">
+                        <a href="mailto:info@ipawas.org">
+                            <i class="fas fa-envelope me-2"></i>info@ipawas.org
+                        </a>
+                        <a href="tel:+234">
+                            <i class="fas fa-phone me-2"></i>+234 XXX XXX XXXX
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-map-marker-alt me-2"></i>Regional Office
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 2rem 0;">
+            <div class="text-center" style="color: rgba(255, 255, 255, 0.6);">
+                <p class="mb-0">© {% now "Y" %} IPAWAS. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Country interaction data - FORMER MEMBERS REMOVED
+        function mapInteraction() {
+            return {
+                selectedCountry: '',
+                hoveredCountry: '',
+                tooltipX: 0,
+                tooltipY: 0,
+                countryData: {
+                    'mauritania': {
+                        name: 'Mauritania',
+                        capital: 'Nouakchott',
+                        flag: '🇲🇷',
+                        population: '4.9M',
+                        gdp: '$10.3B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Fishing</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Agriculture</span>
+                            </div>
+                        `
+                    },
+                    'senegal': {
+                        name: 'Senegal',
+                        capital: 'Dakar',
+                        flag: '🇸🇳',
+                        population: '17.2M',
+                        gdp: '$27.6B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Oil & Gas</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Tourism</span>
+                            </div>
+                        `
+                    },
+                    'gambia': {
+                        name: 'Gambia',
+                        capital: 'Banjul',
+                        flag: '🇬🇲',
+                        population: '2.6M',
+                        gdp: '$2.1B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Tourism</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Fishing</span>
+                            </div>
+                        `
+                    },
+                    'guinea-bissau': {
+                        name: 'Guinea-Bissau',
+                        capital: 'Bissau',
+                        flag: '🇬🇼',
+                        population: '2.1M',
+                        gdp: '$1.6B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Fishing</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Cashew</span>
+                            </div>
+                        `
+                    },
+                    'guinea': {
+                        name: 'Guinea',
+                        capital: 'Conakry',
+                        flag: '🇬🇳',
+                        population: '13.9M',
+                        gdp: '$16.1B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Hydropower</span>
+                            </div>
+                        `
+                    },
+                    'sierra-leone': {
+                        name: 'Sierra Leone',
+                        capital: 'Freetown',
+                        flag: '🇸🇱',
+                        population: '8.4M',
+                        gdp: '$4.1B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Fishing</span>
+                            </div>
+                        `
+                    },
+                    'liberia': {
+                        name: 'Liberia',
+                        capital: 'Monrovia',
+                        flag: '🇱🇷',
+                        population: '5.3M',
+                        gdp: '$3.9B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Forestry</span>
+                            </div>
+                        `
+                    },
+                    'cote-divoire': {
+                        name: "Côte d'Ivoire",
+                        capital: 'Yamoussoukro',
+                        flag: '🇨🇮',
+                        population: '28.2M',
+                        gdp: '$70.0B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Manufacturing</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Services</span>
+                            </div>
+                        `
+                    },
+                    'benin': {
+                        name: 'Benin',
+                        capital: 'Porto-Novo',
+                        flag: '🇧🇯',
+                        population: '13.4M',
+                        gdp: '$17.4B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Port Services</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Trade</span>
+                            </div>
+                        `
+                    },
+                    'togo': {
+                        name: 'Togo',
+                        capital: 'Lomé',
+                        flag: '🇹🇬',
+                        population: '8.8M',
+                        gdp: '$8.1B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Port Services</span>
+                            </div>
+                        `
+                    },
+                    'ghana': {
+                        name: 'Ghana',
+                        capital: 'Accra',
+                        flag: '🇬🇭',
+                        population: '33.5M',
+                        gdp: '$76.6B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Mining</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Oil & Gas</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--secondary-green); font-size: 0.75rem;">Services</span>
+                            </div>
+                        `
+                    },
+                    'nigeria': {
+                        name: 'Nigeria',
+                        capital: 'Abuja',
+                        flag: '🇳🇬',
+                        population: '223M',
+                        gdp: '$477B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Oil & Gas</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Agriculture</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Fintech</span>
+                                <span class="badge" style="background: var(--secondary-green); font-size: 0.75rem;">Manufacturing</span>
+                            </div>
+                        `
+                    },
+                    'cape-verde': {
+                        name: 'Cape Verde',
+                        capital: 'Praia',
+                        flag: '🇨🇻',
+                        population: '593K',
+                        gdp: '$2.2B',
+                        sectors: `
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge" style="background: var(--emerald); font-size: 0.75rem;">Tourism</span>
+                                <span class="badge" style="background: var(--light-green); font-size: 0.75rem;">Services</span>
+                                <span class="badge" style="background: var(--primary-green); font-size: 0.75rem;">Fishing</span>
+                            </div>
+                        `
+                    }
+                },
+
+                selectCountry(country) {
+                    this.selectedCountry = country;
+                },
+
+                hoverCountry(country) {
+                    this.hoveredCountry = country;
+                },
+
+                clearHover() {
+                    this.hoveredCountry = '';
+                },
+
+                getCountryInfo(country) {
+                    return this.countryData[country] || {};
+                }
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

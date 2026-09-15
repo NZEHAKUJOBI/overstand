@@ -1,0 +1,397 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Media Center - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .media-hero {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.95) 0%, rgba(15, 107, 63, 0.9) 100%),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773654099/investment_case_wbhcgs.webp') center/cover;
+        padding: 130px 0 80px;
+        margin-top: 76px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .media-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(circle at 60% 40%, rgba(212, 165, 32, 0.12), transparent 60%);
+        pointer-events: none;
+    }
+    .media-hero h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+
+    .stats-bar {
+        background: white;
+        border-bottom: 1px solid var(--neutral-100);
+        padding: 1.25rem 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-item .number { font-size: 1.8rem; font-weight: 800; color: var(--primary-green); line-height: 1; }
+    .stat-item .label { font-size: 0.82rem; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+    .section-tabs {
+        background: white;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        margin-bottom: 2rem;
+    }
+    .nav-tabs { border-bottom: none; gap: 0.5rem; flex-wrap: wrap; }
+    .nav-tabs .nav-link {
+        border: none;
+        background: transparent;
+        color: var(--neutral-600);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+    .nav-tabs .nav-link:hover { background: var(--neutral-100); color: var(--primary-green); }
+    .nav-tabs .nav-link.active { background: var(--primary-green); color: white; }
+
+    .press-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        margin-bottom: 1.25rem;
+        border-left: 4px solid var(--primary-green);
+        transition: box-shadow 0.2s;
+    }
+    .press-card:hover { box-shadow: 0 8px 30px rgba(27,122,76,0.12); }
+    .press-card h5 { color: var(--primary-green); font-weight: 700; margin-bottom: 0.5rem; }
+    .press-card .meta { color: var(--neutral-500); font-size: 0.88rem; margin-bottom: 0.75rem; }
+
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+    .photo-item {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        background: var(--neutral-100);
+    }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .photo-item:hover img { transform: scale(1.06); }
+    .photo-overlay {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex; align-items: flex-end;
+        padding: 0.75rem;
+        opacity: 0; transition: opacity 0.2s;
+    }
+    .photo-item:hover .photo-overlay { opacity: 1; }
+    .photo-overlay span { color: white; font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .video-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        transition: box-shadow 0.2s;
+    }
+    .video-card:hover { box-shadow: 0 8px 30px rgba(27,122,76,0.12); }
+    .video-thumb {
+        width: 100%; aspect-ratio: 16/9;
+        background: var(--neutral-200);
+        display: flex; align-items: center; justify-content: center;
+        position: relative; overflow: hidden;
+    }
+    .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .video-play {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(0,0,0,0.3);
+    }
+    .video-play i { font-size: 3rem; color: white; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+    .kit-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        display: flex; align-items: center; gap: 1.25rem;
+        height: 100%;
+    }
+    .kit-icon {
+        width: 56px; height: 56px; flex-shrink: 0;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .kit-icon i { color: white; font-size: 1.4rem; }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--neutral-500);
+    }
+    .empty-state i { font-size: 3rem; margin-bottom: 1rem; color: var(--neutral-300); }
+    .empty-state p { max-width: 380px; margin: 0 auto; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="media-hero">
+    <div class="container">
+        <div style="max-width: 700px;">
+            <p class="mb-2" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                <a href="{% url 'home' %}" style="color: rgba(255,255,255,0.7); text-decoration: none;">{% translate "Home" %}</a>
+                <i class="fas fa-chevron-right mx-2" style="font-size: 0.7rem;"></i>
+                {% translate "Media Center" %}
+            </p>
+            <h1>{% translate "Media Center" %}</h1>
+            <p style="font-size: 1.1rem; opacity: 0.92; margin-top: 1rem;">
+                {% translate "Press releases, multimedia content, and downloadable resources for media and partners." %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="container">
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="number">{{ stats.total_press_releases }}</div>
+                    <div class="label">{% translate "Press Releases" %}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="number">{{ stats.total_photos }}</div>
+                    <div class="label">{% translate "Photos" %}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="number">{{ stats.total_videos }}</div>
+                    <div class="label">{% translate "Videos" %}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="number">{{ stats.total_media_kit_items }}</div>
+                    <div class="label">{% translate "Media Kit Items" %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabbed Content -->
+<section style="background: var(--neutral-50); padding: 3rem 0 5rem;">
+    <div class="container">
+
+        <div class="section-tabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#press" type="button">
+                        <i class="fas fa-newspaper me-2"></i>{% translate "Press Releases" %}
+                        {% if stats.total_press_releases %}<span class="badge bg-success ms-1" style="font-size:0.7rem;">{{ stats.total_press_releases }}</span>{% endif %}
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#photos" type="button">
+                        <i class="fas fa-images me-2"></i>{% translate "Photo Gallery" %}
+                        {% if stats.total_photos %}<span class="badge bg-success ms-1" style="font-size:0.7rem;">{{ stats.total_photos }}</span>{% endif %}
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#videos" type="button">
+                        <i class="fas fa-video me-2"></i>{% translate "Videos" %}
+                        {% if stats.total_videos %}<span class="badge bg-success ms-1" style="font-size:0.7rem;">{{ stats.total_videos }}</span>{% endif %}
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#mediakit" type="button">
+                        <i class="fas fa-briefcase me-2"></i>{% translate "Media Kit" %}
+                        {% if stats.total_media_kit_items %}<span class="badge bg-success ms-1" style="font-size:0.7rem;">{{ stats.total_media_kit_items }}</span>{% endif %}
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+
+            <!-- Press Releases -->
+            <div class="tab-pane fade show active" id="press">
+                {% if recent_press_releases %}
+                    {% for pr in recent_press_releases %}
+                    <div class="press-card">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div class="flex-grow-1">
+                                <span class="badge mb-2" style="background: rgba(27,122,76,0.1); color: var(--primary-green);">{% translate "Press Release" %}</span>
+                                <h5>
+                                    <a href="{% url 'media_center:press_release_detail' slug=pr.slug %}" style="color: var(--primary-green); text-decoration: none;">
+                                        {{ pr.title }}
+                                    </a>
+                                </h5>
+                                <p class="meta">
+                                    <i class="fas fa-calendar me-1"></i>{{ pr.release_date|date:"F j, Y" }}
+                                    {% if pr.location %}<span class="ms-3"><i class="fas fa-map-marker-alt me-1"></i>{{ pr.location }}</span>{% endif %}
+                                    {% if pr.member_state %}<span class="ms-3"><i class="fas fa-flag me-1"></i>{{ pr.member_state.ipa_acronym }}</span>{% endif %}
+                                </p>
+                                <p style="color: var(--neutral-600); margin: 0; font-size: 0.95rem;">{{ pr.summary }}</p>
+                            </div>
+                            {% if pr.pdf_file %}
+                            <div class="flex-shrink-0">
+                                <a href="{% url 'media_center:press_release_download' pk=pr.pk %}"
+                                   class="btn btn-outline-success rounded-pill"
+                                   style="border-color: var(--primary-green); color: var(--primary-green); font-size: 0.9rem; white-space: nowrap;">
+                                    <i class="fas fa-download me-1"></i>{% translate "PDF" %}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'media_center:press_releases' %}" class="btn btn-outline-success rounded-pill px-4">
+                            {% translate "View All Press Releases" %} <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-newspaper d-block"></i>
+                    <h5 style="color: var(--neutral-600); font-weight: 600;">{% translate "No press releases yet" %}</h5>
+                    <p>{% translate "Press releases will appear here once published. Add them via the admin dashboard under Knowledge Hub → Press Releases." %}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Photo Gallery -->
+            <div class="tab-pane fade" id="photos">
+                {% if featured_photos %}
+                <div class="photo-grid">
+                    {% for photo in featured_photos %}
+                    <div class="photo-item">
+                        <img src="{{ photo.media_file.thumbnail_url|default:photo.media_file.cloudinary_secure_url }}" alt="{{ photo.media_file.name }}" loading="lazy">
+                        <div class="photo-overlay">
+                            <span>{{ photo.media_file.name }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'media_center:photo_gallery' %}" class="btn btn-outline-success rounded-pill px-4">
+                        {% translate "View Full Gallery" %} <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-images d-block"></i>
+                    <h5 style="color: var(--neutral-600); font-weight: 600;">{% translate "No photos yet" %}</h5>
+                    <p>{% translate "Photos will appear here once uploaded. Upload images via the admin dashboard under Media Library." %}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Videos -->
+            <div class="tab-pane fade" id="videos">
+                {% if featured_videos %}
+                <div class="row g-3">
+                    {% for video in featured_videos %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="video-card">
+                            <div class="video-thumb">
+                                {% if video.media_file.thumbnail_url %}
+                                <img src="{{ video.media_file.thumbnail_url }}" alt="{{ video.media_file.name }}" loading="lazy">
+                                {% endif %}
+                                <div class="video-play">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h6 style="font-weight: 700; color: var(--primary-green); margin-bottom: 0.25rem;">{{ video.media_file.name }}</h6>
+                                <p style="color: var(--neutral-500); font-size: 0.85rem; margin: 0;">{{ video.submitted_at|date:"F j, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'media_center:video_library' %}" class="btn btn-outline-success rounded-pill px-4">
+                        {% translate "View Video Library" %} <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-video d-block"></i>
+                    <h5 style="color: var(--neutral-600); font-weight: 600;">{% translate "No videos yet" %}</h5>
+                    <p>{% translate "Videos will appear here once uploaded. Upload video files via the admin dashboard under Media Library." %}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Media Kit -->
+            <div class="tab-pane fade" id="mediakit">
+                {% if media_kit_items %}
+                <div class="row g-3">
+                    {% for item in media_kit_items %}
+                    <div class="col-lg-6">
+                        <div class="kit-card">
+                            <div class="kit-icon">
+                                {% if item.item_type == "logo_pack" %}<i class="fas fa-star"></i>
+                                {% elif item.item_type == "brand_guide" %}<i class="fas fa-palette"></i>
+                                {% elif item.item_type == "fact_sheet" %}<i class="fas fa-file-alt"></i>
+                                {% elif item.item_type == "leadership_photos" %}<i class="fas fa-user-tie"></i>
+                                {% elif item.item_type == "infographic" %}<i class="fas fa-chart-bar"></i>
+                                {% elif item.item_type == "presentation" %}<i class="fas fa-desktop"></i>
+                                {% else %}<i class="fas fa-download"></i>{% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div style="font-weight: 700; color: var(--primary-green);">{{ item.name }}</div>
+                                <div style="font-size: 0.82rem; color: var(--neutral-500); margin-bottom: 0.25rem;">{{ item.get_item_type_display }}</div>
+                                {% if item.description %}<div style="font-size: 0.88rem; color: var(--neutral-600);">{{ item.description|truncatechars:80 }}</div>{% endif %}
+                            </div>
+                            <a href="{% url 'media_center:media_kit_download' pk=item.pk %}"
+                               class="btn btn-success rounded-pill flex-shrink-0"
+                               style="background: linear-gradient(135deg, var(--primary-green), var(--light-green)); border: none; font-size: 0.88rem;">
+                                <i class="fas fa-download me-1"></i>{% translate "Download" %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'media_center:media_kit' %}" class="btn btn-outline-success rounded-pill px-4">
+                        {% translate "Full Media Kit" %} <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-briefcase d-block"></i>
+                    <h5 style="color: var(--neutral-600); font-weight: 600;">{% translate "Media kit coming soon" %}</h5>
+                    <p>{% translate "Logos, brand guidelines, fact sheets, and other downloadable assets will be available here. Add items via admin under Knowledge Hub → Media Kit Items." %}</p>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Contact for Media -->
+<section style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); padding: 4rem 0; color: white;">
+    <div class="container text-center">
+        <h3 style="font-weight: 700; margin-bottom: 1rem;">{% translate "Media Enquiries" %}</h3>
+        <p style="opacity: 0.9; max-width: 520px; margin: 0 auto 2rem;">
+            {% translate "For press interviews, media accreditation, or additional assets, contact the IPAWAS Communications team." %}
+        </p>
+        <a href="{% url 'about:contact' %}" class="btn px-5 py-3 rounded-pill fw-700"
+           style="background: var(--accent-gold); color: white; font-weight: 700; border: none;">
+            <i class="fas fa-envelope me-2"></i>{% translate "Contact Communications" %}
+        </a>
+    </div>
+</section>
+
+{% endblock %}

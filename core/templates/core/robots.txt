@@ -1,0 +1,27 @@
+User-agent: *
+
+# Private / authenticated sections
+Disallow: /*/admin/
+Disallow: /*/dashboard/
+Disallow: /*/accounts/
+Disallow: /*/invitations/
+Disallow: /*/onboard/
+Disallow: /*/join/
+
+# API and AJAX endpoints
+Disallow: /*/members/api/
+Disallow: /*/opportunities/ajax/
+Disallow: /*/investor-services/ajax/
+Disallow: /*/media-center/ajax/
+
+# Search, filter and comparison pages
+Disallow: /*/knowledge-hub/search/
+Disallow: /*/members/compare/
+
+# Language switcher
+Disallow: /i18n/
+
+# Paginated pages (canonical handles deduplication)
+Disallow: /*?*page=
+
+Sitemap: https://ipawas.org/sitemap.xml

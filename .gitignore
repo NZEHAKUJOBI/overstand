@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Django
+*.log
+logs/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Environment variables
+.env
+.env.local
+.env.docker
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Distribution
+build/
+dist/
+*.egg-info/
+IPAWAS_Dev_Docs/
+
+*.dump
+
+# MaxMind GeoLite2 database (download separately — see geoip/README.md)
+geoip/*.mmdb
+
+# Generated outputs — reports, briefings, credentials (never commit)
+outputs/
+credentials.txt
+credentials*.txt
+
+# Word / Office documents and temp lock files
+*.docx
+~$*

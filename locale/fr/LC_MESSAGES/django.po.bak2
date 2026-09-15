@@ -1,0 +1,3514 @@
+# IPAWAS French Translations
+# Copyright (C) 2026 IPAWAS
+# This file is distributed under the same license as the IPAWAS package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: IPAWAS 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-15 17:56+0100\n"
+"PO-Revision-Date: 2026-02-15 07:30+0100\n"
+"Last-Translator: IPAWAS Team\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\accounts\admin.py:28 .\invitations\admin.py:78
+msgid "role"
+msgstr "Rôle"
+
+#: .\accounts\admin.py:33 .\accounts\models.py:262 .\invitations\admin.py:83
+#: .\invitations\forms.py:432 .\invitations\forms.py:591
+#: .\invitations\models.py:147
+msgid "IPA Administrator"
+msgstr "Administrateur IPA"
+
+#: .\accounts\admin.py:34 .\accounts\models.py:263 .\invitations\admin.py:84
+#: .\invitations\forms.py:433 .\invitations\forms.py:592
+#: .\invitations\models.py:148
+msgid "IPA Editor"
+msgstr "Éditeur IPA"
+
+#: .\accounts\admin.py:35 .\accounts\models.py:264 .\invitations\admin.py:85
+#: .\invitations\forms.py:434 .\invitations\forms.py:593
+#: .\invitations\models.py:149
+msgid "IPA Data Entry"
+msgstr "Saisie de Données IPA"
+
+#: .\accounts\admin.py:36 .\accounts\templates\accounts\profile.html:260
+msgid "HQ Administrator"
+msgstr "Administrateur du Siège"
+
+#: .\accounts\admin.py:37
+msgid "HQ Analyst"
+msgstr "Analyste du Siège"
+
+#: .\accounts\admin.py:38 .\invitations\admin.py:86
+msgid "Primary Contacts Only"
+msgstr "Contacts Principaux Uniquement"
+
+#: .\accounts\admin.py:58 .\invitations\admin.py:56
+msgid "member state"
+msgstr "État Membre"
+
+#: .\accounts\admin.py:80
+msgid "account status"
+msgstr "Statut du Compte"
+
+#: .\accounts\admin.py:85 .\accounts\templates\accounts\profile.html:407
+msgid "Active"
+msgstr "Actif"
+
+#: .\accounts\admin.py:86 .\accounts\templates\accounts\profile.html:409
+msgid "Inactive"
+msgstr "Inactif"
+
+#: .\accounts\admin.py:87
+msgid "Needs Onboarding"
+msgstr "Nécessite une Intégration"
+
+#: .\accounts\admin.py:88
+msgid "Logged in Recently"
+msgstr "Connecté Récemment"
+
+#: .\accounts\admin.py:109
+msgid "special permissions"
+msgstr "Permissions Spéciales"
+
+#: .\accounts\admin.py:114
+#: .\accounts\templates\accounts\manage_permissions.html:33
+msgid "Can Publish Opportunities"
+msgstr "Peut Publier des Opportunités"
+
+#: .\accounts\admin.py:115
+#: .\accounts\templates\accounts\manage_permissions.html:41
+msgid "Can Approve Data"
+msgstr "Peut Approuver des Données"
+
+#: .\accounts\admin.py:116
+#: .\accounts\templates\accounts\manage_permissions.html:113
+msgid "Can Manage Users"
+msgstr "Peut Gérer des Utilisateurs"
+
+#: .\accounts\admin.py:117
+#: .\accounts\templates\accounts\manage_permissions.html:133
+msgid "Can Export Data"
+msgstr "Peut Exporter des Données"
+
+#: .\accounts\admin.py:142
+msgid "IPA Profile"
+msgstr "Profil IPA"
+
+#: .\accounts\admin.py:147 .\accounts\templates\accounts\profile.html:383
+msgid "IPA Information"
+msgstr "Informations IPA"
+
+#: .\accounts\admin.py:157 .\accounts\admin.py:763
+#: .\accounts\templates\accounts\team_members.html:47
+msgid "Permissions"
+msgstr "Permissions"
+
+#: .\accounts\admin.py:177 .\accounts\admin.py:319
+msgid "Contact Information"
+msgstr "Coordonnées"
+
+#: .\accounts\admin.py:188 .\accounts\admin.py:477
+#: .\accounts\templates\accounts\pending_invitations.html:29
+#: .\accounts\templates\accounts\profile.html:404 .\dashboard\admin.py:568
+#: .\invitations\admin.py:352
+msgid "Status"
+msgstr "Statut"
+
+#: .\accounts\admin.py:201 .\accounts\admin.py:342
+#: .\accounts\templates\accounts\ipa_profile_edit.html:37
+msgid "Notification Preferences"
+msgstr "Préférences de Notification"
+
+#: .\accounts\admin.py:268
+msgid "User Account"
+msgstr "Compte Utilisateur"
+
+#: .\accounts\admin.py:279
+msgid "Opportunity Permissions"
+msgstr "Permissions d'Opportunité"
+
+#: .\accounts\admin.py:288
+msgid "Data Management Permissions"
+msgstr "Permissions de Gestion des Données"
+
+#: .\accounts\admin.py:300
+msgid "Inquiry & Analytics Permissions"
+msgstr "Permissions d'Enquête et d'Analyse"
+
+#: .\accounts\admin.py:311
+msgid "User Management Permissions"
+msgstr "Permissions de Gestion des Utilisateurs"
+
+#: .\accounts\admin.py:329
+msgid "Status & Access"
+msgstr "Statut et Accès"
+
+#: .\accounts\admin.py:352 .\dashboard\admin.py:479
+msgid "Metadata"
+msgstr "Métadonnées"
+
+#: .\accounts\admin.py:397 .\accounts\models.py:175 .\dashboard\admin.py:225
+msgid "User"
+msgstr "Utilisateur"
+
+#: .\accounts\admin.py:414 .\accounts\templates\accounts\profile.html:389
+#: .\dashboard\admin.py:290 .\invitations\admin.py:285
+#: .\invitations\forms.py:100 .\invitations\forms.py:477
+msgid "Member State"
+msgstr "État Membre"
+
+#: .\accounts\admin.py:448 .\accounts\forms.py:465
+#: .\accounts\templates\accounts\manage_permissions.html:22
+#: .\accounts\templates\accounts\profile.html:399
+#: .\accounts\templates\accounts\send_invitation.html:55
+#: .\invitations\admin.py:314 .\invitations\forms.py:79
+#: .\invitations\forms.py:430 .\invitations\forms.py:589
+msgid "Role"
+msgstr "Rôle"
+
+#: .\accounts\admin.py:505
+msgid "Key Permissions"
+msgstr "Permissions Clés"
+
+#: .\accounts\admin.py:532
+msgid "Last Login"
+msgstr "Dernière Connexion"
+
+#: .\accounts\admin.py:570
+msgid "Quick Actions"
+msgstr "Actions Rapides"
+
+#: .\accounts\admin.py:579
+msgid "Grant dashboard access"
+msgstr "Accorder l'accès au tableau de bord"
+
+#: .\accounts\admin.py:586
+msgid "Revoke dashboard access"
+msgstr "Révoquer l'accès au tableau de bord"
+
+#: .\accounts\admin.py:593
+msgid "Mark onboarding complete"
+msgstr "Marquer l'intégration comme terminée"
+
+#: .\accounts\admin.py:600
+msgid "Reset onboarding"
+msgstr "Réinitialiser l'intégration"
+
+#: .\accounts\admin.py:620
+msgid "Grant full permissions"
+msgstr "Accorder toutes les permissions"
+
+#: .\accounts\admin.py:640
+msgid "Grant editor permissions"
+msgstr "Accorder les permissions d'éditeur"
+
+#: .\accounts\admin.py:660
+msgid "Grant viewer permissions"
+msgstr "Accorder les permissions de visualiseur"
+
+#: .\accounts\admin.py:707 .\dashboard\admin.py:383 .\dashboard\admin.py:648
+#: .\invitations\admin.py:561
+msgid "Export selected as CSV"
+msgstr "Exporter la sélection en CSV"
+
+#: .\accounts\admin.py:749
+msgid "Personal info"
+msgstr "Informations personnelles"
+
+#: .\accounts\admin.py:776 .\accounts\templates\accounts\profile.html:508
+msgid "Security"
+msgstr "Sécurité"
+
+#: .\accounts\admin.py:788
+msgid "Important dates"
+msgstr "Dates importantes"
+
+#: .\accounts\forms.py:48 .\accounts\forms.py:187
+#: .\accounts\templates\accounts\accept_invitation.html:381
+#: .\accounts\templates\accounts\profile_edit.html:23
+#: .\invitations\forms.py:219
+msgid "First Name"
+msgstr "Prénom"
+
+#: .\accounts\forms.py:51 .\accounts\forms.py:198
+#: .\accounts\templates\accounts\accept_invitation.html:391
+#: .\accounts\templates\accounts\profile_edit.html:27
+#: .\invitations\forms.py:231
+msgid "Last Name"
+msgstr "Nom"
+
+#: .\accounts\forms.py:54 .\accounts\forms.py:144 .\accounts\forms.py:293
+#: .\accounts\forms.py:441 .\accounts\templates\accounts\login.html:15
+#: .\accounts\templates\accounts\password_reset_request.html:22
+#: .\accounts\templates\accounts\send_invitation.html:33
+#: .\invitations\forms.py:26
+msgid "Email Address"
+msgstr "Adresse E-mail"
+
+#: .\accounts\forms.py:60
+msgid "e.g. Investment Officer"
+msgstr "par ex. Responsable des Investissements"
+
+#: .\accounts\forms.py:63
+msgid "Organization Name"
+msgstr "Nom de l'Organisation"
+
+#: .\accounts\forms.py:68
+msgid "e.g. Africa/Lagos"
+msgstr "par ex. Afrique/Lagos"
+
+#: .\accounts\forms.py:79
+msgid "This email is already in use."
+msgstr "Cet e-mail est déjà utilisé."
+
+#: .\accounts\forms.py:123
+#: .\accounts\templates\accounts\manage_permissions.html:24
+msgid "Role automatically sets default permissions"
+msgstr "Le rôle définit automatiquement les permissions par défaut"
+
+#: .\accounts\forms.py:124
+msgid "Publish without approval"
+msgstr "Publier sans approbation"
+
+#: .\accounts\forms.py:125
+msgid "Approve WAIIS submissions"
+msgstr "Approuver les soumissions WAIIS"
+
+#: .\accounts\forms.py:126
+msgid "Create/edit IPA users"
+msgstr "Créer/modifier des utilisateurs IPA"
+
+#
+#: .\accounts\forms.py:127
+msgid "Primary focal point for this IPA"
+msgstr "Point focal principal pour cette IPA"
+
+#: .\accounts\forms.py:133
+msgid "Changing role will reset permissions to defaults"
+msgstr "Changer le rôle réinitialisera les permissions par défaut"
+
+#
+#: .\accounts\forms.py:148
+msgid "Enter your email"
+msgstr "Entrez votre e-mail"
+
+#: .\accounts\forms.py:155
+#: .\accounts\templates\accounts\accept_invitation.html:427
+#: .\accounts\templates\accounts\login.html:28 .\invitations\forms.py:330
+msgid "Password"
+msgstr "Mot de Passe"
+
+#
+#: .\accounts\forms.py:159
+msgid "Enter your password"
+msgstr "Entrez votre mot de passe"
+
+#
+#: .\accounts\forms.py:165
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#
+#: .\accounts\forms.py:192
+msgid "Enter your first name"
+msgstr "Entrez votre prénom"
+
+#
+#: .\accounts\forms.py:203
+msgid "Enter your last name"
+msgstr "Entrez votre nom de famille"
+
+#: .\accounts\forms.py:209
+#: .\accounts\templates\accounts\accept_invitation.html:403
+#: .\accounts\templates\accounts\profile_edit.html:39
+#: .\invitations\forms.py:256
+msgid "Phone Number"
+msgstr "Numéro de Téléphone"
+
+#: .\accounts\forms.py:221
+#: .\accounts\templates\accounts\accept_invitation.html:415
+#: .\accounts\templates\accounts\profile.html:333
+#: .\accounts\templates\accounts\profile_edit.html:44
+#: .\invitations\forms.py:243
+msgid "Job Title"
+msgstr "Poste"
+
+#: .\accounts\forms.py:227
+msgid "e.g., Investment Officer"
+msgstr "par ex., Responsable des Investissements"
+
+#
+#: .\accounts\forms.py:233
+msgid "Create Password"
+msgstr "Créer un mot de passe"
+
+#
+#: .\accounts\forms.py:237
+msgid "Create a strong password"
+msgstr "Créez un mot de passe fort"
+
+#
+#: .\accounts\forms.py:240
+msgid "Password must be at least 8 characters with letters and numbers"
+msgstr "Le mot de passe doit comporter au moins 8 caractères avec des lettres et des chiffres"
+
+#: .\accounts\forms.py:244
+#: .\accounts\templates\accounts\accept_invitation.html:442
+msgid "Confirm Password"
+msgstr "Confirmer le Mot de Passe"
+
+#
+#: .\accounts\forms.py:248
+msgid "Confirm your password"
+msgstr "Confirmez votre mot de passe"
+
+#
+#: .\accounts\forms.py:254
+msgid "I accept the Terms of Service and Privacy Policy"
+msgstr "J'accepte les Conditions d'Utilisation et la Politique de ConfidentialitéVeuillez accepter les Conditions d'Utilisation et la Politique de Confidentialité"
+
+#
+#: .\accounts\forms.py:280 .\accounts\forms.py:354
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#
+#: .\accounts\forms.py:297
+msgid "Enter your registered email"
+msgstr "Entrez votre e-mail enregistré"
+
+#: .\accounts\forms.py:300
+msgid "Enter the email address associated with your account"
+msgstr "Entrez l'adresse e-mail associée à votre compte"
+
+#: .\accounts\forms.py:316 .\accounts\forms.py:377
+#: .\accounts\templates\accounts\password_change.html:39
+#: .\accounts\templates\accounts\password_reset_confirm.html:22
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+#
+#: .\accounts\forms.py:320 .\accounts\forms.py:381
+msgid "Enter new password"
+msgstr "Entrez le nouveau mot de passe"
+
+#
+#: .\accounts\forms.py:323 .\accounts\forms.py:384
+msgid "Password must be at least 8 characters"
+msgstr "Le mot de passe doit comporter au moins 8 caractères"
+
+#: .\accounts\forms.py:327 .\accounts\forms.py:388
+#: .\accounts\templates\accounts\password_change.html:48
+#: .\accounts\templates\accounts\password_reset_confirm.html:48
+msgid "Confirm New Password"
+msgstr "Confirmer le nouveau mot de passe"
+
+#
+#: .\accounts\forms.py:331 .\accounts\forms.py:392
+msgid "Confirm new password"
+msgstr "Confirmer le nouveau mot de passe"
+
+#: .\accounts\forms.py:367
+#: .\accounts\templates\accounts\password_change.html:31
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+#
+#: .\accounts\forms.py:371
+msgid "Enter current password"
+msgstr "Entrez le mot de passe actuel"
+
+#
+#: .\accounts\forms.py:406
+msgid "Current password is incorrect"
+msgstr "Le mot de passe actuel est incorrect"
+
+#
+#: .\accounts\forms.py:428
+msgid "New passwords do not match"
+msgstr "Les nouveaux mots de passe ne correspondent pas"
+
+#: .\accounts\forms.py:448
+#: .\accounts\templates\accounts\send_invitation.html:38
+msgid "Invitation will be sent to this email"
+msgstr "L'invitation sera envoyée à cet e-mail"
+
+#: .\accounts\forms.py:452
+#: .\accounts\templates\accounts\pending_invitations.html:26
+#: .\accounts\templates\accounts\send_invitation.html:46
+msgid "User Type"
+msgstr "Type d'Utilisateur"
+
+#: .\accounts\forms.py:454
+msgid "IPA Staff Member"
+msgstr "Membre du Personnel IPA"
+
+#
+#: .\accounts\forms.py:455
+msgid "IPAWAS HQ Administrator"
+msgstr "Administrateur du Siège IPAWAS"
+
+#: .\accounts\forms.py:473
+#: .\accounts\templates\accounts\send_invitation.html:60
+msgid "Role determines default permissions (for IPA staff only)"
+msgstr "Le rôle détermine les permissions par défaut (pour le personnel IPA uniquement)Le rôle détermine les permissions par défaut (pour le personnel IPA uniquement)"
+
+#: .\accounts\forms.py:477
+#: .\accounts\templates\accounts\send_invitation.html:65
+msgid "Personal Message"
+msgstr "Message Personnel"
+
+#: .\accounts\forms.py:483
+#: .\accounts\templates\accounts\send_invitation.html:70
+msgid "Optional: Add a personal message to the invitation"
+msgstr "Optionnel : Ajoutez un message personnel à l'invitation"
+
+#: .\accounts\forms.py:508
+msgid "A user with this email already exists"
+msgstr "Un utilisateur avec cet e-mail existe déjà"
+
+#: .\accounts\forms.py:519
+msgid "Role is required for IPA staff invitations"
+msgstr "Le rôle est requis pour les invitations du personnel IPA"
+
+#: .\accounts\forms.py:522
+msgid "Member state is required for IPA staff invitations"
+msgstr "L'État membre est requis pour les invitations du personnel IPA"
+
+#
+#: .\accounts\forms.py:633
+msgid "Can publish opportunities without approval"
+msgstr "Peut publier des opportunités sans approbation"
+
+#: .\accounts\forms.py:634
+msgid "Can approve WAIIS data submissions"
+msgstr "Peut approuver les soumissions de données WAIIS"
+
+#: .\accounts\forms.py:635
+msgid "Can create and edit other IPA users"
+msgstr "Peut créer et modifier d'autres utilisateurs IPA"
+
+#
+#: .\accounts\forms.py:636
+msgid "Can edit member state profile"
+msgstr "Peut modifier le profil de l'État membre"
+
+#: .\accounts\forms.py:637
+msgid "Can add and edit priority sectors"
+msgstr "Peut ajouter et modifier des secteurs prioritaires"
+
+#
+#: .\accounts\forms.py:638
+msgid "Can create investment opportunities"
+msgstr "Peut créer des opportunités d'investissement"
+
+#
+#: .\accounts\forms.py:639
+msgid "Can manage investment incentives"
+msgstr "Peut gérer les incitations à l'investissement"
+
+#
+#: .\accounts\forms.py:640
+msgid "Can create and edit success stories"
+msgstr "Peut créer et modifier les histoires de succès"
+
+#
+#: .\accounts\forms.py:641
+msgid "Can view investor inquiries"
+msgstr "Peut consulter les demandes des investisseurs"
+
+#
+#: .\accounts\forms.py:642
+msgid "Can respond to investor inquiries"
+msgstr "Peut répondre aux demandes des investisseurs"
+
+#: .\accounts\forms.py:643
+msgid "Can access analytics dashboard"
+msgstr "Peut accéder au tableau de bord analytique"
+
+#
+#: .\accounts\forms.py:644
+msgid "Can export data and reports"
+msgstr "Peut exporter des données et des rapports"
+
+#: .\accounts\forms.py:662
+msgid "Select Users"
+msgstr "Sélectionner des Utilisateurs"
+
+#
+#: .\accounts\forms.py:670 .\accounts\forms.py:683 .\accounts\forms.py:696
+#: .\accounts\forms.py:709
+msgid "No Change"
+msgstr "Aucun changement"
+
+#
+#: .\accounts\forms.py:671 .\accounts\forms.py:684 .\accounts\forms.py:697
+#: .\accounts\forms.py:710
+msgid "Enable"
+msgstr "Activer"
+
+#
+#: .\accounts\forms.py:672 .\accounts\forms.py:685 .\accounts\forms.py:698
+#: .\accounts\forms.py:711
+msgid "Disable"
+msgstr "Désactiver"
+
+#: .\accounts\forms.py:676 .\accounts\templates\accounts\profile.html:442
+msgid "Publish Opportunities"
+msgstr "Publier des Opportunités"
+
+#: .\accounts\forms.py:689 .\accounts\templates\accounts\profile.html:452
+msgid "Manage Users"
+msgstr "Gérer les Utilisateurs"
+
+#: .\accounts\forms.py:702 .\accounts\templates\accounts\profile.html:492
+msgid "View Analytics"
+msgstr "Voir les Analyses"
+
+#: .\accounts\forms.py:715 .\accounts\templates\accounts\profile.html:497
+msgid "Export Data"
+msgstr "Exporter les Données"
+
+#: .\accounts\models.py:53
+msgid "IPA Staff"
+msgstr "Personnel IPA"
+
+#
+#: .\accounts\models.py:54
+msgid "IPAWAS Admin"
+msgstr "Administrateur IPAWAS"
+
+#: .\accounts\models.py:55
+msgid "Public User"
+msgstr "Utilisateur Public"
+
+#: .\accounts\models.py:62
+msgid "User type determines access level"
+msgstr "Le type d'utilisateur détermine le niveau d'accès"
+
+#
+#: .\accounts\models.py:68
+msgid "Contact phone number"
+msgstr "Numéro de téléphone de contact"
+
+#: .\accounts\models.py:70
+msgid "Professional title"
+msgstr "Titre professionnel"
+
+#: .\accounts\models.py:73
+msgid "Organization/Company name"
+msgstr "Nom de l'Organisation/Entreprise"
+
+#: .\accounts\models.py:77
+msgid "Has user verified their email?"
+msgstr "L'utilisateur a-t-il vérifié son e-mail ?"
+
+#: .\accounts\models.py:80
+msgid "Token for email verification"
+msgstr "Jeton pour la vérification de l'e-mail"
+
+#: .\accounts\models.py:85
+msgid "Is 2FA enabled for this user?"
+msgstr "La 2FA est-elle activée pour cet utilisateur ?"
+
+#: .\accounts\models.py:89
+msgid "TOTP secret for 2FA"
+msgstr "Secret TOTP pour la 2FA"
+
+#: .\accounts\models.py:94
+msgid "IP address of last login"
+msgstr "Adresse IP de la dernière connexion"
+
+#: .\accounts\models.py:97
+msgid "Last activity timestamp"
+msgstr "Horodatage de la dernière activité"
+
+#: .\accounts\models.py:103 .\invitations\forms.py:271
+msgid "English"
+msgstr "Anglais"
+
+#: .\accounts\models.py:104 .\invitations\forms.py:272
+msgid "French"
+msgstr "Français"
+
+#: .\accounts\models.py:105 .\invitations\forms.py:273
+msgid "Portuguese"
+msgstr "Portugais"
+
+#: .\accounts\models.py:108
+msgid "Preferred interface language"
+msgstr "Langue d'interface préférée"
+
+#
+#: .\accounts\models.py:111
+msgid "User's timezone"
+msgstr "Fuseau horaire de l'utilisateur"
+
+#
+#: .\accounts\models.py:115
+msgid "Receive email notifications?"
+msgstr "Recevoir les notifications par e-mail ?"
+
+#: .\accounts\models.py:120
+msgid "Profile photo URL (AWS S3)"
+msgstr "URL de la photo de profil (AWS S3)"
+
+#: .\accounts\models.py:123
+msgid "Short bio (optional)"
+msgstr "Courte biographie (optionnel)"
+
+#: .\accounts\models.py:130
+msgid "Token used for registration (if invited)"
+msgstr "Jeton utilisé pour l'inscription (si invité)"
+
+#: .\accounts\models.py:139
+msgid "User who sent the invitation"
+msgstr "Utilisateur qui a envoyé l'invitation"
+
+#: .\accounts\models.py:145
+msgid "When user accepted their invitation"
+msgstr "Quand l'utilisateur a accepté son invitation"
+
+#: .\accounts\models.py:152
+msgid "Last password change timestamp"
+msgstr "Horodatage du dernier changement de mot de passe"
+
+#: .\accounts\models.py:156
+msgid "Counter for failed login attempts"
+msgstr "Compteur de tentatives de connexion échouées"
+
+#: .\accounts\models.py:162
+msgid "Account locked until this time (after failed attempts)"
+msgstr "Compte verrouillé jusqu'à cette heure (après tentatives échouées)"
+
+#
+#: .\accounts\models.py:176
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: .\accounts\models.py:272
+msgid "Associated user account"
+msgstr "Compte utilisateur associé"
+
+#: .\accounts\models.py:281
+msgid "IPA this user belongs to"
+msgstr "IPA à laquelle appartient cet utilisateur"
+
+#: .\accounts\models.py:288
+msgid "User's role within their IPA"
+msgstr "Rôle de l'utilisateur au sein de son IPA"
+
+#
+#: .\accounts\models.py:293
+msgid "Can publish opportunities without approval?"
+msgstr "Peut publier des opportunités sans approbation ?"
+
+#: .\accounts\models.py:297
+msgid "Can approve WAIIS data submissions?"
+msgstr "Peut approuver les soumissions de données WAIIS ?"
+
+#: .\accounts\models.py:301
+msgid "Can create/edit other IPA users?"
+msgstr "Peut créer/modifier d'autres utilisateurs IPA ?"
+
+#
+#: .\accounts\models.py:304
+msgid "Can edit member state profile?"
+msgstr "Peut modifier le profil de l'État membre ?"
+
+#: .\accounts\models.py:307
+msgid "Can add/edit priority sectors?"
+msgstr "Peut ajouter/modifier des secteurs prioritaires ?"
+
+#
+#: .\accounts\models.py:311
+msgid "Can create investment opportunities?"
+msgstr "Peut créer des opportunités d'investissement ?"
+
+#
+#: .\accounts\models.py:315
+msgid "Can manage investment incentives?"
+msgstr "Peut gérer les incitations à l'investissement ?"
+
+#
+#: .\accounts\models.py:319
+msgid "Can create/edit success stories?"
+msgstr "Peut créer/modifier les histoires de succès ?"
+
+#
+#: .\accounts\models.py:322
+msgid "Can view investor inquiries?"
+msgstr "Peut consulter les demandes des investisseurs ?"
+
+#
+#: .\accounts\models.py:325
+msgid "Can respond to investor inquiries?"
+msgstr "Peut répondre aux demandes des investisseurs ?"
+
+#: .\accounts\models.py:329
+msgid "Can access analytics dashboard?"
+msgstr "Peut accéder au tableau de bord analytique ?"
+
+#
+#: .\accounts\models.py:332
+msgid "Can export data and reports?"
+msgstr "Peut exporter des données et des rapports ?"
+
+#
+#: .\accounts\models.py:335
+msgid "Direct line phone number"
+msgstr "Numéro de téléphone direct"
+
+#
+#: .\accounts\models.py:337
+msgid "Phone extension"
+msgstr "Poste téléphonique"
+
+#
+#: .\accounts\models.py:340
+msgid "Office location/building"
+msgstr "Lieu de travail / bâtiment"
+
+#: .\accounts\models.py:344
+msgid "Is this IPA user account active?"
+msgstr "Ce compte utilisateur IPA est-il actif ?"
+
+#: .\accounts\models.py:347
+msgid "Is this the primary focal point?"
+msgstr "Est-ce le point focal principal ?"
+
+#
+#: .\accounts\models.py:352
+msgid "When dashboard access was granted"
+msgstr "Date d'accès au tableau de bord"
+
+#: .\accounts\models.py:356
+msgid "Last time user accessed dashboard"
+msgstr "Dernière fois que l'utilisateur a accédé au tableau de bord"
+
+#: .\accounts\models.py:360
+msgid "Has user completed dashboard tour?"
+msgstr "L'utilisateur a-t-il terminé la visite du tableau de bord ?"
+
+#
+#: .\accounts\models.py:364
+msgid "Has user completed onboarding?"
+msgstr "L'utilisateur a-t-il terminé l'intégration ?"
+
+#: .\accounts\models.py:368
+msgid "Has user completed training?"
+msgstr "L'utilisateur a-t-il terminé la formation ?"
+
+#
+#: .\accounts\models.py:373
+msgid "Notify when new inquiry received?"
+msgstr "Notifier lors de la réception d'une nouvelle demande ?"
+
+#
+#: .\accounts\models.py:377
+msgid "Notify when opportunities are expiring?"
+msgstr "Notifier lors de l'expiration des opportunités ?"
+
+#: .\accounts\models.py:381
+msgid "Notify when team members are added/removed?"
+msgstr "Notifier quand des membres de l'équipe sont ajoutés/supprimés ?"
+
+#
+#: .\accounts\models.py:389
+msgid "IPA User Profile"
+msgstr "Profil Utilisateur IPA"
+
+#
+#: .\accounts\models.py:390
+msgid "IPA User Profiles"
+msgstr "Profils Utilisateurs IPA"
+
+#: .\accounts\templates\accounts\accept_invitation.html:7
+msgid "Accept Invitation - IPAWAS"
+msgstr "Accepter l'Invitation - IPAWAS"
+
+#: .\accounts\templates\accounts\accept_invitation.html:349
+#: .\accounts\templates\accounts\email\welcome.html:33
+msgid "Welcome to IPAWAS!"
+msgstr "Bienvenue sur IPAWAS !"
+
+#: .\accounts\templates\accounts\accept_invitation.html:350
+msgid "Complete your profile to get started"
+msgstr "Complétez votre profil pour commencer"
+
+#: .\accounts\templates\accounts\accept_invitation.html:357
+#, python-format
+msgid "<strong>%(inviter)s</strong> has invited you to join"
+msgstr "<strong>%(inviter)s</strong> vous a invité à rejoindre"
+
+#: .\accounts\templates\accounts\accept_invitation.html:359
+#, python-format
+msgid "<strong>%(ipa)s</strong>"
+msgstr "<strong>%(ipa)s</strong>"
+
+#: .\accounts\templates\accounts\accept_invitation.html:361
+msgid "the <strong>IPAWAS</strong> team"
+msgstr "l'équipe <strong>IPAWAS</strong>"
+
+#: .\accounts\templates\accounts\accept_invitation.html:406
+msgid "Optional - We'll use this for important notifications"
+msgstr "Optionnel - Nous l'utiliserons pour les notifications importantes"
+
+#: .\accounts\templates\accounts\accept_invitation.html:418
+msgid "Optional - Your role or position"
+msgstr "Optionnel - Votre rôle ou position"
+
+#: .\accounts\templates\accounts\accept_invitation.html:430
+#: .\accounts\templates\accounts\password_change.html:41
+msgid "At least 8 characters with letters and numbers"
+msgstr "Au moins 8 caractères avec lettres et chiffres"
+
+#: .\accounts\templates\accounts\accept_invitation.html:453
+msgid "I accept the"
+msgstr "J'accepte les"
+
+#: .\accounts\templates\accounts\accept_invitation.html:453
+#: .\core\templates\core\base.html:866
+msgid "Terms of Service"
+msgstr "Conditions d'Utilisation"
+
+#: .\accounts\templates\accounts\accept_invitation.html:453
+msgid "and"
+msgstr "et"
+
+#: .\accounts\templates\accounts\accept_invitation.html:454
+#: .\core\templates\core\base.html:865 .\core\templates\core\new_base.html:246
+msgid "Privacy Policy"
+msgstr "Politique de Confidentialité"
+
+#: .\accounts\templates\accounts\accept_invitation.html:463
+msgid "Complete Registration"
+msgstr "Terminer l'Inscription"
+
+#: .\accounts\templates\accounts\accept_invitation.html:512
+msgid "Passwords do not match!"
+msgstr "Les mots de passe ne correspondent pas !"
+
+#: .\accounts\templates\accounts\accept_invitation.html:518
+msgid "Please accept the Terms of Service and Privacy Policy"
+msgstr "Veuillez accepter les Conditions d'Utilisation et la Politique de ConfidentialitéVeuillez accepter les Conditions d'Utilisation et la Politique de Confidentialité"
+
+#: .\accounts\templates\accounts\base.html:7
+msgid "IPAWAS Dashboard"
+msgstr "Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\base.html:537
+msgid "IPAWAS Logo"
+msgstr "Logo IPAWAS"
+
+#: .\accounts\templates\accounts\base.html:546
+#: .\accounts\templates\accounts\onboarding.html:4
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: .\accounts\templates\accounts\base.html:547
+msgid "Access your IPAWAS Dashboard"
+msgstr "Accédez à votre tableau de bord IPAWAS"
+
+#: .\accounts\templates\accounts\base.html:566
+#: .\accounts\templates\accounts\email\password_reset.html:128
+#: .\accounts\templates\accounts\email\welcome.html:162
+#: .\core\templates\core\base.html:862
+#, python-format
+msgid "&copy; %(year)s IPAWAS. All rights reserved."
+msgstr "&copy; %(year)s IPAWAS. Tous droits réservés."
+
+#: .\accounts\templates\accounts\base.html:568
+msgid "Return to Homepage"
+msgstr "Retour à l'accueil"
+
+#: .\accounts\templates\accounts\email\password_reset.html:7
+msgid "Reset Your Password - IPAWAS"
+msgstr "Réinitialisez votre mot de passe - IPAWAS"
+
+#: .\accounts\templates\accounts\email\password_reset.html:33
+msgid "Password Reset Request"
+msgstr "Demande de réinitialisation de mot de passe"
+
+#: .\accounts\templates\accounts\email\password_reset.html:36
+msgid "We received a request to reset your password"
+msgstr "Nous avons reçu une demande de réinitialisation de votre mot de passe"
+
+#: .\accounts\templates\accounts\email\password_reset.html:48
+#: .\accounts\templates\accounts\email\welcome.html:48
+#, python-format
+msgid "Hello <strong style=\"color: #1B7A4C;\">%(name)s</strong>,"
+msgstr "Bonjour <strong style=\"color: #1B7A4C;\">%(name)s</strong>,"
+
+#: .\accounts\templates\accounts\email\password_reset.html:51
+msgid "You recently requested to reset your password for your IPAWAS Dashboard account. Click the button below to proceed."
+msgstr "Vous avez récemment demandé la réinitialisation de votre mot de passe pour votre compte Tableau de Bord IPAWAS. Cliquez sur le bouton ci-dessous pour continuer.Vous avez récemment demandé la réinitialisation de votre mot de passe pour votre compte Tableau de Bord IPAWAS. Cliquez sur le bouton ci-dessous pour continuer."
+
+#: .\accounts\templates\accounts\email\password_reset.html:59
+#: .\accounts\templates\accounts\password_reset_request.html:6
+msgid "Reset Your Password"
+msgstr "Réinitialiser votre mot de passe"
+
+#: .\accounts\templates\accounts\email\password_reset.html:70
+msgid "Or copy and paste this link:"
+msgstr "Ou copiez et collez ce lien :"
+
+#: .\accounts\templates\accounts\email\password_reset.html:85
+msgid "Security Notice"
+msgstr "Avis de Sécurité"
+
+#: .\accounts\templates\accounts\email\password_reset.html:88
+#, python-format
+msgid "This password reset link will expire in <strong style=\"color: #DC2626;\">%(hours)s hours</strong> for security reasons."
+msgstr ""
+
+#: .\accounts\templates\accounts\email\password_reset.html:91
+msgid "<strong>If you didn't request this password reset</strong>, please ignore this email or contact our support team immediately at"
+msgstr "<strong>Si vous n'avez pas demandé cette réinitialisation</strong>, veuillez ignorer cet e-mail ou contacter notre équipe de support immédiatement à<strong>Si vous n'avez pas demandé cette réinitialisation</strong>, veuillez ignorer cet e-mail ou contacter notre équipe de support immédiatement à"
+
+#: .\accounts\templates\accounts\email\password_reset.html:104
+msgid "Password Tips"
+msgstr "Conseils pour le mot de passe"
+
+#: .\accounts\templates\accounts\email\password_reset.html:107
+msgid "Use at least 8 characters"
+msgstr "Utilisez au moins 8 caractères"
+
+#: .\accounts\templates\accounts\email\password_reset.html:108
+msgid "Include both letters and numbers"
+msgstr "Incluez des lettres et des chiffres"
+
+#: .\accounts\templates\accounts\email\password_reset.html:109
+msgid "Add special characters for extra security"
+msgstr "Ajoutez des caractères spéciaux pour plus de sécurité"
+
+#: .\accounts\templates\accounts\email\password_reset.html:110
+msgid "Avoid using personal information"
+msgstr "Évitez d'utiliser des informations personnelles"
+
+#: .\accounts\templates\accounts\email\password_reset.html:111
+msgid "Don't reuse passwords from other accounts"
+msgstr "Ne réutilisez pas de mots de passe d'autres comptes"
+
+#: .\accounts\templates\accounts\email\password_reset.html:118
+#: .\accounts\templates\accounts\email\welcome.html:152
+msgid "Best regards,"
+msgstr "Cordialement,"
+
+#: .\accounts\templates\accounts\email\password_reset.html:119
+msgid "The IPAWAS Security Team"
+msgstr "L'équipe de Sécurité IPAWAS"
+
+#: .\accounts\templates\accounts\email\password_reset.html:131
+#: .\accounts\templates\accounts\email\welcome.html:165
+msgid "Investment Promotion Agencies of West African States"
+msgstr "Agences de Promotion des Investissements des États de l'Afrique de l'OuestAgences de Promotion des Investissements des États de l'Afrique de l'Ouest"
+
+#: .\accounts\templates\accounts\email\password_reset.html:134
+#, python-format
+msgid "This email was sent to %(email)s because a password reset was requested for this account."
+msgstr "Cet e-mail a été envoyé à %(email)s car une réinitialisation de mot de passe a été demandée pour ce compte.Cet e-mail a été envoyé à %(email)s car une réinitialisation de mot de passe a été demandée pour ce compte."
+
+#: .\accounts\templates\accounts\email\password_reset.html:135
+msgid "If you didn't make this request, you can safely ignore this email."
+msgstr "Si vous n'avez pas fait cette demande, vous pouvez ignorer cet e-mail en toute sécurité.Si vous n'avez pas fait cette demande, vous pouvez ignorer cet e-mail en toute sécurité."
+
+#: .\accounts\templates\accounts\email\welcome.html:7
+msgid "Welcome to IPAWAS"
+msgstr "Bienvenue sur IPAWAS"
+
+#: .\accounts\templates\accounts\email\welcome.html:36
+msgid "Your account is now active"
+msgstr "Votre compte est maintenant actif"
+
+#: .\accounts\templates\accounts\email\welcome.html:51
+msgid "Congratulations! Your IPAWAS Dashboard account has been successfully activated. You're now part of West Africa's premier investment promotion network."
+msgstr "Félicitations ! Votre compte Tableau de Bord IPAWAS a été activé avec succès. Vous faites maintenant partie du premier réseau de promotion des investissements d'Afrique de l'Ouest.Félicitations ! Votre compte Tableau de Bord IPAWAS a été activé avec succès. Vous faites maintenant partie du premier réseau de promotion des investissements d'Afrique de l'Ouest."
+
+#: .\accounts\templates\accounts\email\welcome.html:67
+msgid "Real-Time Dashboard"
+msgstr "Tableau de Bord en Temps Réel"
+
+#: .\accounts\templates\accounts\email\welcome.html:70
+msgid "Monitor inquiries, opportunities, and performance metrics"
+msgstr "Surveillez les demandes, les opportunités et les indicateurs de performanceSurveillez les demandes, les opportunités et les indicateurs de performance"
+
+#: .\accounts\templates\accounts\email\welcome.html:88
+msgid "Opportunity Management"
+msgstr "Gestion des Opportunités"
+
+#: .\accounts\templates\accounts\email\welcome.html:91
+msgid "Showcase investment opportunities to global investors"
+msgstr "Présentez des opportunités d'investissement aux investisseurs mondiaux"
+
+#: .\accounts\templates\accounts\email\welcome.html:109
+msgid "Team Collaboration"
+msgstr "Collaboration d'Équipe"
+
+#: .\accounts\templates\accounts\email\welcome.html:112
+msgid "Work seamlessly with your team members"
+msgstr "Travaillez en toute fluidité avec les membres de votre équipe"
+
+#: .\accounts\templates\accounts\email\welcome.html:126
+msgid "Access Your Dashboard →"
+msgstr "Accéder à Votre Tableau de Bord →"
+
+#: .\accounts\templates\accounts\email\welcome.html:138
+msgid "Need Help Getting Started?"
+msgstr "Besoin d'aide pour commencer ?"
+
+#: .\accounts\templates\accounts\email\welcome.html:141
+msgid "Check out our quick start guide or contact our support team at"
+msgstr "Consultez notre guide de démarrage rapide ou contactez notre équipe de support àConsultez notre guide de démarrage rapide ou contactez notre équipe de support à"
+
+#: .\accounts\templates\accounts\email\welcome.html:149
+msgid "We're excited to have you on board!"
+msgstr "Nous sommes ravis de vous compter parmi nous !"
+
+#: .\accounts\templates\accounts\email\welcome.html:153
+msgid "The IPAWAS Team"
+msgstr "L'équipe IPAWAS"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:4
+#: .\accounts\templates\accounts\ipa_profile_edit.html:14
+msgid "Edit IPA Profile"
+msgstr "Modifier le Profil IPA"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:23
+#: .\accounts\templates\accounts\profile.html:416
+msgid "Direct Phone"
+msgstr "Téléphone Direct"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:27
+#: .\accounts\templates\accounts\profile.html:423
+msgid "Extension"
+msgstr "Extension"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:33
+msgid "Office Location"
+msgstr "Lieu de travail"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:43
+msgid "Set as Primary Contact"
+msgstr "Définir comme Contact Principal"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:46
+msgid "Primary contact is the main focal point for this IPA"
+msgstr "Le contact principal est le point focal principal pour cette IPA"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:53
+msgid "Notify on New Inquiry"
+msgstr "Notifier lors d'une nouvelle demande"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:62
+msgid "Notify on Opportunity Expiry"
+msgstr "Notifier lors de l'expiration d'une opportunité"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:71
+msgid "Notify on Team Changes"
+msgstr "Notifier lors des changements d'équipe"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:79
+#: .\accounts\templates\accounts\profile_edit.html:61
+msgid "Save Changes"
+msgstr "Enregistrer les Modifications"
+
+#: .\accounts\templates\accounts\ipa_profile_edit.html:82
+#: .\accounts\templates\accounts\manage_permissions.html:145
+#: .\accounts\templates\accounts\password_change.html:61
+#: .\accounts\templates\accounts\profile_edit.html:64
+#: .\accounts\templates\accounts\send_invitation.html:76
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\accounts\templates\accounts\login.html:4
+msgid "Login - IPAWAS Dashboard"
+msgstr "Connexion - Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\login.html:6
+msgid "Welcome Back"
+msgstr "Bon retour"
+
+#: .\accounts\templates\accounts\login.html:7
+msgid "Sign in to access your IPAWAS Dashboard"
+msgstr "Connectez-vous pour accéder à votre tableau de bord IPAWAS"
+
+#: .\accounts\templates\accounts\login.html:45
+msgid "Remember me for 2 weeks"
+msgstr "Se souvenir de moi pendant 2 semaines"
+
+#: .\accounts\templates\accounts\login.html:53
+msgid "Sign In"
+msgstr "Se Connecter"
+
+#: .\accounts\templates\accounts\login.html:60
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#: .\accounts\templates\accounts\manage_permissions.html:4
+msgid "Manage Permissions"
+msgstr "Gérer les Permissions"
+
+#: .\accounts\templates\accounts\manage_permissions.html:14
+msgid "Manage User Permissions"
+msgstr "Gérer les Permissions Utilisateur"
+
+#: .\accounts\templates\accounts\manage_permissions.html:27
+msgid "Publishing Permissions"
+msgstr "Permissions de Publication"
+
+#: .\accounts\templates\accounts\manage_permissions.html:47
+msgid "Content Management"
+msgstr "Gestion de Contenu"
+
+#: .\accounts\templates\accounts\manage_permissions.html:53
+msgid "Can Edit Profile"
+msgstr "Peut Modifier le Profil"
+
+#: .\accounts\templates\accounts\manage_permissions.html:61
+msgid "Can Manage Sectors"
+msgstr "Peut Gérer les Secteurs"
+
+#: .\accounts\templates\accounts\manage_permissions.html:69
+msgid "Can Create Opportunities"
+msgstr "Peut Créer des Opportunités"
+
+#: .\accounts\templates\accounts\manage_permissions.html:77
+msgid "Can Edit Incentives"
+msgstr "Peut Modifier les Incitations"
+
+#: .\accounts\templates\accounts\manage_permissions.html:85
+msgid "Can Manage Success Stories"
+msgstr "Peut Gérer les Histoires de Succès"
+
+#: .\accounts\templates\accounts\manage_permissions.html:91
+msgid "Inquiries & Team"
+msgstr "Demandes & Équipe"
+
+#: .\accounts\templates\accounts\manage_permissions.html:97
+msgid "Can View Inquiries"
+msgstr "Peut Voir les Demandes"
+
+#: .\accounts\templates\accounts\manage_permissions.html:105
+msgid "Can Respond to Inquiries"
+msgstr "Peut Répondre aux Demandes"
+
+#: .\accounts\templates\accounts\manage_permissions.html:119
+msgid "Analytics"
+msgstr "Analyses"
+
+#: .\accounts\templates\accounts\manage_permissions.html:125
+msgid "Can View Analytics"
+msgstr "Peut Voir les Analyses"
+
+#: .\accounts\templates\accounts\manage_permissions.html:142
+msgid "Save Permissions"
+msgstr "Enregistrer les Permissions"
+
+#: .\accounts\templates\accounts\onboarding.html:300
+#, python-format
+msgid "Welcome, %(name)s! 🎉"
+msgstr "Bienvenue, %(name)s ! 🎉"
+
+#: .\accounts\templates\accounts\onboarding.html:301
+msgid "You're all set up and ready to start making an impact"
+msgstr "Tout est prêt pour que vous commenciez à avoir un impact"
+
+#: .\accounts\templates\accounts\onboarding.html:306
+msgid "Your Journey Begins Here"
+msgstr "Votre Vocation Commence Ici"
+
+#: .\accounts\templates\accounts\onboarding.html:309
+#, python-format
+msgid ""
+"As a member of <strong>%(ipa)s</strong>,\n"
+"                    you have access to powerful tools to showcase your country's investment opportunities\n"
+"                    and connect with investors from around the world."
+msgstr ""
+
+#: .\accounts\templates\accounts\onboarding.html:313
+msgid "As an IPAWAS administrator, you have full access to manage member states, oversee activities, and support investment promotion across West Africa."
+msgstr "En tant qu'administrateur IPAWAS, vous avez un accès complet pour gérer les états membres, superviser les activités et soutenir la promotion des investissements en Afrique de l'Ouest.En tant qu'administrateur IPAWAS, vous avez un accès complet pour gérer les états membres, superviser les activités et soutenir la promotion des investissements en Afrique de l'Ouest."
+
+#: .\accounts\templates\accounts\onboarding.html:323
+msgid "Dashboard Overview"
+msgstr "Aperçu du Tableau de Bord"
+
+#: .\accounts\templates\accounts\onboarding.html:325
+msgid "Monitor key metrics, track inquiries, and get insights at a glance"
+msgstr "Suivez les indicateurs clés, les demandes et obtenez des informations en un coup d'œilSuivez les indicateurs clés, les demandes et obtenez des informations en un coup d'œil"
+
+#: .\accounts\templates\accounts\onboarding.html:334
+#: .\core\templates\core\base.html:784 .\core\templates\core\new_base.html:73
+#: .\core\templates\core\new_base.html:77
+#: .\core\templates\core\new_base.html:189
+msgid "Opportunities"
+msgstr "Opportunités"
+
+#: .\accounts\templates\accounts\onboarding.html:336
+msgid "Create and manage investment opportunities to attract investors"
+msgstr "Créez et gérez des opportunités d'investissement pour attirer les investisseursCréez et gérez des opportunités d'investissement pour attirer les investisseurs"
+
+#: .\accounts\templates\accounts\onboarding.html:344
+msgid "Investor Inquiries"
+msgstr "Demandes des Investisseurs"
+
+#: .\accounts\templates\accounts\onboarding.html:346
+msgid "Respond to inquiries and engage with potential investors"
+msgstr "Répondez aux demandes et engagez-vous avec des investisseurs potentielsRépondez aux demandes et engagez-vous avec des investisseurs potentiels"
+
+#: .\accounts\templates\accounts\onboarding.html:354
+msgid "Team Management"
+msgstr "Gestion de l'Équipe"
+
+#: .\accounts\templates\accounts\onboarding.html:356
+msgid "Collaborate with your team and manage permissions"
+msgstr "Collaborez avec votre équipe et gérez les permissions"
+
+#: .\accounts\templates\accounts\onboarding.html:364
+#: .\core\templates\core\base.html:781 .\core\templates\core\new_base.html:65
+msgid "Member States"
+msgstr "États Membres"
+
+#: .\accounts\templates\accounts\onboarding.html:366
+msgid "Oversee and support all IPAWAS member states"
+msgstr "Supervisez et soutenez tous les états membres de l'IPAWAS"
+
+#: .\accounts\templates\accounts\onboarding.html:374
+msgid "User Management"
+msgstr "Gestion des Utilisateurs"
+
+#: .\accounts\templates\accounts\onboarding.html:376
+msgid "Manage users and permissions across the platform"
+msgstr "Gérez les utilisateurs et les permissions sur toute la plateforme"
+
+#: .\accounts\templates\accounts\onboarding.html:384
+msgid "Analytics & Reports"
+msgstr "Analyses et Rapports"
+
+#: .\accounts\templates\accounts\onboarding.html:386
+msgid "Generate comprehensive reports and insights"
+msgstr "Générez des rapports complets et des analyses"
+
+#: .\accounts\templates\accounts\onboarding.html:395
+msgid "Quick Tips to Get Started"
+msgstr "Conseils Rapides pour Commencer"
+
+#: .\accounts\templates\accounts\onboarding.html:404
+msgid "Complete Your Profile"
+msgstr "Complétez Votre Profil"
+
+#: .\accounts\templates\accounts\onboarding.html:405
+msgid "Add your profile photo, contact details, and bio to help investors connect with you"
+msgstr "Ajoutez votre photo de profil, vos coordonnées et votre biographie pour aider les investisseurs à vous contacterAjoutez votre photo de profil, vos coordonnées et votre biographie pour aider les investisseurs à vous contacter"
+
+#: .\accounts\templates\accounts\onboarding.html:414
+msgid "Update Country Profile"
+msgstr "Mettre à Jour le Profil du Pays"
+
+#: .\accounts\templates\accounts\onboarding.html:415
+msgid "Ensure your country's information is up-to-date and attractive to investors"
+msgstr "Assurez-vous que les informations de votre pays sont à jour et attrayantes pour les investisseursAssurez-vous que les informations de votre pays sont à jour et attrayantes pour les investisseurs"
+
+#: .\accounts\templates\accounts\onboarding.html:424
+msgid "Create Your First Opportunity"
+msgstr "Créez Votre Première Opportunité"
+
+#: .\accounts\templates\accounts\onboarding.html:425
+msgid "Showcase investment opportunities in your key sectors"
+msgstr "Présentez les opportunités d'investissement dans vos secteurs clés"
+
+#: .\accounts\templates\accounts\onboarding.html:434
+msgid "Invite Team Members"
+msgstr "Invitez des Membres de l'Équipe"
+
+#: .\accounts\templates\accounts\onboarding.html:435
+msgid "Collaborate with colleagues by inviting them to the dashboard"
+msgstr "Collaborez avec vos collègues en les invitant sur le tableau de bord"
+
+#: .\accounts\templates\accounts\onboarding.html:444
+msgid "Review Member States"
+msgstr "Examinez les États Membres"
+
+#: .\accounts\templates\accounts\onboarding.html:445
+msgid "Get familiar with all member states and their current status"
+msgstr "Familiarisez-vous avec tous les états membres et leur statut actuel"
+
+#: .\accounts\templates\accounts\onboarding.html:454
+msgid "Check System Dashboard"
+msgstr "Vérifier le Tableau de Bord Système"
+
+#: .\accounts\templates\accounts\onboarding.html:455
+msgid "Monitor platform-wide metrics and activity levels"
+msgstr "Surveillez les métriques et les niveaux d'activité de toute la plateformeSurveillez les métriques et les niveaux d'activité de toute la plateforme"
+
+#: .\accounts\templates\accounts\onboarding.html:464
+msgid "Configure Settings"
+msgstr "Configurer les Paramètres"
+
+#: .\accounts\templates\accounts\onboarding.html:465
+msgid "Customize system settings to match organizational requirements"
+msgstr "Personnalisez les paramètres du système pour répondre aux exigences organisationnellesPersonnalisez les paramètres du système pour répondre aux exigences organisationnelles"
+
+#: .\accounts\templates\accounts\onboarding.html:476
+#: .\accounts\templates\accounts\onboarding.html:485
+msgid "Go to Dashboard"
+msgstr "Aller au Tableau de Bord"
+
+#: .\accounts\templates\accounts\onboarding.html:480
+msgid "Complete Profile"
+msgstr "Compléter le Profil"
+
+#: .\accounts\templates\accounts\onboarding.html:489
+msgid "View Member States"
+msgstr "Voir les États Membres"
+
+#: .\accounts\templates\accounts\password_change.html:4
+#: .\accounts\templates\accounts\password_change.html:14
+#: .\accounts\templates\accounts\password_change.html:58
+#: .\accounts\templates\accounts\profile.html:515
+msgid "Change Password"
+msgstr "Changer le Mot de Passe"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:4
+msgid "Password Reset Complete - IPAWAS Dashboard"
+msgstr "Réinitialisation du mot de passe terminée - Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:6
+msgid "Password Reset Complete"
+msgstr "Réinitialisation du mot de passe terminée"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:7
+msgid "Your password has been successfully changed"
+msgstr "Votre mot de passe a été modifié avec succès"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:15
+msgid "Password Changed Successfully!"
+msgstr "Mot de passe modifié avec succès !"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:18
+msgid "Your password has been reset. You can now log in with your new password."
+msgstr "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+
+#: .\accounts\templates\accounts\password_reset_complete.html:24
+msgid "Security Tips:"
+msgstr "Conseils de Sécurité :"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:26
+msgid "Don't share your password with anyone"
+msgstr "Ne partagez votre mot de passe avec personne"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:27
+msgid "Use a unique password for your IPAWAS account"
+msgstr "Utilisez un mot de passe unique pour votre compte IPAWAS"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:28
+msgid "Consider using a password manager"
+msgstr "Envisagez d'utiliser un gestionnaire de mots de passe"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:29
+msgid "Change your password regularly"
+msgstr "Changez votre mot de passe régulièrement"
+
+#: .\accounts\templates\accounts\password_reset_complete.html:37
+msgid "Log In Now"
+msgstr "Se Connecter Maintenant"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:4
+msgid "Set New Password - IPAWAS Dashboard"
+msgstr "Définir un Nouveau Mot de Passe - Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:6
+msgid "Set New Password"
+msgstr "Définir un Nouveau Mot de Passe"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:7
+msgid "Enter your new password below"
+msgstr "Entrez votre nouveau mot de passe ci-dessous"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:31
+msgid "Enter your new password"
+msgstr "Entrez votre nouveau mot de passe"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:57
+msgid "Confirm your new password"
+msgstr "Confirmez votre nouveau mot de passe"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:70
+msgid "Password Requirements:"
+msgstr "Exigences du Mot de Passe :"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:72
+msgid "At least 8 characters long"
+msgstr "Au moins 8 caractères"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:73
+msgid "Cannot be too similar to your other personal information"
+msgstr "Ne peut pas être trop similaire à vos autres informations personnelles"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:74
+msgid "Cannot be a commonly used password"
+msgstr "Ne peut pas être un mot de passe couramment utilisé"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:75
+msgid "Cannot be entirely numeric"
+msgstr "Ne peut pas être entièrement numérique"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:83
+msgid "Reset Password"
+msgstr "Réinitialiser le Mot de Passe"
+
+#: .\accounts\templates\accounts\password_reset_confirm.html:90
+#: .\accounts\templates\accounts\password_reset_done.html:38
+#: .\accounts\templates\accounts\password_reset_request.html:53
+msgid "Back to Login"
+msgstr "Retour à la Connexion"
+
+#: .\accounts\templates\accounts\password_reset_done.html:4
+msgid "Check Your Email - IPAWAS Dashboard"
+msgstr "Vérifiez Votre E-mail - Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\password_reset_done.html:6
+msgid "Check Your Email"
+msgstr "Vérifiez Votre E-mail"
+
+#: .\accounts\templates\accounts\password_reset_done.html:7
+msgid "We've sent you password reset instructions"
+msgstr "Nous vous avons envoyé des instructions de réinitialisation de mot de passeNous vous avons envoyé des instructions de réinitialisation de mot de passe"
+
+#: .\accounts\templates\accounts\password_reset_done.html:15
+msgid "Email Sent Successfully!"
+msgstr "E-mail envoyé avec succès !"
+
+#: .\accounts\templates\accounts\password_reset_done.html:18
+msgid "We've sent password reset instructions to your email address."
+msgstr "Nous avons envoyé des instructions de réinitialisation de mot de passe à votre adresse e-mail.Nous avons envoyé des instructions de réinitialisation de mot de passe à votre adresse e-mail."
+
+#: .\accounts\templates\accounts\password_reset_done.html:19
+msgid "Please check your inbox and follow the link to reset your password."
+msgstr "Veuillez vérifier votre boîte de réception et suivre le lien pour réinitialiser votre mot de passe.Veuillez vérifier votre boîte de réception et suivre le lien pour réinitialiser votre mot de passe."
+
+#: .\accounts\templates\accounts\password_reset_done.html:25
+msgid "Didn't receive the email?"
+msgstr "Vous n'avez pas reçu l'e-mail ?"
+
+#: .\accounts\templates\accounts\password_reset_done.html:27
+msgid "Check your spam or junk folder"
+msgstr "Vérifiez votre dossier spam ou courrier indésirable"
+
+#: .\accounts\templates\accounts\password_reset_done.html:28
+msgid "Make sure you entered the correct email address"
+msgstr "Assurez-vous d'avoir entré la bonne adresse e-mail"
+
+#: .\accounts\templates\accounts\password_reset_done.html:29
+msgid "The email should arrive within a few minutes"
+msgstr "L'e-mail devrait arriver dans quelques minutes"
+
+#: .\accounts\templates\accounts\password_reset_done.html:30
+msgid "The reset link expires in 1 hour"
+msgstr "Le lien de réinitialisation expire dans 1 heure"
+
+#: .\accounts\templates\accounts\password_reset_done.html:42
+msgid "Send Again"
+msgstr "Renvoyer"
+
+#: .\accounts\templates\accounts\password_reset_request.html:4
+msgid "Reset Password - IPAWAS Dashboard"
+msgstr "Réinitialiser le Mot de Passe - Tableau de Bord IPAWAS"
+
+#: .\accounts\templates\accounts\password_reset_request.html:7
+msgid "Enter your email address and we'll send you a link to reset your password"
+msgstr "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passeEntrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe"
+
+#: .\accounts\templates\accounts\password_reset_request.html:32
+msgid "Enter your email address"
+msgstr "Entrez votre adresse e-mail"
+
+#: .\accounts\templates\accounts\password_reset_request.html:46
+msgid "Send Reset Link"
+msgstr "Envoyer le Lien de Réinitialisation"
+
+#: .\accounts\templates\accounts\pending_invitations.html:4
+#: .\accounts\templates\accounts\pending_invitations.html:9
+msgid "Pending Invitations"
+msgstr "Invitations En Attente"
+
+#: .\accounts\templates\accounts\pending_invitations.html:10
+msgid "Manage invitations that haven't been accepted yet"
+msgstr "Gérez les invitations qui n'ont pas encore été acceptées"
+
+#: .\accounts\templates\accounts\pending_invitations.html:14
+#: .\accounts\templates\accounts\send_invitation.html:4
+#: .\accounts\templates\accounts\send_invitation.html:14
+msgid "Send New Invitation"
+msgstr "Envoyer une Nouvelle Invitation"
+
+#: .\accounts\templates\accounts\pending_invitations.html:25
+#: .\accounts\templates\accounts\profile_edit.html:33
+msgid "Email"
+msgstr "E-mail"
+
+#: .\accounts\templates\accounts\pending_invitations.html:27
+#: .\invitations\admin.py:397
+msgid "Invited By"
+msgstr "Invité Par"
+
+#: .\accounts\templates\accounts\pending_invitations.html:28
+msgid "Sent Date"
+msgstr "Date d'Envoi"
+
+#: .\accounts\templates\accounts\pending_invitations.html:30
+#: .\invitations\admin.py:461
+msgid "Actions"
+msgstr "Actions"
+
+#: .\accounts\templates\accounts\pending_invitations.html:46
+#: .\invitations\models.py:117
+msgid "Pending"
+msgstr "En Attente"
+
+#: .\accounts\templates\accounts\pending_invitations.html:52
+msgid "Resend"
+msgstr "Renvoyer"
+
+#: .\accounts\templates\accounts\pending_invitations.html:56
+msgid "Are you sure you want to revoke this invitation?"
+msgstr "Êtes-vous sûr de vouloir révoquer cette invitation ?"
+
+#: .\accounts\templates\accounts\pending_invitations.html:58
+msgid "Revoke"
+msgstr "Révoquer"
+
+#: .\accounts\templates\accounts\pending_invitations.html:69
+msgid "No Pending Invitations"
+msgstr "Aucune Invitation En Attente"
+
+#: .\accounts\templates\accounts\pending_invitations.html:70
+msgid "All invitations have been accepted or there are none sent yet"
+msgstr "Toutes les invitations ont été acceptées ou aucune n'a encore été envoyéeToutes les invitations ont été acceptées ou aucune n'a encore été envoyée"
+
+#: .\accounts\templates\accounts\pending_invitations.html:73
+msgid "Send Your First Invitation"
+msgstr "Envoyez Votre Première Invitation"
+
+#: .\accounts\templates\accounts\profile.html:4
+#: .\accounts\templates\accounts\profile.html:9
+#: .\accounts\templates\accounts\profile.html:241
+msgid "My Profile"
+msgstr "Mon Profil"
+
+#: .\accounts\templates\accounts\profile.html:7
+msgid "Dashboard"
+msgstr "Tableau de Bord"
+
+#: .\accounts\templates\accounts\profile.html:242
+msgid "View and manage your account information"
+msgstr "Voir et gérer les informations de votre compte"
+
+#: .\accounts\templates\accounts\profile.html:286
+msgid "Joined"
+msgstr "Inscrit le"
+
+#: .\accounts\templates\accounts\profile.html:291
+msgid "Last login"
+msgstr "Dernière connexion"
+
+#: .\accounts\templates\accounts\profile.html:291
+msgid "ago"
+msgstr "il y a"
+
+#: .\accounts\templates\accounts\profile.html:298
+#: .\accounts\templates\accounts\profile.html:457
+#: .\accounts\templates\accounts\profile_edit.html:4
+#: .\accounts\templates\accounts\profile_edit.html:14
+msgid "Edit Profile"
+msgstr "Modifier le Profil"
+
+#: .\accounts\templates\accounts\profile.html:310
+msgid "Account Information"
+msgstr "Informations du Compte"
+
+#: .\accounts\templates\accounts\profile.html:316
+msgid "Email Status"
+msgstr "Statut de l'E-mail"
+
+#: .\accounts\templates\accounts\profile.html:321
+msgid "Verified"
+msgstr "Vérifié"
+
+#: .\accounts\templates\accounts\profile.html:326
+msgid "Unverified"
+msgstr "Non Vérifié"
+
+#: .\accounts\templates\accounts\profile.html:334
+msgid "Not set"
+msgstr "Non défini"
+
+#: .\accounts\templates\accounts\profile.html:338
+msgid "Language"
+msgstr "Langue"
+
+#: .\accounts\templates\accounts\profile.html:343
+msgid "Timezone"
+msgstr "Fuseau Horaire"
+
+#: .\accounts\templates\accounts\profile.html:348
+msgid "Two-Factor Auth"
+msgstr "Auth. à Deux Facteurs"
+
+#: .\accounts\templates\accounts\profile.html:353
+msgid "Enabled"
+msgstr "Activé"
+
+#: .\accounts\templates\accounts\profile.html:358
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: .\accounts\templates\accounts\profile.html:365
+msgid "Email Notifications"
+msgstr "Notifications E-mail"
+
+#: .\accounts\templates\accounts\profile.html:368
+msgid "On"
+msgstr "Oui"
+
+#: .\accounts\templates\accounts\profile.html:370
+msgid "Off"
+msgstr "Non"
+
+#: .\accounts\templates\accounts\profile.html:394
+msgid "IPA Name"
+msgstr "Nom de l'IPA"
+
+#: .\accounts\templates\accounts\profile.html:435
+msgid "My Permissions"
+msgstr "Mes Permissions"
+
+#: .\accounts\templates\accounts\profile.html:447
+msgid "Approve Data"
+msgstr "Approuver les Données"
+
+#: .\accounts\templates\accounts\profile.html:462
+msgid "Manage Sectors"
+msgstr "Gérer les Secteurs"
+
+#: .\accounts\templates\accounts\profile.html:467
+msgid "Create Opportunities"
+msgstr "Créer des Opportunités"
+
+#: .\accounts\templates\accounts\profile.html:472
+msgid "Edit Incentives"
+msgstr "Modifier les Incitations"
+
+#: .\accounts\templates\accounts\profile.html:477
+msgid "Manage Success Stories"
+msgstr "Gérer les Histoires de Succès"
+
+#: .\accounts\templates\accounts\profile.html:482
+msgid "View Inquiries"
+msgstr "Voir les Demandes"
+
+#: .\accounts\templates\accounts\profile.html:487
+msgid "Respond to Inquiries"
+msgstr "Répondre aux Demandes"
+
+#: .\accounts\templates\accounts\profile.html:520
+msgid "Enable 2FA"
+msgstr "Activer 2FA"
+
+#: .\accounts\templates\accounts\profile_edit.html:35
+msgid "Email cannot be changed"
+msgstr "L'e-mail ne peut pas être modifié"
+
+#: .\accounts\templates\accounts\profile_edit.html:49
+msgid "Bio"
+msgstr "Biographie"
+
+#: .\accounts\templates\accounts\profile_edit.html:54
+msgid "Language Preference"
+msgstr "Préférence de Langue"
+
+#: .\accounts\templates\accounts\send_invitation.html:19
+msgid "Invite a new team member to join the IPAWAS platform. They will receive an email with instructions to set up their account."
+msgstr "Invitez un nouveau membre de l'équipe à rejoindre la plateforme IPAWAS. Il recevra un e-mail avec des instructions pour configurer son compte.Invitez un nouveau membre de l'équipe à rejoindre la plateforme IPAWAS. Il recevra un e-mail avec des instructions pour configurer son compte."
+
+#: .\accounts\templates\accounts\send_invitation.html:80
+msgid "Send Invitation"
+msgstr "Envoyer l'Invitation"
+
+#: .\accounts\templates\accounts\team_members.html:4
+#: .\accounts\templates\accounts\team_members.html:9
+msgid "Team Members"
+msgstr "Membres de l'Équipe"
+
+#: .\accounts\templates\accounts\team_members.html:10
+msgid "Manage your team and their permissions"
+msgstr "Gérez votre équipe et ses permissions"
+
+#: .\accounts\templates\accounts\team_members.html:14
+msgid "Invite Team Member"
+msgstr "Inviter un Membre de l'Équipe"
+
+#: .\accounts\templates\accounts\team_members.html:40 .\invitations\forms.py:80
+msgid "Primary Contact"
+msgstr "Contact Principal"
+
+#: .\accounts\templates\accounts\team_members.html:52
+msgid "Deactivate this user?"
+msgstr "Désactiver cet utilisateur ?"
+
+#: .\accounts\templates\accounts\team_members.html:65
+msgid "No Team Members Yet"
+msgstr "Aucun Membre de l'Équipe Pour l'Instant"
+
+#: .\accounts\templates\accounts\team_members.html:66
+msgid "Start building your team by inviting members"
+msgstr "Commencez à construire votre équipe en invitant des membres"
+
+#: .\accounts\views.py:101
+#, fuzzy, python-format
+#| msgid "Welcome, %(name)s! 🎉"
+msgid "Welcome back, %(name)s!"
+msgstr "Bienvenue, %(name)s ! 🎉"
+
+#: .\accounts\views.py:146
+#, python-format
+msgid "Goodbye, %(name)s! You've been logged out successfully."
+msgstr "Au revoir, %(name)s ! Vous avez été déconnecté avec succès."
+
+#
+#: .\accounts\views.py:175
+msgid "Invalid or expired invitation link"
+msgstr "Lien d'invitation invalide ou expiré"
+
+#: .\accounts\views.py:206
+msgid "Welcome to IPAWAS! Your account has been activated successfully."
+msgstr "Bienvenue sur IPAWAS ! Votre compte a été activé avec succès."
+
+#: .\accounts\views.py:283
+#, fuzzy, python-format
+#| msgid "Invite a new team member to join the IPAWAS platform. They will receive an email with instructions to set up their account."
+msgid "Invitation sent to %(email)s. They will receive an email with instructions."
+msgstr "Invitation envoyée à %(email)s. Il recevra un e-mail avec des instructions.Invitez un nouveau membre de l'équipe à rejoindre la plateforme IPAWAS. Il recevra un e-mail avec des instructions pour configurer son compte."
+
+#: .\accounts\views.py:368
+#, fuzzy
+#| msgid "We've sent you password reset instructions"
+msgid "If an account exists with that email, we've sent password reset instructions."
+msgstr "Si un compte existe avec cet e-mail, nous avons envoyé des instructions de réinitialisation de mot de passe.Nous vous avons envoyé des instructions de réinitialisation de mot de passe"
+
+#
+#: .\accounts\views.py:438
+msgid "Your password has been reset successfully. You can now log in."
+msgstr "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter."
+
+#
+#: .\accounts\views.py:475
+msgid "Your password has been changed successfully."
+msgstr "Votre mot de passe a été modifié avec succès."
+
+#: .\accounts\views.py:521
+msgid "Your profile has been updated."
+msgstr "Votre profil a été mis à jour."
+
+#: .\accounts\views.py:539
+msgid "Your IPA profile has been updated."
+msgstr "Votre profil IPA a été mis à jour."
+
+#: .\accounts\views.py:594
+#, python-format
+msgid "Permissions updated for %(name)s"
+msgstr "Permissions mises à jour pour %(name)s"
+
+#: .\accounts\views.py:604 .\accounts\views.py:624
+msgid "You don't have permission to manage users"
+msgstr "Vous n'avez pas la permission de gérer les utilisateurs"
+
+#
+#: .\accounts\views.py:653
+msgid "Your email has been verified successfully!"
+msgstr "Votre e-mail a été vérifié avec succès !"
+
+#: .\core\templates\core\base.html:778 .\core\templates\core\new_base.html:38
+msgid "About"
+msgstr "À propos"
+
+#: .\core\templates\core\base.html:787
+msgid "News"
+msgstr "Actualités"
+
+#: .\core\templates\core\base.html:789
+msgid "Contact"
+msgstr "Contact"
+
+#: .\core\templates\core\base.html:808 .\core\templates\core\new_base.html:154
+msgid "Investment Promotion Agencies of West Africa - Connecting global investors with transformative opportunities across 12 ECOWAS nations."
+msgstr "Agences de Promotion des Investissements de l'Afrique de l'Ouest - Connecter les investisseurs mondiaux à des opportunités transformatrices dans 12 pays de la CEDEAO."
+
+#: .\core\templates\core\base.html:818
+msgid "Organization"
+msgstr "Organisation"
+
+#: .\core\templates\core\base.html:820 .\core\templates\core\new_base.html:165
+msgid "About IPAWAS"
+msgstr "À propos de l'IPAWAS"
+
+#: .\core\templates\core\base.html:821
+msgid "Our Mission"
+msgstr "Notre mission"
+
+#: .\core\templates\core\base.html:822 .\core\templates\core\new_base.html:174
+msgid "Leadership"
+msgstr "Direction"
+
+#: .\core\templates\core\base.html:823 .\core\templates\core\new_base.html:177
+msgid "Partnerships"
+msgstr "Partenariats"
+
+#: .\core\templates\core\base.html:828
+msgid "Investors"
+msgstr "Investisseurs"
+
+#: .\core\templates\core\base.html:830 .\core\templates\core\new_base.html:186
+msgid "Investment Guide"
+msgstr "Guide de l'investissement"
+
+#: .\core\templates\core\base.html:831
+msgid "Sector Opportunities"
+msgstr "Opportunités sectorielles"
+
+#: .\core\templates\core\base.html:832 .\core\templates\core\new_base.html:192
+msgid "Country Profiles"
+msgstr "Profils de pays"
+
+#: .\core\templates\core\base.html:833 .\core\templates\core\new_base.html:102
+#: .\core\templates\core\new_base.html:195
+msgid "Success Stories"
+msgstr "Histoires de réussite"
+
+#: .\core\templates\core\base.html:838 .\core\templates\core\new_base.html:201
+msgid "Resources"
+msgstr "Ressources"
+
+#: .\core\templates\core\base.html:840
+msgid "Research Reports"
+msgstr "Rapports de recherche"
+
+#: .\core\templates\core\base.html:841
+msgid "Policy Documents"
+msgstr "Documents de politique"
+
+#: .\core\templates\core\base.html:842
+msgid "Investment Tools"
+msgstr "Outils d'investissement"
+
+#: .\core\templates\core\base.html:843 .\core\templates\core\new_base.html:213
+msgid "Media Center"
+msgstr "Espace presse"
+
+#: .\core\templates\core\base.html:848 .\core\templates\core\new_base.html:219
+msgid "Connect"
+msgstr "Nous rejoindre"
+
+#: .\core\templates\core\base.html:850 .\core\templates\core\new_base.html:222
+msgid "Contact Us"
+msgstr "Contactez-nous"
+
+#: .\core\templates\core\base.html:851 .\core\templates\core\new_base.html:225
+msgid "Events"
+msgstr "Événements"
+
+#: .\core\templates\core\base.html:852 .\core\templates\core\new_base.html:228
+msgid "Newsletter"
+msgstr "Lettre d'information"
+
+#: .\core\templates\core\base.html:853
+msgid "Member Portal"
+msgstr "Portail des membres"
+
+#: .\core\templates\core\base.html:926
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: .\core\templates\core\home.html:4
+msgid "IPAWAS - Investment Promotion Agencies of West Africa"
+msgstr "IPAWAS - Agences de Promotion des Investissements de l'Afrique de l'Ouest"
+
+#: .\core\templates\core\home.html:25 .\core\templates\core\index.html:188
+#: .\scripts\templatized_index.py:188
+msgid "Transforming West Africa into a Global Investment Destination"
+msgstr "Transformer l'Afrique de l'Ouest en une destination mondiale d'investissement"
+
+#: .\core\templates\core\home.html:28 .\core\templates\core\index.html:191
+#: .\scripts\templatized_index.py:191
+msgid "IPAWAS unites 12 investment promotion agencies across ECOWAS nations, facilitating strategic partnerships and unlocking unprecedented opportunities in Africa's fastest-growing economic region."
+msgstr "L'IPAWAS réunit 12 agences de promotion des investissements à travers les pays de la CEDEAO, facilitant des partenariats stratégiques et libérant des opportunités sans précédent dans la région économique la plus dynamique d'Afrique."
+
+#: .\core\templates\core\home.html:32 .\core\templates\core\index.html:195
+#: .\scripts\templatized_index.py:195
+msgid "Explore Investment Opportunities"
+msgstr "Explorer les opportunités d'investissement"
+
+#: .\core\templates\core\home.html:36 .\core\templates\core\index.html:199
+#: .\scripts\templatized_index.py:199
+msgid "Download Regional Guide"
+msgstr "Télécharger le guide régional"
+
+#: .\core\templates\core\home.html:54
+msgid "400M+ Population"
+msgstr "Plus de 400M d'habitants"
+
+#: .\core\templates\core\home.html:55 .\core\templates\core\index.html:218
+#: .\scripts\templatized_index.py:218
+msgid "Infinite Possibilities"
+msgstr "Possibilités infinies"
+
+#: .\core\templates\core\home.html:58 .\core\templates\core\index.html:221
+#: .\scripts\templatized_index.py:221
+msgid "West Africa represents one of the world's most dynamic economic frontiers, with robust GDP growth, youthful demographics, and rapidly expanding middle class consumption."
+msgstr "L'Afrique de l'Ouest représente l'une des frontières économiques les plus dynamiques au monde, avec une croissance robuste du PIB, une démographie jeune et une consommation de la classe moyenne en expansion rapide."
+
+#: .\core\templates\core\home.html:63 .\core\templates\core\index.html:226
+#: .\scripts\templatized_index.py:226
+msgid "Regional GDP"
+msgstr "PIB Régional"
+
+#: .\core\templates\core\home.html:67 .\core\templates\core\home.html:223
+#: .\core\templates\core\index.html:230 .\core\templates\core\index.html:389
+#: .\scripts\templatized_index.py:230 .\scripts\templatized_index.py:394
+msgid "Average Growth Rate"
+msgstr "Taux de croissance moyen"
+
+#: .\core\templates\core\home.html:71 .\core\templates\core\index.html:234
+#: .\scripts\templatized_index.py:234
+msgid "Member Countries"
+msgstr "Pays membres"
+
+#: .\core\templates\core\home.html:88 .\core\templates\core\index.html:251
+#: .\scripts\templatized_index.py:251
+msgid "Strategic Investment"
+msgstr "Investissement stratégique"
+
+#: .\core\templates\core\home.html:89 .\core\templates\core\index.html:252
+#: .\scripts\templatized_index.py:252
+msgid "Across Key Sectors"
+msgstr "Dans les secteurs clés"
+
+#: .\core\templates\core\home.html:92 .\core\templates\core\index.html:255
+#: .\scripts\templatized_index.py:255
+msgid "From renewable energy and agribusiness to fintech and digital innovation, West Africa offers diversified opportunities backed by progressive policies and regional coordination."
+msgstr "De l'énergie renouvelable et de l'agro-industrie à la fintech et l'innovation numérique, l'Afrique de l'Ouest offre des opportunités diversifiées soutenues par des politiques progressistes et une coordination régionale."
+
+#: .\core\templates\core\home.html:96 .\core\templates\core\index.html:259
+#: .\scripts\templatized_index.py:259
+msgid "View Sector Opportunities"
+msgstr "Voir les opportunités sectorielles"
+
+#: .\core\templates\core\home.html:114 .\core\templates\core\index.html:277
+#: .\scripts\templatized_index.py:277
+msgid "Building Partnerships"
+msgstr "Bâtir des partenariats"
+
+#: .\core\templates\core\home.html:115 .\core\templates\core\index.html:278
+#: .\scripts\templatized_index.py:278
+msgid "Creating Value"
+msgstr "Créer de la valeur"
+
+#: .\core\templates\core\home.html:118 .\core\templates\core\index.html:281
+#: .\scripts\templatized_index.py:281
+msgid "Join leading global investors who have discovered sustainable returns through IPAWAS's coordinated approach to investment facilitation and business development."
+msgstr "Rejoignez les principaux investisseurs mondiaux qui ont découvert des rendements durables grâce à l'approche coordonnée de l'IPAWAS en matière de facilitation des investissements et de développement commercial."
+
+#: .\core\templates\core\home.html:122 .\core\templates\core\index.html:285
+#: .\scripts\templatized_index.py:285
+msgid "Connect With Us"
+msgstr "Contactez-nous"
+
+#: .\core\templates\core\home.html:146 .\core\templates\core\index.html:309
+#: .\scripts\templatized_index.py:309
+msgid "Uniting West Africa for Global Investment"
+msgstr "Unir l'Afrique de l'Ouest pour l'investissement mondial"
+
+#: .\core\templates\core\home.html:148 .\core\templates\core\index.html:311
+msgid "The Investment Promotion Agencies of West African States (IPAWAS) represents a historic collaboration among 12 ECOWAS member nations, established to coordinate regional investment promotion strategies and amplify West Africa's position as a premier global investment destination."
+msgstr "L'Association des Agences de Promotion des Investissements des États de l'Afrique de l'Ouest (IPAWAS) représente une collaboration historique entre 12 pays membres de la CEDEAO, établie pour coordonner les stratégies régionales de promotion des investissements et renforcer la position de l'Afrique de l'Ouest en tant que destination privilégiée pour les investissements mondiaux."
+
+#: .\core\templates\core\home.html:151 .\core\templates\core\index.html:316
+msgid "Through strategic coordination, knowledge sharing, and unified policy advocacy, IPAWAS facilitates seamless cross-border investments while maintaining each nation's unique competitive advantages and sectoral specializations."
+msgstr "Grâce à une coordination stratégique, au partage des connaissances et au plaidoyer pour des politiques unifiées, l'IPAWAS facilite les investissements transfrontaliers tout en préservant les avantages compétitifs uniques et les spécialisations sectorielles de chaque nation."
+
+#: .\core\templates\core\home.html:155 .\core\templates\core\index.html:322
+msgid "Learn About Our Mission"
+msgstr "Découvrir notre mission"
+
+#: .\core\templates\core\home.html:166 .\core\templates\core\index.html:333
+#: .\scripts\templatized_index.py:334
+msgid "Regional Integration"
+msgstr "Intégration régionale"
+
+#: .\core\templates\core\home.html:167 .\core\templates\core\index.html:334
+msgid "Harmonized investment frameworks across 12 nations creating seamless market access."
+msgstr "Des cadres d'investissement harmonisés dans 12 pays créant un accès fluide au marché."
+
+#: .\core\templates\core\home.html:173 .\core\templates\core\index.html:340
+#: .\scripts\templatized_index.py:342
+msgid "Strategic Facilitation"
+msgstr "Facilitation stratégique"
+
+#: .\core\templates\core\home.html:174 .\core\templates\core\index.html:341
+msgid "End-to-end investment support from entry to operational excellence."
+msgstr "Soutien à l'investissement de bout en bout, de l'entrée à l'excellence opérationnelle."
+
+#: .\core\templates\core\home.html:181 .\core\templates\core\index.html:347
+#: .\scripts\templatized_index.py:350
+msgid "Growth Partnership"
+msgstr "Partenariat pour la croissance"
+
+#: .\core\templates\core\home.html:182 .\core\templates\core\index.html:348
+msgid "Sustainable value creation through coordinated regional development."
+msgstr "Création de valeur durable grâce à un développement régional coordonné."
+
+#: .\core\templates\core\home.html:195 .\core\templates\core\index.html:370
+#: .\scripts\templatized_index.py:374
+msgid "West Africa by the Numbers"
+msgstr "L'Afrique de l'Ouest en chiffres"
+
+#: .\core\templates\core\home.html:196 .\core\templates\core\index.html:371
+msgid "Discover the scale and potential of Africa's most dynamic economic region."
+msgstr "Découvrez l'ampleur et le potentiel de la région économique la plus dynamique d'Afrique."
+
+#: .\core\templates\core\home.html:211 .\core\templates\core\index.html:377
+#: .\core\templates\core\index.html:486 .\scripts\dry_run_output.txt:10
+#: .\scripts\templatized_index.py:382 .\scripts\templatized_index.py:492
+msgid "Population"
+msgstr "Population"
+
+#: .\core\templates\core\home.html:217 .\core\templates\core\index.html:383
+#: .\scripts\templatized_index.py:388
+msgid "Combined GDP"
+msgstr "PIB combiné"
+
+#: .\core\templates\core\home.html:229
+msgid "Member Nations"
+msgstr "Nations membres"
+
+#: .\core\templates\core\home.html:239
+msgid "ECOWAS Member States"
+msgstr "États membres de la CEDEAO"
+
+#: .\core\templates\core\home.html:240
+msgid "Explore investment opportunities across 15 diverse economies, each offering unique competitive advantages and sectoral specializations."
+msgstr "Explorez les opportunités d'investissement à travers 15 économies diverses, chacune offrant des avantages compétitifs et des spécialisations sectorielles uniques."
+
+#: .\core\templates\core\home.html:369 .\core\templates\core\index.html:555
+#: .\scripts\templatized_index.py:561
+msgid "Strategic Investment Opportunities"
+msgstr "Opportunités d'investissement stratégiques"
+
+#: .\core\templates\core\home.html:371 .\core\templates\core\index.html:557
+msgid "Discover high-potential sectors backed by progressive policies, regional coordination, and sustainable growth trajectories."
+msgstr "Découvrez des secteurs à fort potentiel soutenus par des politiques progressistes, une coordination régionale et des trajectoires de croissance durable."
+
+#: .\core\templates\core\home.html:379 .\core\templates\core\index.html:565
+#: .\scripts\templatized_index.py:572
+msgid "Renewable Energy"
+msgstr "Énergies renouvelables"
+
+#: .\core\templates\core\home.html:380 .\core\templates\core\index.html:566
+msgid "$120B+ investment potential in solar, wind, and hydro projects addressing regional energy deficits with 220M+ people lacking access."
+msgstr "Potentiel d'investissement de plus de 120 milliards de dollars dans des projets solaires, éoliens et hydroélectriques pour combler les déficits énergétiques régionaux, alors que 220 millions de personnes n'ont pas accès à l'électricité."
+
+#: .\core\templates\core\home.html:387 .\core\templates\core\index.html:573
+#: .\scripts\templatized_index.py:581
+msgid "Agribusiness & Food Security"
+msgstr "Agro-industrie et sécurité alimentaire"
+
+#: .\core\templates\core\home.html:388 .\core\templates\core\index.html:574
+#, python-format
+msgid "Transform 65%% of the world's uncultivated arable land through modern farming, processing, and value-added agricultural innovation."
+msgstr "Transformer 65%% des terres arables non cultivées au monde grâce à l'agriculture moderne, à la transformation et à l'innovation agricole à valeur ajoutée."
+
+#: .\core\templates\core\home.html:395 .\core\templates\core\index.html:581
+#: .\scripts\templatized_index.py:590
+msgid "Digital Innovation & Fintech"
+msgstr "Innovation numérique et Fintech"
+
+#: .\core\templates\core\home.html:396 .\core\templates\core\index.html:582
+msgid "Explosive mobile penetration and digital-first solutions creating opportunities in payments, lending, and financial inclusion."
+msgstr "Pénétration mobile explosive et solutions numériques créant des opportunités dans les paiements, le crédit et l'inclusion financière."
+
+#: .\core\templates\core\home.html:403 .\core\templates\core\index.html:589
+#: .\scripts\templatized_index.py:599
+msgid "Manufacturing & Industrialization"
+msgstr "Industrie et industrialisation"
+
+#: .\core\templates\core\home.html:404 .\core\templates\core\index.html:590
+msgid "Capitalize on regional value chains, AfCFTA opportunities, and competitive labor markets for export-oriented production."
+msgstr "Capitaliser sur les chaînes de valeur régionales, les opportunités de la ZLECAF et des marchés du travail compétitifs pour une production orientée vers l'exportation."
+
+#: .\core\templates\core\home.html:411 .\core\templates\core\index.html:597
+#: .\scripts\templatized_index.py:608
+msgid "Education & Skills Development"
+msgstr "Éducation et développement des compétences"
+
+#: .\core\templates\core\home.html:412 .\core\templates\core\index.html:598
+msgid "Address surging demand for quality education, vocational training, and digital skills in the world's youngest population."
+msgstr "Répondre à la demande croissante d'éducation de qualité, de formation professionnelle et de compétences numériques au sein de la population la plus jeune du monde."
+
+#: .\core\templates\core\home.html:419 .\core\templates\core\index.html:605
+#: .\scripts\templatized_index.py:617
+msgid "Healthcare Infrastructure"
+msgstr "Infrastructures de santé"
+
+#: .\core\templates\core\home.html:420 .\core\templates\core\index.html:606
+msgid "Critical gaps in hospitals, pharmaceuticals, and telemedicine creating sustainable investment opportunities with social impact."
+msgstr "Des lacunes critiques dans les hôpitaux, les produits pharmaceutiques et la télémédecine créant des opportunités d'investissement durables avec un impact social."
+
+#: .\core\templates\core\home.html:427 .\core\templates\core\index.html:613
+#: .\scripts\templatized_index.py:626
+msgid "Transportation & Logistics"
+msgstr "Transport et logistique"
+
+#: .\core\templates\core\home.html:428 .\core\templates\core\index.html:614
+msgid "Multi-billion dollar infrastructure modernization across ports, railways, roads, and aviation supporting regional trade expansion."
+msgstr "Modernisation des infrastructures de plusieurs milliards de dollars dans les ports, les chemins de fer, les routes et l'aviation, soutenant l'expansion du commerce régional."
+
+#: .\core\templates\core\home.html:435 .\core\templates\core\index.html:621
+#: .\scripts\templatized_index.py:635
+msgid "Real Estate & Urbanization"
+msgstr "Immobilier et urbanisation"
+
+#: .\core\templates\core\home.html:436 .\core\templates\core\index.html:622
+msgid "Rapid urban growth creating demand for residential, commercial, and industrial properties across major metropolitan areas."
+msgstr "Croissance urbaine rapide créant une demande pour des propriétés résidentielles, commerciales et industrielles dans les grandes zones métropolitaines."
+
+#: .\core\templates\core\home.html:443 .\core\templates\core\index.html:629
+#: .\scripts\templatized_index.py:644
+msgid "Regional Integration Benefits"
+msgstr "Avantages de l'intégration régionale"
+
+#: .\core\templates\core\home.html:444 .\core\templates\core\index.html:630
+msgid "ECOWAS single market with harmonized policies, free movement of goods, and coordinated development strategies."
+msgstr "Marché unique de la CEDEAO avec des politiques harmonisées, la libre circulation des biens et des stratégies de développement coordonnées."
+
+#: .\core\templates\core\home.html:453 .\core\templates\core\index.html:639
+#: .\scripts\templatized_index.py:655
+msgid "Latest News & Insights"
+msgstr "Dernières actualités et perspectives"
+
+#: .\core\templates\core\home.html:454
+msgid "Stay ahead with the latest developments, policy updates, and investment opportunities across West Africa."
+msgstr "Restez informé des derniers développements, des mises à jour politiques et des opportunités d'investissement en Afrique de l'Ouest."
+
+#: .\core\templates\core\home.html:460
+msgid "September 24, 2024"
+msgstr "24 septembre 2024"
+
+#: .\core\templates\core\home.html:461
+msgid "IPAWAS Statute Validated in Historic Banjul Summit"
+msgstr "Statuts de l'IPAWAS validés lors du sommet historique de Banjul"
+
+#: .\core\templates\core\home.html:462
+msgid "ECOWAS members formalize regional investment promotion framework, strengthening coordination and collaboration across West Africa."
+msgstr "Les membres de la CEDEAO formalisent le cadre régional de promotion des investissements, renforçant la coordination et la collaboration en Afrique de l'Ouest."
+
+#: .\core\templates\core\home.html:463 .\core\templates\core\index.html:659
+msgid "Read Full Story"
+msgstr "Lire l'article complet"
+
+#: .\core\templates\core\home.html:470
+msgid "March 30, 2025"
+msgstr "30 mars 2025"
+
+#: .\core\templates\core\home.html:471
+msgid "Diaspora Investment Initiative Launched"
+msgstr "Lancement de l'initiative d'investissement de la diaspora"
+
+#: .\core\templates\core\home.html:472
+msgid "New program targets $28 billion in diaspora remittances for infrastructure development across the region."
+msgstr "Un nouveau programme cible 28 milliards de dollars de transferts de fonds de la diaspora pour le développement des infrastructures dans la région."
+
+#: .\core\templates\core\home.html:473
+msgid "Learn More"
+msgstr "En savoir plus"
+
+#: .\core\templates\core\home.html:480
+msgid "February 15, 2025"
+msgstr "15 février 2025"
+
+#: .\core\templates\core\home.html:481
+msgid "Regional Investment Growth Accelerates"
+msgstr "Accélération de la croissance de l'investissement régional"
+
+#: .\core\templates\core\home.html:482
+msgid "FDI flows reach record highs as coordinated promotion efforts drive investor confidence and market expansion."
+msgstr "Les flux d'IDE atteignent des sommets historiques grâce aux efforts de promotion coordonnés qui renforcent la confiance des investisseurs."
+
+#: .\core\templates\core\home.html:483
+msgid "View Report"
+msgstr "Voir le rapport"
+
+#: .\core\templates\core\index.html:217 .\scripts\templatized_index.py:217
+#, fuzzy
+#| msgid "400M+ Population"
+msgid "350M+ Population"
+msgstr "Plus de 400M d'habitants"
+
+#: .\core\templates\core\index.html:354 .\scripts\templatized_index.py:358
+msgid "Policy & Investment Intelligence"
+msgstr "Politique et Intelligence d'Investissement"
+
+#: .\core\templates\core\index.html:356
+msgid "Data-driven insights, policy alignment, and regulatory clarity to support informed investment decisions."
+msgstr ""
+
+#: .\core\templates\core\index.html:395 .\scripts\templatized_index.py:400
+#, fuzzy
+#| msgid "Team Members"
+msgid "Active Members"
+msgstr "Membres de l'Équipe"
+
+#: .\core\templates\core\index.html:405 .\scripts\dry_run_output.txt:6
+#: .\scripts\templatized_index.py:410
+msgid "🌍 Interactive West Africa Map"
+msgstr "🌍 Carte Interactive de l'Afrique de l'Ouest"
+
+#: .\core\templates\core\index.html:407
+msgid "Hover over countries to see their flags, click to explore detailed investment opportunities"
+msgstr ""
+
+#: .\core\templates\core\index.html:425
+msgid "Atlantic Ocean"
+msgstr "Océan Atlantique"
+
+#: .\core\templates\core\index.html:435
+msgid "🗺️ Map Guide"
+msgstr "🗺️ Guide de la Carte"
+
+#: .\core\templates\core\index.html:438
+msgid "Active Member (12)"
+msgstr "Membre Actif (12)"
+
+#: .\core\templates\core\index.html:441
+msgid "Hovered"
+msgstr "Survolés"
+
+#: .\core\templates\core\index.html:443
+msgid "🖱️ Hover for flag & name"
+msgstr "🖱️ Survolez pour le drapeau et le nom"
+
+#: .\core\templates\core\index.html:448 .\scripts\dry_run_output.txt:8
+#: .\scripts\templatized_index.py:453
+msgid "Note:"
+msgstr "Remarque :"
+
+#: .\core\templates\core\index.html:448
+msgid "Mali, Burkina Faso, and Niger (shown in gray) are no longer active IPAWAS members. Current membership: 12 countries."
+msgstr ""
+
+#: .\core\templates\core\index.html:470
+msgid "Capital"
+msgstr ""
+
+#: .\core\templates\core\index.html:474
+msgid "flag"
+msgstr ""
+
+#: .\core\templates\core\index.html:480
+msgid "📊 KEY STATISTICS"
+msgstr ""
+
+#: .\core\templates\core\index.html:494
+msgid "GDP"
+msgstr "PIB"
+
+#: .\core\templates\core\index.html:505
+msgid "🎯 TOP INVESTMENT SECTORS"
+msgstr "🎯 PRINCIPAUX SECTEURS D'INVESTISSEMENT"
+
+#: .\core\templates\core\index.html:513
+msgid "Explore Opportunities"
+msgstr "Explorer les Opportunités"
+
+#: .\core\templates\core\index.html:525 .\scripts\dry_run_output.txt:12
+#: .\scripts\templatized_index.py:532
+#, fuzzy
+#| msgid "ECOWAS Relationship"
+msgid "Explore ECOWAS Nations"
+msgstr "Relation avec la CEDEAO"
+
+#: .\core\templates\core\index.html:527
+msgid "Click on any active member country (shown in green) to view detailed investment information, key statistics, and opportunities."
+msgstr ""
+
+#: .\core\templates\core\index.html:535 .\scripts\dry_run_output.txt:14
+#: .\scripts\templatized_index.py:541
+#, fuzzy
+#| msgid "Team Members"
+msgid "12 Active Members"
+msgstr "Membres de l'Équipe"
+
+#: .\core\templates\core\index.html:546 .\scripts\dry_run_output.txt:16
+#: .\scripts\templatized_index.py:552
+msgid "Flag"
+msgstr "Drapeau"
+
+#: .\core\templates\core\index.html:640 .\scripts\templatized_index.py:656
+#, fuzzy
+#| msgid "Stay ahead with the latest developments, policy updates, and investment opportunities across West Africa."
+msgid "Stay updated with the latest developments, success stories, and insights from across West Africa."
+msgstr "Restez informé des derniers développements, des mises à jour politiques et des opportunités d'investissement en Afrique de l'Ouest."
+
+#: .\core\templates\core\index.html:656
+msgid "min read"
+msgstr "min de lecture"
+
+#: .\core\templates\core\index.html:665 .\scripts\dry_run_output.txt:20
+#: .\scripts\templatized_index.py:681
+msgid "No news articles available at this time."
+msgstr "Aucun article d'actualité disponible pour le moment."
+
+#: .\core\templates\core\index.html:671 .\scripts\templatized_index.py:687
+msgid "View All News"
+msgstr "Voir Toutes les Nouvelles"
+
+#: .\core\templates\core\new_base.html:42
+#: .\core\templates\core\new_base.html:168
+msgid "Who We Are"
+msgstr "Qui Sommes-Nous"
+
+#: .\core\templates\core\new_base.html:45
+msgid "Mission, Vision & Values"
+msgstr "Mission, Vision et Valeurs"
+
+#: .\core\templates\core\new_base.html:48
+msgid "Strategic Priorities 2025-2027"
+msgstr "Priorités Stratégiques 2025-2027"
+
+#: .\core\templates\core\new_base.html:52
+#, fuzzy
+#| msgid "Leadership"
+msgid "Governance & Leadership"
+msgstr "Direction"
+
+#: .\core\templates\core\new_base.html:55
+msgid "ECOWAS Relationship"
+msgstr "Relation avec la CEDEAO"
+
+#: .\core\templates\core\new_base.html:58
+msgid "AfCFTA & IPAWAS Relationship"
+msgstr "Relation ZLECAf et IPAWAS"
+
+#: .\core\templates\core\new_base.html:80
+#, fuzzy
+#| msgid "Investment Guide"
+msgid "Investment Services"
+msgstr "Guide de l'investissement"
+
+#: .\core\templates\core\new_base.html:89
+msgid "Why West Africa"
+msgstr "Pourquoi l'Afrique de l'Ouest"
+
+#: .\core\templates\core\new_base.html:93
+msgid "Why Invest Here"
+msgstr "Pourquoi Investir Ici"
+
+#: .\core\templates\core\new_base.html:96
+#, fuzzy
+#| msgid "Investment Guide"
+msgid "Investment Case"
+msgstr "Guide de l'investissement"
+
+#: .\core\templates\core\new_base.html:99
+msgid "Incentives & Benefits"
+msgstr "Incitations et Avantages"
+
+#: .\core\templates\core\new_base.html:105
+#, fuzzy
+#| msgid "Investment Tools"
+msgid "Investment Sectors"
+msgstr "Outils d'investissement"
+
+#: .\core\templates\core\new_base.html:107
+msgid "Agriculture & Agribusiness"
+msgstr "Agriculture et Agro-industrie"
+
+#: .\core\templates\core\new_base.html:110
+#, fuzzy
+#| msgid "Renewable Energy"
+msgid "Energy & Renewable Energy"
+msgstr "Énergies renouvelables"
+
+#: .\core\templates\core\new_base.html:113
+msgid "Manufacturing"
+msgstr "Industrie Manufacturière"
+
+#: .\core\templates\core\new_base.html:116
+msgid "ICT & Digital Economy"
+msgstr "TIC et Économie Numérique"
+
+#: .\core\templates\core\new_base.html:119
+#, fuzzy
+#| msgid "Transportation & Logistics"
+msgid "Infrastructure & Logistics"
+msgstr "Transport et logistique"
+
+#: .\core\templates\core\new_base.html:126
+#: .\core\templates\core\new_base.html:210
+msgid "Programs"
+msgstr "Programmes"
+
+#: .\core\templates\core\new_base.html:131
+#: .\core\templates\core\new_base.html:204
+msgid "Knowledge Hub"
+msgstr "Centre de Connaissances"
+
+#: .\core\templates\core\new_base.html:171
+msgid "Mission & Vision"
+msgstr "Mission et Vision"
+
+#: .\core\templates\core\new_base.html:183
+#, fuzzy
+#| msgid "Investors"
+msgid "For Investors"
+msgstr "Investisseurs"
+
+#: .\core\templates\core\new_base.html:207
+msgid "WAIIS Data Portal"
+msgstr "Portail de Données WAIIS"
+
+#: .\core\templates\core\new_base.html:231
+#, fuzzy
+#| msgid "IPA Profile"
+msgid "IPA Portal"
+msgstr "Profil IPA"
+
+#: .\core\templates\core\new_base.html:242
+#, fuzzy
+#| msgid "&copy; %(year)s IPAWAS. All rights reserved."
+msgid "All rights reserved."
+msgstr "&copy; %(year)s IPAWAS. Tous droits réservés."
+
+#: .\core\templates\core\new_base.html:247
+#, fuzzy
+#| msgid "Terms of Service"
+msgid "Terms of Use"
+msgstr "Conditions d'Utilisation"
+
+#: .\core\templates\core\new_base.html:248
+msgid "Sitemap"
+msgstr "Plan du Site"
+
+#: .\dashboard\admin.py:27
+msgid "time period"
+msgstr "période"
+
+#: .\dashboard\admin.py:32
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: .\dashboard\admin.py:33
+msgid "This Week"
+msgstr "Cette semaine"
+
+#: .\dashboard\admin.py:34
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#: .\dashboard\admin.py:35
+msgid "This Quarter"
+msgstr "Ce trimestre"
+
+#: .\dashboard\admin.py:59
+msgid "action category"
+msgstr "catégorie d'action"
+
+#: .\dashboard\admin.py:64
+msgid "User Actions"
+msgstr "Actions utilisateur"
+
+#: .\dashboard\admin.py:65
+msgid "Content Actions"
+msgstr "Actions sur le contenu"
+
+#: .\dashboard\admin.py:66
+msgid "Opportunity Actions"
+msgstr "Actions sur les opportunités"
+
+#: .\dashboard\admin.py:67
+msgid "Inquiry Actions"
+msgstr "Actions sur les demandes"
+
+#: .\dashboard\admin.py:68
+msgid "Team Actions"
+msgstr "Actions d'équipe"
+
+#: .\dashboard\admin.py:69
+msgid "System Actions"
+msgstr "Actions système"
+
+#: .\dashboard\admin.py:150
+msgid "Activity Information"
+msgstr "Informations sur l'activité"
+
+#: .\dashboard\admin.py:161
+msgid "Details"
+msgstr "Détails"
+
+#: .\dashboard\admin.py:173
+msgid "Request Metadata"
+msgstr "Métadonnées de la requête"
+
+#: .\dashboard\admin.py:211
+msgid "Time"
+msgstr "Heure"
+
+#: .\dashboard\admin.py:223
+msgid "Unknown User"
+msgstr "Utilisateur inconnu"
+
+#: .\dashboard\admin.py:252
+msgid "Action"
+msgstr "Action"
+
+#: .\dashboard\admin.py:277
+msgid "Description"
+msgstr "Description"
+
+#: .\dashboard\admin.py:313
+msgid "Related Object"
+msgstr "Objet lié"
+
+#: .\dashboard\admin.py:318 .\dashboard\models.py:228
+msgid "No changes recorded"
+msgstr "Aucun changement enregistré"
+
+#: .\dashboard\admin.py:335
+msgid "Changes"
+msgstr "Changements"
+
+#: .\dashboard\admin.py:343
+msgid "User Agent"
+msgstr "Agent utilisateur"
+
+#: .\dashboard\admin.py:394
+msgid "read status"
+msgstr "statut de lecture"
+
+#: .\dashboard\admin.py:399
+msgid "Unread"
+msgstr "Non lu"
+
+#: .\dashboard\admin.py:400
+msgid "Read"
+msgstr "Lu"
+
+#: .\dashboard\admin.py:401
+msgid "Read Today"
+msgstr "Lu aujourd'hui"
+
+#: .\dashboard\admin.py:458
+msgid "Notification Information"
+msgstr "Informations de notification"
+
+#: .\dashboard\admin.py:470
+msgid "Read Status"
+msgstr "Statut de lecture"
+
+#: .\dashboard\admin.py:510 .\dashboard\models.py:105
+msgid "Created"
+msgstr "Créé"
+
+#: .\dashboard\admin.py:523
+msgid "Recipient"
+msgstr "Destinataire"
+
+#: .\dashboard\admin.py:538
+msgid "Type"
+msgstr "Type"
+
+#: .\dashboard\admin.py:577
+msgid "Read At"
+msgstr "Lu à"
+
+#: .\dashboard\admin.py:595
+msgid "Mark selected as read"
+msgstr "Marquer la sélection comme lue"
+
+#: .\dashboard\admin.py:602
+msgid "Mark selected as unread"
+msgstr "Marquer la sélection comme non lue"
+
+#: .\dashboard\admin.py:609
+msgid "Delete read notifications"
+msgstr "Supprimer les notifications lues"
+
+#: .\dashboard\models.py:98
+msgid "User Login"
+msgstr "Connexion utilisateur"
+
+#: .\dashboard\models.py:99
+msgid "User Logout"
+msgstr "Déconnexion utilisateur"
+
+#: .\dashboard\models.py:100
+msgid "Password Changed"
+msgstr "Mot de passe changé"
+
+#: .\dashboard\models.py:102
+msgid "Profile Updated"
+msgstr "Profil mis à jour"
+
+#: .\dashboard\models.py:103
+msgid "Profile Viewed"
+msgstr "Profil consulté"
+
+#: .\dashboard\models.py:106
+msgid "Updated"
+msgstr "Mis à jour"
+
+#: .\dashboard\models.py:107
+msgid "Deleted"
+msgstr "Supprimé"
+
+#: .\dashboard\models.py:108
+msgid "Published"
+msgstr "Publié"
+
+#: .\dashboard\models.py:109
+msgid "Unpublished"
+msgstr "Dépublié"
+
+#: .\dashboard\models.py:110
+msgid "Approved"
+msgstr "Approuvé"
+
+#: .\dashboard\models.py:111
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: .\dashboard\models.py:113
+msgid "Opportunity Created"
+msgstr "Opportunité créée"
+
+#: .\dashboard\models.py:114
+msgid "Opportunity Updated"
+msgstr "Opportunité mise à jour"
+
+#: .\dashboard\models.py:115
+msgid "Opportunity Published"
+msgstr "Opportunité publiée"
+
+#: .\dashboard\models.py:116
+msgid "Opportunity Deleted"
+msgstr "Opportunité supprimée"
+
+#: .\dashboard\models.py:118
+msgid "Inquiry Viewed"
+msgstr "Demande consultée"
+
+#: .\dashboard\models.py:119
+msgid "Inquiry Responded"
+msgstr "Réponse à la demande envoyée"
+
+#: .\dashboard\models.py:120
+msgid "Inquiry Assigned"
+msgstr "Demande assignée"
+
+#: .\dashboard\models.py:121
+msgid "Inquiry Closed"
+msgstr "Demande clôturée"
+
+#: .\dashboard\models.py:123
+msgid "User Invited"
+msgstr "Utilisateur invité"
+
+#: .\dashboard\models.py:124
+msgid "User Created"
+msgstr "Utilisateur créé"
+
+#: .\dashboard\models.py:125
+msgid "User Updated"
+msgstr "Utilisateur mis à jour"
+
+#: .\dashboard\models.py:126
+msgid "User Deactivated"
+msgstr "Utilisateur désactivé"
+
+#: .\dashboard\models.py:127
+msgid "Permissions Changed"
+msgstr "Permissions modifiées"
+
+#: .\dashboard\models.py:129
+msgid "Data Exported"
+msgstr "Données exportées"
+
+#: .\dashboard\models.py:130
+msgid "Report Exported"
+msgstr "Rapport exporté"
+
+#: .\dashboard\models.py:132
+msgid "Settings Changed"
+msgstr "Paramètres modifiés"
+
+#: .\dashboard\models.py:133
+msgid "Bulk Import"
+msgstr "Importation en masse"
+
+#: .\dashboard\models.py:134
+msgid "Bulk Update"
+msgstr "Mise à jour en masse"
+
+#: .\dashboard\models.py:143
+msgid "User who performed the action"
+msgstr "Utilisateur ayant effectué l'action"
+
+#: .\dashboard\models.py:152
+msgid "Related member state"
+msgstr "État membre lié"
+
+#: .\dashboard\models.py:158
+msgid "Type of action performed"
+msgstr "Type d'action effectuée"
+
+#: .\dashboard\models.py:173
+msgid "Human-readable description of the action"
+msgstr "Description de l'action lisible par l'homme"
+
+#: .\dashboard\models.py:178
+msgid "JSON representation of before/after changes"
+msgstr "Représentation JSON des modifications (avant/après)"
+
+#: .\dashboard\models.py:185
+msgid "IP address of the user"
+msgstr "Adresse IP de l'utilisateur"
+
+#: .\dashboard\models.py:190
+msgid "User agent string from request"
+msgstr "Chaîne d'agent utilisateur (User Agent) de la requête"
+
+#: .\dashboard\models.py:196
+msgid "When this activity occurred"
+msgstr "Date et heure de l'activité"
+
+#: .\dashboard\models.py:204
+msgid "Dashboard Activity"
+msgstr "Activité du tableau de bord"
+
+#: .\dashboard\models.py:205
+msgid "Dashboard Activities"
+msgstr "Activités du tableau de bord"
+
+#: .\dashboard\models.py:223
+msgid "N/A"
+msgstr "N/D"
+
+#: .\dashboard\models.py:317 .\dashboard\utils\activity_logs_services.py:286
+msgid "New Investor Inquiry"
+msgstr "Nouvelle demande d'investisseur"
+
+#: .\dashboard\models.py:318
+msgid "Inquiry Response"
+msgstr "Réponse à la demande"
+
+#: .\dashboard\models.py:319
+msgid "Approval Needed"
+msgstr "Approbation requise"
+
+#: .\dashboard\models.py:320 .\dashboard\utils\activity_logs_services.py:313
+msgid "Content Approved"
+msgstr "Contenu approuvé"
+
+#: .\dashboard\models.py:321 .\dashboard\utils\activity_logs_services.py:331
+msgid "Content Rejected"
+msgstr "Contenu rejeté"
+
+#: .\dashboard\models.py:322
+msgid "Opportunity Expiring"
+msgstr "Opportunité expirant bientôt"
+
+#: .\dashboard\models.py:323
+msgid "Team Member Added"
+msgstr "Membre d'équipe ajouté"
+
+#: .\dashboard\models.py:324 .\dashboard\utils\activity_logs_services.py:376
+msgid "Team Member Removed"
+msgstr "Membre d'équipe retiré"
+
+#: .\dashboard\models.py:325 .\dashboard\utils\activity_logs_services.py:388
+msgid "Your Permissions Changed"
+msgstr "Vos permissions ont été modifiées"
+
+#: .\dashboard\models.py:326
+msgid "System Alert"
+msgstr "Alerte système"
+
+#: .\dashboard\models.py:327
+msgid "Announcement"
+msgstr "Annonce"
+
+#: .\dashboard\models.py:328
+msgid "Reminder"
+msgstr "Rappel"
+
+#: .\dashboard\models.py:336
+msgid "IPA user receiving this notification"
+msgstr "Utilisateur de l'API recevant cette notification"
+
+#: .\dashboard\models.py:342
+msgid "Type of notification"
+msgstr "Type de notification"
+
+#: .\dashboard\models.py:348
+msgid "Short notification title"
+msgstr "Titre court de la notification"
+
+#: .\dashboard\models.py:352
+msgid "Full notification message"
+msgstr "Message complet de la notification"
+
+#: .\dashboard\models.py:359
+msgid "Optional link to relevant page"
+msgstr "Lien optionnel vers la page concernée"
+
+#: .\dashboard\models.py:365
+msgid "Has notification been read?"
+msgstr "La notification a-t-elle été lue ?"
+
+#: .\dashboard\models.py:372
+msgid "When notification was read"
+msgstr "Date de lecture de la notification"
+
+#: .\dashboard\models.py:378
+msgid "When notification was created"
+msgstr "Date de création de la notification"
+
+#: .\dashboard\models.py:386
+msgid "Notification"
+msgstr "Notification"
+
+#: .\dashboard\models.py:387
+msgid "Notifications"
+msgstr "Notifications"
+
+#: .\dashboard\utils\activity_logs_services.py:287
+#, python-format
+msgid "New inquiry from %(name)s regarding %(subject)s"
+msgstr "Nouvelle demande de %(name)s concernant : %(subject)s"
+
+#: .\dashboard\utils\activity_logs_services.py:301
+msgid "Approval Required"
+msgstr "Approbation requise"
+
+#: .\dashboard\utils\activity_logs_services.py:302
+#, python-format
+msgid "Opportunity '%(title)s' is awaiting your approval"
+msgstr "L'opportunité « %(title)s » est en attente de votre approbation"
+
+#: .\dashboard\utils\activity_logs_services.py:314
+#, python-format
+msgid "Your content has been approved by %(approver)s"
+msgstr "Votre contenu a été approuvé par %(approver)s"
+
+#: .\dashboard\utils\activity_logs_services.py:321
+#, python-format
+msgid "Your content has been rejected by %(rejector)s"
+msgstr "Votre contenu a été rejeté par %(rejector)s"
+
+#: .\dashboard\utils\activity_logs_services.py:346
+msgid "Opportunity Expiring Soon"
+msgstr "Opportunité expirant bientôt"
+
+#: .\dashboard\utils\activity_logs_services.py:347
+#, python-format
+msgid "Opportunity '%(title)s' will expire soon"
+msgstr "L'opportunité « %(title)s » expirera bientôt"
+
+#: .\dashboard\utils\activity_logs_services.py:360
+msgid "New Team Member"
+msgstr "Nouveau membre d'équipe"
+
+#: .\dashboard\utils\activity_logs_services.py:361
+#, python-format
+msgid "%(name)s has joined your team as %(role)s"
+msgstr "%(name)s a rejoint votre équipe en tant que %(role)s"
+
+#: .\dashboard\utils\activity_logs_services.py:377
+#, python-format
+msgid "%(name)s has been removed from your team"
+msgstr "%(name)s a été retiré de votre équipe"
+
+#: .\dashboard\utils\activity_logs_services.py:389
+msgid "Your dashboard permissions have been updated"
+msgstr "Vos permissions sur le tableau de bord ont été mises à jour"
+
+#: .\dashboard\utils\activity_logs_services.py:422
+msgid "Invitation Accepted"
+msgstr "Invitation acceptée"
+
+#: .\dashboard\utils\activity_logs_services.py:423
+#, python-format
+msgid "%(name)s (%(email)s) has accepted your invitation and joined the team"
+msgstr "%(name)s (%(email)s) a accepté votre invitation et a rejoint l'équipe"
+
+#: .\dashboard\utils\permissions.py:33 .\dashboard\utils\permissions.py:197
+msgid "You must be an IPA staff member to access this page"
+msgstr "Vous devez être un membre du personnel de l'API pour accéder à cette page"
+
+#: .\dashboard\utils\permissions.py:47 .\dashboard\utils\permissions.py:222
+msgid "You must be an IPAWAS administrator to access this page"
+msgstr "Vous devez être un administrateur IPAWAS pour accéder à cette page"
+
+#: .\dashboard\utils\permissions.py:111 .\dashboard\utils\permissions.py:256
+msgid "You don't have permission to perform this action"
+msgstr "Vous n'avez pas la permission d'effectuer cette action"
+
+#: .\dashboard\utils\permissions.py:193 .\dashboard\utils\permissions.py:218
+#: .\dashboard\utils\permissions.py:244 .\dashboard\utils\permissions.py:278
+msgid "Please log in to access this page"
+msgstr "Veuillez vous connecter pour accéder à cette page"
+
+#: .\dashboard\utils\permissions.py:297
+msgid "You can only access your own member state's data"
+msgstr "Vous ne pouvez accéder qu'aux données de votre propre État membre"
+
+#: .\dashboard\utils\permissions.py:301
+msgid "Invalid access"
+msgstr "Accès invalide"
+
+#: .\dashboard\views\invitation\views.py:128
+#: .\dashboard\views\invitation\views.py:295 .\invitations\views.py:202
+msgid "Invitation created but email could not be sent. Please resend the invitation manually."
+msgstr "Invitation créée, mais l'e-mail n'a pas pu être envoyé. Veuillez renvoyer l'invitation manuellement."
+
+#: .\dashboard\views\invitation\views.py:135
+#: .\dashboard\views\invitation\views.py:302 .\invitations\views.py:209
+#, python-format
+msgid "Invitation sent successfully to %(email)s"
+msgstr "Invitation envoyée avec succès à %(email)s"
+
+#: .\dashboard\views\invitation\views.py:153 .\invitations\views.py:227
+#, python-format
+msgid "Error creating invitation: %(error)s"
+msgstr "Erreur lors de la création de l'invitation : %(error)s"
+
+#: .\dashboard\views\invitation\views.py:243 .\invitations\forms.py:562
+msgid "Please select a member state"
+msgstr "Veuillez sélectionner un État membre"
+
+#: .\dashboard\views\invitation\views.py:263
+msgid "Pending invitation already exists"
+msgstr "Une invitation en attente existe déjà"
+
+#: .\dashboard\views\invitation\views.py:328
+#, python-format
+msgid "Successfully created %(count)d invitation(s) for %(state)s"
+msgstr "%(count)d invitation(s) créée(s) avec succès pour %(state)s"
+
+#: .\dashboard\views\invitation\views.py:337
+#, python-format
+msgid "Failed to create %(count)d invitation(s): %(details)s"
+msgstr "Échec de la création de %(count)d invitation(s) : %(details)s"
+
+#: .\dashboard\views\invitation\views.py:351
+#, python-format
+msgid "%(count)d invitation(s) created but email failed to send. You can resend from the invitations list."
+msgstr "%(count)d invitation(s) créée(s), mais l'envoi de l'e-mail a échoué. Vous pouvez les renvoyer depuis la liste des invitations."
+
+#: .\dashboard\views\invitation\views.py:362 .\invitations\views.py:628
+#, python-format
+msgid "Error processing bulk invitations: %(error)s"
+msgstr "Erreur lors du traitement des invitations groupées : %(error)s"
+
+#: .\dashboard\views\invitation\views.py:501 .\invitations\views.py:542
+msgid "Welcome to IPAWAS! Your account has been created successfully."
+msgstr "Bienvenue sur IPAWAS ! Votre compte a été créé avec succès."
+
+#: .\dashboard\views\invitation\views.py:507 .\invitations\views.py:548
+#, python-format
+msgid "Error creating account: %(error)s"
+msgstr "Erreur lors de la création du compte : %(error)s"
+
+#: .\invitations\admin.py:26
+msgid "invitation validity"
+msgstr "validité de l'invitation"
+
+#: .\invitations\admin.py:31
+msgid "Valid (Pending & Not Expired)"
+msgstr "Valide (En attente et non expirée)"
+
+#: .\invitations\admin.py:32
+msgid "Expired but Pending"
+msgstr "Expirée mais en attente"
+
+#: .\invitations\admin.py:33
+msgid "Accepted (Last 7 days)"
+msgstr "Acceptée (7 derniers jours)"
+
+#: .\invitations\admin.py:34
+msgid "Needs Resend (Expiring Soon)"
+msgstr "À renvoyer (expire bientôt)"
+
+#: .\invitations\admin.py:170
+msgid "Invitation Details"
+msgstr "Détails de l'invitation"
+
+#: .\invitations\admin.py:181
+msgid "Invitation Message"
+msgstr "Message d'invitation"
+
+#: .\invitations\admin.py:187
+msgid "Optional personalized message to include in the invitation email."
+msgstr "Message personnalisé facultatif à inclure dans l'e-mail d'invitation."
+
+#: .\invitations\admin.py:192
+msgid "Invitation Lifecycle"
+msgstr "Cycle de vie de l'invitation"
+
+#: .\invitations\admin.py:205
+msgid "Tracking & Analytics"
+msgstr "Suivi et analyses"
+
+#: .\invitations\admin.py:216
+msgid "Acceptance Details"
+msgstr "Détails de l'acceptation"
+
+#: .\invitations\admin.py:226
+msgid "Revocation Details"
+msgstr "Détails de la révocation"
+
+#: .\invitations\admin.py:383
+msgid "Validity"
+msgstr "Validité"
+
+#: .\invitations\admin.py:395
+msgid "System"
+msgstr "Système"
+
+#: .\invitations\admin.py:417
+msgid "Tracking"
+msgstr "Suivi"
+
+#: .\invitations\admin.py:477
+msgid "Resend selected invitations"
+msgstr "Renvoyer les invitations sélectionnées"
+
+#: .\invitations\admin.py:493
+msgid "Revoke selected invitations"
+msgstr "Révoquer les invitations sélectionnées"
+
+#: .\invitations\admin.py:502
+msgid "Mark expired as expired status"
+msgstr "Marquer les expirées comme statut expiré"
+
+#: .\invitations\admin.py:514
+msgid "Send reminder emails"
+msgstr "Envoyer des e-mails de rappel"
+
+#: .\invitations\forms.py:34
+msgid "Email address of the person you're inviting"
+msgstr "Adresse e-mail de la personne que vous invitez"
+
+#: .\invitations\forms.py:38
+msgid "Personal Message (Optional)"
+msgstr "Message personnel (facultatif)"
+
+#: .\invitations\forms.py:44
+msgid "Add a personal message to the invitation email..."
+msgstr "Ajoutez un message personnel à l'e-mail d'invitation..."
+
+#: .\invitations\forms.py:47
+msgid "Optional personalized message to include in the invitation email"
+msgstr "Message personnalisé facultatif à inclure dans l'e-mail d'invitation"
+
+#: .\invitations\forms.py:51
+msgid "Expires In (Days)"
+msgstr "Expire dans (jours)"
+
+#: .\invitations\forms.py:60
+msgid "Number of days until invitation expires (1-30)"
+msgstr "Nombre de jours avant l'expiration de l'invitation (1-30)"
+
+#: .\invitations\forms.py:83
+msgid "Access level for this user"
+msgstr "Niveau d'accès pour cet utilisateur"
+
+#: .\invitations\forms.py:84
+msgid "Check if this person is the main IPA contact"
+msgstr "Cocher si cette personne est le contact principal de l'API"
+
+#: .\invitations\forms.py:101
+msgid "Select the member state for this invitation"
+msgstr "Sélectionnez l'État membre pour cette invitation"
+
+#: .\invitations\forms.py:109
+msgid "Email address is required"
+msgstr "L'adresse e-mail est requise"
+
+#: .\invitations\forms.py:139
+msgid "Please enter a valid email address"
+msgstr "Veuillez saisir une adresse e-mail valide"
+
+#: .\invitations\forms.py:148
+msgid "Message is too long (max 500 characters)"
+msgstr "Le message est trop long (max 500 caractères)"
+
+#: .\invitations\forms.py:158
+msgid "Member state is required"
+msgstr "L'État membre est requis"
+
+#: .\invitations\forms.py:169
+msgid "Confirm resend"
+msgstr "Confirmer le renvoi"
+
+#: .\invitations\forms.py:176
+msgid "Check to confirm you want to resend this invitation"
+msgstr "Cochez pour confirmer que vous souhaitez renvoyer cette invitation"
+
+#: .\invitations\forms.py:186
+msgid "Reason for revocation"
+msgstr "Raison de la révocation"
+
+#: .\invitations\forms.py:192
+msgid "Optional: Explain why you're revoking this invitation..."
+msgstr "Facultatif : expliquez pourquoi vous révoquez cette invitation..."
+
+#: .\invitations\forms.py:195
+msgid "Optional reason for revoking this invitation"
+msgstr "Raison facultative de la révocation de cette invitation"
+
+#: .\invitations\forms.py:199
+msgid "Confirm revocation"
+msgstr "Confirmer la révocation"
+
+#: .\invitations\forms.py:207
+msgid "You must confirm to revoke this invitation"
+msgstr "Vous devez confirmer pour révoquer cette invitation"
+
+#: .\invitations\forms.py:224
+msgid "First name"
+msgstr "Prénom"
+
+#: .\invitations\forms.py:236
+msgid "Last name"
+msgstr "Nom"
+
+#: .\invitations\forms.py:249
+msgid "Your job title"
+msgstr "Votre intitulé de poste"
+
+#: .\invitations\forms.py:262
+msgid "+XXX XXX XXX XXXX"
+msgstr "+XXX XXX XXX XXXX"
+
+#: .\invitations\forms.py:269
+msgid "Preferred Language"
+msgstr "Langue préférée"
+
+#: .\invitations\forms.py:283
+msgid "I accept the terms and conditions"
+msgstr "J'accepte les conditions générales"
+
+#: .\invitations\forms.py:291
+msgid "You must accept the terms and conditions to register"
+msgstr "Vous devez accepter les conditions générales pour vous inscrire"
+
+#: .\invitations\forms.py:337
+msgid "Confirm password"
+msgstr "Confirmer le mot de passe"
+
+#: .\invitations\forms.py:344
+msgid "Password must be at least 12 characters and contain uppercase, lowercase, numbers, and special characters."
+msgstr "Le mot de passe doit comporter au moins 12 caractères et contenir des majuscules, des minuscules, des chiffres et des caractères spéciaux."
+
+#: .\invitations\forms.py:353
+msgid "Email must match the invitation"
+msgstr "L'e-mail doit correspondre à celui de l'invitation"
+
+#: .\invitations\forms.py:357
+msgid "An account with this email already exists"
+msgstr "Un compte avec cet e-mail existe déjà"
+
+#: .\invitations\forms.py:366
+msgid "Password must be at least 12 characters long"
+msgstr "Le mot de passe doit comporter au moins 12 caractères"
+
+#: .\invitations\forms.py:376
+msgid "Password must contain uppercase, lowercase, numbers, and special characters"
+msgstr "Le mot de passe doit contenir des majuscules, des minuscules, des chiffres et des caractères spéciaux"
+
+#: .\invitations\forms.py:415 .\invitations\forms.py:575
+msgid "Email Addresses"
+msgstr "Adresses e-mail"
+
+#: .\invitations\forms.py:421 .\invitations\forms.py:581
+msgid ""
+"Enter one email per line\n"
+"email1@example.com\n"
+"email2@example.com"
+msgstr ""
+"Entrez un e-mail par ligne\n"
+"email1@exemple.com\n"
+"email2@exemple.com"
+
+#: .\invitations\forms.py:426 .\invitations\forms.py:585
+msgid "Enter one email address per line (max 50)"
+msgstr "Entrez une adresse e-mail par ligne (max 50)"
+
+#: .\invitations\forms.py:442 .\invitations\forms.py:600
+msgid "All invited users will have this role"
+msgstr "Tous les utilisateurs invités auront ce rôle"
+
+#: .\invitations\forms.py:446 .\invitations\forms.py:604
+msgid "Message to all invitees"
+msgstr "Message à tous les invités"
+
+#: .\invitations\forms.py:452
+msgid "Add a personalized message for all invitees..."
+msgstr "Ajoutez un message personnalisé pour tous les invités..."
+
+#: .\invitations\forms.py:455 .\invitations\forms.py:612
+msgid "This message will be included in all invitation emails"
+msgstr "Ce message sera inclus dans tous les e-mails d'invitation"
+
+#: .\invitations\forms.py:478
+msgid "Select the member state for these invitations"
+msgstr "Sélectionnez l'État membre pour ces invitations"
+
+#: .\invitations\forms.py:499 .\invitations\forms.py:627
+msgid "Please enter at least one email address"
+msgstr "Veuillez saisir au moins une adresse e-mail"
+
+#: .\invitations\forms.py:503
+#, python-format
+msgid "Maximum 50 email addresses allowed at once. You entered %(count)d."
+msgstr "Maximum 50 adresses e-mail autorisées à la fois. Vous en avez saisi %(count)d."
+
+#: .\invitations\forms.py:532 .\invitations\forms.py:640
+#, python-format
+msgid "Invalid email addresses: %(emails)s"
+msgstr "Adresses e-mail invalides : %(emails)s"
+
+#: .\invitations\forms.py:549
+#, python-format
+msgid "Message is too long. Maximum 1000 characters (currently %(count)d)."
+msgstr "Le message est trop long. Maximum 1000 caractères (actuellement %(count)d)."
+
+#: .\invitations\forms.py:630
+msgid "Maximum 50 email addresses allowed at once"
+msgstr "Maximum 50 adresses e-mail autorisées à la fois"
+
+#: .\invitations\models.py:92
+msgid "This invitation has expired."
+msgstr "Cette invitation a expiré."
+
+#: .\invitations\models.py:95
+msgid "Invalid or expired invitation token."
+msgstr "Jeton d'invitation invalide ou expiré."
+
+#: .\invitations\models.py:118
+msgid "Accepted"
+msgstr "Acceptée"
+
+#: .\invitations\models.py:119
+msgid "Expired"
+msgstr "Expirée"
+
+#: .\invitations\models.py:120
+msgid "Revoked"
+msgstr "Révoquée"
+
+#: .\invitations\models.py:126
+msgid "Email address of person being invited"
+msgstr "Adresse e-mail de la personne invitée"
+
+#: .\invitations\models.py:134
+msgid "Unique token for invitation link"
+msgstr "Jeton unique pour le lien d'invitation"
+
+#: .\invitations\models.py:141
+msgid "Member State IPA this invitation is for"
+msgstr "API de l'État membre pour laquelle cette invitation est destinée"
+
+#: .\invitations\models.py:151
+msgid "Role the invitee will have"
+msgstr "Rôle que l'invité aura"
+
+#: .\invitations\models.py:160
+msgid "User who sent this invitation"
+msgstr "Utilisateur ayant envoyé cette invitation"
+
+#: .\invitations\models.py:163
+msgid "When invitation was created"
+msgstr "Date de création de l'invitation"
+
+#: .\invitations\models.py:166
+msgid "When invitation expires"
+msgstr "Date d'expiration de l'invitation"
+
+#: .\invitations\models.py:175
+msgid "Current status of invitation"
+msgstr "Statut actuel de l'invitation"
+
+#: .\invitations\models.py:182
+msgid "When invitation was accepted"
+msgstr "Date d'acceptation de l'invitation"
+
+#: .\invitations\models.py:191
+msgid "User account created from this invitation"
+msgstr "Compte utilisateur créé à partir de cette invitation"
+
+#: .\invitations\models.py:197
+msgid "When invitation was revoked"
+msgstr "Date de révocation de l'invitation"
+
+#: .\invitations\models.py:206
+msgid "User who revoked this invitation"
+msgstr "Utilisateur ayant révoqué cette invitation"
+
+#: .\invitations\models.py:211
+msgid "Reason for revoking invitation"
+msgstr "Raison de la révocation de l'invitation"
+
+#: .\invitations\models.py:217
+msgid "Is this person the primary IPA contact?"
+msgstr "Cette personne est-elle le contact principal de l'API ?"
+
+#: .\invitations\models.py:222
+msgid "Optional personalized message to include in email"
+msgstr "Message personnalisé facultatif à inclure dans l'e-mail"
+
+#: .\invitations\models.py:229
+msgid "When invitation email was sent"
+msgstr "Date d'envoi de l'e-mail d'invitation"
+
+#: .\invitations\models.py:235
+msgid "When invitation email was opened (if tracking enabled)"
+msgstr "Date d'ouverture de l'e-mail d'invitation (si le suivi est activé)"
+
+#: .\invitations\models.py:241
+msgid "When recipient started registration"
+msgstr "Date à laquelle le destinataire a commencé l'inscription"
+
+#: .\invitations\models.py:252
+msgid "Invitation"
+msgstr "Invitation"
+
+#: .\invitations\models.py:253
+msgid "Invitations"
+msgstr "Invitations"
+
+#: .\invitations\models.py:297
+msgid "Expiration date must be in the future"
+msgstr "La date d'expiration doit être dans le futur"
+
+#: .\invitations\models.py:346
+msgid "Only pending invitations can be accepted"
+msgstr "Seules les invitations en attente peuvent être acceptées"
+
+#: .\invitations\models.py:349
+msgid "This invitation has expired"
+msgstr "Cette invitation a expiré"
+
+#: .\invitations\models.py:365
+msgid "Only pending invitations can be revoked"
+msgstr "Seules les invitations en attente peuvent être révoquées"
+
+#: .\invitations\models.py:428
+msgid "System Administrator"
+msgstr "Administrateur système"
+
+#: .\invitations\views.py:58
+msgid "You don't have permission to manage invitations"
+msgstr "Vous n'avez pas la permission de gérer les invitations"
+
+#: .\invitations\views.py:261
+#, python-format
+msgid "Cannot resend this invitation (status: %(status)s)"
+msgstr "Impossible de renvoyer cette invitation (statut : %(status)s)"
+
+#: .\invitations\views.py:273
+#, python-format
+msgid "Invitation resent successfully to %(email)s"
+msgstr "Invitation renvoyée avec succès à %(email)s"
+
+#: .\invitations\views.py:277
+msgid "Invitation updated but email could not be sent"
+msgstr "Invitation mise à jour, mais l'e-mail n'a pas pu être envoyé"
+
+#: .\invitations\views.py:293
+#, python-format
+msgid "Error resending invitation: %(error)s"
+msgstr "Erreur lors du renvoi de l'invitation : %(error)s"
+
+#: .\invitations\views.py:328
+#, python-format
+msgid "Invitation to %(email)s has been revoked"
+msgstr "L'invitation pour %(email)s a été révoquée"
+
+#: .\invitations\views.py:575
+msgid "Member state not specified"
+msgstr "État membre non spécifié"
+
+#: .\invitations\views.py:615
+#, python-format
+msgid "Successfully sent %(count)d invitation(s)"
+msgstr "%(count)d invitation(s) envoyée(s) avec succès"
+
+#: .\invitations\views.py:621
+#, python-format
+msgid "Failed to invite: %(emails)s"
+msgstr "Échec de l'invitation pour : %(emails)s"
+
+#~ msgid "Nigeria"
+#~ msgstr "Nigéria"
+
+#~ msgid "Ghana"
+#~ msgstr "Ghana"
+
+#~ msgid "Senegal"
+#~ msgstr "Sénégal"
+
+#~ msgid "Côte d'Ivoire"
+#~ msgstr "Côte d'Ivoire"
+
+#~ msgid "Benin"
+#~ msgstr "Bénin"
+
+#~ msgid "Togo"
+#~ msgstr "Togo"
+
+#~ msgid "Liberia"
+#~ msgstr "Libéria"
+
+#~ msgid "S. Leone"
+#~ msgstr "S. Leone"
+
+#~ msgid "Guinea"
+#~ msgstr "Guinée"
+
+#~ msgid "G-Bissau"
+#~ msgstr "G-Bissau"
+
+#~ msgid "Gambia"
+#~ msgstr "Gambie"
+
+#~ msgid "Cabo Verde"
+#~ msgstr "Cabo Verde"
+
+#~ msgid "Mali"
+#~ msgstr "Mali"
+
+#~ msgid "Burkina Faso"
+#~ msgstr "Burkina Faso"
+
+#~ msgid "Niger"
+#~ msgstr "Niger"

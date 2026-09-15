@@ -1,0 +1,399 @@
+{% load i18n %}
+{# Media Picker Modal — include once per page, controlled via JS MediaPicker.open() #}
+
+<div class="modal fade" id="mediaPicker" tabindex="-1" aria-labelledby="mediaPickerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      {# Header #}
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title fw-semibold" id="mediaPickerLabel">
+          <i class="ti ti-photo-video me-2 text-primary"></i>{% trans "Media Library" %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      {# Tabs #}
+      <div class="border-bottom px-3 pt-2">
+        <ul class="nav nav-tabs border-0" id="pickerTabs">
+          <li class="nav-item">
+            <button class="nav-link active" id="tab-library" data-bs-toggle="tab" data-bs-target="#pane-library" type="button">
+              <i class="ti ti-layout-grid me-1"></i>{% trans "Browse Library" %}
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="tab-upload" data-bs-toggle="tab" data-bs-target="#pane-upload" type="button">
+              <i class="ti ti-upload me-1"></i>{% trans "Upload New" %}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {# Body #}
+      <div class="modal-body p-0">
+        <div class="tab-content h-100">
+
+          {# --- Library tab --- #}
+          <div class="tab-pane fade show active" id="pane-library">
+            {# Search + filter bar #}
+            <div class="d-flex gap-2 align-items-center p-3 border-bottom bg-light">
+              <div class="input-group input-group-sm flex-grow-1" style="max-width:320px">
+                <span class="input-group-text"><i class="ti ti-search"></i></span>
+                <input type="text" class="form-control" id="pickerSearch" placeholder="{% trans 'Search files…' %}">
+              </div>
+              <small class="text-muted ms-auto" id="pickerCount"></small>
+            </div>
+
+            {# File grid #}
+            <div id="pickerGrid" class="row g-2 p-3" style="min-height:300px;max-height:440px;overflow-y:auto;">
+              <div class="col-12 text-center py-5 text-muted" id="pickerEmpty" style="display:none">
+                <i class="ti ti-folder-off fs-1 d-block mb-2"></i>
+                {% trans "No files found. Upload one using the tab above." %}
+              </div>
+              <div class="col-12 text-center py-5" id="pickerLoading">
+                <div class="spinner-border text-primary" role="status"></div>
+              </div>
+            </div>
+
+            {# Pagination #}
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top" id="pickerPager" style="display:none!important">
+              <button class="btn btn-sm btn-outline-secondary" id="pickerPrev" disabled>
+                <i class="ti ti-arrow-left"></i> {% trans "Prev" %}
+              </button>
+              <small class="text-muted" id="pickerPageInfo"></small>
+              <button class="btn btn-sm btn-outline-secondary" id="pickerNext" disabled>
+                {% trans "Next" %} <i class="ti ti-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          {# --- Upload tab --- #}
+          <div class="tab-pane fade" id="pane-upload">
+            <div class="p-4">
+              <div id="pickerDropzone"
+                   class="border border-2 border-dashed rounded-3 text-center p-5 mb-3"
+                   style="cursor:pointer;transition:.2s;border-color:#dee2e6">
+                <i class="ti ti-cloud-upload fs-1 text-primary d-block mb-2"></i>
+                <p class="mb-1 fw-semibold">{% trans "Drag & drop or click to choose a file" %}</p>
+                <p class="small text-muted mb-0" id="pickerUploadHint">{% trans "Images up to 10 MB" %}</p>
+                <input type="file" id="pickerFileInput" class="d-none" accept="*/*">
+              </div>
+
+              {# Progress / result #}
+              <div id="pickerUploadProgress" style="display:none">
+                <div class="progress mb-2" style="height:6px">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                </div>
+                <p class="small text-muted text-center">{% trans "Uploading…" %}</p>
+              </div>
+              <div id="pickerUploadResult" class="alert d-none"></div>
+            </div>
+          </div>
+
+        </div>{# /tab-content #}
+      </div>{# /modal-body #}
+
+      {# Footer #}
+      <div class="modal-footer border-top">
+        <small class="text-muted me-auto" id="pickerSelected">{% trans "No file selected" %}</small>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary btn-sm" id="pickerConfirm" disabled>
+          <i class="ti ti-check me-1"></i>{% trans "Use Selected" %}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- State ----
+  var _opts = {};          // { inputId, previewId, fileType, memberStateSlug, apiBase, csrfToken }
+  var _currentFile = null; // { id, name, url, thumbnail }
+  var _currentPage = 1;
+  var _searchTimer = null;
+
+  // ---- Public API ----
+  window.MediaPicker = {
+    clear: function (inputId, previewId) {
+      var inp = document.getElementById(inputId);
+      if (inp) inp.value = "";
+      if (previewId) {
+        var prev = document.getElementById(previewId);
+        if (prev) {
+          prev.innerHTML = "";
+          prev.classList.add("d-none");
+        }
+      }
+    },
+    open: function (opts) {
+      _opts = opts || {};
+      _currentFile = null;
+      _currentPage = 1;
+
+      // Reset UI
+      document.getElementById("pickerSelected").textContent = "{% trans 'No file selected' %}";
+      document.getElementById("pickerConfirm").disabled = true;
+      document.getElementById("pickerSearch").value = "";
+      document.getElementById("pickerUploadResult").className = "alert d-none";
+      document.getElementById("pickerUploadProgress").style.display = "none";
+
+      // Hint text
+      var hints = { image: "{% trans 'Images up to 10 MB' %}", video: "{% trans 'Videos up to 500 MB' %}", document: "{% trans 'Documents up to 50 MB' %}" };
+      document.getElementById("pickerUploadHint").textContent = hints[_opts.fileType] || "{% trans 'Files up to 50 MB' %}";
+
+      // Accept filter
+      var accepts = { image: "image/*", video: "video/*", document: ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" };
+      document.getElementById("pickerFileInput").accept = accepts[_opts.fileType] || "*/*";
+
+      // Switch to library tab
+      var libTab = document.getElementById("tab-library");
+      bootstrap.Tab.getOrCreateInstance(libTab).show();
+
+      _loadFiles();
+
+      var modal = new bootstrap.Modal(document.getElementById("mediaPicker"));
+      modal.show();
+    },
+  };
+
+  // ---- Load files from API ----
+  function _loadFiles() {
+    var search = document.getElementById("pickerSearch").value.trim();
+    var grid = document.getElementById("pickerGrid");
+    var apiBase = _opts.apiBase;
+    var url = apiBase + "?page=" + _currentPage;
+    if (_opts.fileType) url += "&type=" + _opts.fileType;
+    if (search) url += "&search=" + encodeURIComponent(search);
+
+    document.getElementById("pickerLoading").style.display = "";
+    document.getElementById("pickerEmpty").style.display = "none";
+    document.getElementById("pickerCount").textContent = "";
+
+    // Remove old file cards (keep loading & empty divs)
+    grid.querySelectorAll(".picker-item").forEach(function (el) { el.remove(); });
+
+    fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        document.getElementById("pickerLoading").style.display = "none";
+
+        if (!data.files || data.files.length === 0) {
+          document.getElementById("pickerEmpty").style.display = "";
+          _updatePager(data);
+          return;
+        }
+
+        document.getElementById("pickerCount").textContent = data.total + " {% trans 'file(s)' %}";
+        data.files.forEach(function (f) { grid.appendChild(_makeCard(f)); });
+        _updatePager(data);
+      })
+      .catch(function () {
+        document.getElementById("pickerLoading").style.display = "none";
+        document.getElementById("pickerEmpty").style.display = "";
+      });
+  }
+
+  function _makeCard(f) {
+    var col = document.createElement("div");
+    col.className = "col-6 col-md-3 col-lg-2 picker-item";
+    col.dataset.id = f.id;
+    col.dataset.name = f.name;
+    col.dataset.url = f.url;
+    col.dataset.thumbnail = f.thumbnail || "";
+
+    var thumb = f.thumbnail
+      ? '<img src="' + f.thumbnail + '" class="w-100 h-100 object-fit-cover" alt="">'
+      : '<div class="d-flex align-items-center justify-content-center h-100 text-muted"><i class="ti ti-file fs-1"></i></div>';
+
+    col.innerHTML =
+      '<div class="card picker-card border h-100 p-0" style="cursor:pointer;overflow:hidden">' +
+        '<div class="card-img-top bg-light" style="height:90px">' + thumb + '</div>' +
+        '<div class="card-body p-1">' +
+          '<p class="mb-0 small text-truncate" title="' + _esc(f.name) + '">' + _esc(f.name) + '</p>' +
+          '<p class="mb-0 x-small text-muted">' + f.size_display + '</p>' +
+        '</div>' +
+      '</div>';
+
+    col.querySelector(".picker-card").addEventListener("click", function () {
+      // Deselect others
+      document.querySelectorAll(".picker-card.border-primary").forEach(function (c) {
+        c.classList.remove("border-primary", "border-2");
+      });
+      this.classList.add("border-primary", "border-2");
+      _currentFile = f;
+      document.getElementById("pickerSelected").textContent = f.name;
+      document.getElementById("pickerConfirm").disabled = false;
+    });
+
+    return col;
+  }
+
+  function _updatePager(data) {
+    var pager = document.getElementById("pickerPager");
+    var prev = document.getElementById("pickerPrev");
+    var next = document.getElementById("pickerNext");
+    var info = document.getElementById("pickerPageInfo");
+
+    if (data.total <= 30) {
+      pager.style.cssText = "display:none!important";
+      return;
+    }
+
+    pager.style.cssText = "";
+    prev.disabled = (_currentPage <= 1);
+    next.disabled = !data.has_next;
+    info.textContent = "{% trans 'Page' %} " + data.page;
+  }
+
+  // ---- Confirm selection ----
+  document.getElementById("pickerConfirm").addEventListener("click", function () {
+    if (!_currentFile) return;
+    _applySelection(_currentFile);
+    bootstrap.Modal.getInstance(document.getElementById("mediaPicker")).hide();
+  });
+
+  function _applySelection(f) {
+    // Set hidden FK input
+    var inp = document.getElementById(_opts.inputId);
+    if (inp) inp.value = f.id;
+
+    // Update preview container — make it visible and populate it
+    if (_opts.previewId) {
+      var prev = document.getElementById(_opts.previewId);
+      if (prev) {
+        // Remove button: clears FK input and hides the preview
+        var removeBtn =
+          '<button type="button" class="btn btn-sm btn-outline-danger ms-auto flex-shrink-0" ' +
+            'onclick="MediaPicker.clear(\'' + _opts.inputId + '\',\'' + _opts.previewId + '\')" ' +
+            'title="Remove">' +
+            '<i class="ti ti-x"></i>' +
+          '</button>';
+
+        if (f.file_type === "image" && f.thumbnail) {
+          prev.innerHTML =
+            '<div class="d-flex align-items-center gap-2 p-1">' +
+              '<img src="' + f.url + '" class="img-thumbnail flex-shrink-0" style="max-height:80px;max-width:80px" alt="">' +
+              '<span class="small fw-semibold text-truncate">' + _esc(f.name) + '</span>' +
+              removeBtn +
+            '</div>';
+        } else {
+          prev.innerHTML =
+            '<div class="d-flex align-items-center gap-2 p-2 border rounded">' +
+              '<i class="ti ti-file text-secondary fs-5"></i>' +
+              '<span class="small fw-semibold text-truncate" style="max-width:180px">' + _esc(f.name) + '</span>' +
+              removeBtn +
+            '</div>';
+        }
+        // Unhide the container regardless of its prior state
+        prev.style.display = "";
+        prev.classList.remove("d-none");
+      }
+    }
+
+    // Update a standalone label span if provided
+    if (_opts.labelId) {
+      var lbl = document.getElementById(_opts.labelId);
+      if (lbl) {
+        lbl.textContent = f.name;
+        // Unhide the label and its nearest hidden ancestor
+        lbl.style.display = "";
+        lbl.classList.remove("d-none");
+        var parent = lbl.parentElement;
+        if (parent) {
+          parent.style.display = "";
+          parent.classList.remove("d-none");
+        }
+      }
+    }
+  }
+
+  // ---- Search (debounced) ----
+  document.getElementById("pickerSearch").addEventListener("input", function () {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(function () {
+      _currentPage = 1;
+      _loadFiles();
+    }, 350);
+  });
+
+  // ---- Pagination ----
+  document.getElementById("pickerPrev").addEventListener("click", function () {
+    if (_currentPage > 1) { _currentPage--; _loadFiles(); }
+  });
+  document.getElementById("pickerNext").addEventListener("click", function () {
+    _currentPage++;
+    _loadFiles();
+  });
+
+  // ---- Dropzone / upload ----
+  var dropzone = document.getElementById("pickerDropzone");
+  var fileInput = document.getElementById("pickerFileInput");
+
+  dropzone.addEventListener("click", function () { fileInput.click(); });
+  dropzone.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    dropzone.style.borderColor = "#0d6efd";
+    dropzone.style.background = "#f0f4ff";
+  });
+  dropzone.addEventListener("dragleave", function () {
+    dropzone.style.borderColor = "#dee2e6";
+    dropzone.style.background = "";
+  });
+  dropzone.addEventListener("drop", function (e) {
+    e.preventDefault();
+    dropzone.style.borderColor = "#dee2e6";
+    dropzone.style.background = "";
+    if (e.dataTransfer.files.length) _doUpload(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener("change", function () {
+    if (this.files.length) _doUpload(this.files[0]);
+  });
+
+  function _doUpload(file) {
+    var progress = document.getElementById("pickerUploadProgress");
+    var result = document.getElementById("pickerUploadResult");
+    progress.style.display = "";
+    result.className = "alert d-none";
+
+    var fd = new FormData();
+    fd.append("file", file);
+    var folderTypes = { image: "images", video: "videos", document: "documents" };
+    fd.append("folder_type", folderTypes[_opts.fileType] || "images");
+
+    fetch(_opts.uploadApiUrl, {
+      method: "POST",
+      headers: { "X-CSRFToken": _opts.csrfToken, "X-Requested-With": "XMLHttpRequest" },
+      body: fd,
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        progress.style.display = "none";
+        if (data.success) {
+          result.className = "alert alert-success";
+          result.textContent = data.file.name + " {% trans 'uploaded successfully. You can now select it from the library.' %}";
+          fileInput.value = "";
+          // Auto-apply and close
+          _applySelection(data.file);
+          bootstrap.Modal.getInstance(document.getElementById("mediaPicker")).hide();
+        } else {
+          result.className = "alert alert-danger";
+          result.textContent = data.error || "{% trans 'Upload failed.' %}";
+        }
+      })
+      .catch(function () {
+        progress.style.display = "none";
+        result.className = "alert alert-danger";
+        result.textContent = "{% trans 'Upload failed. Please try again.' %}";
+      });
+  }
+
+  // ---- Helpers ----
+  function _esc(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+})();
+</script>

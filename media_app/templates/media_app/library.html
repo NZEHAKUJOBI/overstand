@@ -1,0 +1,281 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Media Library - {{ member_state.country_name }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title mb-2">{% translate "Media Library" %}</h1>
+            <p class="text-muted">{% translate "Manage your media files and documents" %}</p>
+        </div>
+        {% if can_upload %}
+        <div class="btn-group">
+            <a href="{% url 'dashboard:country:media:file_upload' member_state_slug=member_state.slug %}?folder={{ current_folder.id|default:'' }}"
+               class="btn btn-primary">
+                <i class="fas fa-upload me-2"></i>{% translate "Upload File" %}
+            </a>
+            <a href="{% url 'dashboard:country:media:file_bulk_upload' member_state_slug=member_state.slug %}?folder={{ current_folder.id|default:'' }}"
+               class="btn btn-outline-primary">
+                <i class="fas fa-cloud-upload-alt me-2"></i>{% translate "Bulk Upload" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Storage Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-primary-subtle text-primary">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <div class="ms-3">
+                        <div class="stats-label">{% translate "Total Files" %}</div>
+                        <div class="stats-value">{{ storage_stats.total_files|default:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-success-subtle text-success">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="ms-3">
+                        <div class="stats-label">{% translate "Images" %}</div>
+                        <div class="stats-value">{{ storage_stats.images_count|default:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-info-subtle text-info">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="ms-3">
+                        <div class="stats-label">{% translate "Documents" %}</div>
+                        <div class="stats-value">{{ storage_stats.documents_count|default:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-warning-subtle text-warning">
+                        <i class="fas fa-hdd"></i>
+                    </div>
+                    <div class="ms-3">
+                        <div class="stats-label">{% translate "Storage Used" %}</div>
+                        <div class="stats-value">{{ storage_stats.total_size_display|default:"0 B" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Folder Tree Sidebar -->
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">{% translate "Folders" %}</h6>
+                {% if can_upload %}
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createFolderModal">
+                    <i class="fas fa-plus"></i>
+                </button>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                <div class="folder-tree">
+                    {% include "media_app/partials/folder_tree.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="col-md-9">
+        <!-- Breadcrumbs -->
+        {% if breadcrumbs %}
+        <nav aria-label="{% translate "breadcrumb" %}" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}">
+                        <i class="fas fa-home"></i> {% translate "Media Library" %}
+                    </a>
+                </li>
+                {% for folder in breadcrumbs %}
+                <li class="breadcrumb-item {% if forloop.last %}active{% endif %}">
+                    {% if not forloop.last %}
+                    <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}">
+                        {{ folder.name }}
+                    </a>
+                    {% else %}
+                    {{ folder.name }}
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </nav>
+        {% endif %}
+
+        <!-- Search Bar -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <form action="{% url 'dashboard:country:media:file_search' member_state_slug=member_state.slug %}" method="get">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <input type="text" name="query" class="form-control" placeholder="{% translate "Search files..." %}">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="file_type" class="form-select">
+                                <option value="">{% translate "All Types" %}</option>
+                                <option value="image">{% translate "Images" %}</option>
+                                <option value="document">{% translate "Documents" %}</option>
+                                <option value="video">{% translate "Videos" %}</option>
+                                <option value="audio">{% translate "Audio" %}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>{% translate "Search" %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Files Grid -->
+        {% if files %}
+        <div class="row g-3">
+            {% for file in files %}
+            <div class="col-md-4 col-lg-3">
+                {% include "media_app/partials/file_card.html" %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">{% translate "No files in this folder" %}</h5>
+                {% if can_upload %}
+                <a href="{% url 'dashboard:country:media:file_upload' member_state_slug=member_state.slug %}?folder={{ current_folder.id|default:'' }}"
+                   class="btn btn-primary mt-3">
+                    <i class="fas fa-upload me-2"></i>{% translate "Upload Your First File" %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Create Folder Modal -->
+{% if can_upload %}
+<div class="modal fade" id="createFolderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% translate "Create New Folder" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'dashboard:country:media:folder_create' member_state_slug=member_state.slug %}?parent={{ current_folder.id|default:'' }}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "Folder Name" %}</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "Description (Optional)" %}</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+                    <button type="submit" class="btn btn-primary">{% translate "Create Folder" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stats-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+    }
+
+    .stats-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .folder-tree {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .folder-item {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid #e9ecef;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .folder-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .folder-item.active {
+        background-color: #e7f3ff;
+        border-left: 3px solid #0d6efd;
+    }
+
+    .file-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .file-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}

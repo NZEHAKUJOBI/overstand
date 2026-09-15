@@ -1,0 +1,101 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}Onboarding QR Sessions{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+  <div>
+    <h1 class="page-title">Onboarding QR Sessions</h1>
+    <p class="page-subtitle">Manage self-service onboarding via QR code</p>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <a href="{% url 'dashboard:hq:onboarding:requests' %}?status=pending"
+       class="btn btn-outline-primary">
+      {% if pending_total > 0 %}
+        <span class="badge-count" style="background:#dc2626;color:white;border-radius:10px;padding:1px 7px;font-size:0.75rem;margin-right:6px;">{{ pending_total }}</span>
+      {% endif %}
+      Review Requests
+    </a>
+    <a href="{% url 'dashboard:hq:onboarding:session_create' %}" class="btn btn-primary">
+      + New QR Session
+    </a>
+  </div>
+</div>
+
+{% if pending_total > 0 %}
+<div class="alert alert-warning" style="margin-bottom:20px;border-radius:10px;padding:14px 18px;background:#fefce8;border:1.5px solid #fde68a;color:#92400e;display:flex;align-items:center;gap:10px;">
+  <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+  <strong>{{ pending_total }} onboarding request{{ pending_total|pluralize }} awaiting review.</strong>
+  <a href="{% url 'dashboard:hq:onboarding:requests' %}?status=pending" style="margin-left:auto;color:#92400e;font-weight:700;">Review now →</a>
+</div>
+{% endif %}
+
+{% if sessions %}
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Session Label</th>
+        <th>Status</th>
+        <th>Pending</th>
+        <th>Approved</th>
+        <th>Rejected</th>
+        <th>Expiry</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td><strong>{{ session.label }}</strong></td>
+        <td>
+          {% if session.is_open %}
+            <span class="badge badge-success">Active</span>
+          {% elif not session.is_active %}
+            <span class="badge badge-secondary">Deactivated</span>
+          {% elif session.expires_at %}
+            <span class="badge badge-warning">Expired</span>
+          {% else %}
+            <span class="badge badge-secondary">Closed</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if session.pending_count > 0 %}
+            <a href="{% url 'dashboard:hq:onboarding:requests' %}?status=pending"
+               style="font-weight:700;color:#dc2626;">{{ session.pending_count }}</a>
+          {% else %}0{% endif %}
+        </td>
+        <td>{{ session.approved_count }}</td>
+        <td>{{ session.rejected_count }}</td>
+        <td>
+          {% if session.expires_at %}{{ session.expires_at|date:"M d, Y H:i" }}{% else %}—{% endif %}
+        </td>
+        <td>{{ session.created_at|date:"M d, Y" }}</td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <a href="{% url 'dashboard:hq:onboarding:session_qr' session.pk %}"
+               class="btn btn-sm btn-outline-primary">QR Code</a>
+            <form method="post" action="{% url 'dashboard:hq:onboarding:session_toggle' session.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm {% if session.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                {% if session.is_active %}Deactivate{% else %}Activate{% endif %}
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state" style="text-align:center;padding:64px 24px;background:white;border-radius:16px;border:2px dashed #e5e7eb;">
+  <p style="font-size:3rem;margin-bottom:16px;">📲</p>
+  <h3 style="font-size:1.1rem;font-weight:700;color:#374151;margin-bottom:8px;">No QR sessions yet</h3>
+  <p style="color:#6b7280;margin-bottom:20px;">Create your first QR session to start onboarding IPA staff.</p>
+  <a href="{% url 'dashboard:hq:onboarding:session_create' %}" class="btn btn-primary">+ Create First Session</a>
+</div>
+{% endif %}
+{% endblock %}

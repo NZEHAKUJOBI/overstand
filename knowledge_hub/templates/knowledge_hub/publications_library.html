@@ -1,0 +1,462 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Publications Library - IPAWAS Knowledge Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-green: #1B7A4C;
+        --emerald: #10B981;
+        --light-green: #34D399;
+        --secondary-green: #059669;
+        --gold: #D4A520;
+        --forest-green: #064E3B;
+        --mint-green: #F0FDF4;
+
+
+
+    .opportunities-hero {
+        position: relative;
+        min-height: 450px;
+        padding: 150px 0 100px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+                    url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773684889/publications_eaimfu_klmkci.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    /* Hero Section - Solid Green Background */
+
+    .hero-section {
+        position: relative;
+        min-height: 550px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+                    url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773684889/publications_eaimfu_klmkci.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+    .search-filter-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        margin: -120px auto 3rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+    }
+
+    .publications-hero {
+        background: linear-gradient(135deg, var(--forest-green), var(--primary-green));
+        padding: 80px 0 60px;
+        color: white;
+    }
+
+    .publications-hero h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 3rem;
+    }
+
+    .filter-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 100px;
+    }
+
+    .filter-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-group label {
+        font-weight: 700;
+        color: var(--forest-green);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .filter-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+    }
+
+    .publication-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .publication-card:hover {
+        box-shadow: 0 10px 40px rgba(27, 122, 76, 0.15);
+        border-color: var(--primary-green);
+        transform: translateX(5px);
+    }
+
+    .pub-cover {
+        width: 150px;
+        height: 200px;
+        background: linear-gradient(135deg, var(--primary-green), var(--emerald));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        flex-shrink: 0;
+    }
+
+    .pub-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+    }
+
+    .pub-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+
+    .pub-meta i {
+        color: var(--primary-green);
+    }
+
+    .pub-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .pub-tag {
+        background: var(--mint-green);
+        color: var(--primary-green);
+        padding: 0.4rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="opportunities-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "Publications Library" %}</h1>
+            <p class="hero-subtitle">{% blocktranslate trimmed %}Comprehensive research, reports, and policy briefs on West African investment{% endblocktranslate %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+    <!-- Search & Filter Panel -->
+        <div class="search-filter-panel">
+            <h3 class="mb-4" style="color: var(--primary-green); font-weight: 700;"><i class="fas fa-search me-2"></i>{% translate "Find Your Perfect Opportunity" %}</h3>
+
+            <form method="get" action="{% url 'opportunities:listing' %}" id="filterForm">
+                <div class="row">
+                    <!-- Search -->
+                    <div class="col-md-12 mb-3">
+                        <input type="text" name="search" class="form-control"
+                               placeholder="{% translate "🔍 Search by keyword, project, description..." %}"
+                               value="{{ current_search }}">
+                    </div>
+
+                    <!-- Filters Row -->
+                    <div class="col-md-3 mb-3">
+                        <label>{% translate "Type" %}</label>
+                        <select name="type" class="form-select">
+                            <option>All Types</option>
+                            <option>Annual Report</option>
+                            <option>Investment Report</option>
+                            <option>Policy Brief</option>
+                            <option>Research Paper</option>
+                            <option>Case Study</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label>{% translate "Topic" %}</label>
+                        <select name="topic" class="form-select">
+                            <option>All Topics</option>
+                            <option>FDI Trends</option>
+                            <option>Agriculture</option>
+                            <option>Energy</option>
+                            <option>Manufacturing</option>
+                            <option>ICT</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label>{% translate "Country" %}</label>
+                        <select name="country" class="form-select">
+                            <option>All Countries</option>
+                            <option>Regional</option>
+                            <option>Nigeria</option>
+                            <option>Ghana</option>
+                            <option>Senegal</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label>{% translate "Year" %}</label>
+                        <select name="year" class="form-select">
+                            <option>All Years</option>
+                            <option>2024</option>
+                            <option>2023</option>
+                            <option>2022</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <button type="submit" class="btn btn-success me-2"
+                                style="background: var(--primary-green); border-color: var(--primary-green);"><i class="fas fa-filter me-2"></i>{% translate "Apply Filters" %}</button>
+                        <a href="{% url 'opportunities:listing' %}" class="btn btn-outline-secondary"><i class="fas fa-redo me-2"></i>{% translate "Clear" %}</a>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <label class="me-2">{% translate "Sort:" %}</label>
+                        <select name="sort" class="form-select d-inline-block w-auto me-3" onchange="this.form.submit()">
+                            <option value="-published_date" {% if current_sort == '-published_date' %}selected{% endif %}>Most Recent</option>
+                            <option value="-investment_required_min" {% if current_sort == '-investment_required_min' %}selected{% endif %}>Largest Investment</option>
+                            <option value="investment_required_min" {% if current_sort == 'investment_required_min' %}selected{% endif %}>Smallest Investment</option>
+                            <option value="title" {% if current_sort == 'title' %}selected{% endif %}>A-Z</option>
+                            <option value="-title" {% if current_sort == '-title' %}selected{% endif %}>Z-A</option>
+                        </select>
+
+                        <span class="me-2">{% translate "View:" %}</span>
+                        <button type="button" class="btn btn-sm btn-outline-success" id="gridViewBtn" onclick="setView('grid')">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success" id="listViewBtn" onclick="setView('list')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="text-muted mt-3">
+                Showing {{ opportunities|length }} of {{ paginator.count }} opportunities
+            </div>
+        </div>
+
+
+<!--        <div class="col-lg-9">-->
+<!--            <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--                <div>-->
+<!--                    <strong>156 Publications</strong> found-->
+<!--                </div>-->
+<!--                <select class="form-select" style="width: auto;">-->
+<!--                    <option>Newest First</option>-->
+<!--                    <option>Oldest First</option>-->
+<!--                    <option>Most Downloaded</option>-->
+<!--                    <option>Alphabetical</option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Publication Cards &ndash;&gt;-->
+<!--            <div class="publication-card">-->
+<!--                <div class="d-flex gap-3">-->
+<!--                    <div class="pub-cover">-->
+<!--                        <i class="fas fa-file-pdf"></i>-->
+<!--                    </div>-->
+<!--                    <div class="flex-grow-1">-->
+<!--                        <h4 style="font-weight: 700; color: var(&#45;&#45;forest-green);">-->
+<!--                            West Africa Investment Report 2024-->
+<!--                        </h4>-->
+<!--                        <div class="pub-meta">-->
+<!--                            <span><i class="fas fa-calendar"></i> {% translate "December 2024" %}</span>-->
+<!--                            <span><i class="fas fa-file-pdf"></i> {% translate "PDF, 150 pages" %}</span>-->
+<!--                            <span><i class="fas fa-download"></i> {% translate "2,547 downloads" %}</span>-->
+<!--                            <span><i class="fas fa-hdd"></i> {% translate "2.5 MB" %}</span>-->
+<!--                        </div>-->
+<!--                        <p style="color: #6B7280; margin: 1rem 0;">-->
+<!--                            Comprehensive analysis of FDI trends, sectoral performance, and investment opportunities across 15 ECOWAS member states...-->
+<!--                        </p>-->
+<!--                        <div class="pub-tags">-->
+<!--                            <span class="pub-tag">{% translate "FDI" %}</span>-->
+<!--                            <span class="pub-tag">{% translate "Regional" %}</span>-->
+<!--                            <span class="pub-tag">{% translate "Annual Report" %}</span>-->
+<!--                        </div>-->
+<!--                        <div class="mt-3 d-flex gap-2">-->
+<!--                            <a href="#" class="btn btn-success rounded-pill">-->
+<!--                                <i class="fas fa-eye me-2"></i>View-->
+<!--                            </a>-->
+<!--                            <a href="#" class="btn btn-outline-success rounded-pill">-->
+<!--                                <i class="fas fa-download me-2"></i>Download-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; More publication cards... &ndash;&gt;-->
+<!--            <div class="text-center mt-4">-->
+<!--                <nav>-->
+<!--                    <ul class="pagination justify-content-center">-->
+<!--                        <li class="page-item"><a class="page-link" href="#">{% translate "Previous" %}</a></li>-->
+<!--                        <li class="page-item active"><a class="page-link" href="#">1</a></li>-->
+<!--                        <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                        <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--                        <li class="page-item"><a class="page-link" href="#">{% translate "Next" %}</a></li>-->
+<!--                    </ul>-->
+<!--                </nav>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="row">
+<!--            <div class="col-lg-3">-->
+<!--                <div class="filter-panel">-->
+<!--                    <h5 style="font-family: 'Montserrat', sans-serif; font-weight: 700; margin-bottom: 1.5rem;">-->
+<!--                        <i class="fas fa-filter me-2"></i>Filter Publications-->
+<!--                    </h5>-->
+
+<!--                    <div class="filter-group">-->
+<!--                        <label>{% translate "Type" %}</label>-->
+<!--                        <select class="form-select">-->
+<!--                            <option>All Types</option>-->
+<!--                            <option>Annual Report</option>-->
+<!--                            <option>Investment Report</option>-->
+<!--                            <option>Policy Brief</option>-->
+<!--                            <option>Research Paper</option>-->
+<!--                            <option>Case Study</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="filter-group">-->
+<!--                        <label>{% translate "Topic" %}</label>-->
+<!--                        <select class="form-select">-->
+<!--                            <option>All Topics</option>-->
+<!--                            <option>FDI Trends</option>-->
+<!--                            <option>Agriculture</option>-->
+<!--                            <option>Energy</option>-->
+<!--                            <option>Manufacturing</option>-->
+<!--                            <option>ICT</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="filter-group">-->
+<!--                        <label>{% translate "Country" %}</label>-->
+<!--                        <select class="form-select">-->
+<!--                            <option>All Countries</option>-->
+<!--                            <option>Regional</option>-->
+<!--                            <option>Nigeria</option>-->
+<!--                            <option>Ghana</option>-->
+<!--                            <option>Senegal</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="filter-group">-->
+<!--                        <label>{% translate "Year" %}</label>-->
+<!--                        <select class="form-select">-->
+<!--                            <option>All Years</option>-->
+<!--                            <option>2024</option>-->
+<!--                            <option>2023</option>-->
+<!--                            <option>2022</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <button class="btn btn-success w-100 rounded-pill">-->
+<!--                        <i class="fas fa-search me-2"></i>Apply Filters-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="col-lg-9 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <strong>{{ paginator.count }} Publications</strong> found
+                    </div>
+                    <select class="form-select" style="width: auto;">
+                        <option>Newest First</option>
+                        <option>Oldest First</option>
+                        <option>Most Downloaded</option>
+                        <option>Alphabetical</option>
+                    </select>
+                </div>
+
+                <!-- Publication Cards -->
+                <div class="publication-card">
+                    <div class="d-flex gap-3">
+                        <div class="pub-cover">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 style="font-weight: 700; color: var(--forest-green);">{% translate "West Africa Investment Report 2024" %}</h4>
+                            <div class="pub-meta">
+                                <span><i class="fas fa-calendar"></i> {% translate "December 2024" %}</span>
+                                <span><i class="fas fa-file-pdf"></i> {% translate "PDF, 150 pages" %}</span>
+                                <span><i class="fas fa-download"></i> {% translate "2,547 downloads" %}</span>
+                                <span><i class="fas fa-hdd"></i> {% translate "2.5 MB" %}</span>
+                            </div>
+                            <p style="color: #6B7280; margin: 1rem 0;">{% blocktranslate trimmed %}Comprehensive analysis of FDI trends, sectoral performance, and investment opportunities across 15 ECOWAS member states...{% endblocktranslate %}</p>
+                            <div class="pub-tags">
+                                <span class="pub-tag">{% translate "FDI" %}</span>
+                                <span class="pub-tag">{% translate "Regional" %}</span>
+                                <span class="pub-tag">{% translate "Annual Report" %}</span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-success rounded-pill"><i class="fas fa-eye me-2"></i>{% translate "View" %}</a>
+                                <a href="{% url 'knowledge_hub:publications' %}" class="btn btn-outline-success rounded-pill"><i class="fas fa-download me-2"></i>{% translate "Download" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More publication cards... -->
+                <div class="text-center mt-4">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}"><a class="page-link" href="?page={{ page_obj.previous_page_number|default:1 }}">{% translate "Previous" %}</a></li>
+                            {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endfor %}
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}"><a class="page-link" href="?page={{ page_obj.next_page_number|default:1 }}">{% translate "Next" %}</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

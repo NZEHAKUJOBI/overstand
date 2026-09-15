@@ -1,0 +1,1108 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate "Member Benefits - IPAWAS" %}</title>
+    <meta name="description"
+        content="Discover the comprehensive benefits of IPAWAS membership including networking opportunities, capacity building programs, resource sharing, and joint marketing initiatives.">
+
+    <!-- Stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+
+    <!-- Base Styles -->
+    <style>
+        :root {
+            --primary-blue: #0F172A;
+            --secondary-gold: #F59E0B;
+            --accent-green: #10B981;
+            --light-blue: #3B82F6;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --orange: #F97316;
+            --neutral-100: #F8FAFC;
+            --neutral-200: #E2E8F0;
+            --neutral-600: #475569;
+            --neutral-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #F59E0B, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--secondary-gold) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--neutral-800) 100%);
+            color: white;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v40c11.046 0 20-8.954 20-20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 700px;
+        }
+
+        .breadcrumb-nav {
+            margin-top: 2rem;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--secondary-gold);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--secondary-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 80px 0;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            color: var(--neutral-600);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Benefits Overview */
+        .benefits-overview {
+            background: linear-gradient(135deg, var(--neutral-100), white);
+            padding: 4rem 0;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--neutral-200);
+            transition: all 0.4s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border-color: var(--light-blue);
+        }
+
+        .overview-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--light-blue), var(--purple));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .overview-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .overview-description {
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        /* Detailed Benefits */
+        .benefit-section {
+            margin-bottom: 4rem;
+        }
+
+        .benefit-header {
+            background: linear-gradient(135deg, var(--light-blue), var(--purple));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='15' cy='15' r='1'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .benefit-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .benefit-icon-large {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .benefit-title-large {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-subtitle-large {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .benefit-content {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .benefit-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1.5rem;
+            background: var(--neutral-100);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateX(10px);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .feature-content h5 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-content p {
+            color: var(--neutral-600);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            background: var(--primary-blue);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v40c11.046 0 20-8.954 20-20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--secondary-gold), var(--orange));
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            margin: 0 0.5rem;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.6);
+            color: white;
+        }
+
+        .btn-cta-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-blue), var(--neutral-800));
+            color: white;
+            padding: 80px 0 30px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary-gold), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-title {
+            color: var(--secondary-gold);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-gold);
+        }
+
+        .social-icons a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .social-icons a:hover {
+            background: var(--secondary-gold);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        .animate-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 100px 0 60px;
+                text-align: center;
+            }
+
+            .main-content {
+                padding: 60px 0;
+            }
+
+            .section {
+                padding: 40px 0;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .benefit-features {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .feature-icon {
+                margin: 0 auto 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'ipawas_home' %}">{% translate "IPAWAS" %}</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ipawas_home' %}">{% translate "Home" %}</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if current_section == 'about_mission' %}active{% endif %}"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'about_our_story' %}">{% translate "Our Story" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_mission' %}">{% translate "Mission & Vision" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about_leadership' %}">{% translate "Leadership & Governance" %}</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'about_strategy_patnerships' %}">Strategic
+                                    Partnerships</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "Invest" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'invest_regional_overview' %}">Regional
+                                    Overview</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_sectors' %}">{% translate "Investment Sectors" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_countries' %}">{% translate "Country Profiles" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_process' %}">{% translate "Investment Process" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'invest_success_stories' %}">{% translate "Success Stories" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% block nav_members_active %}{% endblock %}" href="#"
+                            role="button" data-bs-toggle="dropdown">{% translate "Members" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'members_directory' %}">{% translate "Member Directory" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_benefits' %}">{% translate "Member Benefits" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_join' %}">{% translate "Join IPAWAS" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'members_portal' %}">{% translate "Member Portal" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown">{% translate "Resources" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="resources-research.html">{% translate "Research & Reports" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-guides.html">{% translate "Investment Guides" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-policy.html">{% translate "Policy Documents" %}</a></li>
+                            <li><a class="dropdown-item" href="resources-multimedia.html">{% translate "Multimedia Library" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "Events" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="events-upcoming.html">{% translate "Upcoming Events" %}</a></li>
+                            <li><a class="dropdown-item" href="events-conference.html">{% translate "Annual Conference" %}</a></li>
+                            <li><a class="dropdown-item" href="events-past.html">{% translate "Past Events" %}</a></li>
+                            <li><a class="dropdown-item" href="events-register.html">{% translate "Event Registration" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% translate "News" %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="news-latest.html">{% translate "Latest News" %}</a></li>
+                            <li><a class="dropdown-item" href="news-press.html">{% translate "Press Releases" %}</a></li>
+                            <li><a class="dropdown-item" href="news-analysis.html">{% translate "Industry Analysis" %}</a></li>
+                            <li><a class="dropdown-item" href="news-newsletter.html">{% translate "Newsletter" %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">{% translate "Contact" %}</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h1 class="page-title">{% translate "Member Benefits" %}</h1>
+                        <p class="page-subtitle">{% blocktranslate trimmed %}Discover the comprehensive value proposition of IPAWAS membership and
+                            how joining our network can transform your investment promotion capabilities and expand your
+                            global reach.{% endblocktranslate %}</p>
+
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'ipawas_home' %}">{% translate "Home" %}</a></li>
+                                <li class="breadcrumb-item"><a href="#members">{% translate "Members" %}</a></li>
+                                <li class="breadcrumb-item active">{% translate "Member Benefits" %}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Overview -->
+    <section class="benefits-overview">
+        <div class="container">
+            <h2 class="section-title animate-slide-up">{% translate "Why Join IPAWAS?" %}</h2>
+            <p class="section-subtitle animate-slide-up">{% blocktranslate trimmed %}IPAWAS membership provides Investment Promotion Agencies with
+                unprecedented access to regional networks, resources, and opportunities that drive investment success
+                across West Africa.{% endblocktranslate %}</p>
+
+            <div class="overview-grid">
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Networking Opportunities" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Connect with fellow IPAs, share experiences, and build lasting
+                        partnerships across the region.{% endblocktranslate %}</p>
+                </div>
+
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Capacity Building" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Access world-class training programs and best practices to enhance
+                        your promotional capabilities.{% endblocktranslate %}</p>
+                </div>
+
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Resource Sharing" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Leverage shared research, templates, and tools to maximize your
+                        investment promotion effectiveness.{% endblocktranslate %}</p>
+                </div>
+
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Joint Marketing" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Participate in coordinated regional campaigns and international
+                        investment promotion activities.{% endblocktranslate %}</p>
+                </div>
+
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Policy Advocacy" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Influence regional investment policies and participate in
+                        harmonization initiatives.{% endblocktranslate %}</p>
+                </div>
+
+                <div class="overview-card animate-slide-up">
+                    <div class="overview-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3 class="overview-title">{% translate "Technical Assistance" %}</h3>
+                    <p class="overview-description">{% blocktranslate trimmed %}Receive expert support for complex projects and challenging
+                        investment promotion scenarios.{% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Networking Opportunities -->
+    <section class="benefit-section">
+        <div class="benefit-header">
+            <div class="benefit-header-content">
+                <div class="container">
+                    <div class="benefit-icon-large">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h2 class="benefit-title-large">{% translate "Networking Opportunities" %}</h2>
+                    <p class="benefit-subtitle-large">{% blocktranslate trimmed %}Build meaningful relationships with investment promotion
+                        professionals across 15 ECOWAS countries and expand your global network through structured
+                        engagement opportunities.{% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="benefit-content">
+            <div class="container">
+                <div class="benefit-features">
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Annual General Assembly" %}</h5>
+                            <p>{% blocktranslate trimmed %}Participate in our flagship annual event bringing together all member IPAs for strategic
+                                discussions, policy coordination, and relationship building.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Technical Committee Meetings" %}</h5>
+                            <p>{% blocktranslate trimmed %}Engage in specialized working groups focused on sector development, policy harmonization,
+                                and operational excellence.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Sector-Specific Forums" %}</h5>
+                            <p>{% blocktranslate trimmed %}Connect with peers working in agriculture, energy, manufacturing, and technology sectors
+                                for targeted collaboration.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Peer Learning Exchanges" %}</h5>
+                            <p>{% blocktranslate trimmed %}Participate in study tours, best practice sharing sessions, and cross-country learning
+                                experiences.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "International Conference Participation" %}</h5>
+                            <p>{% blocktranslate trimmed %}Join regional delegations to global investment promotion conferences and networking
+                                events worldwide.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Partnership Facilitation" %}</h5>
+                            <p>{% blocktranslate trimmed %}Access structured mechanisms for identifying and developing partnerships with fellow
+                                member agencies.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capacity Building Programs -->
+    <section class="benefit-section">
+        <div class="benefit-header"
+            style="background: linear-gradient(135deg, var(--accent-green), var(--secondary-gold));">
+            <div class="benefit-header-content">
+                <div class="container">
+                    <div class="benefit-icon-large">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h2 class="benefit-title-large">{% translate "Capacity Building Programs" %}</h2>
+                    <p class="benefit-subtitle-large">{% blocktranslate trimmed %}Enhance your team's skills and organizational capabilities through
+                        comprehensive training programs designed specifically for investment promotion professionals.
+                    {% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="benefit-content">
+            <div class="container">
+                <div class="benefit-features">
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Investment Promotion Training" %}</h5>
+                            <p>{% blocktranslate trimmed %}Master advanced techniques in investor targeting, lead generation, and project
+                                facilitation through hands-on workshops.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Best Practices Workshops" %}</h5>
+                            <p>{% blocktranslate trimmed %}Learn from successful case studies and proven methodologies from across the IPAWAS
+                                network and international partners.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-digital-tachograph"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Digital Marketing Skills" %}</h5>
+                            <p>{% blocktranslate trimmed %}Stay current with digital marketing trends, social media strategies, and online investor
+                                engagement techniques.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Project Development Training" %}</h5>
+                            <p>{% blocktranslate trimmed %}Develop expertise in structuring investment projects, conducting feasibility studies, and
+                                managing complex initiatives.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Leadership Development" %}</h5>
+                            <p>{% blocktranslate trimmed %}Participate in executive education programs designed to enhance strategic thinking and
+                                organizational leadership capabilities.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--accent-green);">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Professional Certification" %}</h5>
+                            <p>{% blocktranslate trimmed %}Earn recognized credentials in investment promotion and economic development through
+                                accredited training programs.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resource Sharing -->
+    <section class="benefit-section">
+        <div class="benefit-header" style="background: linear-gradient(135deg, var(--purple), var(--pink));">
+            <div class="benefit-header-content">
+                <div class="container">
+                    <div class="benefit-icon-large">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h2 class="benefit-title-large">{% translate "Resource Sharing" %}</h2>
+                    <p class="benefit-subtitle-large">{% blocktranslate trimmed %}Access comprehensive databases, research materials, and practical
+                        tools that accelerate your investment promotion activities and improve operational efficiency.
+                    {% endblocktranslate %}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="benefit-content">
+            <div class="container">
+                <div class="benefit-features">
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Research and Market Intelligence" %}</h5>
+                            <p>{% blocktranslate trimmed %}Access exclusive market research, sector analysis, and economic intelligence reports
+                                across all ECOWAS countries.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Investment Promotion Materials" %}</h5>
+                            <p>{% blocktranslate trimmed %}Utilize professionally designed brochures, presentations, and marketing materials adapted
+                                for regional and international use.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Template Documents" %}</h5>
+                            <p>{% blocktranslate trimmed %}Download standardized templates for investment proposals, MOUs, due diligence checklists,
+                                and operational procedures.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Database Access" %}</h5>
+                            <p>{% blocktranslate trimmed %}Connect to shared databases of investors, projects, partnerships, and best practices from
+                                across the IPAWAS network.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Communication Platforms" %}</h5>
+                            <p>{% blocktranslate trimmed %}Use dedicated online platforms for real-time communication, knowledge sharing, and
+                                collaborative project management.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item animate-slide-up">
+                        <div class="feature-icon" style="background: var(--purple);">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h5>{% translate "Training Materials Library" %}</h5>
+                            <p>{% blocktranslate trimmed %}Access comprehensive libraries of training modules, case studies, and educational
+                                resources for continuous learning.{% endblocktranslate %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <div class="container text-center">
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">{% translate "Ready to Join IPAWAS?" %}</h2>
+                <p
+                    style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">{% blocktranslate trimmed %}
+                    Transform your investment promotion capabilities and become part of West Africa's premier investment
+                    promotion network.{% endblocktranslate %}</p>
+
+                <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                    <a href="members-join.html" class="btn btn-cta">
+                        <i class="fas fa-user-plus me-2"></i>Apply for Membership
+                    </a>
+                    <a href="contact.html" class="btn btn-cta btn-cta-secondary">
+                        <i class="fas fa-phone me-2"></i>Contact Us
+                    </a>
+                </div>
+
+                <p style="font-size: 0.9rem; opacity: 0.7;">{% blocktranslate trimmed %}Questions about membership? Our team is ready to help you
+                    get started.{% endblocktranslate %}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h3 class="footer-brand">{% translate "IPAWAS" %}</h3>
+                    <p class="text-white-75 mb-4">{% blocktranslate trimmed %}Investment Promotion Agencies of West Africa - Connecting global
+                        investors with transformative opportunities across 15 ECOWAS nations.{% endblocktranslate %}</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="{% translate 'Twitter' %}"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="{% translate 'LinkedIn' %}"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="{% translate 'Facebook' %}"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="{% translate 'Instagram' %}"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Organization" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="about-story.html" class="footer-link">{% translate "About IPAWAS" %}</a></li>
+                        <li class="mb-2"><a href="about-mission.html" class="footer-link">{% translate "Our Mission" %}</a></li>
+                        <li class="mb-2"><a href="about-leadership.html" class="footer-link">{% translate "Leadership" %}</a></li>
+                        <li class="mb-2"><a href="about-partnerships.html" class="footer-link">{% translate "Partnerships" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Investors" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="invest-process.html" class="footer-link">{% translate "Investment Guide" %}</a></li>
+                        <li class="mb-2"><a href="invest-sectors.html" class="footer-link">{% translate "Sector Opportunities" %}</a></li>
+                        <li class="mb-2"><a href="invest-countries.html" class="footer-link">{% translate "Country Profiles" %}</a></li>
+                        <li class="mb-2"><a href="invest-success.html" class="footer-link">{% translate "Success Stories" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Resources" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="resources-research.html" class="footer-link">{% translate "Research Reports" %}</a></li>
+                        <li class="mb-2"><a href="resources-policy.html" class="footer-link">{% translate "Policy Documents" %}</a></li>
+                        <li class="mb-2"><a href="resources-guides.html" class="footer-link">{% translate "Investment Tools" %}</a></li>
+                        <li class="mb-2"><a href="resources-multimedia.html" class="footer-link">{% translate "Media Center" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">{% translate "Connect" %}</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="contact.html" class="footer-link">{% translate "Contact Us" %}</a></li>
+                        <li class="mb-2"><a href="events-upcoming.html" class="footer-link">{% translate "Events" %}</a></li>
+                        <li class="mb-2"><a href="news-newsletter.html" class="footer-link">{% translate "Newsletter" %}</a></li>
+                        <li class="mb-2"><a href="members-portal.html" class="footer-link">{% translate "Member Portal" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-white-50 mb-0">&copy; {% now "Y" %} IPAWAS. {% translate "All rights reserved." %}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="privacy.html" class="footer-link me-4">{% translate "Privacy Policy" %}</a>
+                    <a href="terms.html" class="footer-link">{% translate "Terms of Service" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('[class*="animate-"]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Navbar collapse on mobile link click
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const navCollapse = document.querySelector('.navbar-collapse');
+                if (navCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navCollapse, {
+                        toggle: true
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

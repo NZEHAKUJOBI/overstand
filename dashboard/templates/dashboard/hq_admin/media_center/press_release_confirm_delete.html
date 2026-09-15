@@ -1,0 +1,32 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+{% block title %}Delete Press Release — HQ Media Center{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-5 text-center">
+                <div class="mb-4">
+                    <i class="fas fa-trash-alt fa-3x text-danger opacity-75"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Delete Press Release?</h4>
+                <p class="text-muted mb-1">You are about to permanently delete:</p>
+                <p class="fw-bold mb-1">&ldquo;{{ object.title }}&rdquo;</p>
+                {% if object.member_state %}
+                <p class="text-muted small mb-4">Submitted by {{ object.member_state.ipa_acronym }}</p>
+                {% else %}
+                <p class="text-muted small mb-4">HQ press release</p>
+                {% endif %}
+                <p class="text-danger small mb-4">This action cannot be undone.</p>
+                <form method="post" class="d-flex gap-3 justify-content-center">
+                    {% csrf_token %}
+                    <a href="{% url 'dashboard:hq:media_center:pr_list' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-trash-alt me-1"></i>Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

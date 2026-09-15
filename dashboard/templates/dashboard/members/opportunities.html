@@ -1,0 +1,564 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Investment Opportunities" %}{% endblock %}
+{% block page_title %}{% translate "Investment Opportunities" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> / {% translate "Opportunities" %}
+{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-details">
+                <div class="stat-value">{{ opportunities_count }}</div>
+                <div class="stat-label">{% translate "Total Opportunities" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-details">
+                <div class="stat-value">{{ published_count }}</div>
+                <div class="stat-label">{% translate "Published" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+            <div class="stat-details">
+                <div class="stat-value">{{ draft_count }}</div>
+                <div class="stat-label">{% translate "Drafts" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="fas fa-star"></i></div>
+            <div class="stat-details">
+                <div class="stat-value">{{ featured_count }}</div>
+                <div class="stat-label">{% translate "Featured" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header Actions -->
+<div class="row align-items-center mb-4">
+    <div class="col-lg-6">
+        <h3 class="mb-0">{% translate "Manage Opportunities" %}</h3>
+    </div>
+    <div class="col-lg-6 text-lg-end">
+        <a href="{% url 'dashboard:country:opportunities_create' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-plus me-2"></i>
+            {% translate "Create New Opportunity" %}
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="content-card mb-4">
+    <div class="content-card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="{% translate "Search opportunities..." %}" value="{{ request.GET.search }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">{% translate "All Statuses" %}</option>
+                    <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>{% translate "Published" %}</option>
+                    <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>{% translate "Draft" %}</option>
+                    <option value="under_review" {% if request.GET.status == 'under_review' %}selected{% endif %}>{% translate "Under Review" %}</option>
+                    <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>{% translate "Published / Active" %}</option>
+                    <option value="negotiation" {% if request.GET.status == 'negotiation' %}selected{% endif %}>{% translate "Under Negotiation" %}</option>
+                    <option value="funded" {% if request.GET.status == 'funded' %}selected{% endif %}>{% translate "Funded / Closed" %}</option>
+                    <option value="suspended" {% if request.GET.status == 'suspended' %}selected{% endif %}>{% translate "Archived" %}</option>
+                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>{% translate "Cancelled" %}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="sector" class="form-select">
+                    <option value="">{% translate "All Sectors" %}</option>
+                    {% for sector in sectors %}
+                    <option value="{{ sector.id }}" {% if request.GET.sector == sector.id|stringformat:"s" %}selected{% endif %}>
+                        {{ sector.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary-green w-100">
+                    <i class="fas fa-filter me-1"></i>{% translate "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Opportunities List -->
+<div class="content-card">
+    <div class="content-card-body p-0">
+        <div class="opportunities-table">
+            {% for opportunity in opportunities %}
+            <div class="opportunity-row" data-id="{{ opportunity.pk }}">
+                <div class="opportunity-main">
+                    <div class="opportunity-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="opportunity-details">
+                        <h4 class="opportunity-title">
+                            {{ opportunity.title }}
+                            {% if opportunity.featured %}
+                            <i class="fas fa-star text-warning ms-2" title="{% translate "Featured" %}"></i>
+                            {% endif %}
+                        </h4>
+                        <p class="opportunity-summary">{{ opportunity.summary|truncatewords:20 }}</p>
+                        <div class="opportunity-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-industry"></i>
+                                {{ opportunity.primary_sector.name }}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                ${{ opportunity.investment_required_min|floatformat:0 }}M - ${{ opportunity.investment_required_max|floatformat:0 }}M
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                {{ opportunity.created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="opportunity-status">
+                    {% if opportunity.published %}
+                    <span class="badge badge-success">
+                        <i class="fas fa-check-circle me-1"></i>{% translate "Published" %}
+                    </span>
+                    {% else %}
+                    <span class="badge badge-warning">
+                        <i class="fas fa-clock me-1"></i>{% translate "Draft" %}
+                    </span>
+                    {% endif %}
+                    {% if opportunity.status != 'draft' and opportunity.status != 'active' %}
+                    <span class="badge badge-secondary mt-1">
+                        {{ opportunity.get_status_display }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="opportunity-actions">
+                    <!-- View -->
+                    <a href="{% url 'dashboard:country:opportunities_detail' member_state.slug opportunity.pk %}"
+                       class="btn btn-sm btn-outline-green" title="{% translate "View" %}">
+                        <i class="fas fa-eye"></i>
+                    </a>
+
+                    <!-- Edit -->
+                    <a href="{% url 'dashboard:country:opportunities_edit' member_state.slug opportunity.pk %}"
+                       class="btn btn-sm btn-outline-green" title="{% translate "Edit" %}">
+                        <i class="fas fa-edit"></i>
+                    </a>
+
+                    <!-- Publish/Unpublish -->
+                    {% if not opportunity.published %}
+                    <button class="btn btn-sm btn-success"
+                            onclick="publishOpportunity({{ opportunity.pk }})"
+                            title="{% translate "Publish" %}">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    {% else %}
+                    <button class="btn btn-sm btn-warning"
+                            onclick="unpublishOpportunity({{ opportunity.pk }})"
+                            title="{% translate "Unpublish" %}">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                    {% endif %}
+
+                    <!-- Feature/Unfeature -->
+                    <button class="btn btn-sm {% if opportunity.featured %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+                            onclick="toggleFeatured({{ opportunity.pk }})"
+                            title="{% if opportunity.featured %}Remove from Featured{% else %}Feature on Homepage{% endif %}">
+                        <i class="fas fa-star"></i>
+                    </button>
+
+                    <!-- Delete -->
+                    <button class="btn btn-sm btn-outline-danger"
+                            onclick="confirmDelete({{ opportunity.pk }}, '{{ opportunity.title|escapejs }}')"
+                            title="{% translate "Delete" %}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-chart-line fa-4x mb-3"></i>
+                <h4>{% translate "No Opportunities Yet" %}</h4>
+                <p>{% translate "Create your first investment opportunity to attract investors." %}</p>
+                <a href="{% url 'dashboard:country:opportunities_create' member_state.slug %}" class="btn btn-primary-green mt-3">
+                    <i class="fas fa-plus me-2"></i>
+                    {% translate "Create Opportunity" %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.sector %}&sector={{ request.GET.sector }}{% endif %}">{% translate "First" %}</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.sector %}&sector={{ request.GET.sector }}{% endif %}">{% translate "Previous" %}</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.sector %}&sector={{ request.GET.sector }}{% endif %}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.sector %}&sector={{ request.GET.sector }}{% endif %}">{% translate "Next" %}</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.sector %}&sector={{ request.GET.sector }}{% endif %}">{% translate "Last" %}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {% translate "Delete Opportunity" %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteOpportunityName"></strong>?</p>
+                <p class="text-danger small mb-0">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    {% translate "This action cannot be undone. All related data will be permanently deleted." %}
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+                <button type="button" class="btn btn-danger" onclick="deleteOpportunity()">
+                    <i class="fas fa-trash me-2"></i>
+                    {% translate "Delete Permanently" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        border: 2px solid var(--neutral-200);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+    .stat-icon.green { background: rgba(27, 122, 76, 0.1); color: var(--primary-green); }
+    .stat-icon.orange { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+    .stat-icon.gold { background: rgba(212, 165, 32, 0.1); color: var(--accent-gold); }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark-green);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--neutral-600);
+        font-weight: 600;
+    }
+
+    .opportunities-table {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .opportunity-row {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--neutral-200);
+        transition: all 0.3s ease;
+    }
+
+    .opportunity-row:last-child {
+        border-bottom: none;
+    }
+
+    .opportunity-row:hover {
+        background: var(--neutral-50);
+    }
+
+    .opportunity-main {
+        flex: 1;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .opportunity-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.1), rgba(45, 144, 97, 0.15));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary-green);
+        flex-shrink: 0;
+    }
+
+    .opportunity-details {
+        flex: 1;
+    }
+
+    .opportunity-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark-green);
+        margin: 0 0 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .opportunity-summary {
+        font-size: 0.9rem;
+        color: var(--neutral-600);
+        margin: 0 0 0.75rem;
+    }
+
+    .opportunity-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .meta-item {
+        font-size: 0.85rem;
+        color: var(--neutral-600);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .meta-item i {
+        color: var(--primary-green);
+    }
+
+    .opportunity-status {
+        flex-shrink: 0;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #10B981, #34D399);
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #F59E0B, #FBBF24);
+        color: white;
+    }
+
+    .opportunity-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--neutral-600);
+    }
+
+    .empty-state i {
+        color: var(--neutral-300);
+    }
+
+    @media (max-width: 768px) {
+        .opportunity-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .opportunity-actions {
+            justify-content: center;
+        }
+
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+
+<script>
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Publish opportunity
+function publishOpportunity(id) {
+    if (!confirm('Publish this opportunity? It will be visible to investors.')) return;
+
+    fetch(`/dashboard/{{ member_state.slug }}/opportunities/${id}/publish/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Unpublish opportunity
+function unpublishOpportunity(id) {
+    if (!confirm('Unpublish this opportunity? It will be hidden from investors.')) return;
+
+    fetch(`/dashboard/{{ member_state.slug }}/opportunities/${id}/unpublish/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Toggle featured
+function toggleFeatured(id) {
+    fetch(`/dashboard/{{ member_state.slug }}/opportunities/${id}/toggle-featured/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Confirm delete (show modal)
+let deleteId = null;
+function confirmDelete(id, name) {
+    deleteId = id;
+    document.getElementById('deleteOpportunityName').textContent = name;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+// Delete opportunity
+function deleteOpportunity() {
+    if (!deleteId) return;
+
+    fetch(`/dashboard/{{ member_state.slug }}/opportunities/${deleteId}/delete/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

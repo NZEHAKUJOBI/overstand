@@ -1,0 +1,187 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Opportunities Analytics" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:analytics' %}">{% translate "Analytics" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Opportunities" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">{% translate "Opportunities Analytics" %}</h1>
+    <p class="page-description">{% translate "Investment opportunity performance metrics" %}</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-box">
+                    <i class="fas fa-briefcase text-primary"></i>
+                    <h3>-</h3>
+                    <p>{% translate "Total Opportunities" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-box">
+                    <i class="fas fa-check-circle text-success"></i>
+                    <h3>-</h3>
+                    <p>{% translate "Published" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-box">
+                    <i class="fas fa-file-alt text-warning"></i>
+                    <h3>-</h3>
+                    <p>{% translate "Drafts" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-box">
+                    <i class="fas fa-eye text-info"></i>
+                    <h3>-</h3>
+                    <p>{% translate "Avg Views" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Opportunities Over Time" %}</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="opportunitiesChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "By Sector" %}</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="sectorChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{% translate "Top Opportunities" %}</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% translate "Title" %}</th>
+                        <th>{% translate "Member State" %}</th>
+                        <th>{% translate "Sector" %}</th>
+                        <th>{% translate "Status" %}</th>
+                        <th>{% translate "Views" %}</th>
+                        <th>{% translate "Inquiries" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            {% translate "No data available" %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metric-box {
+        text-align: center;
+    }
+
+    .metric-box i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .metric-box h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+        color: var(--dark-green);
+    }
+
+    .metric-box p {
+        margin: 0;
+        color: var(--neutral-600);
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Opportunities trend
+    const ctx1 = document.getElementById('opportunitiesChart');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'New Opportunities',
+                data: [5, 8, 6, 10, 7, 12],
+                backgroundColor: 'rgba(27, 122, 76, 0.8)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Sector distribution
+    const ctx2 = document.getElementById('sectorChart');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Agriculture', 'Manufacturing', 'Services', 'Technology', 'Energy'],
+            datasets: [{
+                data: [30, 25, 20, 15, 10],
+                backgroundColor: [
+                    'rgba(27, 122, 76, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(212, 165, 32, 0.8)',
+                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(239, 68, 68, 0.8)'
+                ]
+            }]
+        }
+    });
+</script>
+{% endblock %}

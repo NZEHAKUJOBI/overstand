@@ -1,0 +1,270 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Platform Analytics - HQ Admin" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Analytics" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">{% translate "Platform Analytics" %}</h1>
+    <p class="page-description">{% translate "Real-time insights and performance metrics" %}</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <a href="{% url 'dashboard:hq:opportunities' %}" class="analytics-card">
+            <div class="analytics-icon bg-primary">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <h5>{% translate "Opportunities" %}</h5>
+            <p>{% translate "Investment opportunity analytics" %}</p>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'dashboard:hq:inquiries' %}" class="analytics-card">
+            <div class="analytics-icon bg-success">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <h5>{% translate "Inquiries" %}</h5>
+            <p>{% translate "Investor inquiry trends" %}</p>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'dashboard:hq:traffic' %}" class="analytics-card">
+            <div class="analytics-icon bg-info">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h5>{% translate "Traffic" %}</h5>
+            <p>{% translate "Website traffic analytics" %}</p>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'dashboard:hq:reports' %}" class="analytics-card">
+            <div class="analytics-icon bg-warning">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h5>{% translate "Reports" %}</h5>
+            <p>{% translate "Comprehensive reports" %}</p>
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Platform Overview" %}</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="platformChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Quick Stats" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-stat">
+                    <i class="fas fa-globe-africa text-primary"></i>
+                    <div>
+                        <h4>{% translate "Member States" %}</h4>
+                        <p>{% translate "Active Countries" %}</p>
+                    </div>
+                    <span class="stat-badge">-</span>
+                </div>
+                <div class="quick-stat">
+                    <i class="fas fa-users text-success"></i>
+                    <div>
+                        <h4>{% translate "Active Users" %}</h4>
+                        <p>{% translate "IPA Staff" %}</p>
+                    </div>
+                    <span class="stat-badge">-</span>
+                </div>
+                <div class="quick-stat">
+                    <i class="fas fa-briefcase text-info"></i>
+                    <div>
+                        <h4>{% translate "Opportunities" %}</h4>
+                        <p>{% translate "Published" %}</p>
+                    </div>
+                    <span class="stat-badge">-</span>
+                </div>
+                <div class="quick-stat">
+                    <i class="fas fa-envelope text-warning"></i>
+                    <div>
+                        <h4>{% translate "Inquiries" %}</h4>
+                        <p>{% translate "This Month" %}</p>
+                    </div>
+                    <span class="stat-badge">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Top Performing States" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="performance-list">
+                    <!-- Dynamic content will go here -->
+                    <p class="text-muted text-center py-3">{% translate "Loading data..." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Recent Activity" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="activity-feed">
+                    <p class="text-muted text-center py-3">{% translate "Loading activity..." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-card {
+        display: block;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s;
+    }
+
+    .analytics-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(27,122,76,0.15);
+        color: inherit;
+    }
+
+    .analytics-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .analytics-card h5 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        color: var(--dark-green);
+    }
+
+    .analytics-card p {
+        font-size: 0.875rem;
+        color: var(--neutral-600);
+        margin: 0;
+    }
+
+    .quick-stat {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .quick-stat:last-child {
+        border-bottom: none;
+    }
+
+    .quick-stat i {
+        font-size: 1.5rem;
+        width: 40px;
+        text-align: center;
+    }
+
+    .quick-stat div {
+        flex: 1;
+    }
+
+    .quick-stat h4 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--neutral-800);
+    }
+
+    .quick-stat p {
+        font-size: 0.75rem;
+        color: var(--neutral-600);
+        margin: 0;
+    }
+
+    .stat-badge {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--primary-green);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Platform overview chart
+    const ctx = document.getElementById('platformChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Opportunities',
+                data: [12, 19, 15, 25, 22, 30],
+                borderColor: 'rgb(27, 122, 76)',
+                backgroundColor: 'rgba(27, 122, 76, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Inquiries',
+                data: [8, 12, 10, 15, 18, 20],
+                borderColor: 'rgb(16, 185, 129)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

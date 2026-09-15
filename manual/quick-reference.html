@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Reference — IPAWAS User Manual</title>
+<link rel="stylesheet" href="_shared.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  @media print {
+    .sidebar, .topbar, .next-page, .no-print { display: none !important; }
+    .main { margin-left: 0 !important; }
+    .page-content { padding: 1rem !important; max-width: 100% !important; }
+    .action-card { page-break-inside: avoid; }
+    body { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp" alt="IPAWAS">
+      <div class="sidebar-brand-text"><strong>IPAWAS Platform</strong><span>User Manual</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Manual</div>
+      <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Welcome</a>
+      <a href="getting-started.html" class="nav-link"><i class="fas fa-rocket"></i> Getting Started</a>
+      <div class="nav-section-title" style="margin-top:.75rem">HQ Admin</div>
+      <a href="hq-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> HQ Dashboard Guide</a>
+      <div class="nav-section-title" style="margin-top:.75rem">IPA Staff</div>
+      <a href="ipa-dashboard.html" class="nav-link"><i class="fas fa-globe-africa"></i> Country Dashboard Guide</a>
+      <div class="nav-section-title" style="margin-top:.75rem">Reference</div>
+      <a href="quick-reference.html" class="nav-link active"><i class="fas fa-bolt"></i> Quick Reference</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="../"><i class="fas fa-external-link-alt"></i> Go to IPAWAS Platform</a>
+      <span style="color:rgba(255,255,255,.3);font-size:.75rem;">Manual v1.0 &bull; April 2026</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="breadcrumb">
+        <a href="index.html">Manual</a>
+        <i class="fas fa-chevron-right" style="font-size:.65rem"></i>
+        <span>Quick Reference</span>
+      </div>
+      <div style="margin-left:auto;">
+        <button onclick="window.print()" class="no-print"
+          style="background:var(--primary);color:#fff;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:.4rem;">
+          <i class="fas fa-print"></i> Print This Page
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="page-tag"><i class="fas fa-users"></i>&nbsp; For All Users</div>
+      <h1>Quick Reference Card</h1>
+      <div class="divider"></div>
+      <p class="page-intro">
+        Step-by-step checklists for the most common tasks on the IPAWAS platform.
+        Print this page and keep it at your desk for quick reference during training or day-to-day use.
+      </p>
+
+      <!-- ══════════════════════════════════════
+           SECTION A — ALL USERS
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-users"></i> A. Tasks for All Users</h2>
+
+      <!-- A1: Login -->
+      <div class="action-card">
+        <h3><i class="fas fa-sign-in-alt"></i> How to Log In <span class="badge badge-both" style="vertical-align:middle;margin-left:.5rem;">Both</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Go to the IPAWAS website</strong><p>Open your browser and navigate to the IPAWAS platform URL.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click "Login" in the top navigation</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Enter your email and password → Click "Sign In"</strong><p>You will be sent to your dashboard automatically.</p></div></div>
+        </div>
+        <div class="callout callout-tip" style="margin-top:.5rem;">
+          <i class="fas fa-lightbulb"></i>
+          <div class="callout-body"><strong>Forgot your password?</strong><p>Click "Forgot password?" on the login page. A reset link will be emailed to you. It expires in 24 hours.</p></div>
+        </div>
+      </div>
+
+      <!-- A2: Accept Invitation -->
+      <div class="action-card">
+        <h3><i class="fas fa-envelope-open-text"></i> How to Accept an Invitation &amp; Create Your Account <span class="badge badge-both" style="vertical-align:middle;margin-left:.5rem;">Both</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Check your email inbox</strong><p>Look for "You've been invited to join IPAWAS". Check Spam if you don't see it.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click "Accept Invitation" in the email</strong><p>Do not share this link — it is unique to you.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Fill in your name and create a password → Click "Create My Account"</strong><p>You will be automatically logged in and taken to your dashboard.</p></div></div>
+        </div>
+      </div>
+
+      <!-- A3: Change Password -->
+      <div class="action-card">
+        <h3><i class="fas fa-key"></i> How to Change Your Password <span class="badge badge-both" style="vertical-align:middle;margin-left:.5rem;">Both</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>In the sidebar, click "My Settings" → "Password"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Enter your current password, then your new password twice</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Click "Save Password"</strong></div></div>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ══════════════════════════════════════
+           SECTION B — IPA STAFF
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-globe-africa"></i> B. Tasks for IPA Staff</h2>
+
+      <!-- B1: Create Opportunity -->
+      <div class="action-card">
+        <h3><i class="fas fa-plus-circle"></i> How to Create an Investment Opportunity <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Opportunities → "Create Opportunity"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Fill in the title and description</strong><p>Write clearly for international investors. Avoid local jargon.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Select the opportunity type, primary sector, and location</strong></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Enter the investment range (min and max in USD)</strong></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Fill in ROI, payback period, market analysis, and risk factors</strong></div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Upload a thumbnail image</strong><p>Required before publishing. Min recommended size: 800×600px.</p></div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-body"><strong>Click "Save as Draft"</strong><p>Review it once more before publishing.</p></div></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:.5rem;">
+          <i class="fas fa-info-circle"></i>
+          <div class="callout-body"><strong>Before saving, review:</strong><p>Title is specific and clear &bull; All amounts are in USD &bull; A thumbnail image is uploaded &bull; There are no spelling errors</p></div>
+        </div>
+      </div>
+
+      <!-- B2: Publish Opportunity -->
+      <div class="action-card">
+        <h3><i class="fas fa-paper-plane"></i> How to Publish an Opportunity <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Opportunities</strong><p>Find the opportunity with "Draft" status.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click "Publish"</strong><p>A confirmation message appears.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Confirm — the opportunity is now live</strong><p>Status changes to "Published". Investors can now see it on the public website.</p></div></div>
+        </div>
+        <div class="callout callout-warn" style="margin-top:.5rem;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div class="callout-body"><strong>No Publish button?</strong><p>You need the "Can Publish" permission. Contact your team admin or IPAWAS HQ.</p></div>
+        </div>
+      </div>
+
+      <!-- B3: Respond to Inquiry -->
+      <div class="action-card">
+        <h3><i class="fas fa-reply"></i> How to Handle an Investor Inquiry <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Inquiries</strong><p>New inquiries have a red "New" badge.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click the inquiry to open it</strong><p>Read the investor's full message and note their contact email.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Change status to "In Progress"</strong><p>This tells your team it is being handled.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Email the investor directly from your work email</strong><p>The platform does not send replies — you contact them yourself.</p></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Update status as the conversation progresses</strong><p>"Qualified" when they are serious. "Closed" when concluded.</p></div></div>
+        </div>
+        <div class="callout callout-danger" style="margin-top:.5rem;">
+          <i class="fas fa-times-circle"></i>
+          <div class="callout-body"><strong>Respond within 48 hours</strong><p>Delays send a negative signal to investors. Check your inquiries every morning.</p></div>
+        </div>
+      </div>
+
+      <!-- B4: Add Sector -->
+      <div class="action-card">
+        <h3><i class="fas fa-industry"></i> How to Add a Priority Sector <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Sectors → "Add Sector"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the sector from the dropdown</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Write a 2–3 sentence description</strong><p>Explain why this sector is a priority for your country.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Set investment potential (High / Medium / Low) → Click Save</strong></div></div>
+        </div>
+      </div>
+
+      <!-- B5: Update Profile -->
+      <div class="action-card">
+        <h3><i class="fas fa-id-card"></i> How to Update Your Country Profile <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Profile → Overview</strong><p>Check the completion percentage and the checklist to see what's missing.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click the section you need to update</strong><p>Basic Information, Economic Data, Media Gallery, SEO Settings, or Resources.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Make your changes and click "Save Changes"</strong></div></div>
+        </div>
+      </div>
+
+      <!-- B6: Invite Team Member -->
+      <div class="action-card">
+        <h3><i class="fas fa-user-plus"></i> How to Invite a New Team Member <span class="badge badge-ipa" style="vertical-align:middle;margin-left:.5rem;">IPA Staff</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Invitations → "Send Invitation"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Enter their email address and select their role</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Optionally add a personal welcome message</strong></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Click "Send Invitation"</strong><p>They receive an email with a link valid for 7 days. If it expires, use "Resend".</p></div></div>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ══════════════════════════════════════
+           SECTION C — HQ ADMIN
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-shield-alt"></i> C. Tasks for HQ Admins</h2>
+
+      <!-- C1: Invite to member state -->
+      <div class="action-card">
+        <h3><i class="fas fa-paper-plane"></i> How to Invite a User to a Member State <span class="badge badge-hq" style="vertical-align:middle;margin-left:.5rem;">HQ Admin</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Member States → click the country</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click "Invite User"</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Enter email, select role → Click "Send Invitation"</strong></div></div>
+        </div>
+        <p style="font-size:.875rem;color:var(--text-muted);margin-top:.5rem;margin-bottom:0;">To invite up to 50 people at once: <strong>Invitations → Bulk Invite</strong></p>
+      </div>
+
+      <!-- C2: Deactivate User -->
+      <div class="action-card">
+        <h3><i class="fas fa-user-slash"></i> How to Deactivate a User <span class="badge badge-hq" style="vertical-align:middle;margin-left:.5rem;">HQ Admin</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → All Users → click the user's name</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Click "Deactivate User" → Confirm</strong><p>The user is immediately locked out. Their history is preserved. You can reactivate at any time.</p></div></div>
+        </div>
+      </div>
+
+      <!-- C3: Change permissions -->
+      <div class="action-card">
+        <h3><i class="fas fa-user-lock"></i> How to Change a User's Permissions <span class="badge badge-hq" style="vertical-align:middle;margin-left:.5rem;">HQ Admin</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>All Users → click the user → "Manage Permissions"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Toggle permissions on or off</strong><p>Can Edit Profile &bull; Can Create Opportunities &bull; Can Publish &bull; Can Manage Users &bull; Can View Analytics</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Click "Save Permissions"</strong><p>Changes apply immediately.</p></div></div>
+        </div>
+      </div>
+
+      <!-- C4: Export data -->
+      <div class="action-card">
+        <h3><i class="fas fa-file-csv"></i> How to Export Platform Data <span class="badge badge-hq" style="vertical-align:middle;margin-left:.5rem;">HQ Admin</span></h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Sidebar → Reports → "Export Data"</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the dataset</strong><p>Member States, Opportunities, or Platform Stats.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Click "Export" — the CSV file downloads to your computer</strong><p>Open in Microsoft Excel or Google Sheets.</p></div></div>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ══════════════════════════════════════
+           PERMISSIONS TABLE
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-table"></i> D. Permissions Overview</h2>
+      <p>This table shows which features are available to each user type and permission level.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th><span class="badge badge-hq">HQ Admin</span></th>
+              <th>IPA Admin</th>
+              <th>IPA Editor</th>
+              <th>IPA Viewer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>View own country dashboard</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td></tr>
+            <tr><td>View all member states</td><td class="perm-yes">✓</td><td class="perm-no">✗</td><td class="perm-no">✗</td><td class="perm-no">✗</td></tr>
+            <tr><td>Create opportunities</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-cond">If permitted</td><td class="perm-no">✗</td></tr>
+            <tr><td>Publish opportunities</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-cond">If permitted</td><td class="perm-no">✗</td></tr>
+            <tr><td>Edit country profile</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-cond">If permitted</td><td class="perm-no">✗</td></tr>
+            <tr><td>View inquiries</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td></tr>
+            <tr><td>Manage team / invite users</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-cond">If permitted</td><td class="perm-no">✗</td></tr>
+            <tr><td>View analytics</td><td class="perm-yes">✓</td><td class="perm-yes">✓</td><td class="perm-cond">If permitted</td><td class="perm-no">✗</td></tr>
+            <tr><td>Publish news articles</td><td class="perm-yes">✓ (HQ-wide)</td><td class="perm-yes">✓ (country)</td><td class="perm-yes">✓ (country)</td><td class="perm-no">✗</td></tr>
+            <tr><td>Manage all users (system)</td><td class="perm-yes">✓</td><td class="perm-no">✗</td><td class="perm-no">✗</td><td class="perm-no">✗</td></tr>
+            <tr><td>View platform-wide reports</td><td class="perm-yes">✓</td><td class="perm-no">✗</td><td class="perm-no">✗</td><td class="perm-no">✗</td></tr>
+            <tr><td>System settings</td><td class="perm-yes">✓</td><td class="perm-no">✗</td><td class="perm-no">✗</td><td class="perm-no">✗</td></tr>
+            <tr><td>Export data (CSV)</td><td class="perm-yes">✓</td><td class="perm-no">✗</td><td class="perm-no">✗</td><td class="perm-no">✗</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="font-size:.85rem;color:var(--text-muted);">
+        <span class="perm-yes">✓ Yes</span> &nbsp;&bull;&nbsp;
+        <span class="perm-no">✗ No</span> &nbsp;&bull;&nbsp;
+        <span class="perm-cond">If permitted = HQ Admin must grant this specific permission to the user's account</span>
+      </p>
+
+      <hr class="section-divider">
+
+      <!-- ══════════════════════════════════════
+           TROUBLESHOOTING
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-tools"></i> E. Common Issues &amp; Solutions</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Problem</th><th>Likely Cause</th><th>Solution</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>I can't log in</strong></td>
+              <td>Wrong password or email</td>
+              <td>Use "Forgot password?" on the login page. If still stuck, contact your admin.</td>
+            </tr>
+            <tr>
+              <td><strong>My invitation link doesn't work</strong></td>
+              <td>Link expired (over 7 days old)</td>
+              <td>Ask the person who invited you to resend the invitation.</td>
+            </tr>
+            <tr>
+              <td><strong>I don't see the "Publish" button</strong></td>
+              <td>Missing "Can Publish" permission</td>
+              <td>Contact your team admin or IPAWAS HQ to have this permission granted.</td>
+            </tr>
+            <tr>
+              <td><strong>I don't see the "Create Opportunity" button</strong></td>
+              <td>Missing "Can Create Opportunities" permission</td>
+              <td>Contact your team admin or IPAWAS HQ.</td>
+            </tr>
+            <tr>
+              <td><strong>My profile completion is stuck below 100%</strong></td>
+              <td>A required item is missing</td>
+              <td>Go to Profile → Overview and check the checklist. The missing items are marked.</td>
+            </tr>
+            <tr>
+              <td><strong>I uploaded an image but it looks blurry</strong></td>
+              <td>Image resolution too low</td>
+              <td>Use a higher resolution image. Hero image minimum: 1200×600px.</td>
+            </tr>
+            <tr>
+              <td><strong>A team member can't log in after I invited them</strong></td>
+              <td>They may not have accepted yet, or link expired</td>
+              <td>Check Invitations list. Resend if status shows "Expired".</td>
+            </tr>
+            <tr>
+              <td><strong>I accidentally published something</strong></td>
+              <td>Clicked Publish instead of Draft</td>
+              <td>Click "Unpublish" on the opportunity — it returns to Draft status immediately.</td>
+            </tr>
+            <tr>
+              <td><strong>The page shows a 500 error</strong></td>
+              <td>Server-side issue</td>
+              <td>Refresh the page. If it persists, contact IPAWAS IT support.</td>
+            </tr>
+            <tr>
+              <td><strong>I can't find a page I was on before</strong></td>
+              <td>Navigation confusion</td>
+              <td>Use the sidebar — every section is accessible from there. Or start from <code>/dashboard/</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ══════════════════════════════════════
+           GLOSSARY
+      ══════════════════════════════════════ -->
+      <h2><i class="fas fa-book"></i> F. Glossary of Terms</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Draft</strong></td><td>Content saved but not yet visible to the public or investors.</td></tr>
+            <tr><td><strong>Published</strong></td><td>Content that is live and visible on the public IPAWAS website.</td></tr>
+            <tr><td><strong>Featured</strong></td><td>A published item highlighted prominently at the top of its listing page.</td></tr>
+            <tr><td><strong>Inquiry</strong></td><td>A message from an investor expressing interest in investing in a country or specific opportunity.</td></tr>
+            <tr><td><strong>Invitation</strong></td><td>An email sent to a new user to join the platform. Contains a unique, time-limited link.</td></tr>
+            <tr><td><strong>Member State</strong></td><td>A country that is a member of IPAWAS and has its own IPA registered on the platform.</td></tr>
+            <tr><td><strong>IPA</strong></td><td>Investment Promotion Agency — the government body responsible for attracting foreign investment into a country.</td></tr>
+            <tr><td><strong>HQ Admin</strong></td><td>An administrator at IPAWAS Headquarters with full access to all member states and system settings.</td></tr>
+            <tr><td><strong>IPA Staff</strong></td><td>A staff member of a country's IPA with access only to their own country's dashboard.</td></tr>
+            <tr><td><strong>Profile Completion</strong></td><td>A percentage score showing how much of a country's profile has been filled in. 100% is the target.</td></tr>
+            <tr><td><strong>Opportunity</strong></td><td>A specific investment project or sector opportunity posted by an IPA to attract investors.</td></tr>
+            <tr><td><strong>ROI</strong></td><td>Return on Investment — the expected financial return an investor will earn from their investment.</td></tr>
+            <tr><td><strong>SEO</strong></td><td>Search Engine Optimisation — settings that help your pages appear higher in Google search results.</td></tr>
+            <tr><td><strong>Activity Log</strong></td><td>A record of every action performed on the platform — who did what and when.</td></tr>
+            <tr><td><strong>Permission</strong></td><td>A specific right granted to a user account that allows them to perform a certain action.</td></tr>
+            <tr><td><strong>Deactivate</strong></td><td>To block a user account without deleting it. The user cannot log in; their history is preserved.</td></tr>
+            <tr><td><strong>Bulk Invitation</strong></td><td>Inviting multiple users (up to 50) at once using a single action.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- Contact -->
+      <h2><i class="fas fa-headset"></i> G. Contact &amp; Support</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="font-size:1.5rem;margin-bottom:.5rem;"><i class="fas fa-laptop-code" style="color:var(--primary)"></i></div>
+          <strong style="display:block;margin-bottom:.25rem;">Technical Issues</strong>
+          <p style="font-size:.875rem;color:var(--text-muted);margin:0;">Login problems, page errors, broken features, account access.</p>
+          <p style="font-size:.875rem;margin:.5rem 0 0;"><strong>Contact:</strong> IPAWAS IT Support</p>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="font-size:1.5rem;margin-bottom:.5rem;"><i class="fas fa-file-alt" style="color:var(--gold)"></i></div>
+          <strong style="display:block;margin-bottom:.25rem;">Content Questions</strong>
+          <p style="font-size:.875rem;color:var(--text-muted);margin:0;">What to publish, how to write opportunities, what images to use.</p>
+          <p style="font-size:.875rem;margin:.5rem 0 0;"><strong>Contact:</strong> IPAWAS Secretariat / Your Supervisor</p>
+        </div>
+      </div>
+
+      <div class="callout callout-tip" style="margin-top:1.5rem;">
+        <i class="fas fa-print"></i>
+        <div class="callout-body">
+          <strong>Print this page for offline reference</strong>
+          <p>Click the <strong>"Print This Page"</strong> button at the top right. The sidebar and buttons are hidden automatically in the printed version, leaving only the checklists and tables.</p>
+        </div>
+      </div>
+
+      <div class="next-page">
+        <a href="ipa-dashboard.html" class="prev"><i class="fas fa-arrow-left"></i> Country Dashboard Guide</a>
+        <a href="index.html">Back to Manual Home <i class="fas fa-home"></i></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

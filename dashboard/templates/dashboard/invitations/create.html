@@ -1,0 +1,348 @@
+{% extends base_template %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Send Invitation" %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">{% translate "Send Invitation" %}</h1>
+            <p class="page-description">{% translate "Invite a new team member to join your IPA" %}</p>
+        </div>
+        <a href="{{ invitations_list_url }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>{% translate "Back to List" %}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Invitation Type (HQ Admins only — IPA staff always invite ipa_staff) -->
+                    {% if not form.user_type.is_hidden %}
+                    <div class="mb-4" id="user-type-section">
+                        <label class="form-label fw-bold">{% translate "Invitation Type" %} <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-4 mt-2">
+                            {% for radio in form.user_type %}
+                            <div class="form-check invitation-type-option p-3 rounded border" style="cursor:pointer; min-width:200px;">
+                                {{ radio.tag }}
+                                <label class="form-check-label ms-2 fw-semibold" for="{{ radio.id_for_label }}" style="cursor:pointer;">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.user_type.errors %}
+                        <div class="invalid-feedback d-block">{{ form.user_type.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted mt-1 d-block">{{ form.user_type.help_text }}</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Member State (HQ Admins only) -->
+                    {% if form.member_state %}
+                    <div class="mb-4" id="member-state-section">
+                        <label class="form-label">{% translate "Member State" %} <span class="text-danger ipa-required">*</span></label>
+                        {{ form.member_state }}
+                        {% if form.member_state.errors %}
+                        <div class="invalid-feedback d-block">{{ form.member_state.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.member_state.help_text }}</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label class="form-label">{% translate "Email Address" %} <span class="text-danger">*</span></label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.email.help_text }}</small>
+                    </div>
+
+                    <!-- Role (only for IPA staff) -->
+                    <div class="mb-4" id="role-section">
+                        <label class="form-label">{% translate "Role" %} <span class="text-danger">*</span></label>
+                        {{ form.role }}
+                        {% if form.role.errors %}
+                        <div class="invalid-feedback d-block">{{ form.role.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.role.help_text }}</small>
+
+                        <div class="role-descriptions mt-3">
+                            <div class="role-card" id="role-ipa_director" style="display: none;">
+                                <h6><i class="fas fa-user-shield text-danger me-2"></i>{% translate "IPA Director" %}</h6>
+                                <p>{% translate "Full country-level authority. Manages team, approves and publishes opportunities, views all analytics, and configures country settings." %}</p>
+                            </div>
+                            <div class="role-card" id="role-ipa_manager" style="display: none;">
+                                <h6><i class="fas fa-user-tie text-primary me-2"></i>{% translate "IPA Manager" %}</h6>
+                                <p>{% translate "Content & operations lead. Can publish opportunities, respond to inquiries, manage media, and export data. Cannot manage users." %}</p>
+                            </div>
+                            <div class="role-card" id="role-ipa_officer" style="display: none;">
+                                <h6><i class="fas fa-user-edit text-info me-2"></i>{% translate "IPA Officer" %}</h6>
+                                <p>{% translate "Day-to-day content management. Can draft opportunities, update profile, manage sectors and incentives. Cannot publish." %}</p>
+                            </div>
+                            <div class="role-card" id="role-ipa_data_entry" style="display: none;">
+                                <h6><i class="fas fa-keyboard text-secondary me-2"></i>{% translate "IPA Data Entry" %}</h6>
+                                <p>{% translate "Data submission only. Can enter opportunity data and incentive information. No access to inquiries or analytics." %}</p>
+                            </div>
+                            <div class="role-card" id="role-ipa_analyst" style="display: none;">
+                                <h6><i class="fas fa-chart-bar text-success me-2"></i>{% translate "IPA Analyst" %}</h6>
+                                <p>{% translate "Read-only access. Can view all platform data, analytics, and generate/download reports. Cannot create or edit any content." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HQ Admin notice (shown when ipawas_admin is selected) -->
+                    <div class="mb-4 alert alert-info" id="hq-admin-notice" style="display:none;">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{% translate "HQ Admin Invitation" %}:</strong>
+                        {% translate "This person will have access to the full IPAWAS HQ dashboard with no member state assigned." %}
+                    </div>
+
+                    <!-- Primary Contact (only for IPA staff) -->
+                    <div class="mb-4" id="primary-contact-section">
+                        <div class="form-check">
+                            {{ form.is_primary_contact }}
+                            <label class="form-check-label" for="{{ form.is_primary_contact.id_for_label }}">
+                                {{ form.is_primary_contact.label }}
+                            </label>
+                        </div>
+                        {% if form.is_primary_contact.errors %}
+                        <div class="invalid-feedback d-block">{{ form.is_primary_contact.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.is_primary_contact.help_text }}</small>
+                    </div>
+
+                    <!-- Expires In -->
+                    <div class="mb-4">
+                        <label class="form-label">{% translate "Invitation Validity" %}</label>
+                        {{ form.expires_in_days }}
+                        {% if form.expires_in_days.errors %}
+                        <div class="invalid-feedback d-block">{{ form.expires_in_days.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.expires_in_days.help_text }}</small>
+                    </div>
+
+                    <!-- Personal Message -->
+                    <div class="mb-4">
+                        <label class="form-label">{% translate "Personal Message (Optional)" %}</label>
+                        {{ form.invitation_message }}
+                        {% if form.invitation_message.errors %}
+                        <div class="invalid-feedback d-block">{{ form.invitation_message.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.invitation_message.help_text }}</small>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ invitations_list_url }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary-green">
+                            <i class="fas fa-paper-plane me-2"></i>{% translate "Send Invitation" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Tips -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>{% translate "Tips" %}</h6>
+                <ul class="small mb-0">
+                    <li>{% translate "The invitee will receive an email with a registration link" %}</li>
+                    <li>{% translate "They have 7 days (default) to accept the invitation" %}</li>
+                    <li>{% translate "You can resend or revoke invitations anytime" %}</li>
+                    <li>{% translate "Choose the appropriate role based on responsibilities" %}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- What Happens Next -->
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="mb-3"><i class="fas fa-info-circle me-2"></i>{% translate "What Happens Next" %}</h6>
+                <div class="steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <p>{% translate "Invitation email sent to recipient" %}</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <p>{% translate "Recipient clicks link and registers" %}</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <p>{% translate "Account created with assigned role" %}</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <p>{% translate "You receive notification of acceptance" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-label {
+        font-weight: 600;
+        color: var(--neutral-700);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 2px solid var(--neutral-200);
+        padding: 0.625rem 0.875rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.15);
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0.125rem;
+    }
+
+    .role-descriptions {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .role-card {
+        padding: 1rem;
+        background: var(--neutral-50);
+        border-radius: 8px;
+        border-left: 3px solid var(--primary-green);
+    }
+
+    .role-card h6 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9375rem;
+        color: var(--neutral-800);
+    }
+
+    .role-card p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--neutral-600);
+    }
+
+    .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .step-number {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary-green);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .step-item p {
+        margin: 0;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Show role description based on selection
+    const roleSelect = document.getElementById('id_role');
+    if (roleSelect) {
+        roleSelect.addEventListener('change', function() {
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.style.display = 'none';
+            });
+            const selectedRole = this.value;
+            if (selectedRole) {
+                const roleCard = document.getElementById('role-' + selectedRole);
+                if (roleCard) roleCard.style.display = 'block';
+            }
+        });
+        roleSelect.dispatchEvent(new Event('change'));
+    }
+
+    // Toggle IPA-staff vs HQ-admin fields based on user_type selection
+    function applyUserTypeToggle() {
+        const radios = document.querySelectorAll('input[name="user_type"]');
+        if (!radios.length) return; // IPA staff: user_type field not shown
+
+        let selectedType = 'ipa_staff';
+        radios.forEach(r => { if (r.checked) selectedType = r.value; });
+
+        const isHQ = selectedType === 'ipawas_admin';
+
+        const memberStateSection = document.getElementById('member-state-section');
+        const roleSection = document.getElementById('role-section');
+        const primaryContactSection = document.getElementById('primary-contact-section');
+        const hqNotice = document.getElementById('hq-admin-notice');
+
+        if (memberStateSection) memberStateSection.style.display = isHQ ? 'none' : '';
+        if (roleSection) roleSection.style.display = isHQ ? 'none' : '';
+        if (primaryContactSection) primaryContactSection.style.display = isHQ ? 'none' : '';
+        if (hqNotice) hqNotice.style.display = isHQ ? '' : 'none';
+
+        // Style the selected radio option
+        document.querySelectorAll('.invitation-type-option').forEach(el => {
+            el.classList.remove('border-success', 'bg-light');
+        });
+        radios.forEach(r => {
+            if (r.checked) {
+                r.closest('.invitation-type-option').classList.add('border-success', 'bg-light');
+            }
+        });
+    }
+
+    document.querySelectorAll('input[name="user_type"]').forEach(r => {
+        r.addEventListener('change', applyUserTypeToggle);
+    });
+
+    // Run on page load
+    applyUserTypeToggle();
+</script>
+{% endblock %}

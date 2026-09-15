@@ -1,0 +1,183 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+{% block title %}Press Releases — HQ Media Center{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-0"><i class="fas fa-newspaper me-2"></i>Press Releases</h1>
+        <p class="text-muted mb-0">All press releases across all IPAs.</p>
+    </div>
+    <a href="{% url 'dashboard:hq:media_center:pr_create' %}" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i>New Press Release
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold mb-1">Search</label>
+                <input type="text" name="q" value="{{ search_query }}" class="form-control form-control-sm" placeholder="Title or summary…">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="pending_review" {% if current_status == 'pending_review' %}selected{% endif %}>Pending Review</option>
+                    <option value="approved" {% if current_status == 'approved' %}selected{% endif %}>Approved / Live</option>
+                    <option value="draft" {% if current_status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="rejected" {% if current_status == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">IPA</label>
+                <select name="ipa" class="form-select form-select-sm">
+                    <option value="">All IPAs</option>
+                    {% for ms in member_states %}
+                    <option value="{{ ms.slug }}" {% if current_ipa == ms.slug %}selected{% endif %}>{{ ms.ipa_acronym }} — {{ ms.country_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success btn-sm w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Status tabs -->
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <a href="{% url 'dashboard:hq:media_center:pr_list' %}" class="btn btn-sm {% if not current_status %}btn-success{% else %}btn-outline-secondary{% endif %}">
+        All <span class="badge bg-white text-dark ms-1">{{ status_counts.all }}</span>
+    </a>
+    <a href="?status=pending_review" class="btn btn-sm {% if current_status == 'pending_review' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+        Pending Review <span class="badge bg-white text-dark ms-1">{{ status_counts.pending_review }}</span>
+    </a>
+    <a href="?status=approved" class="btn btn-sm {% if current_status == 'approved' %}btn-success{% else %}btn-outline-success{% endif %}">
+        Approved <span class="badge bg-white text-dark ms-1">{{ status_counts.approved }}</span>
+    </a>
+    <a href="?status=draft" class="btn btn-sm {% if current_status == 'draft' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+        Draft <span class="badge bg-white text-dark ms-1">{{ status_counts.draft }}</span>
+    </a>
+    <a href="?status=rejected" class="btn btn-sm {% if current_status == 'rejected' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+        Rejected <span class="badge bg-white text-dark ms-1">{{ status_counts.rejected }}</span>
+    </a>
+</div>
+
+<!-- Reject modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Press Release</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="reject-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label class="form-label fw-bold">Rejection Reason <span class="text-danger">*</span></label>
+                    <textarea name="rejection_reason" class="form-control" rows="4" placeholder="Explain why this is being rejected…" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        {% if press_releases %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background:var(--neutral-50,#fafafa);">
+                    <tr>
+                        <th class="ps-4">Title</th>
+                        <th>IPA</th>
+                        <th>Release Date</th>
+                        <th>Status</th>
+                        <th class="pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pr in press_releases %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold">{{ pr.title|truncatechars:55 }}</div>
+                            {% if pr.created_by %}<small class="text-muted">{{ pr.created_by.get_full_name|default:pr.created_by.email }}</small>{% endif %}
+                        </td>
+                        <td>
+                            {% if pr.member_state %}
+                            <span class="badge bg-light text-dark">{{ pr.member_state.ipa_acronym }}</span>
+                            {% else %}
+                            <span class="badge bg-success">HQ</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ pr.release_date|date:"M j, Y" }}</td>
+                        <td>
+                            <span class="badge rounded-pill {% if pr.status == 'approved' %}bg-success{% elif pr.status == 'pending_review' %}bg-warning text-dark{% elif pr.status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                {{ pr.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="pe-4">
+                            <div class="d-flex gap-1 flex-wrap">
+                                {% if pr.status == 'pending_review' %}
+                                <form method="post" action="{% url 'dashboard:hq:media_center:pr_approve' pk=pr.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal" data-bs-target="#rejectModal"
+                                        data-action="{% url 'dashboard:hq:media_center:pr_reject' pk=pr.pk %}">
+                                    Reject
+                                </button>
+                                {% endif %}
+                                <a href="{% url 'dashboard:hq:media_center:pr_edit' pk=pr.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'dashboard:hq:media_center:pr_delete' pk=pr.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if page_obj.has_other_pages %}
+        <div class="d-flex justify-content-center py-3">
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_ipa %}&ipa={{ current_ipa }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo;</a></li>
+                    {% endif %}
+                    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_ipa %}&ipa={{ current_ipa }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-newspaper fa-3x mb-3 d-block opacity-25"></i>
+            <p>No press releases found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        rejectModal.addEventListener('show.bs.modal', function(e) {
+            const btn = e.relatedTarget;
+            document.getElementById('reject-form').setAttribute('action', btn.getAttribute('data-action'));
+            rejectModal.querySelector('textarea').value = '';
+        });
+    }
+});
+</script>
+{% endblock %}

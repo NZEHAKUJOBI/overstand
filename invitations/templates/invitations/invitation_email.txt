@@ -1,0 +1,49 @@
+You’re Invited! Join {{ member_state.ipa_acronym }} on the IPAWAS
+Platform
+
+------------------------------------------------------------------------
+
+Welcome to IPAWAS
+
+Hello,
+
+{{ inviter_name }} has invited you to join the {{ member_state.ipa_full_name }} ({{ member_state.ipa_acronym }}) team on
+the Investment Promotion Agency of West African States (IPAWAS)
+Platform.
+
+------------------------------------------------------------------------
+
+Your Invitation Details
+
+Organization: {{ member_state.ipa_full_name }}
+Country: {{ member_state.country_name }}
+Role: {{ role }} {% if invitation.is_primary_contact %}Status: Primary Contact Person{% endif %}
+
+{% if invitation_message %} Personal message from {{ inviter_name }}: {{ invitation_message }} {% endif %}
+
+As part of the {{ member_state.ipa_acronym }} team, you’ll be able to:
+
+-   Manage your country’s investment profile
+-   Publish investment opportunities
+-   Respond to investor inquiries
+-   Share success stories
+-   Access analytics and reports
+-   Collaborate with your team
+
+------------------------------------------------------------------------
+
+Accept your invitation and create your account using the link below: {{ registration_url }}
+
+Important: This invitation will expire in {{ days_until_expiry }} day{{ days_until_expiry|pluralize }} ({{ expires_at|date:“F j, Y” }} at {{ expires_at|time:“g:i A” }}).
+
+If the link above doesn’t work, please copy and paste it into your
+browser: {{ registration_url }}
+
+If you have any questions or didn’t expect this invitation, please
+contact: {{ member_state.contact_email }}
+
+------------------------------------------------------------------------
+
+Investment Promotion Agency of West African States (IPAWAS) {{ site_url }}
+
+This is an automated email. Please do not reply directly to this message.

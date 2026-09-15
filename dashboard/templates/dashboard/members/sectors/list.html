@@ -1,0 +1,154 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Priority Sectors" %}{% endblock %}
+{% block page_title %}{% translate "Priority Sectors Management" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> / {% translate "Priority Sectors" %}
+{% endblock %}
+
+{% block content %}
+<!-- Header Actions -->
+<div class="row align-items-center mb-4">
+    <div class="col-lg-8">
+        <p class="text-muted mb-0">{% translate "Manage your country's priority sectors for investment" %}</p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'dashboard:country:sectors_add' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-plus me-2"></i>{% translate "Add New Sector" %}
+        </a>
+    </div>
+</div>
+
+<!-- Sectors Grid -->
+<div class="row g-4 mb-4" id="sectors-grid">
+    {% for sector in sectors %}
+    <div class="col-lg-4 col-md-6" data-sector-id="{{ sector.id }}">
+        <div class="sector-card">
+            <div class="sector-card-header">
+                <div class="sector-icon">
+                    {% if sector.sector.icon_class %}
+                        <i class="{{ sector.sector.icon_class }}"></i>
+                    {% else %}
+                        <i class="fas fa-industry"></i>
+                    {% endif %}
+                </div>
+                <div class="sector-order-badge">#{{ forloop.counter }}</div>
+            </div>
+            <div class="sector-card-body">
+                <h4 class="sector-name">{{ sector.sector.name }}</h4>
+                <p class="sector-description">{{ sector.description|default:sector.sector.description|truncatewords:20 }}</p>
+                {% if sector.is_priority %}
+                <div class="mt-2">
+                    <span class="badge" style="background:rgba(212,165,32,0.15);color:#9a7d0a;font-size:0.75rem;padding:0.25rem 0.75rem;border-radius:50px;">
+                        <i class="fas fa-star me-1"></i>Priority Sector
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="sector-card-footer">
+                <a href="{% url 'dashboard:country:sectors_edit' member_state.slug sector.pk %}" class="btn btn-sm btn-outline-green">
+                    <i class="fas fa-edit"></i>{% translate "Edit" %}
+                </a>
+                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ sector.pk }}, '{{ sector.sector.name|escapejs }}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="empty-state-card">
+            <i class="fas fa-industry fa-4x mb-3"></i>
+            <h4>{% translate "No Priority Sectors Yet" %}</h4>
+            <p class="text-muted">{% translate "Add your first priority sector to showcase investment opportunities" %}</p>
+            <a href="{% url 'dashboard:country:sectors_add' member_state.slug %}" class="btn btn-primary-green mt-3">
+                <i class="fas fa-plus me-2"></i>{% translate "Add Your First Sector" %}
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Reorder Instructions -->
+{% if sectors %}
+<div class="content-card">
+    <div class="content-card-header">
+        <h3 class="content-card-title"><i class="fas fa-arrows-alt me-2"></i>{% translate "Reorder Sectors" %}</h3>
+    </div>
+    <div class="content-card-body">
+        <p class="text-muted mb-3">{% translate "Drag and drop sectors to change their display order on your profile page." %}</p>
+        <button type="button" class="btn btn-primary-green" onclick="saveSectorOrder()">
+            <i class="fas fa-save me-2"></i>{% translate "Save Order" %}
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .sector-card{background:white;border-radius:16px;border:2px solid var(--neutral-200);transition:var(--transition-fast);height:100%;display:flex;flex-direction:column}
+    .sector-card:hover{border-color:var(--primary-green);box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+    .sector-card-header{padding:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--neutral-200)}
+    .sector-icon{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,rgba(27,122,76,0.1),rgba(45,144,97,0.15));display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--primary-green)}
+    .sector-order-badge{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary-green),var(--light-green));color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.875rem}
+    .sector-card-body{padding:1.5rem;flex:1}
+    .sector-name{font-size:1.25rem;font-weight:700;color:var(--dark-green);margin-bottom:.75rem}
+    .sector-description{color:var(--neutral-600);line-height:1.6;margin:0}
+    .sector-stats{display:flex;gap:1rem;padding-top:1rem;border-top:1px solid var(--neutral-200)}
+    .sector-stat{display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:var(--neutral-600)}
+    .sector-stat i{color:var(--primary-green)}
+    .sector-card-footer{padding:1rem 1.5rem;border-top:1px solid var(--neutral-200);display:flex;gap:.5rem}
+    .empty-state-card{background:white;border-radius:16px;padding:4rem 2rem;text-align:center;box-shadow:var(--shadow-md)}
+    .empty-state-card i{color:var(--neutral-300)}
+    .empty-state-card h4{color:var(--dark-green);margin-top:1rem;margin-bottom:.5rem}
+    @media(max-width:768px){.sector-card-footer{flex-direction:column}}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+const sectorsGrid = document.getElementById('sectors-grid');
+if (sectorsGrid && sectorsGrid.children.length > 0) {
+    new Sortable(sectorsGrid, {
+        animation: 150,
+        handle: '.sector-card',
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+    });
+}
+
+function getCsrfToken() {
+    return document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('csrftoken='))?.split('=')[1] || '';
+}
+
+function saveSectorOrder() {
+    const sectors = Array.from(sectorsGrid.children).map((el, index) => ({
+        id: el.dataset.sectorId,
+        order: index + 1
+    }));
+
+    fetch('{% url "dashboard:country:sectors_reorder" member_state.slug %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken(),
+        },
+        body: JSON.stringify({ sectors })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function confirmDelete(id, name) {
+    if (confirm(`Are you sure you want to remove "${name}" as a priority sector? This cannot be undone.`)) {
+        window.location.href = `{% url 'dashboard:country:sectors' member_state.slug %}`.replace(/sectors\/$/, `sectors/${id}/delete/`);
+    }
+}
+</script>
+{% endblock %}

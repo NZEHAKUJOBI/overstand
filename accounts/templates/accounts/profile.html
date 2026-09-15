@@ -1,0 +1,725 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "My Profile" %}{% endblock %}
+
+{% block sidebar_nav %}
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Navigation" %}</div>
+    {% if user.user_type == 'ipawas_admin' %}
+    <div class="nav-item">
+        <a href="{% url 'dashboard:hq:overview' %}" class="nav-link">
+            <i class="fas fa-chart-line"></i>
+            <span>{% translate "HQ Dashboard" %}</span>
+        </a>
+    </div>
+    {% elif user.user_type == 'ipa_staff' %}
+    <div class="nav-item">
+        <a href="{% url 'dashboard:country:overview' user.ipa_profile.member_state.slug %}" class="nav-link">
+            <i class="fas fa-chart-line"></i>
+            <span>{% translate "Dashboard" %}</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">{% translate "Account" %}</div>
+    <div class="nav-item">
+        <a href="{% url 'accounts:profile' %}" class="nav-link active">
+            <i class="fas fa-user-circle"></i>
+            <span>{% translate "My Profile" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'accounts:profile_edit' %}" class="nav-link">
+            <i class="fas fa-edit"></i>
+            <span>{% translate "Edit Profile" %}</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'accounts:password_change' %}" class="nav-link">
+            <i class="fas fa-key"></i>
+            <span>{% translate "Change Password" %}</span>
+        </a>
+    </div>
+    {% if not user.two_factor_enabled %}
+    <div class="nav-item">
+        <a href="{% url 'accounts:setup_2fa' %}" class="nav-link">
+            <i class="fas fa-lock"></i>
+            <span>{% translate "Enable 2FA" %}</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "My Profile" %}</span>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 2rem;
+    }
+
+    .profile-sidebar {
+        position: sticky;
+        top: calc(var(--topbar-height) + 2rem);
+        height: fit-content;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 4rem;
+        font-weight: 700;
+        color: white;
+        box-shadow: 0 8px 24px rgba(27,122,76,0.2);
+        position: relative;
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--primary-green);
+        color: var(--primary-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background 0.2s, color 0.2s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 2;
+    }
+
+    .avatar-upload-btn:hover {
+        background: var(--primary-green);
+        color: white;
+    }
+
+    .avatar-upload-btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-green);
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-role {
+        color: var(--neutral-600);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--neutral-200);
+        margin-top: 1.5rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--neutral-600);
+        font-size: 0.9rem;
+    }
+
+    .meta-item i {
+        width: 24px;
+        text-align: center;
+        color: var(--primary-green);
+    }
+
+    .btn-edit-profile {
+        width: 100%;
+        padding: 0.875rem;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(27,122,76,0.3);
+        color: white;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+    }
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--neutral-200);
+    }
+
+    .info-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-green);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .info-title i {
+        color: var(--primary-green);
+        font-size: 1.5rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .info-label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--neutral-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        color: var(--neutral-800);
+        font-weight: 500;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.875rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .badge-warning {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .badge-primary {
+        background: rgba(27,122,76,0.1);
+        color: var(--primary-green);
+    }
+
+    .permissions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .permission-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.875rem 1rem;
+        background: var(--neutral-100);
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+    .permission-item.enabled {
+        background: rgba(27,122,76,0.08);
+        color: var(--dark-green);
+    }
+
+    .permission-item.enabled i {
+        color: var(--primary-green);
+    }
+
+    .permission-item.disabled {
+        opacity: 0.5;
+    }
+
+    .permission-item.disabled i {
+        color: var(--neutral-400);
+    }
+
+    @media (max-width: 1024px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-sidebar {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1 class="page-title">{% translate "My Profile" %}</h1>
+        <p class="page-description">{% translate "View and manage your account information" %}</p>
+    </div>
+    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary-green" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;font-weight:600;border-radius:10px;">
+        <i class="fas fa-edit"></i>
+        {% translate "Edit Profile" %}
+    </a>
+</div>
+
+<div class="profile-grid">
+    <!-- Sidebar -->
+    <div class="profile-sidebar">
+        <div class="profile-card">
+            <div class="profile-avatar" id="profileAvatar">
+                {% if user.profile_picture %}
+                <img src="{{ user.profile_picture }}" alt="{{ user.get_full_name }}" id="avatarImg">
+                {% else %}
+                <span id="avatarInitials">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
+                {% endif %}
+                <label class="avatar-upload-btn" id="avatarUploadBtn" title="Change photo">
+                    <i class="fas fa-camera" id="avatarBtnIcon"></i>
+                    <input type="file" id="avatarFileInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;">
+                </label>
+            </div>
+
+            <h2 class="profile-name">{{ user.get_full_name }}</h2>
+            <p class="profile-role">
+                {% if user.user_type == 'ipawas_admin' %}
+                    <i class="fas fa-shield-alt text-warning"></i> {% translate "HQ Administrator" %}
+                {% elif user.user_type == 'ipa_staff' %}
+                    {{ user.ipa_profile.get_role_display }}
+                {% endif %}
+            </p>
+
+            {% if user.user_type == 'ipa_staff' %}
+            <span class="badge badge-primary">
+                <i class="fas fa-flag"></i>
+                {{ user.ipa_profile.member_state.country_name }}
+            </span>
+            {% endif %}
+
+            <div class="profile-meta">
+                <div class="meta-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ user.email }}</span>
+                </div>
+                {% if user.phone_number %}
+                <div class="meta-item">
+                    <i class="fas fa-phone"></i>
+                    <span>{{ user.phone_number }}</span>
+                </div>
+                {% endif %}
+                <div class="meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{% translate "Joined" %} {{ user.date_joined|date:"M d, Y" }}</span>
+                </div>
+                {% if user.last_login %}
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{% translate "Last login" %} {{ user.last_login|timesince }} {% translate "ago" %}</span>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="profile-main">
+        <!-- Account Information -->
+        <div class="info-card">
+            <div class="info-header">
+                <h3 class="info-title">
+                    <i class="fas fa-user-circle"></i>
+                    {% translate "Account Information" %}
+                </h3>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">{% translate "Email Status" %}</span>
+                    <span class="info-value">
+                        {% if user.email_verified %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i>
+                                {% translate "Verified" %}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% translate "Unverified" %}
+                            </span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Job Title" %}</span>
+                    <span class="info-value">{{ user.job_title|default:_("Not set") }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Language" %}</span>
+                    <span class="info-value">{{ user.get_language_preference_display }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Timezone" %}</span>
+                    <span class="info-value">{{ user.timezone }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Two-Factor Auth" %}</span>
+                    <span class="info-value">
+                        {% if user.two_factor_enabled %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-lock"></i>
+                                {% translate "Enabled" %}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-unlock"></i>
+                                {% translate "Disabled" %}
+                            </span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Email Notifications" %}</span>
+                    <span class="info-value">
+                        {% if user.email_notifications %}
+                            <span class="badge badge-success">{% translate "On" %}</span>
+                        {% else %}
+                            <span class="badge badge-warning">{% translate "Off" %}</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {% if user.user_type == 'ipa_staff' and ipa_profile %}
+        <!-- IPA Information -->
+        <div class="info-card">
+            <div class="info-header">
+                <h3 class="info-title">
+                    <i class="fas fa-building"></i>
+                    {% translate "IPA Information" %}
+                </h3>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">{% translate "Member State" %}</span>
+                    <span class="info-value">{{ ipa_profile.member_state.country_name }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "IPA Name" %}</span>
+                    <span class="info-value">{{ ipa_profile.member_state.ipa_full_name }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Role" %}</span>
+                    <span class="info-value">{{ ipa_profile.get_role_display }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">{% translate "Status" %}</span>
+                    <span class="info-value">
+                        {% if ipa_profile.is_active %}
+                            <span class="badge badge-success">{% translate "Active" %}</span>
+                        {% else %}
+                            <span class="badge badge-warning">{% translate "Inactive" %}</span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                {% if ipa_profile.direct_phone %}
+                <div class="info-item">
+                    <span class="info-label">{% translate "Direct Phone" %}</span>
+                    <span class="info-value">{{ ipa_profile.direct_phone }}</span>
+                </div>
+                {% endif %}
+
+                {% if ipa_profile.extension %}
+                <div class="info-item">
+                    <span class="info-label">{% translate "Extension" %}</span>
+                    <span class="info-value">{{ ipa_profile.extension }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Permissions -->
+        <div class="info-card">
+            <div class="info-header">
+                <h3 class="info-title">
+                    <i class="fas fa-key"></i>
+                    {% translate "My Permissions" %}
+                </h3>
+            </div>
+
+            <div class="permissions-grid">
+                <div class="permission-item {% if permissions.publish_opportunities %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.publish_opportunities %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Publish Opportunities" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.approve_data %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.approve_data %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Approve Data" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.manage_users %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.manage_users %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Manage Users" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.edit_profile %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.edit_profile %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Edit Profile" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.manage_sectors %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.manage_sectors %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Manage Sectors" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.create_opportunities %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.create_opportunities %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Create Opportunities" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.edit_incentives %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.edit_incentives %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Edit Incentives" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.manage_success_stories %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.manage_success_stories %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Manage Success Stories" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.view_inquiries %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.view_inquiries %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "View Inquiries" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.respond_to_inquiries %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.respond_to_inquiries %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Respond to Inquiries" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.view_analytics %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.view_analytics %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "View Analytics" %}</span>
+                </div>
+
+                <div class="permission-item {% if permissions.export_data %}enabled{% else %}disabled{% endif %}">
+                    <i class="fas fa-{% if permissions.export_data %}check-circle{% else %}times-circle{% endif %}"></i>
+                    <span>{% translate "Export Data" %}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Security Actions -->
+        <div class="info-card">
+            <div class="info-header">
+                <h3 class="info-title">
+                    <i class="fas fa-shield-alt"></i>
+                    {% translate "Security" %}
+                </h3>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-key me-2"></i>
+                    {% translate "Change Password" %}
+                </a>
+                {% if not user.two_factor_enabled %}
+                <a href="{% url 'accounts:setup_2fa' %}" class="btn btn-outline-success">
+                    <i class="fas fa-lock me-2"></i>
+                    {% translate "Enable 2FA" %}
+                </a>
+                {% else %}
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#disable2faModal">
+                    <i class="fas fa-lock-open me-2"></i>
+                    {% translate "Disable 2FA" %}
+                </button>
+                {% endif %}
+            </div>
+
+            {% if user.two_factor_enabled %}
+            <!-- Disable 2FA confirmation modal -->
+            <div class="modal fade" id="disable2faModal" tabindex="-1" aria-labelledby="disable2faLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="disable2faLabel">
+                                <i class="fas fa-shield-alt me-2 text-danger"></i>
+                                {% translate "Disable Two-Factor Authentication" %}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted mb-3">{% translate "Enter the 6-digit code from your authenticator app to confirm." %}</p>
+                            <form method="post" action="{% url 'accounts:disable_2fa' %}" id="disable2faForm">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="disable2faToken" class="form-label fw-semibold">{% translate "Authentication Code" %}</label>
+                                    <input type="text" class="form-control form-control-lg text-center"
+                                           id="disable2faToken" name="token"
+                                           maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+                                           placeholder="000000" autocomplete="one-time-code" required>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-lock-open me-2"></i>
+                                        {% translate "Disable Two-Factor Authentication" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const fileInput = document.getElementById('avatarFileInput');
+    const btn = document.getElementById('avatarUploadBtn');
+    const btnIcon = document.getElementById('avatarBtnIcon');
+    const avatar = document.getElementById('profileAvatar');
+
+    fileInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        // Client-side size check (5 MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('{% translate "Please choose an image smaller than 5 MB." %}');
+            this.value = '';
+            return;
+        }
+
+        // Instant local preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            let img = document.getElementById('avatarImg');
+            const initials = document.getElementById('avatarInitials');
+            if (initials) initials.remove();
+            if (!img) {
+                img = document.createElement('img');
+                img.id = 'avatarImg';
+                img.alt = '{{ user.get_full_name|escapejs }}';
+                avatar.insertBefore(img, btn);
+            }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // Upload
+        btn.classList.add('loading');
+        btnIcon.className = 'fas fa-spinner fa-spin';
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "accounts:avatar_upload" %}', {method: 'POST', body: formData})
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    // Update topbar avatar too
+                    const topbarAvatar = document.querySelector('.user-avatar');
+                    if (topbarAvatar) {
+                        topbarAvatar.innerHTML = '<img src="' + data.url + '" style="width:100%;height:100%;border-radius:10px;object-fit:cover;" alt="avatar">';
+                    }
+                    btnIcon.className = 'fas fa-check';
+                    setTimeout(() => { btnIcon.className = 'fas fa-camera'; }, 2000);
+                } else {
+                    alert(data.error || '{% translate "Upload failed. Please try again." %}');
+                    btnIcon.className = 'fas fa-camera';
+                }
+            })
+            .catch(() => {
+                alert('{% translate "Upload failed. Please try again." %}');
+                btnIcon.className = 'fas fa-camera';
+            })
+            .finally(() => {
+                btn.classList.remove('loading');
+                fileInput.value = '';
+            });
+    });
+})();
+</script>
+{% endblock %}

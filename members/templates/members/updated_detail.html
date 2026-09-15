@@ -1,0 +1,562 @@
+{% extends 'core/new_base.html' %}
+{% load static %}
+
+{% block title %}{{ member_state.country_name }} - Investment Profile | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
+<style>
+    /* IPA Leadership Card Styles */
+    .ipa-leadership-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        border: 2px solid rgba(27, 122, 76, 0.1);
+    }
+
+    .leadership-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .leader-photo-frame {
+        flex: 0 0 180px;
+    }
+
+    .leader-photo {
+        width: 180px;
+        height: 225px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 4px solid var(--primary-green);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .leader-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .leader-info {
+        flex: 1;
+    }
+
+    .leader-info h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 0.5rem;
+    }
+
+    .leader-title {
+        font-size: 1.15rem;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .leader-organization {
+        font-size: 1rem;
+        color: var(--accent-gold);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .leader-bio {
+        color: #495057;
+        line-height: 1.8;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .ipa-contact-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .contact-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ipa-logo-container {
+        flex: 0 0 120px;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .ipa-logo-container img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .contact-info {
+        flex: 1;
+    }
+
+    .contact-info h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+    }
+
+    .contact-info .agency-name {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .contact-item i {
+        color: var(--primary-green);
+        font-size: 1.1rem;
+        margin-top: 0.25rem;
+        width: 20px;
+    }
+
+    .contact-item-content {
+        flex: 1;
+    }
+
+    .contact-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #6c757d;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .contact-value {
+        color: #212529;
+        font-weight: 500;
+    }
+
+    .contact-value a {
+        color: var(--primary-green);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .contact-value a:hover {
+        color: var(--accent-gold);
+    }
+
+    @media (max-width: 768px) {
+        .leadership-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .leader-photo-frame {
+            flex: none;
+        }
+
+        .contact-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .ipa-logo-container {
+            flex: none;
+        }
+    }
+
+    /* Adjustments to hero section for IPA leadership */
+    .hero-section {
+        padding-bottom: 60px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">IPAWAS</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'members:hub' %}">Member States</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ member_state.country_name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="hero-content">
+                    <div class="flag-container mb-3">
+                        <img src="{% static 'images/maps' %}/{{ member_state.country_name|slugify }}.png"
+                             alt="{{ member_state.country_name }}"
+                             class="country-flag"
+                             onerror="this.src='{% static 'images/detail.png' %}'">
+                    </div>
+
+                    <h1 class="country-title">{{ member_state.country_name }}</h1>
+                    <p class="ipa-subtitle">{{ member_state.ipa_full_name }} ({{ member_state.ipa_acronym }})</p>
+
+                    {% if member_state.tagline %}
+                    <p class="tagline">{{ member_state.tagline }}</p>
+                    {% endif %}
+
+                    <div class="hero-actions">
+                        <a href="#contact-section" class="btn btn-primary smooth-scroll">
+                            <i class="fas fa-envelope me-2"></i>Contact IPA
+                        </a>
+                        {% if member_state.investment_guide_pdf %}
+                        <a href="{{ member_state.investment_guide_pdf }}" class="btn btn-outline-secondary" target="_blank">
+                            <i class="fas fa-download me-2"></i>Download Guide
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ member_state.gdp_display }}</span>
+                            <span class="stat-label">GDP (USD)</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ member_state.population_display }}</span>
+                            <span class="stat-label">Population</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ member_state.gdp_growth_rate|default:"N/A" }}%</span>
+                            <span class="stat-label">GDP Growth</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sticky Navigation -->
+<nav class="sticky-nav"
+     x-data="{ activeSection: 'overview' }"
+     x-init="
+        const observerOptions = {
+            root: null,
+            rootMargin: '-100px 0px -80% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    activeSection = entry.target.id;
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+     ">
+    <div class="container">
+        <ul class="nav-tabs">
+            <li>
+                <a href="#overview"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'overview' }"
+                   @click="activeSection = 'overview'">
+                    Overview
+                </a>
+            </li>
+            <li>
+                <a href="#ipa-leadership"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'ipa-leadership' }"
+                   @click="activeSection = 'ipa-leadership'">
+                    IPA Leadership
+                </a>
+            </li>
+            <li>
+                <a href="#sectors"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'sectors' }"
+                   @click="activeSection = 'sectors'">
+                    Sectors
+                </a>
+            </li>
+            <li>
+                <a href="#opportunities"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'opportunities' }"
+                   @click="activeSection = 'opportunities'">
+                    Opportunities
+                </a>
+            </li>
+            <li>
+                <a href="#incentives"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'incentives' }"
+                   @click="activeSection = 'incentives'">
+                    Incentives
+                </a>
+            </li>
+            <li>
+                <a href="#contact-section"
+                   class="nav-link smooth-scroll"
+                   :class="{ 'active': activeSection === 'contact-section' }"
+                   @click="activeSection = 'contact-section'">
+                    Contact
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Overview Section -->
+        <section id="overview" class="content-section">
+            <h2 class="section-title">Why Invest in {{ member_state.country_name }}</h2>
+
+            <div class="overview-narrative">
+                {{ member_state.overview|linebreaks }}
+            </div>
+
+            <!-- Key Indicators -->
+            <div class="key-indicators">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="indicator-card">
+                            <div class="indicator-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <span class="indicator-label">Capital City</span>
+                                <span class="indicator-value">{{ member_state.capital_city }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="indicator-card">
+                            <div class="indicator-icon">
+                                <i class="fas fa-language"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <span class="indicator-label">Official Language</span>
+                                <span class="indicator-value">{{ member_state.get_official_language_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="indicator-card">
+                            <div class="indicator-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <span class="indicator-label">Currency</span>
+                                <span class="indicator-value">{{ member_state.currency }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="indicator-card">
+                            <div class="indicator-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="indicator-content">
+                                <span class="indicator-label">ECOWAS Member</span>
+                                <span class="indicator-value">Since {{ member_state.ecowas_join_year|default:"1975" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: IPA Leadership Section -->
+        <section id="ipa-leadership" class="content-section">
+            <h2 class="section-title">Investment Promotion Agency Leadership</h2>
+
+            <div class="ipa-leadership-section">
+                {% comment %}
+                <!-- If IPA Leadership exists in database -->
+                {% if member_state.ipa_leadership %}
+                <div class="leadership-header">
+                    <div class="leader-photo-frame">
+                        <div class="leader-photo">
+                            <img src="{{ member_state.ipa_leadership.official_photograph.url }}"
+                                 alt="{{ member_state.ipa_leadership.full_name }}">
+                        </div>
+                    </div>
+                    <div class="leader-info">
+                        <h3>{{ member_state.ipa_leadership.full_name }}</h3>
+                        <div class="leader-title">{{ member_state.ipa_leadership.get_official_title_display }}</div>
+                        <div class="leader-organization">{{ member_state.ipa_full_name }}</div>
+                        {% if member_state.ipa_leadership.biography %}
+                        <p class="leader-bio">{{ member_state.ipa_leadership.biography|truncatewords:60 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                {% endcomment %}
+
+                <!-- Placeholder until data is populated -->
+                <div class="leadership-header">
+                    <div class="leader-photo-frame">
+                        <div class="leader-photo">
+                            <img src=""
+                                 alt="IPA Leadership">
+                        </div>
+                    </div>
+                    <div class="leader-info">
+                        <h3>{{ member_state.ipa_acronym }} Leadership</h3>
+                        <div class="leader-title">Chief Executive Officer</div>
+                        <div class="leader-organization">{{ member_state.ipa_full_name }}</div>
+                        <p class="leader-bio">
+                            The leadership of {{ member_state.ipa_acronym }} brings extensive experience
+                            in investment promotion, economic development, and business facilitation.
+                            They work to create an enabling environment for both local and foreign investors
+                            in {{ member_state.country_name }}.
+                        </p>
+                    </div>
+                </div>
+                {% comment %}{% endif %}{% endcomment %}
+
+                <!-- IPA Contact Information -->
+                <div class="ipa-contact-section">
+                    <div class="contact-header">
+                        <div class="ipa-logo-container">
+                            {% comment %}
+                            {% if member_state.institutional_details %}
+                            <img src="{{ member_state.institutional_details.official_logo.url }}"
+                                 alt="{{ member_state.ipa_acronym }} Logo">
+                            {% else %}
+                            {% endcomment %}
+                            <img src="{% static 'images/ipa-logos' %}/{{ member_state.country_name|slugify }}.png"
+                                 alt="{{ member_state.ipa_acronym }}"
+                                 onerror="this.style.display='none'">
+                            {% comment %}{% endif %}{% endcomment %}
+                        </div>
+                        <div class="contact-info">
+                            <h4>{{ member_state.ipa_full_name }}</h4>
+                            <p class="agency-name">{{ member_state.ipa_acronym }}</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-details">
+                        {% comment %}
+                        {% if member_state.institutional_details %}
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Physical Address</div>
+                                <div class="contact-value">{{ member_state.institutional_details.get_full_address }}</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value">
+                                    <a href="mailto:{{ member_state.institutional_details.official_email }}">
+                                        {{ member_state.institutional_details.official_email }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Phone</div>
+                                <div class="contact-value">{{ member_state.institutional_details.official_phone }}</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Website</div>
+                                <div class="contact-value">
+                                    <a href="{{ member_state.institutional_details.official_website }}" target="_blank">
+                                        Visit Website →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        {% endcomment %}
+
+                        <!-- Placeholder contact info -->
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Location</div>
+                                <div class="contact-value">{{ member_state.capital_city }}, {{ member_state.country_name }}</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value">
+                                    <a href="mailto:info@{{ member_state.ipa_acronym|lower }}.{{ member_state.country_name|slice:':3'|lower }}">
+                                        Contact IPA
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <div class="contact-item-content">
+                                <div class="contact-label">Website</div>
+                                <div class="contact-value">
+                                    <a href="#contact-section">Visit Website →</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %}{% endif %}{% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Continue with existing sections: Sectors, Opportunities, Incentives, etc. -->
+        <!-- ... (rest of the original detail.html content) ... -->
+
+    </div>
+</main>
+{% endblock %}

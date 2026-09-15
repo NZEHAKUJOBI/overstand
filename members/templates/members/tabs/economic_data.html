@@ -1,0 +1,589 @@
+{% load i18n %}
+<!-- Economic Data & Charts Tab -->
+<div class="economic-data-tab">
+    <div class="data-intro mb-5">
+        <h2 class="mb-3">{% translate "Economic Data & Investment Climate" %}</h2>
+        <p class="lead text-muted">
+            {% blocktranslate trimmed with country=member_state.country_name %}
+                Comprehensive economic indicators and FDI trends for {{ country }}.
+                Data-driven insights to support your investment decisions.
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    <!-- Key Economic Indicators Dashboard -->
+    <div class="indicators-dashboard mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-chart-bar me-2"></i>
+            {% translate "Key Economic Indicators" %}
+        </h3>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="indicator-card">
+                    <div class="indicator-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>{{ member_state.population_display }}</h4>
+                    <p>{% translate "Population" %}</p>
+                    <span class="indicator-label">{% translate "Market Size" %}</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="indicator-card">
+                    <div class="indicator-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h4>{{ member_state.formatted_gdp }}</h4>
+                    <p>{% translate "GDP (USD)" %}</p>
+                    <span class="indicator-label">{% translate "Economic Output" %}</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="indicator-card">
+                    <div class="indicator-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>{{ member_state.gdp_growth_rate|default:"N/A" }}%</h4>
+                    <p>{% translate "GDP Growth" %}</p>
+                    <span class="indicator-label">{% translate "Annual Rate" %}</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="indicator-card">
+                    <div class="indicator-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4>{{ member_state.formatted_gdp_per_capita }}</h4>
+                    <p>{% translate "GDP Per Capita" %}</p>
+                    <span class="indicator-label">{% translate "Per Person" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FDI Time Series Chart -->
+    {% if fdi_data %}
+    <div class="fdi-chart-section mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-chart-area me-2"></i>
+            {% translate "Foreign Direct Investment Trends" %}
+        </h3>
+        <div class="chart-container">
+            <canvas id="fdiTimeSeriesChart"></canvas>
+        </div>
+        <div class="chart-controls mt-3">
+            <button class="btn btn-sm btn-outline-primary active" data-period="5">{% translate "5 Years" %}</button>
+            <button class="btn btn-sm btn-outline-primary" data-period="10">{% translate "10 Years" %}</button>
+            <button class="btn btn-sm btn-outline-primary" data-period="all">{% translate "All Time" %}</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- FDI Statistics Grid -->
+    {% if all_fdi_data %}
+    <div class="fdi-statistics mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-globe me-2"></i>
+            {% translate "FDI Performance Metrics" %}
+        </h3>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h5>{% translate "Total FDI Inflow" %}</h5>
+                    <p class="stat-value">${{ all_fdi_data.total_inflow|floatformat:2|default:"N/A" }}B</p>
+                    <span class="stat-period">{% translate "Last 5 Years" %}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h5>{% translate "FDI Stock" %}</h5>
+                    <p class="stat-value">${{ all_fdi_data.fdi_stock|floatformat:2|default:"N/A" }}B</p>
+                    <span class="stat-period">{% translate "Current" %}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h5>{% translate "Average Annual FDI" %}</h5>
+                    <p class="stat-value">${{ all_fdi_data.average_annual|floatformat:2|default:"N/A" }}M</p>
+                    <span class="stat-period">{% translate "5-Year Avg" %}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h5>{% translate "Year-on-Year Change" %}</h5>
+                    <p class="stat-value {% if all_fdi_data.yoy_change > 0 %}text-success{% elif all_fdi_data.yoy_change < 0 %}text-danger{% endif %}">
+                        {{ all_fdi_data.yoy_change|floatformat:1|default:"N/A" }}%
+                    </p>
+                    <span class="stat-period">{% translate "Latest Year" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sector Distribution Chart -->
+    {% if sector_distribution %}
+    <div class="sector-chart-section mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-pie-chart me-2"></i>
+            {% translate "FDI Distribution by Sector" %}
+        </h3>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <canvas id="sectorPieChart"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="sector-breakdown">
+                    {% for sector, data in sector_distribution.items %}
+                    <div class="sector-item">
+                        <div class="sector-bar-container">
+                            <span class="sector-name">{{ sector }}</span>
+                            <div class="sector-bar">
+                                <div class="sector-bar-fill"
+                                     style="width: {{ data.percentage }}%;"
+                                     data-percentage="{{ data.percentage }}">
+                                </div>
+                            </div>
+                            <span class="sector-percentage">{{ data.percentage }}%</span>
+                        </div>
+                        <p class="sector-value">
+                            {% blocktranslate trimmed with value=data.value|floatformat:2 %}
+                                ${{ value }}M invested
+                            {% endblocktranslate %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Business Climate Indicators -->
+    <div class="business-climate mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-briefcase me-2"></i>
+            {% translate "Business Climate Rankings" %}
+        </h3>
+        <div class="row g-4">
+            {% if member_state.ease_of_doing_business_rank %}
+            <div class="col-md-6">
+                <div class="ranking-card">
+                    <div class="ranking-header">
+                        <i class="fas fa-trophy"></i>
+                        <h5>{% translate "Ease of Doing Business" %}</h5>
+                    </div>
+                    <div class="ranking-body">
+                        <div class="rank-number">
+                            #{{ member_state.ease_of_doing_business_rank }}
+                        </div>
+                        <p>{% translate "World Bank Global Ranking" %}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if member_state.competitiveness_score %}
+            <div class="col-md-6">
+                <div class="ranking-card">
+                    <div class="ranking-header">
+                        <i class="fas fa-star"></i>
+                        <h5>{% translate "Global Competitiveness" %}</h5>
+                    </div>
+                    <div class="ranking-body">
+                        <div class="rank-number">
+                            {{ member_state.competitiveness_score }}/100
+                        </div>
+                        <p>{% translate "Competitiveness Index Score" %}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Trade Statistics -->
+    {% if member_state.key_industries or member_state.trade_agreements or member_state.total_exports or member_state.total_imports %}
+    <div class="trade-statistics mb-5">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-exchange-alt me-2"></i>
+            {% translate "Trade & Export Performance" %}
+        </h3>
+        <div class="row g-4">
+            {% if member_state.key_industries %}
+            <div class="col-md-4">
+                <div class="trade-card">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h5>{% translate "Key Industries" %}</h5>
+                    <p>{{ member_state.key_industries }}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% if member_state.trade_agreements %}
+            <div class="col-md-4">
+                <div class="trade-card">
+                    <i class="fas fa-handshake"></i>
+                    <h5>{% translate "Trade Agreements" %}</h5>
+                    <p>{{ member_state.trade_agreements }}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% if member_state.total_exports or member_state.total_imports %}
+            <div class="col-md-4">
+                <div class="trade-card">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h5>{% translate "Trade Volume" %}</h5>
+                    {% if member_state.total_exports %}
+                    <p><strong>{% translate "Exports:" %}</strong> ${{ member_state.total_exports|floatformat:0 }}M</p>
+                    {% endif %}
+                    {% if member_state.total_imports %}
+                    <p class="mb-0"><strong>{% translate "Imports:" %}</strong> ${{ member_state.total_imports|floatformat:0 }}M</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Data Sources & Notes -->
+    <div class="data-sources">
+        <h5><i class="fas fa-info-circle me-2"></i>{% translate "Data Sources & Notes" %}</h5>
+        <p>
+            {% blocktranslate trimmed with acronym=member_state.ipa_acronym %}
+                Economic data sourced from: World Bank, IMF, UNCTAD, National Statistics Bureau,
+                {{ acronym }}, and other official sources.
+                Data is updated regularly but may be subject to revisions.
+            {% endblocktranslate %}
+        </p>
+        <p class="text-muted mb-0">
+            <small>{% translate "Last Updated:" %} {% now "F Y" %}</small>
+        </p>
+    </div>
+
+    <!-- Download Data Section -->
+    <div class="download-section mt-5">
+        <div class="economic-download-banner">
+            <h4><i class="fas fa-download me-2"></i>{% translate "Download Economic Reports" %}</h4>
+            <p>{% translate "Access detailed economic data and investment reports" %}</p>
+            <div class="download-buttons">
+                {% if member_state.investment_guide_pdf %}
+                <a href="{{ member_state.investment_guide_pdf }}" class="btn economic-download-btn-primary" target="_blank">
+                    <i class="fas fa-file-pdf me-2"></i>{% translate "Investment Guide" %}
+                </a>
+                {% endif %}
+                <button class="btn economic-download-btn-outline" onclick="exportEconomicData()">
+                    <i class="fas fa-file-excel me-2"></i>{% translate "Export Data (CSV)" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.indicator-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.indicator-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-green, #1B7A4C), var(--light-green, #2EA86A));
+}
+
+.indicator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.indicator-icon {
+    font-size: 2.5rem;
+    color: var(--primary-green, #1B7A4C);
+    margin-bottom: 1rem;
+}
+
+.indicator-card h4 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.indicator-card p {
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.indicator-label {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.chart-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.chart-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.stat-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--primary-green, #1B7A4C);
+}
+
+.stat-box h5 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.5rem;
+}
+
+.stat-period {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.sector-breakdown {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.sector-item {
+    margin-bottom: 1.5rem;
+}
+
+.sector-bar-container {
+    display: grid;
+    grid-template-columns: 120px 1fr 60px;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sector-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark-green, #0D4A2E);
+}
+
+.sector-bar {
+    height: 24px;
+    background: #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sector-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-green, #1B7A4C), var(--light-green, #2EA86A));
+    transition: width 0.5s ease;
+}
+
+.sector-percentage {
+    font-weight: 700;
+    color: var(--primary-green, #1B7A4C);
+    text-align: right;
+}
+
+.sector-value {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0 0 0 132px;
+}
+
+.ranking-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.ranking-header {
+    background: linear-gradient(135deg, var(--primary-green, #1B7A4C), var(--dark-green, #0D4A2E));
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ranking-header i {
+    font-size: 2rem;
+}
+
+.ranking-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.ranking-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.rank-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-gold, #D4AF37);
+    margin-bottom: 0.5rem;
+}
+
+.ranking-body p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.trade-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.trade-card i {
+    font-size: 2.5rem;
+    color: var(--primary-green, #1B7A4C);
+    margin-bottom: 1rem;
+}
+
+.trade-card h5 {
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 0.75rem;
+}
+
+.trade-card p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.data-sources {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-green, #1B7A4C);
+}
+
+.data-sources h5 {
+    color: var(--dark-green, #0D4A2E);
+    margin-bottom: 1rem;
+}
+
+.data-sources p {
+    color: #495057;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.economic-download-banner {
+    background: linear-gradient(135deg, var(--primary-green, #1B7A4C), var(--dark-green, #0D4A2E));
+    color: white;
+    padding: 3rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.economic-download-banner h4 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.economic-download-banner p {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2rem;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.economic-download-btn-primary {
+    background: var(--accent-gold, #D4A520);
+    color: var(--dark-green, #0D4A2E);
+    border: 2px solid var(--accent-gold, #D4A520);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.economic-download-btn-primary i {
+    color: inherit;
+}
+
+.economic-download-btn-primary:hover {
+    background: #bf9019;
+    border-color: #bf9019;
+    color: var(--dark-green, #0D4A2E);
+    transform: translateY(-2px);
+}
+
+.economic-download-btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.7);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.economic-download-btn-outline i {
+    color: inherit;
+}
+
+.economic-download-btn-outline:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: white;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-green, #0D4A2E);
+    border-bottom: 3px solid var(--primary-green, #1B7A4C);
+    padding-bottom: 0.5rem;
+}
+</style>
+
+<script>
+// Chart initialization scripts would go here
+// Using Chart.js for the visualizations
+</script>

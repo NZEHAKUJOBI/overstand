@@ -1,0 +1,196 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Delete Folder - {{ member_state.country_name }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}"
+           class="btn btn-outline-secondary btn-sm me-3">
+            <i class="fas fa-arrow-left"></i>{% translate "Back" %}
+        </a>
+        <div>
+            <h1 class="page-title mb-0 text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>{% translate "Delete Folder" %}
+            </h1>
+            <p class="text-muted mb-0">
+                {% translate "This action requires confirmation" %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trash-alt me-2"></i>{% translate "Confirm Deletion" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if folder.is_system %}
+                <!-- System Folder - Cannot Delete -->
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-lock me-2"></i>
+                    <strong>{% translate "System Folder Protection" %}</strong>
+                    <p class="mb-0 mt-2">
+                        {% translate "This is a system folder and cannot be deleted. System folders (Documents, Images, Videos, Others)" %}
+                        {% translate "are essential for the media library structure and are permanently protected." %}
+                    </p>
+                </div>
+
+                <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.parent.id|default:'' }}"
+                   class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>{% translate "Back to Media Library" %}
+                </a>
+
+                {% else %}
+                    {% if folder.get_file_count > 0 %}
+                    <!-- Has Files - Cannot Delete -->
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>{% translate "Folder Not Empty" %}</strong>
+                        <p class="mb-0 mt-2">
+                            This folder contains <strong>{% blocktranslate trimmed %}{{ folder.get_file_count }} file(s){% endblocktranslate %}</strong>.
+                            {% translate "You must delete or move all files before deleting the folder." %}
+                        </p>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}"
+                           class="btn btn-primary">
+                            <i class="fas fa-folder-open me-2"></i>{% translate "View Folder Contents" %}
+                        </a>
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.parent.id|default:'' }}"
+                           class="btn btn-outline-secondary">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+
+                    {% elif folder.subfolders.filter(is_deleted=False).exists %}
+                    <!-- Has Subfolders - Cannot Delete -->
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>{% translate "Folder Contains Subfolders" %}</strong>
+                        <p class="mb-0 mt-2">
+                            {% translate "This folder contains subfolders. You must delete all subfolders before deleting this folder." %}
+                        </p>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}"
+                           class="btn btn-primary">
+                            <i class="fas fa-folder-open me-2"></i>{% translate "View Subfolders" %}
+                        </a>
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.parent.id|default:'' }}"
+                           class="btn btn-outline-secondary">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+
+                    {% else %}
+                    <!-- Can Delete -->
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>{% translate "Warning: This action cannot be easily undone" %}</strong>
+                        <p class="mb-2 mt-2">
+                            {% blocktranslate trimmed %}You are about to delete the folder "<strong>{{ folder.name }}</strong>".{% endblocktranslate %}
+                            {% translate "This folder will be soft-deleted and can be recovered by system administrators if needed." %}
+                        </p>
+                        <p class="mb-0">
+                            {% translate "Are you absolutely sure you want to proceed?" %}
+                        </p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>{% translate "Yes, Delete This Folder" %}
+                            </button>
+                            <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.parent.id|default:'' }}"
+                               class="btn btn-outline-secondary">
+                                {% translate "Cancel" %}
+                            </a>
+                        </div>
+                    </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-folder me-2"></i>{% translate "Folder Details" %}
+                </h6>
+
+                <div class="mb-3">
+                    <small class="text-muted">Name</small>
+                    <div class="fw-medium">{{ folder.name }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">Type</small>
+                    <div class="fw-medium">
+                        {% if folder.is_system %}
+                        <span class="badge bg-info">{% translate "System Folder" %}</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{% translate "Custom Folder" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">{% translate "Path" %}</small>
+                    <div class="fw-medium small">{{ folder.full_path }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">{% translate "Files" %}</small>
+                    <div class="fw-medium">{{ folder.get_file_count }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">{% translate "Subfolders" %}</small>
+                    <div class="fw-medium">{{ folder.subfolders.filter(is_deleted=False).count }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-muted">{% translate "Created" %}</small>
+                    <div class="fw-medium">{{ folder.created_at|date:"M d, Y" }}</div>
+                </div>
+
+                {% if folder.created_by %}
+                <div class="mb-0">
+                    <small class="text-muted">{% translate "Created By" %}</small>
+                    <div class="fw-medium">{{ folder.created_by.get_full_name|default:folder.created_by.email }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-3 bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>{% translate "What Happens Next?" %}
+                </h6>
+                <div class="small">
+                    <p class="mb-2"><strong>{% translate "Soft Delete:" %}</strong></p>
+                    <ul class="mb-0">
+                        <li>{% translate "Folder is marked as deleted" %}</li>
+                        <li>{% translate "Not visible in media library" %}</li>
+                        <li>{% translate "Can be recovered by administrators" %}</li>
+                        <li>{% translate "Audit trail preserved" %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,1126 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Country Profile" %}{% endblock %}
+{% block page_title %}{% translate "Country Profile Management" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> / {% translate "Profile" %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Banner ─────────────────────────────────────────── */
+.profile-header-banner {
+    position: relative;
+    height: 260px;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.25rem 2.5rem;
+    height: 100%;
+}
+
+.profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    background: white;
+    padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.avatar-placeholder-large {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    font-size: 3rem;
+    font-weight: 800;
+    border-radius: 12px;
+}
+
+.profile-header-info { flex: 1; color: white; }
+
+.profile-country-name {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    margin: 0 0 0.25rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.profile-ipa-name {
+    font-size: 0.9375rem;
+    color: rgba(255,255,255,0.85);
+    margin: 0 0 1rem;
+    font-weight: 500;
+}
+
+.profile-header-stats {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.profile-header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.btn-header-action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: var(--transition-fast);
+}
+
+.btn-header-edit {
+    background: white;
+    color: var(--dark-green);
+}
+
+.btn-header-edit:hover {
+    background: var(--neutral-100);
+    color: var(--dark-green);
+    transform: translateY(-1px);
+}
+
+.btn-header-view {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.btn-header-view:hover {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* ── Tabs ────────────────────────────────────────────── */
+.profile-tabs-wrapper {
+    background: white;
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.profile-tabs {
+    display: flex;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.profile-tab-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--neutral-600);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.profile-tab-link:hover {
+    background: var(--neutral-100);
+    color: var(--primary-green);
+}
+
+.profile-tab-link.active {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    box-shadow: 0 4px 12px rgba(27,122,76,0.25);
+}
+
+/* ── Profile Completeness (redesigned) ──────────────────── */
+.pc-score-pill {
+    background: var(--neutral-100); color: var(--neutral-700);
+    border-radius: 999px; padding: 0.3rem 0.875rem;
+    font-size: 0.8rem; font-weight: 700;
+}
+.pc-header-row { display: flex; gap: 1.5rem; align-items: flex-start; }
+.pc-pct-block {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 90px; background: var(--neutral-50);
+    border-radius: 14px; padding: 1rem 0.75rem;
+    border: 2px solid var(--neutral-100); flex-shrink: 0;
+}
+.pc-pct-num  { font-size: 2.5rem; font-weight: 900; color: var(--primary-green); line-height: 1; }
+.pc-pct-sym  { font-size: 1.25rem; font-weight: 700; }
+.pc-pct-label {
+    font-size: 0.72rem; font-weight: 700; color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-top: 0.3rem; text-align: center;
+}
+.pc-bar-block { flex: 1; }
+.pc-bar-track { height: 10px; background: var(--neutral-200); border-radius: 999px; overflow: hidden; margin-bottom: 0.75rem; }
+.pc-bar-fill  { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--primary-green), var(--light-green)); transition: width 1s ease; }
+.pc-bar-hint  { font-size: 0.85rem; color: var(--neutral-500); line-height: 1.5; margin-bottom: 0.875rem; }
+.pc-cta-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1.125rem; border-radius: 8px;
+    background: var(--primary-green); color: white;
+    font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.2s;
+}
+.pc-cta-btn:hover { background: var(--dark-green); color: white; transform: translateY(-1px); }
+.pc-section-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 0.625rem;
+}
+.pc-label-todo { color: #D97706; }
+.pc-label-done { color: #059669; }
+.pc-item-grid  { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem; }
+.pc-todo-item {
+    display: flex; align-items: center; gap: 0.625rem;
+    padding: 0.75rem 0.875rem; border-radius: 10px;
+    background: rgba(245,158,11,0.07); border: 1.5px solid rgba(245,158,11,0.2);
+    text-decoration: none; transition: all 0.18s;
+}
+.pc-todo-item:hover {
+    background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.45);
+    transform: translateY(-2px); box-shadow: 0 3px 8px rgba(245,158,11,0.15);
+}
+.pc-todo-icon   { color: #D97706; font-size: 0.85rem; flex-shrink: 0; }
+.pc-todo-name   { flex: 1; font-size: 0.875rem; font-weight: 600; color: #92400e; }
+.pc-todo-action { font-size: 0.72rem; font-weight: 700; color: #D97706; white-space: nowrap; display: flex; align-items: center; gap: 0.3rem; }
+.pc-done-list   { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pc-done-item {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.375rem 0.75rem; border-radius: 999px;
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+    font-size: 0.8rem; font-weight: 600; color: #059669;
+}
+.pc-done-item i { font-size: 0.75rem; }
+
+/* ── Info grid ───────────────────────────────────────── */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.info-item { padding-bottom: 1rem; border-bottom: 1px solid var(--neutral-100); }
+
+.info-label {
+    font-size: 0.8125rem;
+    color: var(--neutral-500);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+}
+
+.info-value {
+    font-size: 0.9375rem;
+    color: var(--dark-green);
+    font-weight: 600;
+}
+
+.info-value a {
+    color: var(--primary-green);
+    text-decoration: none;
+}
+
+.info-value a:hover { text-decoration: underline; }
+
+.overview-text {
+    color: var(--neutral-700);
+    line-height: 1.8;
+    font-size: 0.9375rem;
+    background: var(--neutral-50);
+    padding: 1.25rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--primary-green);
+}
+
+/* Social links row */
+.social-links-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.social-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.social-link-btn:hover { transform: translateY(-2px); }
+.social-link-btn.linkedin { background: #e8f0fe; color: #0A66C2; }
+.social-link-btn.twitter  { background: #e7f5ff; color: #1DA1F2; }
+.social-link-btn.facebook { background: #ebf0fb; color: #1877F2; }
+.social-link-btn.instagram{ background: #fce8f8; color: #C13584; }
+
+/* ── Economic indicators ─────────────────────────────── */
+.econ-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.econ-card {
+    text-align: center;
+    padding: 1.25rem 1rem;
+    background: var(--neutral-50);
+    border-radius: 12px;
+    border: 2px solid var(--neutral-100);
+    transition: var(--transition-fast);
+}
+
+.econ-card:hover {
+    border-color: rgba(27,122,76,0.2);
+    box-shadow: var(--shadow-sm);
+}
+
+.econ-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.75rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(27,122,76,0.1), rgba(45,144,97,0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--primary-green);
+}
+
+.econ-label {
+    font-size: 0.8rem;
+    color: var(--neutral-500);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem;
+}
+
+.econ-value {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--dark-green);
+}
+
+.econ-value.empty {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--neutral-400);
+}
+
+/* ── Documents ───────────────────────────────────────── */
+.doc-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    transition: var(--transition-fast);
+}
+
+.doc-row + .doc-row { margin-top: 0.75rem; }
+
+.doc-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.doc-icon.has-file { background: rgba(220,38,38,0.1); color: #dc2626; }
+.doc-icon.no-file  { background: var(--neutral-200); color: var(--neutral-400); }
+
+.doc-info { flex: 1; }
+
+.doc-name {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--dark-green);
+    margin-bottom: 0.125rem;
+}
+
+.doc-status {
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.doc-status.uploaded { color: #059669; }
+.doc-status.missing  { color: var(--neutral-400); }
+
+.doc-action a {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    text-decoration: none;
+}
+
+.doc-action a:hover { text-decoration: underline; }
+
+/* ── Sidebar cards ───────────────────────────────────── */
+.sidebar-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--neutral-200);
+    color: var(--neutral-700);
+    background: white;
+    transition: var(--transition-fast);
+    width: 100%;
+    text-align: left;
+}
+
+.sidebar-action-btn:hover {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    background: rgba(27,122,76,0.04);
+    transform: translateX(3px);
+}
+
+.sidebar-action-btn .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar-action-btn .btn-label { flex: 1; }
+
+.sidebar-action-btn .btn-arrow { color: var(--neutral-400); font-size: 0.75rem; }
+
+/* Status badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9375rem;
+}
+
+.status-badge.active   { background: rgba(16,185,129,0.1); color: #059669; }
+.status-badge.inactive { background: rgba(245,158,11,0.1); color: #D97706; }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 1rem; }
+
+.timeline-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.timeline-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: rgba(27,122,76,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-green);
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.timeline-title { font-weight: 600; color: var(--dark-green); font-size: 0.9rem; }
+.timeline-time  { font-size: 0.8125rem; color: var(--neutral-500); margin-top: 0.125rem; }
+
+/* Attention list */
+.attention-list { list-style: none; padding: 0; margin: 0; }
+
+.attention-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--neutral-100);
+    font-size: 0.875rem;
+}
+
+.attention-item:last-child { border-bottom: none; }
+
+.attention-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #F59E0B;
+    flex-shrink: 0;
+}
+
+.attention-item a {
+    color: var(--primary-green);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    margin-left: auto;
+}
+
+.attention-item a:hover { text-decoration: underline; }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 991px) {
+    .profile-header-content { flex-direction: column; text-align: center; padding: 1.75rem; }
+    .profile-header-stats { justify-content: center; }
+    .profile-header-actions { flex-direction: row; }
+    .econ-grid { grid-template-columns: repeat(2, 1fr); }
+    .completion-checklist { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 576px) {
+    .econ-grid { grid-template-columns: 1fr; }
+    .profile-header-banner { height: auto; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header Banner -->
+<div class="profile-header-banner mb-4"{% if member_state.hero_image %} style="background-image: linear-gradient(to right, rgba(11,54,34,0.75) 0%, rgba(11,54,34,0.35) 100%), url('{{ member_state.hero_image }}');"{% endif %}>
+    <div class="profile-header-content">
+        <!-- Avatar -->
+        <div class="profile-avatar-large">
+            {% if member_state.ipa_logo %}
+                <img src="{{ member_state.ipa_logo }}" alt="{{ member_state.ipa_acronym }} logo">
+            {% else %}
+                <div class="avatar-placeholder-large">{{ member_state.country_name.0|upper }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="profile-header-info">
+            <h1 class="profile-country-name">
+                {% if member_state.flag_emoji %}{{ member_state.flag_emoji }} {% endif %}{{ member_state.country_name }}
+            </h1>
+            <p class="profile-ipa-name">
+                {{ member_state.ipa_full_name }}
+                {% if member_state.ipa_acronym %} ({{ member_state.ipa_acronym }}){% endif %}
+            </p>
+            <div class="profile-header-stats">
+                <div class="stat-pill">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>{% blocktranslate trimmed with count=opportunities_count %}{{ count }} Opportunities{% endblocktranslate %}</span>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-industry"></i>
+                    <span>{% blocktranslate trimmed with count=sectors_count %}{{ count }} Sectors{% endblocktranslate %}</span>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-users"></i>
+                    <span>{% blocktranslate trimmed with count=team_members_count %}{{ count }} Team Members{% endblocktranslate %}</span>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-tasks"></i>
+                    <span>{% blocktranslate trimmed with pct=profile_completion.percentage %}{{ pct }}% Complete{% endblocktranslate %}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="profile-header-actions">
+            <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}" class="btn-header-action btn-header-edit">
+                <i class="fas fa-edit"></i> {% translate "Edit Profile" %}
+            </a>
+            <a href="{% url 'members:detail' country_slug=member_state.slug %}" target="_blank" class="btn-header-action btn-header-view">
+                <i class="fas fa-external-link-alt"></i> {% translate "View Public" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Tabs -->
+<div class="profile-tabs-wrapper mb-4">
+    <ul class="profile-tabs" role="tablist">
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile' member_state.slug %}" class="profile-tab-link active">
+                <i class="fas fa-eye"></i><span>{% translate "Overview" %}</span>
+            </a>
+        </li>
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}" class="profile-tab-link">
+                <i class="fas fa-info-circle"></i><span>{% translate "Basic Info" %}</span>
+            </a>
+        </li>
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile_economic' member_state.slug %}" class="profile-tab-link">
+                <i class="fas fa-chart-line"></i><span>{% translate "Economic Data" %}</span>
+            </a>
+        </li>
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile_resources' member_state.slug %}" class="profile-tab-link">
+                <i class="fas fa-folder-open"></i><span>{% translate "Resources" %}</span>
+            </a>
+        </li>
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile_media' member_state.slug %}" class="profile-tab-link">
+                <i class="fas fa-images"></i><span>{% translate "Media Gallery" %}</span>
+            </a>
+        </li>
+        <li class="profile-tab">
+            <a href="{% url 'dashboard:country:profile_seo' member_state.slug %}" class="profile-tab-link">
+                <i class="fas fa-search"></i><span>{% translate "SEO Settings" %}</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main Layout -->
+<div class="row g-4">
+    <!-- ── Left Column ── -->
+    <div class="col-lg-8">
+
+        <!-- Profile Completeness -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-tasks me-2 text-primary-green"></i>
+                    {% translate "Profile Completeness" %}
+                </h3>
+                <span class="pc-score-pill">{% blocktranslate trimmed with completed=profile_completion.completed total=profile_completion.total %}{{ completed }}/{{ total }} done{% endblocktranslate %}</span>
+            </div>
+            <div class="content-card-body">
+
+                <!-- Score + bar -->
+                <div class="pc-header-row mb-4">
+                    <div class="pc-pct-block">
+                        <span class="pc-pct-num">{{ profile_completion.percentage }}<span class="pc-pct-sym">%</span></span>
+                        <span class="pc-pct-label">
+                            {% if profile_completion.percentage == 100 %}{% translate "Complete!" %}
+                            {% elif profile_completion.percentage >= 70 %}{% translate "Almost there" %}
+                            {% elif profile_completion.percentage >= 40 %}{% translate "Good progress" %}
+                            {% else %}{% translate "Getting started" %}{% endif %}
+                        </span>
+                    </div>
+                    <div class="pc-bar-block">
+                        <div class="pc-bar-track">
+                            <div class="pc-bar-fill" style="width:{{ profile_completion.percentage }}%"></div>
+                        </div>
+                        <p class="pc-bar-hint">
+                            {% translate "A complete profile attracts more investors and increases your visibility on the platform." %}
+                        </p>
+                        {% if profile_completion.percentage < 100 %}
+                        <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}" class="pc-cta-btn">
+                            <i class="fas fa-arrow-right me-1"></i> {% translate "Continue Editing" %}
+                        </a>
+                        {% else %}
+                        <a href="{% url 'members:detail' country_slug=member_state.slug %}" target="_blank" class="pc-cta-btn">
+                            <i class="fas fa-external-link-alt me-1"></i> {% translate "View Public Profile" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Still needed -->
+                {% with todos=profile_completion.items|dictsort:"completed" %}
+                {% if profile_completion.percentage < 100 %}
+                <div class="pc-section-label pc-label-todo">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% blocktranslate trimmed with remaining=profile_completion.total|add:"-"|add:profile_completion.completed %}Still needed — {{ remaining }} sections{% endblocktranslate %}
+                </div>
+                <div class="pc-item-grid mb-3">
+                    {% for item in profile_completion.items %}
+                    {% if not item.completed %}
+                    {% if item.name == "Priority Sectors" %}
+                        {% url 'dashboard:country:sectors_add' member_state_slug=member_state.slug as item_url %}
+                    {% elif item.name == "Published Opportunities" %}
+                        {% url 'dashboard:country:opportunities' member_state_slug=member_state.slug as item_url %}
+                    {% elif item.name == "FDI Inflows" %}
+                        {% url 'dashboard:country:profile_economic' member_state_slug=member_state.slug as item_url %}
+                    {% elif item.name == "Investment Guide PDF" or item.name == "Doing Business Guide PDF" %}
+                        {% url 'dashboard:country:profile_resources' member_state_slug=member_state.slug as item_url %}
+                    {% elif item.name == "Hero Image" %}
+                        {% url 'dashboard:country:profile_media' member_state_slug=member_state.slug as item_url %}
+                    {% else %}
+                        {% url 'dashboard:country:profile_basic' member_state_slug=member_state.slug as item_url %}
+                    {% endif %}
+                    <a href="{{ item_url }}" class="pc-todo-item">
+                        <div class="pc-todo-icon"><i class="fas fa-circle-dot"></i></div>
+                        <span class="pc-todo-name">{{ item.name }}</span>
+                        <span class="pc-todo-action">{% translate "Add" %} <i class="fas fa-arrow-right"></i></span>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Completed -->
+                {% if profile_completion.completed > 0 %}
+                <div class="pc-section-label pc-label-done">
+                    <i class="fas fa-check-circle"></i>
+                    {% blocktranslate trimmed with completed=profile_completion.completed %}Completed — {{ completed }} sections{% endblocktranslate %}
+                </div>
+                <div class="pc-done-list">
+                    {% for item in profile_completion.items %}
+                    {% if item.completed %}
+                    <div class="pc-done-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ item.name }}</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-building me-2 text-primary-green"></i>
+                    {% translate "Profile Information" %}
+                </h3>
+                <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}" class="btn btn-sm btn-outline-green">
+                    <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                </a>
+            </div>
+            <div class="content-card-body">
+                <div class="info-grid mb-4">
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Official IPA Name" %}</div>
+                        <div class="info-value">{{ member_state.ipa_full_name|default:"—" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Acronym" %}</div>
+                        <div class="info-value">{{ member_state.ipa_acronym|default:"—" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Capital City" %}</div>
+                        <div class="info-value">{{ member_state.capital_city|default:"—" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Official Language" %}</div>
+                        <div class="info-value">{{ member_state.get_official_language_display|default:"—" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Currency" %}</div>
+                        <div class="info-value">
+                            {{ member_state.currency_name|default:"—" }}
+                            {% if member_state.currency_code %} ({{ member_state.currency_code }}){% endif %}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Website" %}</div>
+                        <div class="info-value">
+                            {% if member_state.ipa_website %}
+                            <a href="{{ member_state.ipa_website }}" target="_blank">
+                                {{ member_state.ipa_website }}
+                                <i class="fas fa-external-link-alt ms-1" style="font-size:0.75rem;"></i>
+                            </a>
+                            {% else %}—{% endif %}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Contact Email" %}</div>
+                        <div class="info-value">
+                            {% if member_state.contact_email %}
+                            <a href="mailto:{{ member_state.contact_email }}">{{ member_state.contact_email }}</a>
+                            {% else %}—{% endif %}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">{% translate "Contact Phone" %}</div>
+                        <div class="info-value">{{ member_state.contact_phone|default:"—" }}</div>
+                    </div>
+                </div>
+
+                {% if member_state.tagline %}
+                <div class="mb-3">
+                    <div class="info-label">{% translate "Tagline" %}</div>
+                    <div class="info-value" style="font-style: italic;">"{{ member_state.tagline }}"</div>
+                </div>
+                {% endif %}
+
+                {% if member_state.overview %}
+                <div class="mb-3">
+                    <div class="info-label mb-2">{% translate "Overview" %}</div>
+                    <div class="overview-text">{{ member_state.overview|truncatewords:60 }}</div>
+                </div>
+                {% endif %}
+
+                <!-- Social Media -->
+                {% if member_state.linkedin_url or member_state.twitter_url or member_state.facebook_url or member_state.instagram_url %}
+                <div>
+                    <div class="info-label mb-2">{% translate "Social Media" %}</div>
+                    <div class="social-links-row">
+                        {% if member_state.linkedin_url %}
+                        <a href="{{ member_state.linkedin_url }}" target="_blank" class="social-link-btn linkedin">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        {% endif %}
+                        {% if member_state.twitter_url %}
+                        <a href="{{ member_state.twitter_url }}" target="_blank" class="social-link-btn twitter">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        {% endif %}
+                        {% if member_state.facebook_url %}
+                        <a href="{{ member_state.facebook_url }}" target="_blank" class="social-link-btn facebook">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+                        {% endif %}
+                        {% if member_state.instagram_url %}
+                        <a href="{{ member_state.instagram_url }}" target="_blank" class="social-link-btn instagram">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Economic Indicators -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-chart-line me-2 text-primary-green"></i>
+                    {% translate "Economic Indicators" %}
+                </h3>
+                <a href="{% url 'dashboard:country:profile_economic' member_state.slug %}" class="btn btn-sm btn-outline-green">
+                    <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                </a>
+            </div>
+            <div class="content-card-body">
+                <div class="econ-grid">
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="econ-label">{% translate "GDP" %}</div>
+                        <div class="econ-value {% if not member_state.gdp %}empty{% endif %}">
+                            {% if member_state.gdp %}{{ member_state.formatted_gdp }}
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-users"></i></div>
+                        <div class="econ-label">{% translate "Population" %}</div>
+                        <div class="econ-value {% if not member_state.population %}empty{% endif %}">
+                            {% if member_state.population_display %}{{ member_state.population_display }}
+                            {% elif member_state.population %}{{ member_state.population|floatformat:0 }}
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-chart-bar"></i></div>
+                        <div class="econ-label">{% translate "GDP Growth" %}</div>
+                        <div class="econ-value {% if not member_state.gdp_growth_rate %}empty{% endif %}">
+                            {% if member_state.gdp_growth_rate %}{{ member_state.gdp_growth_rate }}%
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-globe"></i></div>
+                        <div class="econ-label">{% translate "FDI Inflows" %}</div>
+                        <div class="econ-value {% if not member_state.fdi_inflows %}empty{% endif %}">
+                            {% if member_state.fdi_inflows %}${{ member_state.fdi_inflows|floatformat:0 }}M
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="econ-label">{% translate "Corporate Tax" %}</div>
+                        <div class="econ-value {% if not member_state.corporate_tax_rate %}empty{% endif %}">
+                            {% if member_state.corporate_tax_rate %}{{ member_state.corporate_tax_rate }}%
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="econ-card">
+                        <div class="econ-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="econ-label">{% translate "Days to Start Biz" %}</div>
+                        <div class="econ-value {% if not member_state.days_to_start_business %}empty{% endif %}">
+                            {% if member_state.days_to_start_business %}{% blocktranslate trimmed with days=member_state.days_to_start_business %}{{ days }} days{% endblocktranslate %}
+                            {% else %}{% translate "Not set" %}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-file-pdf me-2 text-primary-green"></i>
+                    {% translate "Investment Documents" %}
+                </h3>
+                <a href="{% url 'dashboard:country:profile_resources' member_state.slug %}" class="btn btn-sm btn-outline-green">
+                    <i class="fas fa-upload me-1"></i>{% translate "Manage" %}
+                </a>
+            </div>
+            <div class="content-card-body">
+                <div class="doc-row">
+                    <div class="doc-icon {% if member_state.investment_guide_pdf %}has-file{% else %}no-file{% endif %}">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-name">{% translate "Investment Guide" %}</div>
+                        <div class="doc-status {% if member_state.investment_guide_pdf %}uploaded{% else %}missing{% endif %}">
+                            {% if member_state.investment_guide_pdf %}
+                            <i class="fas fa-check-circle me-1"></i>{% translate "Uploaded" %}
+                            {% else %}
+                            <i class="fas fa-minus-circle me-1"></i>{% translate "Not uploaded" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="doc-action">
+                        {% if member_state.investment_guide_pdf %}
+                        <a href="{{ member_state.investment_guide_pdf }}" target="_blank">{% translate "View PDF" %}</a>
+                        {% else %}
+                        <a href="{% url 'dashboard:country:profile_resources' member_state.slug %}">{% translate "Upload" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="doc-row">
+                    <div class="doc-icon {% if member_state.doing_business_pdf %}has-file{% else %}no-file{% endif %}">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-name">{% translate "Doing Business Guide" %}</div>
+                        <div class="doc-status {% if member_state.doing_business_pdf %}uploaded{% else %}missing{% endif %}">
+                            {% if member_state.doing_business_pdf %}
+                            <i class="fas fa-check-circle me-1"></i>{% translate "Uploaded" %}
+                            {% else %}
+                            <i class="fas fa-minus-circle me-1"></i>{% translate "Not uploaded" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="doc-action">
+                        {% if member_state.doing_business_pdf %}
+                        <a href="{{ member_state.doing_business_pdf }}" target="_blank">{% translate "View PDF" %}</a>
+                        {% else %}
+                        <a href="{% url 'dashboard:country:profile_resources' member_state.slug %}">{% translate "Upload" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Right Sidebar ── -->
+    <div class="col-lg-4">
+
+        <!-- Profile Status -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-broadcast-tower me-2 text-primary-green"></i>
+                    {% translate "Profile Status" %}
+                </h3>
+            </div>
+            <div class="content-card-body text-center">
+                {% if member_state.is_active %}
+                <div class="status-badge active mb-3">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{% translate "Live & Visible" %}</span>
+                </div>
+                <p class="text-muted mb-3" style="font-size: 0.9rem; line-height: 1.6;">
+                    {% translate "Your profile is publicly visible to investors on the IPAWAS platform." %}
+                </p>
+                <a href="{% url 'members:detail' country_slug=member_state.slug %}" target="_blank"
+                   class="btn btn-outline-green w-100">
+                    <i class="fas fa-external-link-alt me-2"></i>{% translate "View Live Profile" %}
+                </a>
+                {% else %}
+                <div class="status-badge inactive mb-3">
+                    <i class="fas fa-eye-slash"></i>
+                    <span>{% translate "Inactive" %}</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">
+                    {% translate "This profile is currently not publicly visible. Contact HQ to activate it." %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-bolt me-2 text-primary-green"></i>
+                    {% translate "Quick Actions" %}
+                </h3>
+            </div>
+            <div class="content-card-body">
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(27,122,76,0.1);color:var(--primary-green);">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <span class="btn-label">{% translate "Edit Basic Info" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                    <a href="{% url 'dashboard:country:profile_economic' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(37,99,235,0.1);color:#2563eb;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <span class="btn-label">{% translate "Update Economic Data" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                    <a href="{% url 'dashboard:country:sectors' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(147,51,234,0.1);color:#9333ea;">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <span class="btn-label">{% translate "Manage Sectors" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                    <a href="{% url 'dashboard:country:opportunities' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(234,88,12,0.1);color:#ea580c;">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <span class="btn-label">{% translate "View Opportunities" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                    <a href="{% url 'dashboard:country:profile_media' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(245,158,11,0.1);color:#D97706;">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <span class="btn-label">{% translate "Manage Media" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                    <a href="{% url 'dashboard:country:profile_seo' member_state.slug %}" class="sidebar-action-btn">
+                        <div class="btn-icon" style="background:rgba(16,185,129,0.1);color:#059669;">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <span class="btn-label">{% translate "SEO Settings" %}</span>
+                        <i class="fas fa-chevron-right btn-arrow"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Needs Attention -->
+        {% with todos=profile_completion.items %}
+        {% if profile_completion.percentage < 100 %}
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-exclamation-triangle me-2" style="color:#D97706;"></i>
+                    {% translate "Needs Attention" %}
+                </h3>
+            </div>
+            <div class="content-card-body">
+                <ul class="attention-list">
+                    {% for item in todos %}
+                    {% if not item.completed %}
+                    <li class="attention-item">
+                        <div class="attention-dot"></div>
+                        <span>{{ item.name }}</span>
+                        <a href="{% url 'dashboard:country:profile_basic' member_state.slug %}">{% translate "Fix →" %}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Activity -->
+        <div class="content-card">
+            <div class="content-card-header">
+                <h3 class="content-card-title">
+                    <i class="fas fa-history me-2 text-primary-green"></i>
+                    {% translate "Activity" %}
+                </h3>
+            </div>
+            <div class="content-card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fas fa-edit"></i></div>
+                        <div>
+                            <div class="timeline-title">{% translate "Profile Updated" %}</div>
+                            <div class="timeline-time">{% blocktranslate trimmed with time=member_state.updated_at|timesince %}{{ time }} ago{% endblocktranslate %}</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fas fa-star"></i></div>
+                        <div>
+                            <div class="timeline-title">{% translate "Profile Created" %}</div>
+                            <div class="timeline-time">{{ member_state.created_at|date:"M d, Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

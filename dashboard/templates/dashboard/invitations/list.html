@@ -1,0 +1,361 @@
+{% extends base_template %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Invitations" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 14px;
+    border: 2px solid var(--neutral-200);
+    transition: var(--transition-fast);
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.375rem; flex-shrink: 0;
+}
+.stat-icon.blue    { background: rgba(59,130,246,0.1); color: #3B82F6; }
+.stat-icon.green   { background: rgba(16,185,129,0.1); color: #059669; }
+.stat-icon.orange  { background: rgba(245,158,11,0.1); color: #D97706; }
+.stat-icon.red     { background: rgba(220,38,38,0.1);  color: #dc2626; }
+.stat-icon.yellow  { background: rgba(234,179,8,0.1);  color: #ca8a04; }
+.stat-value { font-size: 1.875rem; font-weight: 800; color: var(--dark-green); line-height: 1; margin-bottom: 0.2rem; }
+.stat-label { font-size: 0.875rem; color: var(--neutral-600); font-weight: 600; }
+
+.table { table-layout: fixed; width: 100%; }
+.table thead th {
+    background: var(--neutral-50);
+    border-bottom: 2px solid var(--neutral-200);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--neutral-600);
+    padding: 0.875rem 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.table tbody td {
+    padding: 0.875rem 1rem;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table tbody tr:hover { background: var(--neutral-50); }
+
+/* Column widths */
+.col-email    { width: 22%; }
+.col-state    { width: 12%; }
+.col-role     { width: 13%; }
+.col-status   { width: 11%; }
+.col-inviter  { width: 13%; }
+.col-sent     { width: 10%; }
+.col-expires  { width: 10%; }
+.col-actions  { width: 9%;  }
+
+/* Allow badges and actions to wrap/show properly */
+.table tbody .col-actions { white-space: nowrap; overflow: visible; }
+.table tbody .col-status  { white-space: nowrap; overflow: visible; }
+
+/* Mobile: hide low-priority columns */
+@media (max-width: 991px) {
+    .col-inviter, .col-sent { display: none; }
+    .col-email  { width: 32%; }
+    .col-state  { width: 16%; }
+    .col-role   { width: 16%; }
+    .col-status { width: 16%; }
+    .col-expires{ width: 12%; }
+    .col-actions{ width: 8%;  }
+}
+@media (max-width: 575px) {
+    .col-state, .col-expires { display: none; }
+    .col-email  { width: 46%; }
+    .col-role   { width: 24%; }
+    .col-status { width: 18%; }
+    .col-actions{ width: 12%; }
+}
+
+.badge-status {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.375rem 0.875rem; border-radius: 50px;
+    font-size: 0.8125rem; font-weight: 700;
+}
+.badge-pending  { background: rgba(245,158,11,0.12);  color: #D97706; }
+.badge-accepted { background: rgba(16,185,129,0.12);  color: #059669; }
+.badge-expired  { background: rgba(107,114,128,0.12); color: #4B5563; }
+.badge-revoked  { background: rgba(220,38,38,0.12);   color: #dc2626; }
+
+.expiry-warning { color: #D97706; font-weight: 600; }
+.expiry-ok      { color: var(--neutral-600); }
+
+.page-link { border-radius: 8px !important; margin: 0 2px; font-weight: 600; }
+.page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    border-color: var(--primary-green);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h2 class="mb-1" style="color:var(--dark-green);font-weight:800;">{% translate "Invitations" %}</h2>
+        <p class="text-muted mb-0">{% translate "Manage user invitations and access to the dashboard" %}</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if member_state %}
+        <a href="{% url 'dashboard:country:invitations:create' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-user-plus me-2"></i>{% translate "Send Invitation" %}
+        </a>
+        {% else %}
+        <a href="{% url 'dashboard:hq:invitations:create' %}" class="btn btn-primary-green">
+            <i class="fas fa-user-plus me-2"></i>{% translate "Send Invitation" %}
+        </a>
+        <a href="{% url 'dashboard:hq:invitations:bulk' %}" class="btn btn-outline-green">
+            <i class="fas fa-users me-2"></i>{% translate "Bulk Invite" %}
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-envelope"></i></div>
+            <div>
+                <div class="stat-value">{{ total_count }}</div>
+                <div class="stat-label">{% translate "Total Sent" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon yellow"><i class="fas fa-clock"></i></div>
+            <div>
+                <div class="stat-value">{{ pending_count }}</div>
+                <div class="stat-label">{% translate "Pending" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <div class="stat-value">{{ accepted_count }}</div>
+                <div class="stat-label">{% translate "Accepted" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-hourglass-end"></i></div>
+            <div>
+                <div class="stat-value">{{ expired_count }}</div>
+                <div class="stat-label">{% translate "Expired" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="content-card mb-4">
+    <div class="content-card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">{% translate "Status" %}</label>
+                <select name="status" class="form-select">
+                    <option value="">{% translate "All Statuses" %}</option>
+                    <option value="pending"  {% if request.GET.status == 'pending'  %}selected{% endif %}>{% translate "Pending" %}</option>
+                    <option value="accepted" {% if request.GET.status == 'accepted' %}selected{% endif %}>{% translate "Accepted" %}</option>
+                    <option value="expired"  {% if request.GET.status == 'expired'  %}selected{% endif %}>{% translate "Expired" %}</option>
+                    <option value="revoked"  {% if request.GET.status == 'revoked'  %}selected{% endif %}>{% translate "Revoked" %}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">{% translate "Role" %}</label>
+                <select name="role" class="form-select">
+                    <option value="">{% translate "All Roles" %}</option>
+                    <option value="ipa_director"  {% if request.GET.role == 'ipa_director'  %}selected{% endif %}>{% translate "IPA Director" %}</option>
+                    <option value="ipa_manager"   {% if request.GET.role == 'ipa_manager'   %}selected{% endif %}>{% translate "IPA Manager" %}</option>
+                    <option value="ipa_officer"   {% if request.GET.role == 'ipa_officer'   %}selected{% endif %}>{% translate "IPA Officer" %}</option>
+                    <option value="ipa_data_entry" {% if request.GET.role == 'ipa_data_entry' %}selected{% endif %}>{% translate "IPA Data Entry" %}</option>
+                    <option value="ipa_analyst"   {% if request.GET.role == 'ipa_analyst'   %}selected{% endif %}>{% translate "IPA Analyst" %}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">{% translate "Search" %}</label>
+                <input type="text" name="search" class="form-control"
+                       placeholder="{% translate "Search by email..." %}" value="{{ request.GET.search }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary-green w-100">
+                    <i class="fas fa-filter me-2"></i>{% translate "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="content-card">
+    {% if invitations %}
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th class="col-email">{% translate "Email" %}</th>
+                    {% if not member_state %}<th class="col-state">{% translate "Member State" %}</th>{% endif %}
+                    <th class="col-role">{% translate "Role" %}</th>
+                    <th class="col-status">{% translate "Status" %}</th>
+                    <th class="col-inviter">{% translate "Invited By" %}</th>
+                    <th class="col-sent">{% translate "Sent" %}</th>
+                    <th class="col-expires">{% translate "Expires" %}</th>
+                    <th class="col-actions text-end">{% translate "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invitation in invitations %}
+                <tr>
+                    <td class="col-email" title="{{ invitation.email }}">
+                        <div class="fw-semibold text-truncate" style="color:var(--dark-green);max-width:100%;">{{ invitation.email }}</div>
+                        {% if invitation.is_primary_contact %}
+                        <span class="badge-status badge-accepted" style="font-size:0.7rem;padding:0.2rem 0.6rem;white-space:nowrap;">
+                            <i class="fas fa-star"></i> {% translate "Primary" %}
+                        </span>
+                        {% endif %}
+                    </td>
+                    {% if not member_state %}
+                    <td class="col-state">
+                        {% if invitation.member_state %}
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-2 py-1 rounded d-inline-block text-truncate" style="max-width:100%;" title="{{ invitation.member_state.ipa_acronym }}">
+                            {{ invitation.member_state.country_code }}
+                        </span>
+                        {% else %}
+                        <span class="text-muted">HQ</span>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td class="col-role">
+                        <span class="badge bg-light text-dark fw-semibold px-2 py-1 rounded text-truncate d-inline-block" style="max-width:100%;" title="{{ invitation.get_role_display }}">
+                            {{ invitation.get_role_display }}
+                        </span>
+                    </td>
+                    <td class="col-status">
+                        <span class="badge-status badge-{{ invitation.status }}">
+                            {% if invitation.status == 'pending' %}<i class="fas fa-clock"></i>
+                            {% elif invitation.status == 'accepted' %}<i class="fas fa-check-circle"></i>
+                            {% elif invitation.status == 'expired' %}<i class="fas fa-hourglass-end"></i>
+                            {% else %}<i class="fas fa-ban"></i>{% endif %}
+                            <span class="d-none d-md-inline">{{ invitation.get_status_display }}</span>
+                        </span>
+                    </td>
+                    <td class="col-inviter">
+                        <small class="text-muted text-truncate d-block" style="max-width:100%;">{{ invitation.get_inviter_name }}</small>
+                    </td>
+                    <td class="col-sent">
+                        <small class="text-muted" title="{{ invitation.invited_at }}">
+                            {% blocktranslate trimmed with time=invitation.invited_at|timesince %}{{ time }} ago{% endblocktranslate %}
+                        </small>
+                    </td>
+                    <td class="col-expires">
+                        {% if invitation.status == 'pending' %}
+                            {% if invitation.is_expired %}
+                                <span class="small text-danger fw-semibold">{% translate "Expired" %}</span>
+                            {% else %}
+                                <small class="{% if invitation.days_until_expiry <= 2 %}expiry-warning{% else %}expiry-ok{% endif %}">
+                                    {{ invitation.days_until_expiry }}d
+                                </small>
+                            {% endif %}
+                        {% else %}
+                            <small class="text-muted">—</small>
+                        {% endif %}
+                    </td>
+                    <td class="col-actions text-end">
+                        <div class="d-flex gap-1 justify-content-end">
+                            <a href="{% url 'dashboard:invitations:detail' invitation.pk %}"
+                               class="btn btn-sm btn-outline-green" title="{% translate "View" %}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if invitation.status == 'pending' %}
+                            <form method="post" action="{% url 'dashboard:invitations:resend' invitation.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% translate "Resend" %}">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'dashboard:invitations:revoke' invitation.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{% translate "Revoke" %}"
+                                        onclick="return confirm('{% blocktranslate trimmed with email=invitation.email|escapejs %}Revoke this invitation for {{ email }}?{% endblocktranslate %}')">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="content-card-body border-top">
+        <nav aria-label="{% translate "Invitations pagination" %}">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="content-card-body text-center py-5">
+        <div style="font-size:4rem;color:var(--neutral-300);margin-bottom:1.5rem;">
+            <i class="fas fa-envelope-open"></i>
+        </div>
+        <h4 style="color:var(--dark-green);">{% translate "No invitations yet" %}</h4>
+        <p class="text-muted mb-4">{% translate "Send your first invitation to add team members to the dashboard" %}</p>
+        {% if member_state %}
+        <a href="{% url 'dashboard:country:invitations:create' member_state.slug %}" class="btn btn-primary-green">
+            <i class="fas fa-user-plus me-2"></i>{% translate "Send Invitation" %}
+        </a>
+        {% else %}
+        <a href="{% url 'dashboard:hq:invitations:create' %}" class="btn btn-primary-green">
+            <i class="fas fa-user-plus me-2"></i>{% translate "Send Invitation" %}
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

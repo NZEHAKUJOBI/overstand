@@ -1,0 +1,883 @@
+{% extends "dashboard/help/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Roles & Permissions — User Manual" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">
+    <a href="{% url 'dashboard:help:index' %}" style="color:var(--primary-green);text-decoration:none;">{% translate "Manual" %}</a>
+</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Roles & Permissions" %}</span>
+{% endblock %}
+
+{% block extra_css %}{{ block.super }}
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   ROLE EXPLORER — interactive roles & permissions page
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Role tab row ──────────────────────────────────────────────── */
+.role-tabs {
+    display: flex; gap: .625rem; flex-wrap: nowrap;
+    overflow-x: auto; padding-bottom: .5rem;
+    scrollbar-width: thin; scrollbar-color: var(--neutral-200) transparent;
+    margin: 1.5rem 0 0;
+}
+.role-tab {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+    gap: .3rem; padding: .875rem .75rem; min-width: 118px;
+    background: white; border: 2px solid var(--neutral-200); border-radius: 12px;
+    cursor: pointer; text-align: center; outline: none; position: relative;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.role-tab::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 10%; right: 10%;
+    height: 3px; border-radius: 3px 3px 0 0;
+    background: var(--t-color, transparent); opacity: 0;
+    transition: opacity .2s;
+}
+.role-tab:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.11); }
+.role-tab.active {
+    border-color: var(--t-color); transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.14);
+}
+.role-tab.active::after { opacity: 1; }
+
+.rt-icon {
+    width: 38px; height: 38px; border-radius: 9px; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--t-bg); color: var(--t-color);
+    transition: transform .2s;
+}
+.role-tab.active .rt-icon { transform: scale(1.12); }
+.rt-name  { font-size: .79rem; font-weight: 700; color: var(--dark-green); line-height: 1.2; }
+.rt-scope { font-size: .69rem; color: var(--neutral-600); line-height: 1.3; }
+.rt-count {
+    font-size: .68rem; font-weight: 700;
+    padding: .12rem .45rem; border-radius: 10px;
+    background: var(--t-bg); color: var(--t-color);
+}
+
+/* ── Role detail panel ─────────────────────────────────────────── */
+.role-panel {
+    border: 2px solid var(--neutral-200); border-radius: 16px;
+    margin: 1rem 0 2.5rem; background: white; overflow: hidden;
+    border-left: 5px solid var(--p-color, var(--primary-green));
+    transition: border-left-color .3s ease;
+    min-height: 260px;
+}
+.rp-inner {
+    padding: 1.75rem;
+    transition: opacity .15s ease, transform .15s ease;
+}
+.rp-inner.fading { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+/* Panel header */
+.rp-header { display: flex; gap: 1.25rem; align-items: flex-start; margin-bottom: 1.5rem; }
+.rp-icon {
+    width: 62px; height: 62px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1.55rem;
+    background: var(--p-bg); color: var(--p-color);
+}
+.rp-title { font-size: 1.3rem; font-weight: 800; color: var(--dark-green); margin: 0 0 .3rem; }
+.rp-badge {
+    display: inline-block; font-size: .72rem; font-weight: 700;
+    padding: .2rem .65rem; border-radius: 5px; margin-bottom: .45rem;
+    background: var(--p-bg); color: var(--p-color);
+}
+.rp-tagline { font-size: .84rem; color: var(--neutral-600); margin: 0 0 .5rem; font-style: italic; }
+.rp-desc    { font-size: .9rem; color: var(--neutral-600); line-height: 1.7; margin: 0; }
+
+/* Can / Cannot grid */
+.rp-caps { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: .25rem; }
+.cap-col-title {
+    font-size: .75rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; padding-bottom: .6rem; margin-bottom: .875rem;
+    border-bottom: 2px solid currentColor;
+    display: flex; align-items: center; gap: .4rem;
+}
+.col-can    .cap-col-title { color: #16A34A; }
+.col-cannot .cap-col-title { color: #DC2626; }
+.cap-list { list-style: none; padding: 0; margin: 0; }
+.cap-item {
+    display: flex; gap: .6rem; align-items: flex-start;
+    padding: .45rem 0; font-size: .875rem; color: var(--neutral-600);
+    line-height: 1.55; border-bottom: 1px solid var(--neutral-100);
+    opacity: 0; transform: translateX(-14px);
+    transition: opacity .28s ease, transform .28s ease;
+}
+.cap-item:last-child { border-bottom: none; }
+.cap-item.vis { opacity: 1; transform: translateX(0); }
+.cap-item-icon { font-size: .75rem; margin-top: .28rem; flex-shrink: 0; }
+.col-can    .cap-item-icon { color: #16A34A; }
+.col-cannot .cap-item-icon { color: #DC2626; }
+
+/* Panel empty state */
+.rp-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 220px; gap: .625rem; color: var(--neutral-600);
+}
+.rp-empty i { font-size: 2rem; opacity: .22; }
+.rp-empty p { margin: 0; font-size: .9rem; }
+
+/* ── Matrix toolbar ────────────────────────────────────────────── */
+.matrix-toolbar {
+    display: flex; align-items: center; gap: .75rem; margin: 1.25rem 0 .875rem;
+    flex-wrap: wrap;
+}
+.matrix-search-box {
+    flex: 1; min-width: 200px; display: flex; align-items: center; gap: .6rem;
+    background: white; border: 1.5px solid var(--neutral-200);
+    border-radius: 9px; padding: .525rem 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05); transition: border-color .2s;
+}
+.matrix-search-box:focus-within { border-color: var(--primary-green); box-shadow: 0 0 0 3px rgba(27,122,76,.08); }
+.matrix-search-box i { color: var(--neutral-600); font-size: .9rem; }
+.matrix-search-box input {
+    border: none; outline: none; flex: 1;
+    font-size: .875rem; background: transparent; color: var(--dark-green);
+}
+.matrix-search-box input::placeholder { color: #b0bcb0; }
+.matrix-count { font-size: .78rem; color: var(--neutral-600); white-space: nowrap; }
+.matrix-clear {
+    background: none; border: 1.5px solid var(--neutral-200); border-radius: 7px;
+    padding: .45rem .875rem; font-size: .78rem; color: var(--neutral-600);
+    cursor: pointer; transition: all .15s; display: none;
+}
+.matrix-clear:hover { border-color: var(--primary-green); color: var(--primary-green); }
+
+/* ── Permission matrix ─────────────────────────────────────────── */
+#permMatrix { width: 100%; border-collapse: collapse; font-size: .875rem; }
+#permMatrix th {
+    background: var(--dark-green); color: white; text-align: center;
+    padding: .75rem .875rem; font-size: .76rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .5px; white-space: nowrap;
+    transition: background .25s; position: relative; cursor: pointer;
+    user-select: none;
+}
+#permMatrix th:first-child { text-align: left; cursor: default; min-width: 195px; }
+#permMatrix th.col-hl {
+    background: var(--hl-col) !important;
+}
+#permMatrix th.col-hl::after {
+    content: '';
+    position: absolute; bottom: 0; left: 25%; right: 25%;
+    height: 3px; background: rgba(255,255,255,.55); border-radius: 3px 3px 0 0;
+}
+.th-name { display: block; }
+.th-dot  {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,.45); margin-right: .3rem; vertical-align: middle;
+    transition: background .2s, transform .2s;
+}
+#permMatrix th.col-hl .th-dot { background: white; transform: scale(1.3); }
+
+#permMatrix td {
+    padding: .7rem .875rem; border-bottom: 1px solid var(--neutral-200);
+    vertical-align: middle; text-align: center;
+}
+#permMatrix td:first-child { text-align: left; color: var(--dark-green); font-weight: 500; }
+#permMatrix tr.row-group td {
+    background: #F4F7F4; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .6px; color: #64748b;
+    padding: .55rem .875rem; text-align: left; border-bottom: 1px solid var(--neutral-200);
+}
+#permMatrix tr.row-hidden { display: none; }
+#permMatrix tr:not(.row-group):hover td { background: #f7fcf7; }
+#permMatrix td.col-hl { background: var(--hl-light, rgba(0,0,0,.04)) !important; }
+#permMatrix tr:not(.row-group):hover td.col-hl { filter: brightness(.96); }
+
+.perm-yes  { color: #16A34A; font-size: 1.05rem; font-weight: 700; }
+.perm-no   { color: #DC2626; font-size: 1rem; }
+.perm-cond { font-size: .78rem; font-weight: 600; color: #D97706; line-height: 1.3; display: block; }
+
+/* ── Matrix empty ─────────────────────────────────────────────── */
+.matrix-empty {
+    text-align: center; padding: 2.5rem; color: var(--neutral-600);
+    font-size: .9rem; display: none;
+}
+.matrix-empty i { font-size: 1.75rem; opacity: .25; display: block; margin-bottom: .5rem; }
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 680px) {
+    .rp-caps { grid-template-columns: 1fr; }
+    .rp-header { flex-direction: column; gap: .875rem; }
+    .rp-icon { width: 52px; height: 52px; font-size: 1.25rem; }
+    .role-tab { min-width: 98px; padding: .7rem .5rem; }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+{# ── Page header ─────────────────────────────────────────────── #}
+<div class="page-tag"><i class="fas fa-user-shield"></i>&nbsp; {% translate "Reference — All Users" %}</div>
+<h1 class="page-title">{% translate "Roles & Permissions" %}</h1>
+<div class="help-divider"></div>
+<p class="help-intro">
+    {% blocktranslate trimmed %}
+    Every IPAWAS account has a <strong>role</strong> that controls exactly what it can see and do.
+    Click any role card below to explore its capabilities — then compare all roles side-by-side in the
+    full permissions matrix.
+    {% endblocktranslate %}
+</p>
+
+
+{# ── Role explorer ───────────────────────────────────────────── #}
+<h2 id="explore">
+    <i class="fas fa-hand-pointer" style="color:var(--primary-green);margin-right:.5rem;font-size:.9em;"></i>
+    {% translate "Explore a Role" %}
+</h2>
+<p style="color:var(--neutral-600);font-size:.9rem;margin-bottom:.5rem;">
+    {% translate "Click any card to see exactly what that person can and cannot do on IPAWAS." %}
+</p>
+
+{# Tab row — built by JS #}
+<div class="role-tabs" id="roleTabs" role="tablist" aria-label="{% translate 'Select a role' %}"></div>
+
+{# Detail panel — filled by JS #}
+<div class="role-panel" id="rolePanel">
+    <div class="rp-inner" id="rpInner">
+        <div class="rp-empty">
+            <i class="fas fa-hand-pointer"></i>
+            <p>{% translate "Select a role above to see its full capability breakdown" %}</p>
+        </div>
+    </div>
+</div>
+
+
+{# ── Full matrix ─────────────────────────────────────────────── #}
+<h2 id="full-matrix">
+    <i class="fas fa-table" style="color:var(--primary-green);margin-right:.5rem;font-size:.9em;"></i>
+    {% translate "Full Permissions Matrix" %}
+</h2>
+<p style="color:var(--neutral-600);font-size:.9rem;margin-bottom:.5rem;">
+    {% blocktranslate trimmed %}
+    Click any <strong>column header</strong> to highlight that role.
+    Use the search box to filter by capability keyword.
+    {% endblocktranslate %}
+</p>
+
+<div class="matrix-toolbar">
+    <div class="matrix-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="matrixSearch" placeholder="{% translate 'Filter capabilities… e.g. publish, invite, export' %}">
+    </div>
+    <span class="matrix-count" id="matrixCount"></span>
+    <button class="matrix-clear" id="matrixClear" type="button">
+        <i class="fas fa-times" style="margin-right:.3rem;"></i>{% translate "Clear" %}
+    </button>
+</div>
+
+<div class="table-wrap" style="position:relative;">
+<table id="permMatrix">
+    <thead>
+        <tr>
+            <th style="text-align:left;cursor:default;background:var(--dark-green);">{% translate "Capability" %}</th>
+            {# JS appends the 6 role column headers here #}
+        </tr>
+    </thead>
+    <tbody>
+
+        {# ── Team & User Management ── #}
+        <tr class="row-group" data-group="team user management invite activate deactivate role">
+            <td colspan="7">
+                <i class="fas fa-users" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Team & User Management" %}
+            </td>
+        </tr>
+        <tr data-sk="invite team members">
+            <td>{% translate "Invite team members" %}</td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "any country" %}</span></td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "own country" %}</span></td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="activate deactivate members users">
+            <td>{% translate "Activate / deactivate members" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="change edit member role permissions">
+            <td>{% translate "Change a member's role" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+
+        {# ── Investment Opportunities ── #}
+        <tr class="row-group" data-group="investment opportunities create publish draft">
+            <td colspan="7">
+                <i class="fas fa-briefcase" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Investment Opportunities" %}
+            </td>
+        </tr>
+        <tr data-sk="create opportunity draft new">
+            <td>{% translate "Create opportunities (draft)" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="publish unpublish opportunity">
+            <td>{% translate "Publish / unpublish opportunities" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="approve waiis data submissions governance">
+            <td>{% translate "Approve WAIIS data submissions" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+
+        {# ── Country Profile & Content ── #}
+        <tr class="row-group" data-group="country profile content edit">
+            <td colspan="7">
+                <i class="fas fa-globe-africa" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Country Profile & Content" %}
+            </td>
+        </tr>
+        <tr data-sk="edit country investment profile basic">
+            <td>{% translate "Edit country investment profile" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="manage priority sectors">
+            <td>{% translate "Manage priority sectors" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="edit investment incentives">
+            <td>{% translate "Edit investment incentives" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="create edit success stories">
+            <td>{% translate "Create / edit success stories" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="manage media images gallery news">
+            <td>{% translate "Manage media gallery & news" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+
+        {# ── Investor Inquiries ── #}
+        <tr class="row-group" data-group="investor inquiries view respond reply">
+            <td colspan="7">
+                <i class="fas fa-envelope" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Investor Inquiries" %}
+            </td>
+        </tr>
+        <tr data-sk="view investor inquiries">
+            <td>{% translate "View investor inquiries" %}</td>
+            <td class="perm-cond">{% translate "All countries" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-cond">{% translate "View only" %}</td>
+        </tr>
+        <tr data-sk="respond reply investor inquiries">
+            <td>{% translate "Respond to investor inquiries" %}</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+
+        {# ── Analytics & Reporting ── #}
+        <tr class="row-group" data-group="analytics reporting export data">
+            <td colspan="7">
+                <i class="fas fa-chart-line" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Analytics & Reporting" %}
+            </td>
+        </tr>
+        <tr data-sk="view analytics dashboard statistics">
+            <td>{% translate "View analytics dashboard" %}</td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "platform-wide" %}</span></td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "own country" %}</span></td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "own country" %}</span></td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "own country" %}</span></td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓ <span class="perm-cond">{% translate "own country" %}</span></td>
+        </tr>
+        <tr data-sk="export data reports download">
+            <td>{% translate "Export data & reports" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-yes">✓</td>
+        </tr>
+
+        {# ── Platform Governance ── #}
+        <tr class="row-group" data-group="platform governance hq admin settings system">
+            <td colspan="7">
+                <i class="fas fa-shield-alt" style="margin-right:.5rem;color:var(--primary-green);"></i>
+                {% translate "Platform Governance — HQ Admin only" %}
+            </td>
+        </tr>
+        <tr data-sk="approve reject member states registration">
+            <td>{% translate "Approve / reject member states" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="send platform announcements broadcast messages">
+            <td>{% translate "Send platform announcements" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+        <tr data-sk="enable maintenance mode system settings">
+            <td>{% translate "Enable maintenance mode" %}</td>
+            <td class="perm-yes">✓</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+            <td class="perm-no">✗</td>
+        </tr>
+
+    </tbody>
+</table>
+<div class="matrix-empty" id="matrixEmpty">
+    <i class="fas fa-search"></i>
+    {% translate "No capabilities match your search. Try a different keyword." %}
+</div>
+</div>
+
+<div class="callout callout-note" style="margin-top:1.5rem;">
+    <i class="fas fa-info-circle"></i>
+    <div class="callout-body">
+        <strong>{% translate "Scope reminder" %}</strong>
+        <p>{% blocktranslate trimmed %}
+        All IPA roles are strictly limited to their own member state — no IPA user can view or modify
+        another country's data. Permission changes take effect instantly when the
+        <strong>IPA Director</strong> updates a role.
+        {% endblocktranslate %}</p>
+    </div>
+</div>
+
+<div class="help-nav">
+    <a href="{% url 'dashboard:help:quick_reference' %}">
+        <i class="fas fa-arrow-left"></i> {% translate "Quick Reference" %}
+    </a>
+    <a href="{% url 'dashboard:help:index' %}">
+        <i class="fas fa-home"></i> {% translate "Back to Welcome" %}
+    </a>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}{{ block.super }}
+<script>
+(function () {
+    'use strict';
+
+    /* ─────────────────────────────────────────────────────────────
+       ROLE DATA
+       col: position of this role in the matrix (1 = first data col)
+       ───────────────────────────────────────────────────────────── */
+    var ROLES = [
+        {
+            id:      'hq',
+            name:    'HQ Admin',
+            icon:    'fas fa-globe',
+            color:   '#7C3AED',
+            bg:      '#F5F3FF',
+            scope:   'Platform-wide',
+            tagline: 'IPAWAS Secretariat — full system access',
+            desc:    'Oversees the entire IPAWAS platform. Manages all member states, users, analytics and system settings. Cannot create or edit individual country content.',
+            can: [
+                'Approve or reject member state registrations',
+                'Invite users to any country\'s dashboard',
+                'View and manage data across all countries',
+                'Access platform-wide analytics & reports',
+                'Send system-wide announcements',
+                'Enable or disable maintenance mode',
+                'Activate and deactivate any user',
+                'Export data for all countries',
+            ],
+            cannot: [
+                'Create or edit country-specific content',
+                'Publish investment opportunities',
+                'Respond to investor inquiries on behalf of a country',
+                'Access a country\'s unpublished drafts',
+            ],
+            col: 1,
+        },
+        {
+            id:      'director',
+            name:    'IPA Director',
+            icon:    'fas fa-user-tie',
+            color:   '#DC2626',
+            bg:      '#FEF2F2',
+            scope:   'Own country — Full authority',
+            tagline: 'Country administrator — complete control',
+            desc:    'The country administrator. Full control over content, team management, and data for their member state. The only IPA role that can invite users and change roles.',
+            can: [
+                'Invite new team members to the country dashboard',
+                'Activate, deactivate, and change team member roles',
+                'Publish and unpublish investment opportunities',
+                'Create and edit all country content',
+                'Respond to investor inquiries',
+                'View analytics and export data',
+                'Approve WAIIS governance data submissions',
+            ],
+            cannot: [
+                'Access other countries\' data',
+                'Approve member state registrations (HQ only)',
+                'Send platform-wide announcements',
+                'Enable maintenance mode',
+            ],
+            col: 2,
+        },
+        {
+            id:      'manager',
+            name:    'IPA Manager',
+            icon:    'fas fa-briefcase',
+            color:   '#D97706',
+            bg:      '#FFFBEB',
+            scope:   'Own country — Operations',
+            tagline: 'Day-to-day operations lead',
+            desc:    'Runs day-to-day operations. Manages all content and can publish opportunities. Cannot manage users or approve governance data.',
+            can: [
+                'Create, edit, publish and unpublish opportunities',
+                'Edit country profile, sectors, incentives, success stories',
+                'Respond to investor inquiries',
+                'View analytics and export data',
+            ],
+            cannot: [
+                'Invite or deactivate team members',
+                'Change team member roles',
+                'Approve WAIIS governance submissions',
+                'Access other countries\' data',
+            ],
+            col: 3,
+        },
+        {
+            id:      'officer',
+            name:    'IPA Officer',
+            icon:    'fas fa-user-edit',
+            color:   '#059669',
+            bg:      '#ECFDF5',
+            scope:   'Own country — Content',
+            tagline: 'Content creator and editor',
+            desc:    'Creates and edits all country content. Opportunities require a Director or Manager to publish. Responds to inquiries but cannot export data.',
+            can: [
+                'Create and edit opportunities (draft only)',
+                'Edit country profile and investment information',
+                'Manage priority sectors and incentives',
+                'Create and edit success stories & media',
+                'Respond to investor inquiries',
+                'View analytics dashboard',
+            ],
+            cannot: [
+                'Publish or unpublish opportunities',
+                'Export data or reports',
+                'Invite or manage team members',
+                'Approve any governance submissions',
+            ],
+            col: 4,
+        },
+        {
+            id:      'data_entry',
+            name:    'IPA Data Entry',
+            icon:    'fas fa-keyboard',
+            color:   '#2563EB',
+            bg:      '#EFF6FF',
+            scope:   'Own country — Data only',
+            tagline: 'Clerical / administrative data input',
+            desc:    'Feeds data into the platform — opportunities and incentives only. Suited for admin staff. No access to inquiries, analytics, or team management.',
+            can: [
+                'Create and edit investment opportunities (draft only)',
+                'Edit investment incentives',
+                'Edit the basic country investment profile',
+            ],
+            cannot: [
+                'Publish or unpublish anything',
+                'Access investor inquiries',
+                'View analytics or export data',
+                'Manage sectors, success stories, or media',
+                'Invite or manage team members',
+            ],
+            col: 5,
+        },
+        {
+            id:      'analyst',
+            name:    'IPA Analyst',
+            icon:    'fas fa-chart-bar',
+            color:   '#64748B',
+            bg:      '#F1F5F9',
+            scope:   'Own country — Read only',
+            tagline: 'Observer, reporter, and data consumer',
+            desc:    'Read-only access with reporting capabilities. Can view inquiries and access analytics, but cannot create, edit, publish, or respond to anything.',
+            can: [
+                'View all country content (read only)',
+                'View investor inquiries (without responding)',
+                'Access the analytics dashboard',
+                'Export data and reports',
+            ],
+            cannot: [
+                'Create, edit, or delete any content',
+                'Publish or unpublish anything',
+                'Respond to investor inquiries',
+                'Invite or manage team members',
+            ],
+            col: 6,
+        },
+    ];
+
+    var activeRole = null;
+    var matrix     = document.getElementById('permMatrix');
+
+    /* ─────────────────────────────────────────────────────────────
+       BUILD ROLE TABS
+       ───────────────────────────────────────────────────────────── */
+    var tabsEl = document.getElementById('roleTabs');
+    if (tabsEl) {
+        ROLES.forEach(function (role) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'role-tab';
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', 'false');
+            btn.setAttribute('data-role-id', role.id);
+            btn.style.setProperty('--t-color', role.color);
+            btn.style.setProperty('--t-bg',    role.bg);
+            btn.innerHTML =
+                '<div class="rt-icon"><i class="' + role.icon + '"></i></div>' +
+                '<span class="rt-name">'  + role.name  + '</span>' +
+                '<span class="rt-scope">' + role.scope + '</span>' +
+                '<span class="rt-count">' + role.can.length + ' capabilities</span>';
+            btn.addEventListener('click', function () { selectRole(role); });
+            tabsEl.appendChild(btn);
+        });
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       BUILD MATRIX COLUMN HEADERS
+       ───────────────────────────────────────────────────────────── */
+    var headerRow = matrix ? matrix.querySelector('thead tr') : null;
+    if (headerRow) {
+        ROLES.forEach(function (role) {
+            var th = document.createElement('th');
+            th.setAttribute('data-col',     role.col);
+            th.setAttribute('data-role-id', role.id);
+            th.style.background = role.color;
+            th.innerHTML =
+                '<span class="th-dot"></span>' +
+                '<span class="th-name">' + role.name + '</span>';
+            th.title = 'Click to highlight ' + role.name;
+            th.addEventListener('click', function () { selectRole(role); });
+            headerRow.appendChild(th);
+        });
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       SELECT ROLE
+       ───────────────────────────────────────────────────────────── */
+    function selectRole(role) {
+        if (activeRole && activeRole.id === role.id) return;
+        activeRole = role;
+
+        /* Tabs */
+        document.querySelectorAll('.role-tab').forEach(function (t) {
+            var isActive = t.getAttribute('data-role-id') === role.id;
+            t.classList.toggle('active', isActive);
+            t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        /* Panel */
+        renderPanel(role);
+
+        /* Matrix */
+        highlightColumn(role);
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       RENDER PANEL
+       ───────────────────────────────────────────────────────────── */
+    function renderPanel(role) {
+        var panel  = document.getElementById('rolePanel');
+        var inner  = document.getElementById('rpInner');
+        if (!panel || !inner) return;
+
+        panel.style.setProperty('--p-color', role.color);
+        panel.style.setProperty('--p-bg',    role.bg);
+
+        /* Fade out */
+        inner.classList.add('fading');
+
+        setTimeout(function () {
+            var canHTML = role.can.map(function (c, i) {
+                return '<li class="cap-item" style="transition-delay:' + (i * 55) + 'ms">' +
+                       '<i class="fas fa-check-circle cap-item-icon"></i>' + c + '</li>';
+            }).join('');
+            var cannotHTML = role.cannot.map(function (c, i) {
+                return '<li class="cap-item" style="transition-delay:' + (i * 55) + 'ms">' +
+                       '<i class="fas fa-times-circle cap-item-icon"></i>' + c + '</li>';
+            }).join('');
+
+            inner.innerHTML =
+                '<div class="rp-header">' +
+                    '<div class="rp-icon"><i class="' + role.icon + '"></i></div>' +
+                    '<div>' +
+                        '<h3 class="rp-title">' + role.name + '</h3>' +
+                        '<span class="rp-badge">' + role.scope + '</span>' +
+                        '<p class="rp-tagline">' + role.tagline + '</p>' +
+                        '<p class="rp-desc">' + role.desc + '</p>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="rp-caps">' +
+                    '<div class="col-can">' +
+                        '<div class="cap-col-title"><i class="fas fa-check-circle"></i> CAN DO (' + role.can.length + ')</div>' +
+                        '<ul class="cap-list">' + canHTML + '</ul>' +
+                    '</div>' +
+                    '<div class="col-cannot">' +
+                        '<div class="cap-col-title"><i class="fas fa-times-circle"></i> CANNOT DO (' + role.cannot.length + ')</div>' +
+                        '<ul class="cap-list">' + cannotHTML + '</ul>' +
+                    '</div>' +
+                '</div>';
+
+            /* Fade in */
+            inner.classList.remove('fading');
+
+            /* Stagger list items */
+            requestAnimationFrame(function () {
+                inner.querySelectorAll('.cap-item').forEach(function (el) {
+                    el.classList.add('vis');
+                });
+            });
+        }, 160);
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       HIGHLIGHT MATRIX COLUMN
+       ───────────────────────────────────────────────────────────── */
+    function highlightColumn(role) {
+        if (!matrix) return;
+        matrix.querySelectorAll('.col-hl').forEach(function (el) { el.classList.remove('col-hl'); });
+        matrix.style.setProperty('--hl-col',   role.color);
+        matrix.style.setProperty('--hl-light', hexToRgba(role.color, 0.07));
+
+        /* nth-child: capability col = child 1, HQ = child 2, Director = 3 … */
+        var childIdx = role.col + 1;
+        matrix.querySelectorAll(
+            'tr:not(.row-group) td:nth-child(' + childIdx + '),' +
+            'th[data-col="' + role.col + '"]'
+        ).forEach(function (el) { el.classList.add('col-hl'); });
+    }
+
+    function hexToRgba(hex, alpha) {
+        var m = (hex.replace('#', '')).match(/.{2}/g);
+        if (!m) return 'rgba(0,0,0,' + alpha + ')';
+        return 'rgba(' + m.map(function (x) { return parseInt(x, 16); }).join(',') + ',' + alpha + ')';
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       MATRIX SEARCH
+       ───────────────────────────────────────────────────────────── */
+    var searchInput  = document.getElementById('matrixSearch');
+    var clearBtn     = document.getElementById('matrixClear');
+    var countEl      = document.getElementById('matrixCount');
+    var emptyEl      = document.getElementById('matrixEmpty');
+    var dataRows     = matrix ? Array.from(matrix.querySelectorAll('tbody tr:not(.row-group)')) : [];
+    var groupRows    = matrix ? Array.from(matrix.querySelectorAll('tbody tr.row-group')) : [];
+    var totalRows    = dataRows.length;
+
+    function filterMatrix(q) {
+        q = (q || '').toLowerCase().trim();
+        clearBtn.style.display = q ? '' : 'none';
+        dataRows.forEach(function (row) {
+            var key = (row.getAttribute('data-sk') || '') + ' ' +
+                      (row.cells[0] ? row.cells[0].textContent.toLowerCase() : '');
+            row.classList.toggle('row-hidden', !!(q && !key.includes(q)));
+        });
+        /* hide group rows whose siblings are all hidden */
+        groupRows.forEach(function (gr) {
+            var sib = gr.nextElementSibling;
+            var anyVis = false;
+            while (sib && !sib.classList.contains('row-group')) {
+                if (!sib.classList.contains('row-hidden')) anyVis = true;
+                sib = sib.nextElementSibling;
+            }
+            gr.classList.toggle('row-hidden', !anyVis);
+        });
+        var visCount = dataRows.filter(function (r) { return !r.classList.contains('row-hidden'); }).length;
+        countEl.textContent = q ? (visCount + ' of ' + totalRows + ' shown') : '';
+        emptyEl.style.display = (q && visCount === 0) ? 'block' : 'none';
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () { filterMatrix(this.value); });
+        clearBtn && clearBtn.addEventListener('click', function () {
+            searchInput.value = ''; filterMatrix(''); searchInput.focus();
+        });
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       AUTO-SELECT IPA DIRECTOR ON LOAD
+       ───────────────────────────────────────────────────────────── */
+    setTimeout(function () {
+        selectRole(ROLES[1]); /* IPA Director */
+    }, 280);
+
+})();
+</script>
+{% endblock %}

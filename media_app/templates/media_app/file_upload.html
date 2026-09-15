@@ -1,0 +1,128 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Upload File - {{ member_state.country_name }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id|default:'' }}"
+           class="btn btn-outline-secondary btn-sm me-3">
+            <i class="fas fa-arrow-left"></i>{% translate "Back to Library" %}
+        </a>
+        <div>
+            <h1 class="page-title mb-0">{% translate "Upload File" %}</h1>
+            <p class="text-muted mb-0">{% blocktranslate trimmed %}Upload to: {{ folder.get_display_path }}{% endblocktranslate %}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="folder_id" value="{{ folder.id }}">
+
+                    <div class="mb-4">
+                        <label for="id_file" class="form-label">{% translate "Select File" %}</label>
+                        {{ form.file }}
+                        {% if form.file.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.file.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">{% translate "File Name (Optional)" %}</label>
+                        {{ form.name }}
+                        <div class="form-text">{{ form.name.help_text }}</div>
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_alt_text" class="form-label">{% translate "Alt Text" %}</label>
+                        {{ form.alt_text }}
+                        <div class="form-text">{{ form.alt_text.help_text }}</div>
+                        {% if form.alt_text.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.alt_text.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_caption" class="form-label">{% translate "Caption" %}</label>
+                        {{ form.caption }}
+                        {% if form.caption.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.caption.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_tags" class="form-label">{% translate "Tags" %}</label>
+                        {{ form.tags }}
+                        <div class="form-text">{{ form.tags.help_text }}</div>
+                        {% if form.tags.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.tags.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>{% translate "Upload File" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}"
+                           class="btn btn-outline-secondary">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>{% translate "Upload Guidelines" %}
+                </h6>
+                <ul class="mb-0 small">
+                    <li>{% translate "Maximum image size: 10MB" %}</li>
+                    <li>{% translate "Maximum document size: 50MB" %}</li>
+                    <li>{% translate "Maximum video size: 500MB" %}</li>
+                    <li>{% translate "Images will be automatically optimized" %}</li>
+                    <li>{% translate "Add alt text for better SEO" %}</li>
+                    <li>{% translate "Use tags for easier searching" %}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-folder me-2"></i>{% translate "Current Folder" %}
+                </h6>
+                <p class="mb-2"><strong>{{ folder.name }}</strong></p>
+                <p class="small text-muted mb-0">
+                    {% blocktranslate trimmed with full_path=folder.full_path|default:"Root"  %}Path: {{ folder.full_path|default:"Root" }}{% endblocktranslate %}
+                </p>
+                <p class="small text-muted">
+                    {% blocktranslate trimmed %}Files: {{ folder.get_file_count }}{% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

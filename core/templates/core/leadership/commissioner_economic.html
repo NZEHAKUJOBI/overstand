@@ -1,0 +1,580 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% translate "Commissioner for Economic Affairs & Agriculture" %} - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reuse same styles */
+    .leadership-hero {
+        position: relative;
+        min-height: 600px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670087/governance_jcnjum_j7twdp.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+    }
+
+    .hero-portrait-frame {
+        flex: 0 0 350px;
+        position: relative;
+    }
+
+    .portrait-container {
+        width: 350px;
+        height: 450px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 5px solid var(--accent-gold);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: white;
+    }
+
+    .portrait-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .title-prefix {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .leader-name {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .position-title {
+        font-size: clamp(1.3rem, 2vw, 1.6rem);
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .tenure-info {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .tenure-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .tenure-item i {
+        font-size: 1.5rem;
+        color: var(--accent-gold);
+    }
+
+    .tenure-item-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tenure-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .tenure-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 992px) {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-portrait-frame {
+            flex: none;
+        }
+
+        .portrait-container {
+            width: 280px;
+            height: 360px;
+            margin: 0 auto;
+        }
+
+        .tenure-info {
+            justify-content: center;
+        }
+    }
+
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+    }
+
+    .summary-card h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-card p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .biography-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .biography-content p {
+        color: #495057;
+        line-height: 1.9;
+        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+        text-align: justify;
+    }
+
+    .responsibilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .responsibility-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .responsibility-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .responsibility-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-green), var(--accent-gold));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .responsibility-icon i {
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .responsibility-card h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .responsibility-card p {
+        color: #6c757d;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .ipawas-highlight {
+        background: linear-gradient(135deg, var(--primary-green), #0F6B3F);
+        color: white;
+        border-radius: 20px;
+        padding: 3rem;
+        margin-top: 3rem;
+        text-align: center;
+    }
+
+    .ipawas-highlight h3 {
+        color: var(--accent-gold);
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .ipawas-highlight p {
+        color: white;
+        margin-bottom: 1.5rem;
+        opacity: 0.95;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" style="background: #f8f9fa; padding: 1rem 0; margin-top: 76px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">IPAWAS</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'about:governance' %}">{% translate "Leadership" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% translate "Commissioner for Economic Affairs" %}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="leadership-hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-portrait-frame">
+                <div class="portrait-container">
+                    <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1770789977/Kalilou-SYLLA--696x869_j06ric.webp"
+                         alt="{% translate "Dr. Kalilou Sylla" %}">
+                </div>
+            </div>
+
+            <div class="hero-text">
+                <div class="title-prefix">{% translate "Dr." %}</div>
+                <h1 class="leader-name">Kalilou Sylla</h1>
+                <p class="position-title">{% translate "Commissioner for Economic Affairs and Agriculture" %}</p>
+
+                <div class="tenure-info">
+                    <div class="tenure-item">
+                        <i class="fas fa-flag"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Country of Origin" %}</span>
+                            <span class="tenure-value">{% translate "Côte d'Ivoire" %}</span>
+                        </div>
+                    </div>
+                    <div class="tenure-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Tenure" %}</span>
+                            <span class="tenure-value">{% translate "October 2025 - Present" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Executive Summary -->
+<section class="executive-summary-section">
+    <div class="summary-card">
+        <h2>{% translate "About the Commissioner" %}</h2>
+        <p>
+            {% blocktranslate trimmed %}
+            Dr. Kalilou Sylla serves as the Commissioner for Economic Affairs and Agriculture at the
+            ECOWAS Commission, a critical role that oversees economic development, trade policy,
+            monetary cooperation, agricultural development, and investment promotion across West Africa.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% blocktranslate trimmed %}
+            With direct oversight of IPAWAS and other investment facilitation mechanisms, Commissioner
+            Sylla plays a pivotal role in shaping the regional investment landscape. His mandate includes
+            coordinating policies that enhance West Africa's competitiveness, attract foreign direct
+            investment, and promote intra-regional trade and economic integration.
+            {% endblocktranslate %}
+        </p>
+    </div>
+</section>
+
+<!-- Biography Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Biography" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                Dr. Kalilou Sylla was appointed Commissioner for Economic Affairs and Agriculture in
+                February 2022, bringing extensive experience in economic policy, agricultural development,
+                and regional integration. A distinguished economist and development specialist, Dr. Sylla
+                has dedicated his career to advancing Africa's economic transformation.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Prior to his appointment, Commissioner Sylla held senior positions in various African
+                development institutions where he led initiatives in trade facilitation, agricultural
+                value chain development, and private sector engagement. His deep understanding of West
+                Africa's economic dynamics and his pragmatic approach to policy implementation have been
+                instrumental in driving forward ECOWAS's economic agenda.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Dr. Sylla holds a doctorate in Economics with specialization in development economics
+                and agricultural policy. His academic research has focused on regional economic integration,
+                food security, and sustainable development in Africa. This scholarly background informs
+                his evidence-based approach to policymaking and program design.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Under his leadership, the Economic Affairs and Agriculture directorate has prioritized
+                accelerating the implementation of the ECOWAS Trade Liberalization Scheme, strengthening
+                agricultural productivity and food security, promoting investment in value-added
+                manufacturing, and enhancing the business environment across member states. His work
+                directly impacts IPAWAS's mission to promote West Africa as a premier investment destination.
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Key Responsibilities -->
+<section class="content-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title">{% translate "Key Responsibilities & Portfolio" %}</h2>
+        <div class="responsibilities-grid">
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>{% translate "Economic Development Policy" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Coordinate regional economic policies, including macroeconomic convergence,
+                    fiscal harmonization, and sustainable development strategies.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4>{% translate "Trade & Investment Promotion" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Oversee IPAWAS and other investment facilitation mechanisms, promote intra-regional
+                    trade, and coordinate efforts to attract foreign direct investment.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h4>{% translate "Agricultural Development" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Lead initiatives to enhance agricultural productivity, food security, and
+                    agribusiness development across the region.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h4>{% translate "Industrial Policy" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Promote regional industrialization, support manufacturing sector development,
+                    and enhance value addition to raw materials.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h4>{% translate "Monetary Cooperation" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Coordinate implementation of the ECOWAS Single Currency Programme and enhance
+                    financial sector integration.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4>{% translate "Private Sector Engagement" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Foster partnerships with regional and international business communities,
+                    support entrepreneurship, and promote SME development.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- IPAWAS Relationship -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Investment Promotion Leadership" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                As the senior ECOWAS official with direct oversight of investment promotion activities,
+                Commissioner Sylla works closely with IPAWAS to coordinate regional investment
+                facilitation efforts. His office provides strategic direction to the network of
+                Investment Promotion Agencies across the 12 member states, ensuring alignment with
+                broader ECOWAS economic objectives.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Commissioner Sylla champions initiatives to harmonize investment codes, streamline
+                regulatory processes, and create a more predictable business environment for investors.
+                He advocates for leveraging West Africa's combined market of over 400 million people
+                as a unique selling point to global investors seeking scale and regional market access.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Under his guidance, IPAWAS has strengthened its role in coordinating cross-border
+                investment projects, promoting regional value chains, and showcasing bankable
+                opportunities across multiple sectors. His vision includes transforming IPAWAS into
+                a world-class investment promotion platform that rivals best practices from other
+                regional economic communities.
+                {% endblocktranslate %}
+            </p>
+
+            <div class="ipawas-highlight">
+                <h3>{% translate "IPAWAS Under Economic Affairs" %}</h3>
+                <p>
+                    {% blocktranslate trimmed %}
+                    The Investment Promotion Agencies of West Africa (IPAWAS) operates under the
+                    direct supervision of the Commissioner for Economic Affairs and Agriculture,
+                    ensuring strategic alignment with ECOWAS's economic development priorities.
+                    {% endblocktranslate %}
+                </p>
+                <a href="{% url 'members:hub' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-compass me-2"></i>{% translate "Explore Investment Opportunities" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Strategic Priorities -->
+<section class="content-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title">{% translate "Strategic Priorities" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                Commissioner Sylla's strategic priorities reflect ECOWAS's commitment to accelerating
+                economic transformation and improving the livelihood of West African citizens. These
+                priorities include:
+                {% endblocktranslate %}
+            </p>
+            <p>
+                <strong>{% translate "Deepening Regional Integration:" %}</strong> {% blocktranslate trimmed %}Accelerating implementation of the
+                ECOWAS Trade Liberalization Scheme and Common External Tariff to create a seamless
+                market for goods, services, and capital across the region.{% endblocktranslate %}
+            </p>
+            <p>
+                <strong>{% translate "Enhancing Food Security:" %}</strong> {% blocktranslate trimmed %}Promoting agricultural modernization,
+                supporting small-holder farmers, and developing regional agricultural value chains
+                to achieve food self-sufficiency.{% endblocktranslate %}
+            </p>
+            <p>
+                <strong>{% translate "Attracting Quality Investment:" %}</strong> {% blocktranslate trimmed %}Working through IPAWAS and member
+                state IPAs to attract foreign direct investment in strategic sectors including
+                manufacturing, agribusiness, renewable energy, and digital economy.{% endblocktranslate %}
+            </p>
+            <p>
+                <strong>{% translate "Promoting Industrialization:" %}</strong> {% blocktranslate trimmed %}Supporting the development of regional
+                industrial clusters, enhancing value addition to raw materials, and creating quality
+                employment opportunities for youth.{% endblocktranslate %}
+            </p>
+            <p>
+                <strong>{% translate "Advancing Monetary Integration:" %}</strong> {% blocktranslate trimmed %}Coordinating efforts toward the
+                launch of the ECOWAS Single Currency (ECO), which will reduce transaction costs
+                and facilitate cross-border trade and investment.{% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="content-section">
+    <div class="container text-center">
+        <h2 class="section-title">{% translate "Connect with Investment Promotion Agencies" %}</h2>
+        <p style="max-width: 700px; margin: 0 auto 2rem; font-size: 1.1rem; color: #6c757d;">
+            {% blocktranslate trimmed %}
+            Under Commissioner Sylla's leadership, ECOWAS investment promotion agencies are ready to
+            support your investment journey in West Africa.
+            {% endblocktranslate %}
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'members:hub' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-globe me-2"></i>{% translate "View Member States" %}
+            </a>
+            <a href="{% url 'opportunities:listing' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-lightbulb me-2"></i>{% translate "Browse Opportunities" %}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,679 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}Governance & Leadership - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 550px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670087/governance_jcnjum_j7twdp.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: block;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+
+
+    /* Executive Summary Section */
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+
+
+    .btn-cus {
+        background: #EAE531;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: stretch;
+    }
+
+    .summary-image {
+        flex: 0 0 45%;
+        background: url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670087/governance_2_i0jafh_wghz0m.webp') center/cover;
+        min-height: 400px;
+    }
+
+    .summary-content {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .summary-content h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-content p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .summary-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 992px) {
+        .summary-card {
+            flex-direction: column;
+        }
+
+        .summary-image {
+            flex: none;
+            min-height: 300px;
+        }
+
+        .executive-summary-section {
+            margin-top: -40px;
+        }
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .governance-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+
+    .governance-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .governance-card .icon-box {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .governance-card:hover .icon-box {
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+        transform: scale(1.1) rotate(-5deg);
+    }
+
+    .governance-card .icon-box i {
+        font-size: 2.2rem;
+        color: white;
+    }
+
+    .governance-card h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .governance-card p {
+        color: var(--neutral-600);
+        line-height: 1.8;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .leadership-notice {
+        background: linear-gradient(135deg, rgba(212, 165, 32, 0.1), rgba(27, 122, 76, 0.05));
+        border-left: 5px solid var(--accent-gold);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 3rem 0;
+    }
+
+    .leadership-notice .icon {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-gold);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .leadership-notice .icon i {
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .leadership-notice h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .leadership-notice p {
+        color: var(--neutral-600);
+        line-height: 1.8;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .principle-item {
+        display: flex;
+        align-items-start;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .principle-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 8px 30px rgba(27, 122, 76, 0.1);
+    }
+
+    .principle-item .number {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--accent-gold), #B8941E);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .principle-item .content h5 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .principle-item .content p {
+        color: var(--neutral-600);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .accountability-section {
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.03), rgba(212, 165, 32, 0.03));
+    }
+
+    .accountability-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .accountability-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(27, 122, 76, 0.12);
+    }
+
+    .accountability-card h5 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .accountability-card h5 i {
+        margin-right: 0.75rem;
+        color: var(--accent-gold);
+        font-size: 1.3rem;
+    }
+
+    .accountability-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .accountability-card ul li {
+        padding-left: 1.8rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+        color: var(--neutral-600);
+        line-height: 1.7;
+    }
+
+    .accountability-card ul li::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        padding: 80px 0;
+        text-align: center;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .btn-cta {
+        background: var(--accent-gold);
+        color: var(--dark-green);
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 50px;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cta:hover {
+        background: white;
+        color: var(--primary-green);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<!-- <section class="page-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1>{% translate "Governance & Leadership" %}</h1>
+                <p>{% translate "Our commitment to transparent, accountable, and inclusive governance that serves all 12 member states with integrity and excellence." %}</p>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{% translate "Governance & Leadership" %}</h1>
+            <p class="hero-subtitle">
+                Our commitment to transparent, accountable, and inclusive governance that serves all 12 member states
+                with integrity and excellence.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Vision & Mission Section -->
+<section class="executive-summary-section">
+    <div class="container-fluid px-0">
+        <div class="summary-card">
+            <div class="summary-image"></div>
+            <div class="summary-content">
+                <h2>{% translate "Governance Framework" %}</h2>
+                <p>
+                    IPAWAS operates under a robust governance framework designed to ensure effective decision-making,
+                    accountability, and representation of all member Investment Promotion Agencies.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Governance Framework Section -->
+<section class="content-section">
+    <div class="container">
+        <!-- <div class="text-center mb-5">
+            <h2 class="section-title">{% translate "Governance Framework" %}</h2>
+            <p class="lead" style="font-size: 1.2rem; color: var(--neutral-600); max-width: 800px; margin: 0 auto;">
+                IPAWAS operates under a robust governance framework designed to ensure effective decision-making,
+                accountability, and representation of all member Investment Promotion Agencies.
+            </p>
+        </div> -->
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4>{% translate "Legal Structure" %}</h4>
+                    <p>
+                        Incorporated in Nigeria as a company limited by guarantee under the Companies and
+                        Allied Matters Act, 2020, registered with the Corporate Affairs Commission (CAC)
+                        as a non-profit, autonomous regional body.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h4>{% translate "Membership Model" %}</h4>
+                    <p>
+                        Composed of national Investment Promotion Agencies from all 12 ECOWAS Member States,
+                        with each member IPA having equal representation and voting rights in governance
+                        decisions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h4>{% translate "Decision-Making" %}</h4>
+                    <p>
+                        Operates through consensus-building and democratic processes, with major decisions
+                        requiring approval from member IPAs through General Assembly meetings and executive
+                        committee deliberations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h4>{% translate "Constitution & Bylaws" %}</h4>
+                    <p>
+                        Governed by comprehensive constitution and bylaws that define membership requirements,
+                        governance structures, operational procedures, and accountability mechanisms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>{% translate "Performance Monitoring" %}</h4>
+                    <p>
+                        Regular assessment of organizational performance against strategic objectives, with
+                        transparent reporting to member IPAs and key stakeholders on progress and impact.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="governance-card">
+                    <div class="icon-box">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>{% translate "Stakeholder Engagement" %}</h4>
+                    <p>
+                        Maintains collaborative relationships with ECOWAS, WAIPA, development partners, and
+                        other stakeholders while ensuring member IPA interests remain central to all activities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Governance Bodies Section -->
+<section class="content-section" style="background: var(--neutral-100);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="accountability-card">
+                    <h5><i class="fas fa-users"></i>{% translate "General Assembly" %}</h5>
+                    <ul>
+                        <li>{% translate "Highest decision-making body" %}</li>
+                        <li>{% translate "Appoints Secretary General of IPAWAS" %}</li>
+                        <li>{% translate "Considers and approves strategic policies" %}</li>
+                        <li>{% translate "Constitutes the Technical Committee" %}</li>
+                        <li>{% translate "Approves budgets and reports" %}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="accountability-card">
+                    <h5><i class="fas fa-user-tie"></i>{% translate "Technical Committee" %}</h5>
+                    <ul>
+                        <li>{% translate "Provides technical support" %}</li>
+                        <li>{% translate "Reviews and recommends budgets" %}</li>
+                        <li>{% translate "Provides strategic guidance" %}</li>
+                        <li>{% translate "Monitors performance" %}</li>
+                        <li>{% translate "Reports to General Assembly" %}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="accountability-card">
+                    <h5><i class="fas fa-building"></i>{% translate "Secretariat" %}</h5>
+                    <ul>
+                        <li>{% translate "Implements Assembly decisions" %}</li>
+                        <li>{% translate "Operates and manages Secretariat" %}</li>
+                        <li>{% translate "Prepares annual work programmes" %}</li>
+                        <li>{% translate "Develops strategic partnerships" %}</li>
+                        <li>{% translate "Performs administrative matters" %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Leadership Notice Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="leadership-notice">
+                    <div class="icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h4>{% translate "Current Leadership Structure" %}</h4>
+                    
+                    <div class="mt-4">
+                        <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "About the IPAWAS President" %}</h5>
+                        <p class="mb-4">
+                            {% translate "Ms. Aisha Rimi, Executive Secretary/CEO of the Nigerian Investment Promotion Commission (NIPC) of Nigeria, is the President of the Investment Promotion Agencies of West African States (IPAWAS)." %}
+                        </p>
+
+                        <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "About the Vice President" %}</h5>
+                        <p class="mb-4">
+                            {% translate "Dr. Jailson Oliveira, President/CEO of Cabo Verde Trade Invest (CVTI) of Cabo Verde, serves as the Vice President of the Investment Promotion Agencies of West African States (IPAWAS)." %}
+                        </p>
+
+                        <h5 class="fw-bold mb-2" style="color: var(--primary-green);">{% translate "About the Secretary General" %}</h5>
+                        <p class="mb-3">
+                            {% translate "Mr. Bakary Séga Bathily, General Manager/CEO of the Agence pour la Promotion des Investissements et des Grands Travaux (APIX) of Senegal, is the Secretary General of the Investment Promotion Agencies of West African States (IPAWAS)." %}
+                        </p>
+                        <a href="{% url 'about:secretary_general' %}" class="text-success fw-semibold d-inline-block">
+                            {% translate "View Secretary General profile" %} &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Governance Principles Section -->
+<section class="content-section accountability-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">{% translate "Governance Principles" %}</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="principle-item">
+                    <div class="number">01</div>
+                    <div class="content">
+                        <h5>{% translate "Transparency" %}</h5>
+                        <p>
+                            All governance processes, financial records, and operational decisions are documented
+                            and made accessible to member IPAs, fostering trust and accountability.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principle-item">
+                    <div class="number">02</div>
+                    <div class="content">
+                        <h5>{% translate "Inclusivity" %}</h5>
+                        <p>
+                            Every member IPA, regardless of country size or economic capacity, has equal voice
+                            and opportunity to participate in governance and benefit from IPAWAS programs.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principle-item">
+                    <div class="number">03</div>
+                    <div class="content">
+                        <h5>{% translate "Accountability" %}</h5>
+                        <p>
+                            Clear reporting mechanisms ensure all stakeholders can track progress, measure impact,
+                            and hold the organization accountable for delivering on its commitments.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principle-item">
+                    <div class="number">04</div>
+                    <div class="content">
+                        <h5>{% translate "Consensus Building" %}</h5>
+                        <p>
+                            Decision-making prioritizes dialogue and consensus among members, ensuring alignment
+                            with collective interests and regional priorities.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principle-item">
+                    <div class="number">05</div>
+                    <div class="content">
+                        <h5>{% translate "Sustainability" %}</h5>
+                        <p>
+                            Financial and operational sustainability guide all decisions, ensuring long-term
+                            viability and capacity to serve member IPAs effectively.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="principle-item">
+                    <div class="number">06</div>
+                    <div class="content">
+                        <h5>{% translate "Ethical Standards" %}</h5>
+                        <p>
+                            Highest standards of integrity, professionalism, and ethical conduct govern all
+                            interactions with members, partners, and stakeholders.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>{% translate "Committed to Excellence in Governance" %}</h2>
+        <p>{% translate "Learn more about our organizational structure and how we serve our member states." %}</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'about:who_we_are' %}" class="btn-cta">{% translate "About IPAWAS" %}</a>
+            <a href="{% url 'members:hub' %}" class="btn-cta" style="background: white; color: var(--primary-green);">
+                Our Member States
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

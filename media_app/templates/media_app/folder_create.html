@@ -1,0 +1,158 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate trimmed %}Create Folder - {{ member_state.country_name }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}{% if parent %}?folder={{ parent.id }}{% endif %}"
+           class="btn btn-outline-secondary btn-sm me-3">
+            <i class="fas fa-arrow-left"></i>{% translate "Back" %}
+        </a>
+        <div>
+            <h1 class="page-title mb-0">{% translate "Create New Folder" %}</h1>
+            {% if parent %}
+            <p class="text-muted mb-0">
+                <i class="fas fa-folder me-1"></i>{% blocktranslate trimmed %}Creating in: {{ parent.get_display_path }}{% endblocktranslate %}
+            </p>
+            {% else %}
+            <p class="text-muted mb-0">{% translate "Creating at root level" %}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">
+                            {% translate "Folder Name <span class=\"text-danger\">*</span>" %}
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">
+                            {% translate "Choose a descriptive name (e.g., \"Annual Reports\", \"Project Photos\")" %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            {% translate "Description" %}
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.description.errors }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">
+                            {% translate "Optional: Add a description to help others understand this folder's purpose" %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-folder-plus me-2"></i>{% translate "Create Folder" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}{% if parent %}?folder={{ parent.id }}{% endif %}"
+                           class="btn btn-outline-secondary">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>{% translate "Folder Guidelines" %}
+                </h6>
+                <ul class="mb-0 small">
+                    <li>{% translate "Use clear, descriptive names" %}</li>
+                    <li>{% translate "Maximum folder depth: 3 levels below system folders" %}</li>
+                    <li>{% translate "System folders (Documents, Images, Videos) cannot be renamed or deleted" %}</li>
+                    <li>{% translate "Folders must be empty before deletion" %}</li>
+                    <li>{% translate "Use folders to organize related files" %}</li>
+                </ul>
+            </div>
+        </div>
+
+        {% if parent %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-folder me-2"></i>{% translate "Parent Folder" %}
+                </h6>
+                <p class="mb-2">
+                    <strong>{{ parent.name }}</strong>
+                </p>
+                <p class="small text-muted mb-2">
+                    {% blocktranslate trimmed %}Path: {{ parent.full_path }}{% endblocktranslate %}
+                </p>
+                <p class="small text-muted mb-0">
+                    {% blocktranslate trimmed %}Level: {{ parent.level }} of 3{% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-layer-group me-2"></i>{% translate "Folder Structure" %}
+                </h6>
+                <div class="small">
+                    <p class="mb-2"><strong>{% translate "Current hierarchy:" %}</strong></p>
+                    <div class="folder-hierarchy">
+                        {% if parent %}
+                        <div class="hierarchy-level">
+                            <i class="fas fa-folder text-muted"></i>{% blocktranslate trimmed %}{{ member_state.country_name }} Media{% endblocktranslate %}
+                        </div>
+                        {% for ancestor in breadcrumbs %}
+                        <div class="hierarchy-level ms-3">
+                            <i class="fas fa-folder text-muted"></i>
+                            {{ ancestor.name }}
+                        </div>
+                        {% endfor %}
+                        <div class="hierarchy-level ms-4 text-primary">
+                            <i class="fas fa-folder-plus"></i>
+                            <strong>{% translate "New Folder" %}</strong>
+                        </div>
+                        {% else %}
+                        <div class="hierarchy-level">
+                            <i class="fas fa-folder text-muted"></i>{% blocktranslate trimmed %}{{ member_state.country_name }} Media{% endblocktranslate %}
+                        </div>
+                        <div class="hierarchy-level ms-3 text-primary">
+                            <i class="fas fa-folder-plus"></i>
+                            <strong>{% translate "New Folder" %}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hierarchy-level {
+        padding: 0.25rem 0;
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}

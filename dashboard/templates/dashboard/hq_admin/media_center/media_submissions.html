@@ -1,0 +1,177 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+{% block title %}Media Submissions — HQ Media Center{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-0"><i class="fas fa-images me-2"></i>Media Submissions</h1>
+        <p class="text-muted mb-0">Review and approve IPA photo and video submissions.</p>
+    </div>
+    <a href="{% url 'dashboard:hq:media_center:overview' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Overview
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="approved" {% if current_status == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="rejected" {% if current_status == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">Type</label>
+                <select name="type" class="form-select form-select-sm">
+                    <option value="">All Types</option>
+                    <option value="photo" {% if current_type == 'photo' %}selected{% endif %}>Photos</option>
+                    <option value="video" {% if current_type == 'video' %}selected{% endif %}>Videos</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold mb-1">IPA</label>
+                <select name="ipa" class="form-select form-select-sm">
+                    <option value="">All IPAs</option>
+                    {% for ms in member_states %}
+                    <option value="{{ ms.slug }}" {% if current_ipa == ms.slug %}selected{% endif %}>{{ ms.ipa_acronym }} — {{ ms.country_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success btn-sm w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Status tabs -->
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <a href="{% url 'dashboard:hq:media_center:media_list' %}" class="btn btn-sm {% if not current_status %}btn-success{% else %}btn-outline-secondary{% endif %}">
+        All <span class="badge bg-white text-dark ms-1">{{ status_counts.all }}</span>
+    </a>
+    <a href="?status=pending" class="btn btn-sm {% if current_status == 'pending' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+        Pending <span class="badge bg-white text-dark ms-1">{{ status_counts.pending }}</span>
+    </a>
+    <a href="?status=approved" class="btn btn-sm {% if current_status == 'approved' %}btn-success{% else %}btn-outline-success{% endif %}">
+        Approved <span class="badge bg-white text-dark ms-1">{{ status_counts.approved }}</span>
+    </a>
+    <a href="?status=rejected" class="btn btn-sm {% if current_status == 'rejected' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+        Rejected <span class="badge bg-white text-dark ms-1">{{ status_counts.rejected }}</span>
+    </a>
+</div>
+
+<!-- Reject modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Media Submission</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="reject-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label class="form-label fw-bold">Rejection Reason</label>
+                    <textarea name="rejection_reason" class="form-control" rows="3" placeholder="Optional feedback for the IPA…"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Grid -->
+{% if submissions %}
+<div class="row g-3">
+    {% for sub in submissions %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div style="aspect-ratio:1;overflow:hidden;border-radius:12px 12px 0 0;background:var(--neutral-100,#f5f5f5);display:flex;align-items:center;justify-content:center;position:relative;">
+                {% if sub.media_file.thumbnail_url %}
+                <img src="{{ sub.media_file.thumbnail_url }}" alt="{{ sub.media_file.name }}" style="width:100%;height:100%;object-fit:cover;">
+                {% else %}
+                <i class="fas fa-{% if sub.submission_type == 'photo' %}image{% else %}video{% endif %} fa-3x text-muted opacity-50"></i>
+                {% endif %}
+                <div style="position:absolute;top:8px;left:8px;">
+                    <span class="badge {% if sub.status == 'approved' %}bg-success{% elif sub.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                        {{ sub.get_status_display }}
+                    </span>
+                </div>
+                <div style="position:absolute;top:8px;right:8px;">
+                    <span class="badge bg-dark bg-opacity-75 text-capitalize">{{ sub.submission_type }}</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="fw-bold text-truncate mb-1" style="font-size:0.9rem;">{{ sub.media_file.name }}</div>
+                <div class="small text-muted mb-2">
+                    {% if sub.member_state %}<span class="badge bg-light text-dark me-1">{{ sub.member_state.ipa_acronym }}</span>{% endif %}
+                    {{ sub.submitted_at|date:"M j, Y" }}
+                </div>
+                {% if sub.caption %}<div class="small text-muted fst-italic mb-2">{{ sub.caption|truncatechars:60 }}</div>{% endif %}
+                {% if sub.status == 'pending' %}
+                <div class="d-flex gap-1 mt-auto">
+                    <form method="post" action="{% url 'dashboard:hq:media_center:media_approve' pk=sub.pk %}" class="flex-grow-1">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success w-100">
+                            <i class="fas fa-check me-1"></i>Approve
+                        </button>
+                    </form>
+                    <button type="button" class="btn btn-sm btn-outline-danger"
+                            data-bs-toggle="modal" data-bs-target="#rejectModal"
+                            data-action="{% url 'dashboard:hq:media_center:media_reject' pk=sub.pk %}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% elif sub.status == 'rejected' and sub.rejection_reason %}
+                <div class="small text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ sub.rejection_reason|truncatechars:60 }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if page_obj.has_other_pages %}
+<div class="d-flex justify-content-center py-4">
+    <nav>
+        <ul class="pagination pagination-sm mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_ipa %}&ipa={{ current_ipa }}{% endif %}">&laquo;</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_ipa %}&ipa={{ current_ipa }}{% endif %}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% else %}
+<div class="card border-0 shadow-sm">
+    <div class="text-center py-5 text-muted">
+        <i class="fas fa-images fa-3x mb-3 d-block opacity-25"></i>
+        <p>No media submissions found.</p>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        rejectModal.addEventListener('show.bs.modal', function(e) {
+            const btn = e.relatedTarget;
+            document.getElementById('reject-form').setAttribute('action', btn.getAttribute('data-action'));
+            rejectModal.querySelector('textarea').value = '';
+        });
+    }
+});
+</script>
+{% endblock %}

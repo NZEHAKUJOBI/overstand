@@ -1,0 +1,536 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% translate "Chairman of ECOWAS Authority" %} - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reuse same styles from commission_president.html */
+    .leadership-hero {
+        position: relative;
+        min-height: 600px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670087/governance_jcnjum_j7twdp.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+    }
+
+    .hero-portrait-frame {
+        flex: 0 0 350px;
+        position: relative;
+    }
+
+    .portrait-container {
+        width: 350px;
+        height: 450px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 5px solid var(--accent-gold);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: white;
+    }
+
+    .portrait-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .title-prefix {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .leader-name {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .position-title {
+        font-size: clamp(1.3rem, 2vw, 1.6rem);
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .tenure-info {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .tenure-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .tenure-item i {
+        font-size: 1.5rem;
+        color: var(--accent-gold);
+    }
+
+    .tenure-item-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tenure-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .tenure-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 992px) {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-portrait-frame {
+            flex: none;
+        }
+
+        .portrait-container {
+            width: 280px;
+            height: 360px;
+            margin: 0 auto;
+        }
+
+        .tenure-info {
+            justify-content: center;
+        }
+    }
+
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+    }
+
+    .summary-card h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-card p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .biography-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .biography-content p {
+        color: #495057;
+        line-height: 1.9;
+        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+        text-align: justify;
+    }
+
+    .responsibilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .responsibility-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .responsibility-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .responsibility-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-green), var(--accent-gold));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .responsibility-icon i {
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .responsibility-card h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .responsibility-card p {
+        color: #6c757d;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .rotating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(234, 229, 49, 0.2);
+        color: var(--accent-gold);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+
+    .rotating-badge i {
+        animation: rotate 3s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" style="background: #f8f9fa; padding: 1rem 0; margin-top: 76px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">IPAWAS</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'about:governance' %}">{% translate "Leadership" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% translate "ECOWAS Authority Chairman" %}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="leadership-hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-portrait-frame">
+                <div class="portrait-container">
+                    <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/Julius_Maada_Bio_-_2023_yl3koe_hardjk.webp"
+                         alt="{% translate "H.E. President Julius Maada Bio" %}">
+                </div>
+            </div>
+
+            <div class="hero-text">
+                <div class="title-prefix">{% translate "His Excellency President" %}</div>
+                <h1 class="leader-name">Julius Maada Bio</h1>
+                <p class="position-title">{% translate "Chairman, ECOWAS Authority of Heads of State and Government" %}</p>
+                <div class="rotating-badge">
+                    <i class="fas fa-sync"></i>
+                    <span>{% translate "Rotating Chairmanship" %}</span>
+                </div>
+
+                <div class="tenure-info">
+                    <div class="tenure-item">
+                        <i class="fas fa-flag"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Country" %}</span>
+                            <span class="tenure-value">{% translate "Sierra Leone" %}</span>
+                        </div>
+                    </div>
+                    <div class="tenure-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Chairmanship" %}</span>
+                            <span class="tenure-value">2024 - 2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Executive Summary -->
+<section class="executive-summary-section">
+    <div class="summary-card">
+        <h2>{% translate "About the Chairman" %}</h2>
+        <p>
+            {% blocktranslate trimmed %}
+            His Excellency President Julius Maada Bio serves as the current Chairman of the ECOWAS
+            Authority of Heads of State and Government, the supreme decision-making body of the Economic
+            Community of West African States. As President of Sierra Leone and ECOWAS Chairman, he brings
+            dynamic leadership to the region's most critical issues.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% blocktranslate trimmed %}
+            The ECOWAS Authority chairmanship rotates among member state heads of government, typically
+            for a one-year term. During his tenure, Chairman Bio focuses on strengthening democratic
+            governance, promoting regional security cooperation, and advancing economic integration
+            initiatives that benefit all West African citizens.
+            {% endblocktranslate %}
+        </p>
+    </div>
+</section>
+
+<!-- Biography Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Biography" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                President Julius Maada Bio was elected President of Sierra Leone in April 2018, bringing
+                a vision of transformative leadership focused on education, human capital development,
+                and economic diversification. His presidency has been marked by ambitious reforms aimed
+                at positioning Sierra Leone as a competitive investment destination in West Africa.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Before his presidency, Bio served in various capacities within Sierra Leone's military
+                and political landscape. His commitment to democratic principles and good governance
+                has been a consistent theme throughout his career. Under his leadership, Sierra Leone
+                has implemented significant policy reforms in education, healthcare, and infrastructure
+                development.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                As ECOWAS Authority Chairman, President Bio champions the region's strategic priorities,
+                including the fight against terrorism and extremism, promotion of democratic governance,
+                acceleration of economic integration, and enhancement of regional infrastructure. His
+                chairmanship comes at a critical time for West Africa, requiring strong leadership to
+                navigate complex regional challenges.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                President Bio holds degrees from American University and Kennesaw State University.
+                His academic background in political science and his practical experience in governance
+                inform his approach to regional leadership and development policy.
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Key Responsibilities as Chairman -->
+<section class="content-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title">{% translate "Responsibilities as ECOWAS Authority Chairman" %}</h2>
+        <div class="responsibilities-grid">
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h4>{% translate "Preside Over Authority Meetings" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Chair summits of ECOWAS Heads of State and Government, guiding deliberations
+                    on critical regional policy decisions.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h4>{% translate "Promote Regional Governance" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Champion democratic principles, rule of law, and good governance across
+                    member states, setting standards for the region.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>{% translate "Security Coordination" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Lead regional responses to security threats, including terrorism, insurgency,
+                    and cross-border criminal activities.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4>{% translate "Diplomatic Representation" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Represent ECOWAS at international forums, building partnerships with global
+                    organizations and other regional blocs.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>{% translate "Economic Integration" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Advance initiatives to deepen economic cooperation, including the ECOWAS
+                    Single Currency and Common External Tariff.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-people-carry"></i>
+                </div>
+                <h4>{% translate "Regional Solidarity" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Foster unity among member states, mediating disputes and promoting collaborative
+                    solutions to shared challenges.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Priorities During Chairmanship -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Priorities & Initiatives" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                Under Chairman Bio's leadership, the ECOWAS Authority has prioritized several critical
+                areas for regional development. Chief among these is the acceleration of the ECOWAS
+                Common External Tariff implementation, which aims to create a unified trade regime
+                across the region, making West Africa more attractive to international investors.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Security cooperation remains paramount, with Chairman Bio leading efforts to strengthen
+                regional mechanisms for counter-terrorism and conflict prevention. His chairmanship has
+                emphasized the importance of addressing root causes of instability, including youth
+                unemployment, inequality, and weak governance institutions.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Investment promotion through IPAWAS and other regional platforms has received renewed
+                focus. Chairman Bio advocates for a coordinated approach to marketing West Africa as
+                a unified investment destination, leveraging the region's combined market of over
+                400 million people. His vision includes streamlined investment procedures, harmonized
+                regulations, and enhanced investor protection mechanisms across member states.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Human capital development, particularly in education and healthcare, features prominently
+                in his regional agenda. Drawing from Sierra Leone's experience with the Free Quality
+                Education initiative, Chairman Bio encourages member states to invest substantially in
+                their citizens' capabilities as a foundation for long-term economic transformation.
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Sierra Leone as Host Nation -->
+<section class="content-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title">{% translate "Sierra Leone's Investment Opportunities" %}</h2>
+        <div class="biography-content" style="text-align: center;">
+            <p>
+                {% blocktranslate trimmed %}
+                As the home nation of the current ECOWAS Authority Chairman, Sierra Leone offers
+                unique investment opportunities across multiple sectors including mining, agriculture,
+                tourism, fisheries, and renewable energy.
+                {% endblocktranslate %}
+            </p>
+            <div style="margin-top: 2rem;">
+                <a href="{% url 'members:detail' 'sierra-leone' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-compass me-2"></i>{% translate "Explore Sierra Leone Investment Profile" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

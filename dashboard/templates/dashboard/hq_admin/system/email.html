@@ -1,0 +1,333 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Email Settings - System" %}{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumb-item">{% translate "Dashboard" %}</span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item"><a href="{% url 'dashboard:hq:config' %}">{% translate "System" %}</a></span>
+<span class="breadcrumb-divider">/</span>
+<span class="breadcrumb-item active">{% translate "Email Settings" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">{% translate "Email Configuration" %}</h1>
+    <p class="page-description">{% translate "Manage email service and notification templates" %}</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Current Configuration -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Current Email Configuration" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="config-item">
+                    <div class="config-label">
+                        <i class="fas fa-server text-primary"></i>
+                        <span>{% translate "Email Backend" %}</span>
+                    </div>
+                    <div class="config-value">
+                        <code>{{ email_settings.backend }}</code>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <i class="fas fa-globe text-success"></i>
+                        <span>{% translate "SMTP Host" %}</span>
+                    </div>
+                    <div class="config-value">
+                        <code>{{ email_settings.host }}</code>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <i class="fas fa-envelope text-info"></i>
+                        <span>{% translate "From Email" %}</span>
+                    </div>
+                    <div class="config-value">
+                        <code>{{ email_settings.from_email }}</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Templates -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Email Templates" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="template-list">
+                    <div class="template-item">
+                        <div class="template-info">
+                            <h6>{% translate "Welcome Email" %}</h6>
+                            <p class="text-muted">{% translate "Sent when new users are invited" %}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                        </button>
+                    </div>
+
+                    <div class="template-item">
+                        <div class="template-info">
+                            <h6>{% translate "Password Reset" %}</h6>
+                            <p class="text-muted">{% translate "Password recovery instructions" %}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                        </button>
+                    </div>
+
+                    <div class="template-item">
+                        <div class="template-info">
+                            <h6>{% translate "New Inquiry Notification" %}</h6>
+                            <p class="text-muted">{% translate "Alert when new inquiry is received" %}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                        </button>
+                    </div>
+
+                    <div class="template-item">
+                        <div class="template-info">
+                            <h6>{% translate "Weekly Report" %}</h6>
+                            <p class="text-muted">{% translate "Weekly platform summary email" %}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i>{% translate "Edit" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMTP Settings Form -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% translate "Update SMTP Configuration" %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "SMTP Host" %}</label>
+                        <input type="text" class="form-control" name="smtp_host"
+                               value="{{ email_settings.host }}" placeholder="{% translate "smtp.example.com" %}">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "SMTP Port" %}</label>
+                            <input type="number" class="form-control" name="smtp_port" value="587">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% translate "Use TLS" %}</label>
+                            <select class="form-select" name="use_tls">
+                                <option value="true" selected>{% translate "Yes" %}</option>
+                                <option value="false">{% translate "No" %}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "SMTP Username" %}</label>
+                        <input type="text" class="form-control" name="smtp_username">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "SMTP Password" %}</label>
+                        <input type="password" class="form-control" name="smtp_password">
+                        <small class="form-text text-muted">{% translate "Leave blank to keep current password" %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "From Email Address" %}</label>
+                        <input type="email" class="form-control" name="from_email"
+                               value="{{ email_settings.from_email }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% translate "From Name" %}</label>
+                        <input type="text" class="form-control" name="from_name"
+                               value="IPAWAS Platform" placeholder="{% translate "IPAWAS Platform" %}">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary-green">
+                            <i class="fas fa-save me-2"></i>{% translate "Save Configuration" %}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="testEmail()">
+                            <i class="fas fa-paper-plane me-2"></i>{% translate "Send Test Email" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Email Stats -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">{% translate "Email Statistics" %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="stat-item">
+                    <span>{% translate "Sent Today" %}</span>
+                    <strong>-</strong>
+                </div>
+                <div class="stat-item">
+                    <span>{% translate "Sent This Week" %}</span>
+                    <strong>-</strong>
+                </div>
+                <div class="stat-item">
+                    <span>{% translate "Failed Deliveries" %}</span>
+                    <strong class="text-danger">-</strong>
+                </div>
+                <div class="stat-item">
+                    <span>{% translate "Bounce Rate" %}</span>
+                    <strong>-%</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Status -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="status-indicator bg-success"></div>
+                    <div>
+                        <h6 class="mb-1">{% translate "Email Service Status" %}</h6>
+                        <p class="text-muted small mb-0">{% translate "Connected and operational" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="mb-2"><i class="fas fa-lightbulb me-2 text-warning"></i>{% translate "Best Practices" %}</h6>
+                <ul class="small mb-0">
+                    <li>{% translate "Use a dedicated email service (SendGrid, AWS SES)" %}</li>
+                    <li>{% translate "Enable SPF and DKIM authentication" %}</li>
+                    <li>{% translate "Monitor bounce rates regularly" %}</li>
+                    <li>{% translate "Test emails before deploying changes" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .config-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .config-item:last-child {
+        border-bottom: none;
+    }
+
+    .config-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        color: var(--neutral-700);
+    }
+
+    .config-label i {
+        font-size: 1.25rem;
+    }
+
+    .config-value code {
+        font-size: 0.875rem;
+        background: var(--neutral-100);
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        color: var(--neutral-800);
+    }
+
+    .template-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .template-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--neutral-50);
+        border-radius: 8px;
+        border: 1px solid var(--neutral-200);
+    }
+
+    .template-info h6 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--neutral-800);
+    }
+
+    .template-info p {
+        margin: 0;
+        font-size: 0.8125rem;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .stat-item span {
+        color: var(--neutral-600);
+        font-size: 0.875rem;
+    }
+
+    .stat-item strong {
+        color: var(--primary-green);
+        font-size: 1.125rem;
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function testEmail() {
+        // Implement test email functionality
+        if (confirm('Send a test email to {{ request.user.email }}?')) {
+            // Make AJAX call to send test email
+            alert('Test email sent!');
+        }
+    }
+</script>
+{% endblock %}

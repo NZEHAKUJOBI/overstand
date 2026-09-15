@@ -1,0 +1,140 @@
+{% extends "dashboard/members/base.html" %}
+{% load i18n %}
+{% block title %}{% if is_edit %}{% translate "Edit Press Release" %}{% else %}{% translate "New Press Release" %}{% endif %} - {{ member_state.country_name }}{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{% url 'dashboard:country:media_center:pr_list' member_state_slug=member_state.slug %}" class="btn btn-sm btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>{% translate "Back" %}
+    </a>
+    <div>
+        <h1 class="mb-0">
+            {% if is_edit %}{% translate "Edit Press Release" %}{% else %}{% translate "New Press Release" %}{% endif %}
+        </h1>
+        <p class="text-muted mb-0">{{ member_state.country_name }} | {{ member_state.ipa_acronym }}</p>
+    </div>
+</div>
+
+{% if is_edit and object.status == 'rejected' and object.rejection_reason %}
+<div class="alert alert-danger mb-4">
+    <strong><i class="fas fa-times-circle me-2"></i>{% translate "Rejected by HQ" %}</strong>
+    <p class="mb-0 mt-1">{{ object.rejection_reason }}</p>
+    <small class="text-muted">{% translate "Please revise and resubmit." %}</small>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" id="pr-form">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Title" %} <span class="text-danger">*</span></label>
+                        <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                               class="form-control {% if form.title.errors %}is-invalid{% endif %}"
+                               placeholder="{% translate 'Press release headline' %}" required>
+                        {% if form.title.errors %}<div class="invalid-feedback">{{ form.title.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Summary" %} <span class="text-danger">*</span></label>
+                        <textarea name="summary" rows="3"
+                                  class="form-control {% if form.summary.errors %}is-invalid{% endif %}"
+                                  placeholder="{% translate 'Brief summary (max 500 characters)' %}" required>{{ form.summary.value|default:'' }}</textarea>
+                        {% if form.summary.errors %}<div class="invalid-feedback">{{ form.summary.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% translate "Full Content" %} <span class="text-danger">*</span></label>
+                        <textarea name="content" rows="12"
+                                  class="form-control {% if form.content.errors %}is-invalid{% endif %}"
+                                  placeholder="{% translate 'Full press release text...' %}" required>{{ form.content.value|default:'' }}</textarea>
+                        {% if form.content.errors %}<div class="invalid-feedback">{{ form.content.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">{% translate "Release Date" %} <span class="text-danger">*</span></label>
+                            <input type="date" name="release_date" value="{{ form.release_date.value|default:'' }}"
+                                   class="form-control {% if form.release_date.errors %}is-invalid{% endif %}" required>
+                            {% if form.release_date.errors %}<div class="invalid-feedback">{{ form.release_date.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">{% translate "Location" %}</label>
+                            <input type="text" name="location" value="{{ form.location.value|default:'' }}"
+                                   class="form-control"
+                                   placeholder="{% translate 'e.g. Abuja, Nigeria' %}">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h6 class="fw-bold mb-3">{% translate "Contact Information" %}</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">{% translate "Contact Name" %}</label>
+                            <input type="text" name="contact_name" value="{{ form.contact_name.value|default:'' }}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{% translate "Contact Email" %}</label>
+                            <input type="email" name="contact_email" value="{{ form.contact_email.value|default:'' }}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{% translate "Contact Phone" %}</label>
+                            <input type="text" name="contact_phone" value="{{ form.contact_phone.value|default:'' }}" class="form-control">
+                        </div>
+                    </div>
+
+                    {% if available_media %}
+                    <hr class="my-4">
+                    <h6 class="fw-bold mb-3">{% translate "Attach PDF" %}</h6>
+                    <select name="pdf_file_id" class="form-select">
+                        <option value="">— {% translate "No PDF attachment" %} —</option>
+                        {% for mf in available_media %}
+                        <option value="{{ mf.pk }}" {% if object.pdf_file_id == mf.pk %}selected{% endif %}>{{ mf.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" name="action" value="draft" class="btn btn-outline-secondary">
+                            <i class="fas fa-save me-1"></i>{% translate "Save as Draft" %}
+                        </button>
+                        <button type="submit" name="action" value="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane me-1"></i>{% translate "Submit for HQ Review" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:media_center:pr_list' member_state_slug=member_state.slug %}" class="btn btn-link text-muted ms-auto">
+                            {% translate "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2 text-success"></i>{% translate "Submission Guide" %}</h6>
+                <ul class="list-unstyled small text-muted">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{% translate "Save as draft to continue later." %}</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{% translate "Submit for HQ review when ready to publish." %}</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{% translate "HQ will approve or provide feedback." %}</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{% translate "Approved releases appear in the public Media Center." %}</li>
+                </ul>
+                {% if is_edit and object.status %}
+                <hr>
+                <div class="small">
+                    <span class="text-muted">{% translate "Current status:" %}</span>
+                    <span class="badge rounded-pill ms-1 {% if object.status == 'approved' %}bg-success{% elif object.status == 'pending_review' %}bg-warning text-dark{% elif object.status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ object.get_status_display }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

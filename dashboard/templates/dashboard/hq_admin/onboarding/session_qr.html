@@ -1,0 +1,134 @@
+{% extends "dashboard/hq_admin/base.html" %}
+{% load i18n %}
+
+{% block title %}QR Code — {{ session.label }}{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom:24px;">
+  <a href="{% url 'dashboard:hq:onboarding:index' %}" style="color:#6b7280;font-size:0.85rem;">← Back to Sessions</a>
+  <h1 class="page-title" style="margin-top:8px;">{{ session.label }}</h1>
+</div>
+
+<!-- Toolbar (hidden on print) -->
+<div class="no-print" style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+  <button onclick="window.print()" class="btn btn-primary">🖨️ Print QR Code</button>
+  <button id="dlBtn" onclick="downloadQRCard()" class="btn btn-outline-primary">⬇️ Download as Image</button>
+  <a href="{% url 'dashboard:hq:onboarding:requests' %}?status=pending" class="btn btn-outline-secondary">
+    {% if session.pending_count > 0 %}
+      Review {{ session.pending_count }} Pending Request{{ session.pending_count|pluralize }}
+    {% else %}
+      View Requests
+    {% endif %}
+  </a>
+  <form method="post" action="{% url 'dashboard:hq:onboarding:session_toggle' session.pk %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if session.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+      {% if session.is_active %}⛔ Deactivate QR{% else %}✅ Activate QR{% endif %}
+    </button>
+  </form>
+</div>
+
+<!-- Session status warning -->
+{% if not session.is_open %}
+<div class="no-print" style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:12px 16px;margin-bottom:20px;color:#991b1b;font-size:0.875rem;">
+  ⚠️ This session is currently <strong>closed</strong> — the QR code will show a "Registration Closed" page to anyone who scans it.
+</div>
+{% endif %}
+
+<!-- QR Card — centred, print-optimised -->
+<div style="display:flex;justify-content:center;">
+  <div class="qr-print-card" style="background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.10);width:420px;overflow:hidden;">
+
+    <div style="background:linear-gradient(135deg,#1b7a4c,#0f6b3f);padding:24px;text-align:center;">
+      <div style="font-size:1.4rem;font-weight:900;color:white;letter-spacing:3px;">IPAWAS</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:0.75rem;margin-top:2px;">Investment Promotion Agencies of West Africa</div>
+      <div style="color:white;font-size:1rem;font-weight:700;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.2);">
+        Platform Access — Scan to Register
+      </div>
+    </div>
+
+    <div style="padding:32px;display:flex;flex-direction:column;align-items:center;gap:18px;border-bottom:1px dashed #e5e7eb;">
+      <img src="{{ qr_api_url }}" alt="QR Code for {{ session.label }}" width="320" height="320"
+           style="border-radius:12px;border:3px solid #f0faf5;display:block;">
+      <p style="font-size:0.85rem;color:#6b7280;text-align:center;line-height:1.6;">
+        Scan with your phone to request access to the IPAWAS platform<br>
+        or visit the link below
+      </p>
+    </div>
+
+    <div style="padding:20px 24px;">
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;font-size:0.72rem;color:#6b7280;word-break:break-all;line-height:1.5;">
+        {{ abs_public_url }}
+      </div>
+      {% if session.expires_at %}
+      <p style="font-size:0.75rem;color:#d97706;margin-top:10px;">
+        ⏱ Registration closes: {{ session.expires_at|date:"M d, Y H:i" }}
+      </p>
+      {% endif %}
+    </div>
+
+    <div style="background:#f9fafb;padding:14px 24px;text-align:center;font-size:0.75rem;color:#9ca3af;border-top:1px solid #f3f4f6;">
+      <strong style="color:#1b7a4c;">ipawas.org</strong> · Secure Onboarding Portal
+    </div>
+  </div>
+</div>
+
+<style>
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; }
+  .qr-print-card { box-shadow: none !important; border: 1px solid #e5e7eb !important; }
+  @page { margin: 10mm; }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+async function downloadQRCard() {
+  const btn = document.getElementById('dlBtn');
+  const card = document.querySelector('.qr-print-card');
+  const qrImg = card.querySelector('img');
+  const originalSrc = qrImg.src;
+
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Generating…';
+
+  try {
+    // Swap QR image to our same-origin proxy so html2canvas can read pixel data
+    const proxySrc = '{% url "dashboard:hq:onboarding:session_qr_image" session.pk %}';
+    await new Promise((resolve, reject) => {
+      const tmp = new Image();
+      tmp.onload = () => { qrImg.src = proxySrc; resolve(); };
+      tmp.onerror = reject;
+      tmp.src = proxySrc;
+    });
+
+    // Wait one frame so the browser paints the new src
+    await new Promise(r => requestAnimationFrame(r));
+
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      useCORS: false,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      logging: false,
+    });
+
+    const link = document.createElement('a');
+    link.download = 'IPAWAS-QR-{{ session.label|slugify }}.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch (err) {
+    console.error('QR download failed:', err);
+    alert('Download failed — please use the Print button instead.');
+  } finally {
+    qrImg.src = originalSrc;
+    btn.disabled = false;
+    btn.innerHTML = '⬇️ Download as Image';
+  }
+}
+</script>
+{% endblock %}

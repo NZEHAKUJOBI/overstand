@@ -1,0 +1,174 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate "Welcome to IPAWAS" %}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F8FAFC;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #F8FAFC; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <!-- Main Container -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden;">
+
+                    <!-- Header with Gradient -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #0A4428 0%, #1B7A4C 100%); padding: 48px 40px; text-align: center;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <!-- Logo/Icon -->
+                                        <div style="width: 100px; height: 100px; background-color: #ffffff; border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100" height="100">
+                                                <tr>
+                                                    <td align="center" valign="middle" style="font-size: 48px; color: #1B7A4C;">
+                                                        ✓
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h1 style="margin: 0 0 12px; font-family: 'Montserrat', sans-serif; font-size: 32px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">
+                                            {% translate "Welcome to IPAWAS!" %}
+                                        </h1>
+                                        <p style="margin: 0; font-size: 18px; color: rgba(255,255,255,0.95); font-weight: 500;">
+                                            {% translate "Your account is now active" %}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 48px 40px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #475569;">
+                                {% blocktranslate with name=user.get_full_name %}Hello <strong style="color: #1B7A4C;">{{ name }}</strong>,{% endblocktranslate %}
+                            </p>
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #475569;">
+                                {% translate "Congratulations! Your IPAWAS Dashboard account has been successfully activated. You're now part of West Africa's premier investment promotion network." %}
+                            </p>
+
+                            <!-- Features Grid -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 32px 0;">
+                                <tr>
+                                    <td style="padding: 0 0 16px 0;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B7A4C, #2D9061); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                                        <span style="color: #ffffff; font-size: 20px;">📊</span>
+                                                    </div>
+                                                </td>
+                                                <td valign="top">
+                                                    <h3 style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #0A4428;">
+                                                        {% translate "Real-Time Dashboard" %}
+                                                    </h3>
+                                                    <p style="margin: 0; font-size: 14px; color: #64748B; line-height: 1.5;">
+                                                        {% translate "Monitor inquiries, opportunities, and performance metrics" %}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0 0 16px 0;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B7A4C, #2D9061); border-radius: 10px;">
+                                                        <span style="color: #ffffff; font-size: 20px; line-height: 40px; text-align: center; display: block;">💡</span>
+                                                    </div>
+                                                </td>
+                                                <td valign="top">
+                                                    <h3 style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #0A4428;">
+                                                        {% translate "Opportunity Management" %}
+                                                    </h3>
+                                                    <p style="margin: 0; font-size: 14px; color: #64748B; line-height: 1.5;">
+                                                        {% translate "Showcase investment opportunities to global investors" %}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B7A4C, #2D9061); border-radius: 10px;">
+                                                        <span style="color: #ffffff; font-size: 20px; line-height: 40px; text-align: center; display: block;">👥</span>
+                                                    </div>
+                                                </td>
+                                                <td valign="top">
+                                                    <h3 style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #0A4428;">
+                                                        {% translate "Team Collaboration" %}
+                                                    </h3>
+                                                    <p style="margin: 0; font-size: 14px; color: #64748B; line-height: 1.5;">
+                                                        {% translate "Work seamlessly with your team members" %}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 32px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ dashboard_url }}" style="display: inline-block; padding: 16px 48px; background: linear-gradient(135deg, #1B7A4C, #2D9061); color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(27,122,76,0.3);">
+                                            {% translate "Access Your Dashboard →" %}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Help Box -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 32px 0; background: linear-gradient(135deg, rgba(212,165,32,0.1), rgba(244,196,48,0.1)); border-left: 4px solid #D4A520; border-radius: 12px; padding: 20px;">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 12px; font-size: 15px; font-weight: 700; color: #0A4428;">
+                                            <span style="font-size: 18px; margin-right: 8px;">💡</span>
+                                            {% translate "Need Help Getting Started?" %}
+                                        </p>
+                                        <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">
+                                            {% translate "Check out our quick start guide or contact our support team at" %}
+                                            <a href="mailto:support@ipawas.org" style="color: #1B7A4C; text-decoration: none; font-weight: 600;">support@ipawas.org</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #475569;">
+                                {% translate "We're excited to have you on board!" %}
+                            </p>
+                            <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.6; color: #475569;">
+                                {% translate "Best regards," %}<br>
+                                <strong style="color: #1B7A4C;">{% translate "The IPAWAS Team" %}</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #F8FAFC; padding: 32px 40px; text-align: center; border-top: 1px solid #E2E8F0;">
+                            <p style="margin: 0 0 12px; font-size: 14px; color: #64748B;">
+                                &copy; {% now "Y" %} IPAWAS. {% translate "All rights reserved." %}
+                            </p>
+                            <p style="margin: 0; font-size: 13px; color: #94A3B8;">
+                                {% translate "Investment Promotion Agencies of West African States" %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

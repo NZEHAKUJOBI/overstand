@@ -1,0 +1,489 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "IPAWAS - Investment Promotion Agencies of West Africa" %}{% endblock %}
+
+{% block content %}
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <!-- Slide 1: Main Welcome -->
+        <div class="carousel-item active slide-1">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title animate-fade-in">
+                                {% translate "Transforming West Africa into a Global Investment Destination" %}
+                            </h1>
+                            <p class="hero-subtitle animate-slide-up">
+                                {% translate "IPAWAS unites 12 investment promotion agencies across ECOWAS nations, facilitating strategic partnerships and unlocking unprecedented opportunities in Africa's fastest-growing economic region." %}
+                            </p>
+                            <div class="cta-buttons animate-slide-up">
+                                <button class="btn btn-primary-custom">
+                                    {% translate "Explore Investment Opportunities" %}
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <button class="btn btn-outline-custom">
+                                    {% translate "Download Regional Guide" %}
+                                    <i class="fas fa-download ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Regional Strength -->
+        <div class="carousel-item slide-2">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                {% translate "400M+ Population" %}
+                                <br>{% translate "Infinite Possibilities" %}
+                            </h1>
+                            <p class="hero-subtitle">
+                                {% translate "West Africa represents one of the world's most dynamic economic frontiers, with robust GDP growth, youthful demographics, and rapidly expanding middle class consumption." %}
+                            </p>
+                            <div class="hero-stats">
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">$800B+</div>
+                                    <div class="hero-stat-label">{% translate "Regional GDP" %}</div>
+                                </div>
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">6.5%</div>
+                                    <div class="hero-stat-label">{% translate "Average Growth Rate" %}</div>
+                                </div>
+                                <div class="hero-stat animate-slide-up">
+                                    <div class="hero-stat-number">12</div>
+                                    <div class="hero-stat-label">{% translate "Member Countries" %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Strategic Sectors -->
+        <div class="carousel-item slide-3">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                {% translate "Strategic Investment" %}
+                                <br>{% translate "Across Key Sectors" %}
+                            </h1>
+                            <p class="hero-subtitle">
+                                {% translate "From renewable energy and agribusiness to fintech and digital innovation, West Africa offers diversified opportunities backed by progressive policies and regional coordination." %}
+                            </p>
+                            <div class="cta-buttons">
+                                <button class="btn btn-primary-custom">
+                                    {% translate "View Sector Opportunities" %}
+                                    <i class="fas fa-chart-line ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Partnership Excellence -->
+        <div class="carousel-item slide-4">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h1 class="hero-title">
+                                {% translate "Building Partnerships" %}
+                                <br>{% translate "Creating Value" %}
+                            </h1>
+                            <p class="hero-subtitle">
+                                {% translate "Join leading global investors who have discovered sustainable returns through IPAWAS's coordinated approach to investment facilitation and business development." %}
+                            </p>
+                            <div class="cta-buttons">
+                                <button class="btn btn-outline-custom">
+                                    {% translate "Connect With Us" %}
+                                    <i class="fas fa-handshake ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- About Section -->
+<section id="about" class="section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="section-title animate-slide-left">{% translate "Uniting West Africa for Global Investment" %}</h2>
+                <p class="animate-slide-left" style="font-size: 1.1rem; color: var(--neutral-600); line-height: 1.8;">
+                    {% translate "The Investment Promotion Agencies of West African States (IPAWAS) represents a historic collaboration among 12 ECOWAS member nations, established to coordinate regional investment promotion strategies and amplify West Africa's position as a premier global investment destination." %}
+                </p>
+                <p class="animate-slide-left" style="font-size: 1.1rem; color: var(--neutral-600); line-height: 1.8;">
+                    {% translate "Through strategic coordination, knowledge sharing, and unified policy advocacy, IPAWAS facilitates seamless cross-border investments while maintaining each nation's unique competitive advantages and sectoral specializations." %}
+                </p>
+                <div class="mt-4 animate-slide-left">
+                    <button class="btn btn-primary-custom">
+                        {% translate "Learn About Our Mission" %}
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-grid">
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-globe-africa"></i>
+                        </div>
+                        <h4 class="feature-title">{% translate "Regional Integration" %}</h4>
+                        <p class="feature-text">{% translate "Harmonized investment frameworks across 12 nations creating seamless market access." %}</p>
+                    </div>
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4 class="feature-title">{% translate "Strategic Facilitation" %}</h4>
+                        <p class="feature-text">{% translate "End-to-end investment support from entry to operational excellence." %}
+                        </p>
+                    </div>
+                    <div class="feature-card animate-slide-right">
+                        <div class="feature-icon-modern">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="feature-title">{% translate "Growth Partnership" %}</h4>
+                        <p class="feature-text">{% translate "Sustainable value creation through coordinated regional development." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title text-white animate-fade-in">{% translate "West Africa by the Numbers" %}</h2>
+            <p class="section-subtitle text-white animate-fade-in">{% translate "Discover the scale and potential of Africa's most dynamic economic region." %}</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up" x-data="{ count: 0 }" x-init="
+                        let interval = setInterval(() => {
+                            if (count < 420) {
+                                count += 10;
+                            } else {
+                                clearInterval(interval);
+                                count = 420;
+                            }
+                        }, 50)
+                    ">
+                    <div class="stat-number" x-text="count + 'M+'">420M+</div>
+                    <div class="stat-label">{% translate "Population" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">$800B+</div>
+                    <div class="stat-label">{% translate "Combined GDP" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">6.5%</div>
+                    <div class="stat-label">{% translate "Average Growth Rate" %}</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card-modern animate-slide-up">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">{% translate "Member Nations" %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Member Countries -->
+<section id="countries" class="section section-light">
+    <div class="container">
+        <h2 class="section-title text-center animate-fade-in">{% translate "ECOWAS Member States" %}</h2>
+        <p class="section-subtitle text-center animate-fade-in">{% translate "Explore investment opportunities across 15 diverse economies, each offering unique competitive advantages and sectoral specializations." %}</p>
+
+        <div class="country-grid">
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇧🇯</div>
+                <div class="country-info">
+                    <h3 class="country-name">Benin</h3>
+                    <p class="country-capital">Porto-Novo</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇧🇫</div>
+                <div class="country-info">
+                    <h3 class="country-name">Burkina Faso</h3>
+                    <p class="country-capital">Ouagadougou</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇨🇻</div>
+                <div class="country-info">
+                    <h3 class="country-name">Cabo Verde</h3>
+                    <p class="country-capital">Praia</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇨🇮</div>
+                <div class="country-info">
+                    <h3 class="country-name">Côte d'Ivoire</h3>
+                    <p class="country-capital">Yamoussoukro</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇬🇲</div>
+                <div class="country-info">
+                    <h3 class="country-name">Gambia</h3>
+                    <p class="country-capital">Banjul</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇬🇭</div>
+                <div class="country-info">
+                    <h3 class="country-name">Ghana</h3>
+                    <p class="country-capital">Accra</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇬🇳</div>
+                <div class="country-info">
+                    <h3 class="country-name">Guinea</h3>
+                    <p class="country-capital">Conakry</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇬🇼</div>
+                <div class="country-info">
+                    <h3 class="country-name">Guinea-Bissau</h3>
+                    <p class="country-capital">Bissau</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇱🇷</div>
+                <div class="country-info">
+                    <h3 class="country-name">Liberia</h3>
+                    <p class="country-capital">Monrovia</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇲🇱</div>
+                <div class="country-info">
+                    <h3 class="country-name">Mali</h3>
+                    <p class="country-capital">Bamako</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇳🇪</div>
+                <div class="country-info">
+                    <h3 class="country-name">Niger</h3>
+                    <p class="country-capital">Niamey</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇳🇬</div>
+                <div class="country-info">
+                    <h3 class="country-name">Nigeria</h3>
+                    <p class="country-capital">Abuja</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇸🇳</div>
+                <div class="country-info">
+                    <h3 class="country-name">Senegal</h3>
+                    <p class="country-capital">Dakar</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇸🇱</div>
+                <div class="country-info">
+                    <h3 class="country-name">Sierra Leone</h3>
+                    <p class="country-capital">Freetown</p>
+                </div>
+            </div>
+
+            <div class="country-card animate-slide-up">
+                <div class="country-flag">🇹🇬</div>
+                <div class="country-info">
+                    <h3 class="country-name">Togo</h3>
+                    <p class="country-capital">Lomé</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Investment Opportunities -->
+<section id="opportunities" class="section section-dark">
+    <div class="container">
+        <h2 class="section-title text-center animate-fade-in">{% translate "Strategic Investment Opportunities" %}</h2>
+        <p class="section-subtitle text-center animate-fade-in">
+            {% translate "Discover high-potential sectors backed by progressive policies, regional coordination, and sustainable growth trajectories." %}
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-solar-panel"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Renewable Energy" %}</h4>
+                <p class="feature-text">{% translate "$120B+ investment potential in solar, wind, and hydro projects addressing regional energy deficits with 220M+ people lacking access." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Agribusiness & Food Security" %}</h4>
+                <p class="feature-text">{% translate "Transform 65% of the world's uncultivated arable land through modern farming, processing, and value-added agricultural innovation." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Digital Innovation & Fintech" %}</h4>
+                <p class="feature-text">{% translate "Explosive mobile penetration and digital-first solutions creating opportunities in payments, lending, and financial inclusion." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Manufacturing & Industrialization" %}</h4>
+                <p class="feature-text">{% translate "Capitalize on regional value chains, AfCFTA opportunities, and competitive labor markets for export-oriented production." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Education & Skills Development" %}</h4>
+                <p class="feature-text">{% translate "Address surging demand for quality education, vocational training, and digital skills in the world's youngest population." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Healthcare Infrastructure" %}</h4>
+                <p class="feature-text">{% translate "Critical gaps in hospitals, pharmaceuticals, and telemedicine creating sustainable investment opportunities with social impact." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-road"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Transportation & Logistics" %}</h4>
+                <p class="feature-text">{% translate "Multi-billion dollar infrastructure modernization across ports, railways, roads, and aviation supporting regional trade expansion." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Real Estate & Urbanization" %}</h4>
+                <p class="feature-text">{% translate "Rapid urban growth creating demand for residential, commercial, and industrial properties across major metropolitan areas." %}</p>
+            </div>
+
+            <div class="feature-card animate-slide-up">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4 class="feature-title">{% translate "Regional Integration Benefits" %}</h4>
+                <p class="feature-text">{% translate "ECOWAS single market with harmonized policies, free movement of goods, and coordinated development strategies." %}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News & Updates with Images -->
+<section id="news" class="section news-section">
+    <div class="container">
+        <h2 class="section-title animate-slide-up">{% translate "Latest News & Insights" %}</h2>
+        <p class="section-subtitle animate-slide-up">{% translate "Stay ahead with the latest developments, policy updates, and investment opportunities across West Africa." %}</p>
+
+        <div class="news-grid">
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-1"></div>
+                <div class="news-content">
+                    <div class="news-date">{% translate "September 24, 2024" %}</div>
+                    <h3 class="news-title">{% translate "IPAWAS Statute Validated in Historic Banjul Summit" %}</h3>
+                    <p class="news-excerpt">{% translate "ECOWAS members formalize regional investment promotion framework, strengthening coordination and collaboration across West Africa." %}</p>
+                    <a href="{% url 'knowledge_hub:news' %}" class="news-link">{% translate "Read Full Story" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-2"></div>
+                <div class="news-content">
+                    <div class="news-date">{% translate "March 30, 2025" %}</div>
+                    <h3 class="news-title">{% translate "Diaspora Investment Initiative Launched" %}</h3>
+                    <p class="news-excerpt">{% translate "New program targets $28 billion in diaspora remittances for infrastructure development across the region." %}</p>
+                    <a href="{% url 'knowledge_hub:news' %}" class="news-link">{% translate "Learn More" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="news-card-modern animate-slide-up">
+                <div class="news-image news-image-3"></div>
+                <div class="news-content">
+                    <div class="news-date">{% translate "February 15, 2025" %}</div>
+                    <h3 class="news-title">{% translate "Regional Investment Growth Accelerates" %}</h3>
+                    <p class="news-excerpt">{% translate "FDI flows reach record highs as coordinated promotion efforts drive investor confidence and market expansion." %}</p>
+                    <a href="{% url 'knowledge_hub:publications' %}" class="news-link">{% translate "View Report" %} <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}

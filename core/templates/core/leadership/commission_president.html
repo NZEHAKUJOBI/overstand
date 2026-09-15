@@ -1,0 +1,657 @@
+{% extends "core/new_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% translate "President of ECOWAS Commission" %} - IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .leadership-hero {
+        position: relative;
+        min-height: 600px;
+        padding: 150px 0 120px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+            url('https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670087/governance_jcnjum_j7twdp.webp') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+    }
+
+    .hero-portrait-frame {
+        flex: 0 0 350px;
+        position: relative;
+    }
+
+    .portrait-container {
+        width: 350px;
+        height: 450px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 5px solid var(--accent-gold);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: white;
+    }
+
+    .portrait-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .title-prefix {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .leader-name {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .position-title {
+        font-size: clamp(1.3rem, 2vw, 1.6rem);
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .tenure-info {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .tenure-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .tenure-item i {
+        font-size: 1.5rem;
+        color: var(--accent-gold);
+    }
+
+    .tenure-item-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tenure-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .tenure-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 992px) {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-portrait-frame {
+            flex: none;
+        }
+
+        .portrait-container {
+            width: 280px;
+            height: 360px;
+            margin: 0 auto;
+        }
+
+        .tenure-info {
+            justify-content: center;
+        }
+    }
+
+    /* Executive Summary Section */
+    .executive-summary-section {
+        margin: -80px auto 4rem;
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        padding: 0 15px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+    }
+
+    .summary-card h2 {
+        color: var(--primary-green);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-card p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    /* Content Sections */
+    .content-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .biography-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .biography-content p {
+        color: #495057;
+        line-height: 1.9;
+        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+        text-align: justify;
+    }
+
+    /* Key Responsibilities */
+    .responsibilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .responsibility-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .responsibility-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(27, 122, 76, 0.15);
+        border-color: var(--accent-gold);
+    }
+
+    .responsibility-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-green), var(--accent-gold));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .responsibility-icon i {
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .responsibility-card h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .responsibility-card p {
+        color: #6c757d;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Timeline */
+    .timeline-section {
+        background: #f8f9fa;
+    }
+
+    .timeline-items {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .timeline-items::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: var(--primary-green);
+    }
+
+    .timeline-item {
+        display: flex;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .timeline-item:nth-child(odd) {
+        flex-direction: row;
+    }
+
+    .timeline-item:nth-child(even) {
+        flex-direction: row-reverse;
+    }
+
+    .timeline-content {
+        flex: 1;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin: 0 2rem;
+    }
+
+    .timeline-date {
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .timeline-content h4 {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .timeline-content p {
+        color: #6c757d;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: var(--accent-gold);
+        border: 4px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px var(--primary-green);
+        z-index: 10;
+    }
+
+    @media (max-width: 768px) {
+        .timeline-items::before {
+            left: 20px;
+        }
+
+        .timeline-item,
+        .timeline-item:nth-child(even) {
+            flex-direction: row;
+        }
+
+        .timeline-content {
+            margin-left: 60px;
+            margin-right: 0;
+        }
+
+        .timeline-marker {
+            left: 20px;
+        }
+    }
+
+    /* Contact Section */
+    .contact-section {
+        background: linear-gradient(135deg, var(--primary-green), #0F6B3F);
+        color: white;
+    }
+
+    .contact-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .contact-card h4 {
+        color: var(--accent-gold);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+    }
+
+    .contact-item i {
+        font-size: 1.5rem;
+        color: var(--accent-gold);
+        width: 30px;
+    }
+
+    .contact-item a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .contact-item a:hover {
+        color: var(--accent-gold);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" style="background: #f8f9fa; padding: 1rem 0; margin-top: 76px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">IPAWAS</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'about:governance' %}">{% translate "Leadership" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% translate "ECOWAS Commission President" %}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="leadership-hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-portrait-frame">
+                <div class="portrait-container">
+                    <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670095/ecowas-president-dr-toure_ufwdff_dcygr6.webp"
+                         alt="{% translate "H.E. Omar Alieu Touray" %}">
+                </div>
+            </div>
+
+            <div class="hero-text">
+                <div class="title-prefix">{% translate "His Excellency" %}</div>
+                <h1 class="leader-name">Omar Alieu Touray</h1>
+                <p class="position-title">{% translate "President of the ECOWAS Commission" %}</p>
+
+                <div class="tenure-info">
+                    <div class="tenure-item">
+                        <i class="fas fa-flag"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Country of Origin" %}</span>
+                            <span class="tenure-value">{% translate "The Gambia" %}</span>
+                        </div>
+                    </div>
+                    <div class="tenure-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="tenure-item-content">
+                            <span class="tenure-label">{% translate "Tenure" %}</span>
+                            <span class="tenure-value">{% translate "February 2022 - Present" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Executive Summary -->
+<section class="executive-summary-section">
+    <div class="summary-card">
+        <h2>{% translate "About the President" %}</h2>
+        <p>
+            {% blocktranslate trimmed %}
+            His Excellency Omar Alieu Touray serves as the President of the ECOWAS Commission,
+            the executive body of the Economic Community of West African States. He brings decades
+            of experience in regional integration, diplomacy, and economic development to this
+            pivotal role.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% blocktranslate trimmed %}
+            As President, H.E. Touray leads the implementation of ECOWAS policies and decisions,
+            champions regional integration initiatives, and represents the Commission in international
+            forums. His vision centers on deepening economic integration, enhancing regional security,
+            and promoting sustainable development across West Africa.
+            {% endblocktranslate %}
+        </p>
+    </div>
+</section>
+
+<!-- Biography Section -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Biography" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                Omar Alieu Touray was elected as President of the ECOWAS Commission in February 2022,
+                bringing with him extensive experience in international relations, development cooperation,
+                and regional integration. Born in The Gambia, President Touray has dedicated his career
+                to advancing African unity and prosperity.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Before assuming his current role, President Touray served in various senior positions
+                within the African Union and ECOWAS systems, where he demonstrated exceptional leadership
+                in coordinating regional responses to economic and security challenges. His deep understanding
+                of West Africa's political economy and his commitment to multilateralism have been instrumental
+                in shaping his approach to regional governance.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                President Touray holds advanced degrees in economics and international relations from
+                prestigious institutions. His academic background, combined with his practical experience
+                in diplomacy and development, positions him uniquely to navigate the complex landscape
+                of regional integration in West Africa.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Under his leadership, the ECOWAS Commission has prioritized key initiatives including
+                the acceleration of the ECOWAS Single Currency Programme, enhancement of regional
+                infrastructure, strengthening of the ECOWAS Common External Tariff, and promotion of
+                private sector-led economic growth. His tenure has been marked by a renewed focus on
+                investment promotion and facilitation across the region.
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Key Responsibilities -->
+<section class="content-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title">{% translate "Key Responsibilities & Mandate" %}</h2>
+        <div class="responsibilities-grid">
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <h4>{% translate "Executive Leadership" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Serve as chief executive of the ECOWAS Commission, implementing decisions
+                    of the Authority of Heads of State and Government and the Council of Ministers.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4>{% translate "Regional Integration" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Champion initiatives to deepen economic, political, and social integration
+                    across the 15 ECOWAS member states.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h4>{% translate "International Representation" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Represent ECOWAS in international forums, building partnerships with global
+                    organizations and development partners.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>{% translate "Economic Development" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Oversee programs promoting trade liberalization, monetary cooperation,
+                    and investment facilitation across the region.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>{% translate "Peace & Security" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Coordinate regional responses to security challenges and promote conflict
+                    prevention and resolution mechanisms.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+
+            <div class="responsibility-card">
+                <div class="responsibility-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4>{% translate "People-Centered Development" %}</h4>
+                <p>
+                    {% blocktranslate trimmed %}
+                    Ensure ECOWAS programs prioritize the well-being of West African citizens
+                    through inclusive and sustainable development.
+                    {% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vision & Priorities -->
+<section class="content-section">
+    <div class="container">
+        <h2 class="section-title">{% translate "Vision for West Africa" %}</h2>
+        <div class="biography-content">
+            <p>
+                {% blocktranslate trimmed %}
+                President Touray's vision for West Africa is anchored in the concept of "One Region,
+                One Future" - a community where economic prosperity is shared, borders facilitate rather
+                than hinder commerce, and citizens can freely pursue opportunities across the region.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                His strategic priorities include accelerating the implementation of the ECOWAS Single
+                Currency, enhancing regional infrastructure connectivity, strengthening agricultural
+                value chains, promoting digital economy initiatives, and attracting substantial foreign
+                direct investment into the region. He envisions ECOWAS as a model of successful regional
+                integration that delivers tangible benefits to all member states and their populations.
+                {% endblocktranslate %}
+            </p>
+            <p>
+                {% blocktranslate trimmed %}
+                Central to his leadership is the belief that private sector-led growth, supported by
+                robust public institutions, is essential for sustainable development. Through IPAWAS
+                and other regional mechanisms, President Touray champions initiatives that improve
+                the investment climate and showcase West Africa's vast opportunities to global investors.
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Information -->
+<section class="content-section contact-section">
+    <div class="container">
+        <h2 class="section-title" style="color: white;">{% translate "Office of the President" %}</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact-card">
+                    <h4>{% translate "ECOWAS Commission" %}</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{% translate "101 Yakubu Gowon Crescent, Asokoro, Abuja, Nigeria" %}</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:president@ecowas.int">president@ecowas.int</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+2349314 7647">+234 (0)9 314 7647</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-globe"></i>
+                        <a href="https://www.ecowas.int" target="_blank">www.ecowas.int</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

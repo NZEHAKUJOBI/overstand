@@ -1,0 +1,158 @@
+{% extends 'dashboard/members/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Leadership Profile" %}{% endblock %}
+{% block page_title %}{% translate "IPA Leadership Profile" %}{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'dashboard:country:overview' member_state.slug %}">{% translate "Dashboard" %}</a> / {% translate "Leadership Profile" %}
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mb-4">
+        <strong>{% translate "Please fix the errors below before saving." %}</strong>
+        <ul class="mb-0 mt-2">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Left column -->
+        <div class="col-lg-8">
+
+            <!-- Leader Information -->
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-user-tie me-2"></i>{% translate "Leader Information" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="row">
+                        <div class="col-md-7 mb-4">
+                            <label class="form-label" for="{{ form.full_name.id_for_label }}">{% translate "Full Name" %} <span class="required-star">*</span></label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<div class="field-error">{{ form.full_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-5 mb-4">
+                            <label class="form-label" for="{{ form.official_title.id_for_label }}">{% translate "Official Title" %} <span class="required-star">*</span></label>
+                            {{ form.official_title }}
+                            {% if form.official_title.errors %}<div class="field-error">{{ form.official_title.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" for="{{ form.biography.id_for_label }}">{% translate "Biography" %}</label>
+                        {{ form.biography }}
+                        <small class="form-text text-muted">{% translate "Professional background, education, and vision (200–500 words recommended)" %}</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label" for="{{ form.direct_email.id_for_label }}">{% translate "Direct Email" %}</label>
+                            {{ form.direct_email }}
+                            <small class="form-text text-muted">{% translate "Publicly displayed on the profile (leave blank to hide)" %}</small>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label" for="{{ form.appointment_date.id_for_label }}">{% translate "Appointment Date" %}</label>
+                            {{ form.appointment_date }}
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label" for="{{ form.last_verified.id_for_label }}">{% translate "Last Verified" %}</label>
+                            {{ form.last_verified }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Official Photograph -->
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-camera me-2"></i>{% translate "Official Photograph" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    {% if object.official_photograph %}
+                    <div class="mb-3 d-flex align-items-center gap-3">
+                        <img src="{{ object.official_photograph }}" alt="{% translate "Current photo" %}"
+                             style="width:90px;height:110px;object-fit:cover;border-radius:10px;border:2px solid var(--neutral-200);">
+                        <div>
+                            <p class="mb-1 fw-semibold" style="color:var(--dark-green);">{% translate "Current photo" %}</p>
+                            <p class="text-muted small mb-0">{% translate "Upload a new file below to replace it" %}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <label class="form-label" for="id_official_photograph">{% translate "Upload Photo" %}</label>
+                        {{ form.official_photograph }}
+                        <small class="form-text text-muted">{% translate "Professional headshot — min 800×1000px, neutral background, max 2MB (JPEG/PNG)" %}</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right column -->
+        <div class="col-lg-4">
+            <div class="content-card sticky-sidebar mb-4">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-save me-2"></i>{% translate "Save" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary-green btn-lg">
+                            <i class="fas fa-check me-2"></i>{% translate "Save Leadership Profile" %}
+                        </button>
+                        <a href="{% url 'dashboard:country:overview' member_state.slug %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>{% translate "Cancel" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h3 class="content-card-title"><i class="fas fa-lightbulb me-2"></i>{% translate "Tips" %}</h3>
+                </div>
+                <div class="content-card-body">
+                    <ul class="tips-list">
+                        <li><i class="fas fa-check-circle"></i>{% translate "Use the leader's full official name" %}</li>
+                        <li><i class="fas fa-check-circle"></i>{% translate "Biography should cover career highlights and investment vision" %}</li>
+                        <li><i class="fas fa-check-circle"></i>{% translate "Photo must be professional with a neutral background" %}</li>
+                        <li><i class="fas fa-check-circle"></i>{% translate "Keep contact info up to date — investors may reach out directly" %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+.form-label { color: var(--dark-green); font-weight: 600; display: block; margin-bottom: .4rem; }
+.required-star { color: #EF4444; }
+.form-control, .form-select {
+    border: 2px solid var(--neutral-200); border-radius: 10px;
+    padding: .75rem 1rem; width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+    font-size: .95rem;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(27,122,76,.1);
+    outline: none;
+}
+textarea.form-control { resize: vertical; }
+.field-error { color: #EF4444; font-size: .825rem; margin-top: .3rem; }
+.form-text { font-size: .825rem; }
+.sticky-sidebar { position: sticky; top: 100px; }
+.tips-list { list-style: none; padding: 0; margin: 0; }
+.tips-list li { display: flex; align-items: flex-start; gap: .75rem; padding: .625rem 0; font-size: .875rem; color: var(--neutral-600); border-bottom: 1px solid var(--neutral-100); }
+.tips-list li:last-child { border-bottom: none; }
+.tips-list i { color: var(--primary-green); flex-shrink: 0; margin-top: .1rem; }
+@media (max-width: 991px) { .sticky-sidebar { position: static; } }
+</style>
+{% endblock %}

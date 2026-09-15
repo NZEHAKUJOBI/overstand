@@ -1,0 +1,849 @@
+{% extends "core/new_base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% load members_tags %}
+
+{% block title %}Investment Opportunities in West Africa | IPAWAS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .opportunities-hero {
+        position: relative;
+        min-height: 450px;
+        padding: 150px 0 100px;
+        background: linear-gradient(135deg, rgba(27, 122, 76, 0.35), rgba(15, 107, 63, 0.3)),
+                    url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200') center/cover;
+        color: white;
+        margin-top: 76px;
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        margin-bottom: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+    .search-filter-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        margin: -60px auto 3rem;
+        position: relative;
+        z-index: 100;
+        max-width: 1200px;
+    }
+
+    .opportunity-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .opportunity-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(27, 122, 76, 0.15);
+    }
+
+    .opportunity-card-image-wrapper {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .opportunity-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .ready-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: var(--primary-green);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+
+    .opportunity-card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .opportunity-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+    }
+
+    .opportunity-card-footer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .opportunity-info-item {
+        text-align: center;
+    }
+
+    .opportunity-info-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+
+    .opportunity-info-value {
+        font-weight: 700;
+        color: var(--primary-green);
+        font-size: 0.9rem;
+    }
+
+    .opportunity-card-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: auto;
+    }
+
+    .btn-view-details {
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-view-details:hover {
+        background: var(--secondary-green);
+        transform: scale(1.02);
+        color: white;
+    }
+
+    .btn-interest {
+        background: white;
+        color: var(--primary-green);
+        border: 2px solid var(--primary-green);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-interest:hover {
+        background: var(--primary-green);
+        color: white;
+    }
+
+    /* Featured Opportunities Section */
+    .featured-section {
+        background: #f8f7f3;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+    }
+
+    .featured-card {
+        background: white;
+        border: 4px solid var(--accent-gold);
+        border-radius: 24px;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .featured-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(212, 165, 32, 0.3);
+    }
+
+    .featured-card-image-wrapper {
+        position: relative;
+        height: 260px;
+        overflow: hidden;
+    }
+
+    .featured-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: white;
+        color: var(--accent-gold);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        z-index: 10;
+    }
+
+    .featured-badge::before {
+        content: "●";
+        color: var(--accent-gold);
+    }
+
+    .carousel-dots {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        z-index: 10;
+    }
+
+    .carousel-dot {
+        width: 10px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+    }
+
+    .carousel-dot.active {
+        background: white;
+    }
+
+    .featured-card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .featured-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+    }
+
+    .featured-card-title-section {
+        flex: 1;
+    }
+
+    .featured-card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .featured-card-location {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .featured-card-stage-section {
+        text-align: right;
+    }
+
+    .featured-stage-label {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.3rem;
+    }
+
+    .featured-stage-value {
+        font-weight: 700;
+        color: var(--primary-green);
+        font-size: 1rem;
+    }
+
+    .featured-card-footer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        margin-top: auto;
+    }
+
+    .featured-info-item {
+        text-align: center;
+    }
+
+    .featured-info-label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+
+    .featured-info-value {
+        font-weight: 700;
+        color: var(--primary-green);
+        font-size: 0.95rem;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        color: white;
+        padding: 2.5rem 0;
+        margin-bottom: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(27, 122, 76, 0.2);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 800;
+        display: block;
+        color: var(--accent-gold);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        opacity: 0.95;
+        font-weight: 600;
+    }
+
+    .btn-view-details {
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .btn-view-details:hover {
+        background: var(--secondary-green);
+        transform: scale(1.02);
+    }
+
+    .btn-interest {
+        background: white;
+        color: var(--primary-green);
+        border: 2px solid var(--primary-green);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .btn-interest:hover {
+        background: var(--primary-green);
+        color: white;
+    }
+
+    /* List view styles */
+    .opportunity-list-item {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        gap: 1.5rem;
+        transition: all 0.3s;
+    }
+
+    .opportunity-list-item:hover {
+        box-shadow: 0 6px 20px rgba(27, 122, 76, 0.1);
+    }
+
+    .list-item-image {
+        width: 180px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .list-item-content {
+        flex-grow: 1;
+    }
+
+    .filter-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-section label {
+        font-weight: 600;
+        color: var(--primary-green);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-select, .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.3s;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.2rem rgba(27, 122, 76, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .opportunity-list-item {
+            flex-direction: column;
+        }
+
+        .list-item-image {
+            width: 100%;
+            height: 200px;
+        }
+
+        .featured-card-footer,
+        .opportunity-card-footer {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .featured-card-header {
+            flex-direction: column;
+        }
+
+        .featured-card-stage-section {
+            text-align: left;
+            margin-top: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="opportunities-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">{%  translate "Discover Investment Opportunities in West Africa" %}</h1>
+            <p class="hero-subtitle">{% blocktranslate trimmed %}
+                {{ total_opportunities }} active projects across {{ countries_count }} countries and {{ sectors_count }} sectors
+            {% endblocktranslate %}</p>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Search & Filter Panel -->
+    <div class="search-filter-panel">
+        <h3 class="mb-4" style="color: var(--primary-green); font-weight: 700;"><i class="fas fa-search me-2"></i>{% translate "Find Your Perfect Opportunity" %}</h3>
+
+        <form method="get" action="{% url 'opportunities:listing' %}" id="filterForm">
+            <div class="row">
+                <!-- Search -->
+                <div class="col-md-12 mb-3">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="{% translate "🔍 Search by keyword, project, description..." %}"
+                           value="{{ current_search }}">
+                </div>
+
+                <!-- Filters Row -->
+                <div class="col-md-3 mb-3">
+                    <label>{%  translate "Country" %}</label>
+                    <select name="country" class="form-select">
+                        <option value="">All Countries</option>
+                        {% for country in countries %}
+                        <option value="{{ country.slug }}" {% if current_country == country.slug %}selected{% endif %}>
+                            {{ country.country_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>{%  translate "Sector" %}</label>
+                    <select name="sector" class="form-select">
+                        <option value="">All Sectors</option>
+                        {% for sector in sectors %}
+                        <option value="{{ sector.slug }}" {% if current_sector == sector.slug %}selected{% endif %}>
+                            {{ sector.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>{%  translate "Investment Size" %}</label>
+                    <select name="size" class="form-select">
+                        <option value="">All Sizes</option>
+                        <option value="micro" {% if current_size == 'micro' %}selected{% endif %}>&lt;$100K</option>
+                        <option value="small" {% if current_size == 'small' %}selected{% endif %}>$100K-$1M</option>
+                        <option value="medium" {% if current_size == 'medium' %}selected{% endif %}>$1M-$5M</option>
+                        <option value="large" {% if current_size == 'large' %}selected{% endif %}>$5M-$25M</option>
+                        <option value="very_large" {% if current_size == 'very_large' %}selected{% endif %}>&gt;$25M</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>{%  translate "Stage" %}</label>
+                    <select name="stage" class="form-select">
+                        <option value="">All Stages</option>
+                        {% for value, label in project_stages %}
+                        <option value="{{ value }}" {% if current_stage == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <button type="submit" class="btn btn-success me-2"
+                            style="background: var(--primary-green); border-color: var(--primary-green);"><i class="fas fa-filter me-2"></i>{% translate "Apply Filters" %}</button>
+                    <a href="{% url 'opportunities:listing' %}" class="btn btn-outline-secondary"><i class="fas fa-redo me-2"></i>{% translate "Clear" %}</a>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <label class="me-2">{%  translate "Sort:" %}</label>
+                    <select name="sort" class="form-select d-inline-block w-auto me-3" onchange="this.form.submit()">
+                        <option value="-published_date" {% if current_sort == '-published_date' %}selected{% endif %}>Most Recent</option>
+                        <option value="-investment_required_min" {% if current_sort == '-investment_required_min' %}selected{% endif %}>Largest Investment</option>
+                        <option value="investment_required_min" {% if current_sort == 'investment_required_min' %}selected{% endif %}>Smallest Investment</option>
+                        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>A-Z</option>
+                        <option value="-title" {% if current_sort == '-title' %}selected{% endif %}>Z-A</option>
+                    </select>
+
+                    <span class="me-2">{% translate "View:" %}</span>
+                    <button type="button" class="btn btn-sm btn-outline-success" id="gridViewBtn" onclick="setView('grid')">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-success" id="listViewBtn" onclick="setView('list')">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="text-muted mt-3">
+            Showing {{ opportunities|length }} of {{ paginator.count }} opportunities
+        </div>
+    </div>
+
+    <!-- Featured Opportunities -->
+    {% if featured_opportunities %}
+    <div class="featured-section">
+        <div class="container">
+            <h2 class="text-center mb-5" style="font-size: 2rem; font-weight: 700; color: #1a1a1a;">{%  translate "Featured Investment Opportunities" %}</h2>
+            <div class="row g-4">
+                {% for opportunity in featured_opportunities %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{% url 'opportunities:detail' opportunity.slug %}" style="text-decoration: none; color: inherit;">
+                        <div class="featured-card">
+                            <div class="featured-card-image-wrapper">
+                                <img src="{{ opportunity.hero_image|default:'https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670079/investment_case_fof8e1.webp' }}"
+                                     alt="{{ opportunity.title }}" class="featured-card-image">
+                                <span class="featured-badge">{% translate "Featured" %}</span>
+                                <div class="carousel-dots">
+                                    <span class="carousel-dot active"></span>
+                                    <span class="carousel-dot"></span>
+                                    <span class="carousel-dot"></span>
+                                    <span class="carousel-dot"></span>
+                                </div>
+                            </div>
+                            <div class="featured-card-body">
+                                <div class="featured-card-header">
+                                    <div class="featured-card-title-section">
+                                        <h3 class="featured-card-title">{{ opportunity.title|truncatechars:23 }}</h3>
+                                        <p class="featured-card-location">
+                                            {% if opportunity.specific_location %}{{ opportunity.specific_location }}{% else %}{{ opportunity.primary_country.country_name }}{% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="featured-card-stage-section">
+                                        <div class="featured-stage-label">{% translate "Stage" %}</div>
+                                        <div class="featured-stage-value">{{ opportunity.get_project_stage_display }}</div>
+                                    </div>
+                                </div>
+                                <div class="featured-card-footer">
+                                    <div class="featured-info-item">
+                                        <div class="featured-info-label">{% translate "Country" %}</div>
+                                        <div class="featured-info-value">{{ opportunity.primary_country.country_name }}</div>
+                                    </div>
+                                    <div class="featured-info-item">
+                                        <div class="featured-info-label">{% translate "Sector" %}</div>
+                                        <div class="featured-info-value">{{ opportunity.primary_sector.name|truncatewords:2 }}</div>
+                                    </div>
+                                    <div class="featured-info-item">
+                                        <div class="featured-info-label">{% translate "Investment Size" %}</div>
+                                        <div class="featured-info-value">
+                                            {% if opportunity.investment_required_min %}
+                                                {{ opportunity.get_investment_range_display }}
+                                            {% else %}
+                                                {% translate "N/A" %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ total_count }}</span>
+                        <span class="stat-label">{% translate "Projects" %}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-value">${{ total_value|floatformat:1 }}B</span>
+                        <span class="stat-label">{%  translate "Total Value" %}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ countries_count }}</span>
+                        <span class="stat-label">{% translate "Countries" %}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ sectors_count }}</span>
+                        <span class="stat-label">{% translate "Sectors" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opportunities Grid/List -->
+    <div id="opportunitiesView">
+        <div class="row" id="gridView" {% if view_mode == 'list' %}style="display: none;"{% endif %}>
+            {% for opportunity in opportunities %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="opportunity-card">
+                    <div class="opportunity-card-image-wrapper">
+                        <img src="{{ opportunity.hero_image|default:'https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670079/investment_case_fof8e1.webp' }}"
+                             alt="{{ opportunity.title }}" class="opportunity-card-image">
+                        <span class="ready-badge">{{ opportunity.get_project_stage_display }}</span>
+                    </div>
+                    <div class="opportunity-card-body">
+                        <h5 class="opportunity-title">{{ opportunity.title }}</h5>
+
+                        <div class="opportunity-card-footer">
+                            <div class="opportunity-info-item">
+                                <div class="opportunity-info-label">{% translate "Country" %}</div>
+                                <div class="opportunity-info-value">{{ opportunity.primary_country.country_name }}</div>
+                            </div>
+                            <div class="opportunity-info-item">
+                                <div class="opportunity-info-label">{% translate "Sector" %}</div>
+                                <div class="opportunity-info-value">{{ opportunity.primary_sector.name|truncatewords:2 }}</div>
+                            </div>
+                            <div class="opportunity-info-item">
+                                <div class="opportunity-info-label">{% translate "Investment Size" %}</div>
+                                <div class="opportunity-info-value">
+                                    {% if opportunity.investment_required_min %}
+                                        {{ opportunity.get_investment_range_display }}
+                                    {% else %}
+                                        {% translate "N/A" %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="opportunity-card-actions">
+                            <a href="{% url 'opportunities:detail' opportunity.slug %}" class="btn btn-view-details">
+                                View Details <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                            <button class="btn btn-interest" onclick="showExpressInterest('{{ opportunity.slug }}')"><i class="fas fa-envelope"></i> {% translate "Express Interest" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5">
+                    <i class="fas fa-info-circle fa-3x mb-3 d-block" style="color: var(--primary-green);"></i>
+                    <h4>{%  translate "No opportunities match your criteria" %}</h4>
+                    <p>{% blocktranslate trimmed %}Try broadening your filters or browse all opportunities{% endblocktranslate %}</p>
+                    <a href="{% url 'opportunities:listing' %}" class="btn btn-success mt-3">{% translate "View All Opportunities" %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- List View -->
+        <div id="listView" {% if view_mode != 'list' %}style="display: none;"{% endif %}>
+            {% for opportunity in opportunities %}
+            <div class="opportunity-list-item">
+                <img src="{{ opportunity.hero_image|default:'https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670079/investment_case_fof8e1.webp' }}"
+                     alt="{{ opportunity.title }}" class="list-item-image">
+                <div class="list-item-content">
+                    <h4 class="opportunity-title mb-2">{{ opportunity.title }}</h4>
+                    <div class="d-flex flex-wrap gap-3 mb-2">
+                        <span class="opportunity-meta">
+                            <i class="fas fa-map-marker-alt"></i> {{ opportunity.primary_country.country_name }}
+                        </span>
+                        <span class="opportunity-meta">
+                            <i class="fas fa-dollar-sign"></i> {{ opportunity.get_investment_range_display }}
+                        </span>
+                        <span class="opportunity-meta">
+                            <i class="fas fa-industry"></i> {{ opportunity.primary_sector.name }}
+                        </span>
+                        <span class="opportunity-meta">
+                            <i class="fas fa-chart-line"></i> {{ opportunity.get_project_stage_display }}
+                        </span>
+                    </div>
+                    <p class="text-muted mb-3">{{ opportunity.summary|truncatewords:30 }}</p>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'opportunities:detail' opportunity.slug %}" class="btn btn-success btn-sm">{% translate "View Details" %}</a>
+                        <button class="btn btn-outline-success btn-sm" onclick="showExpressInterest('{{ opportunity.slug }}')">{%  translate "Express Interest" %}</button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center py-5">
+                <h4>{%  translate "No opportunities match your criteria" %}</h4>
+                <p>{% blocktranslate trimmed %}Try broadening your filters or browse all opportunities{% endblocktranslate %}</p>
+                <a href="{% url 'opportunities:listing' %}" class="btn btn-success mt-3">{% translate "View All Opportunities" %}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="{% translate "Page navigation" %}" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{{ filter_querystring }}&page={{ page_obj.previous_page_number }}">{% translate "Previous" %}</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?{{ filter_querystring }}&page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{{ filter_querystring }}&page={{ page_obj.next_page_number }}">{% translate "Next" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+function setView(mode) {
+    const gridView = document.getElementById('gridView');
+    const listView = document.getElementById('listView');
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+
+    if (mode === 'grid') {
+        gridView.style.display = '';
+        listView.style.display = 'none';
+        gridBtn.classList.add('active');
+        gridBtn.classList.remove('btn-outline-success');
+        gridBtn.classList.add('btn-success');
+        listBtn.classList.remove('active', 'btn-success');
+        listBtn.classList.add('btn-outline-success');
+    } else {
+        gridView.style.display = 'none';
+        listView.style.display = '';
+        listBtn.classList.add('active');
+        listBtn.classList.remove('btn-outline-success');
+        listBtn.classList.add('btn-success');
+        gridBtn.classList.remove('active', 'btn-success');
+        gridBtn.classList.add('btn-outline-success');
+    }
+
+    // Save preference
+    localStorage.setItem('opportunitiesView', mode);
+}
+
+// Restore view preference
+window.addEventListener('DOMContentLoaded', () => {
+    const savedView = localStorage.getItem('opportunitiesView') || 'grid';
+    setView(savedView);
+});
+
+function showExpressInterest(slug) {
+    // Redirect to the detail page anchor — uses the current language prefix
+    const lang = document.documentElement.lang || 'en';
+    window.location.href = `/${lang}/opportunities/${slug}/#express-interest`;
+}
+</script>
+{% endblock %}

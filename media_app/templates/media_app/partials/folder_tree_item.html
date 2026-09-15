@@ -1,0 +1,22 @@
+{% load static %}
+{% load i18n %}
+
+{% with folder=node.folder %}
+<div class="folder-item {% if current_folder.id == folder.id %}active{% endif %}"
+     style="padding-left: {{ depth|add:1 }}rem;">
+    <a href="{% url 'dashboard:country:media:library' member_state_slug=member_state.slug %}?folder={{ folder.id }}"
+       class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <i class="fas {% if folder.folder_type == 'documents' %}fa-file-alt{% elif folder.folder_type == 'images' %}fa-image{% elif folder.folder_type == 'videos' %}fa-video{% elif folder.folder_type == 'others' %}fa-folder{% else %}fa-folder{% endif %} me-2"></i>
+            <span>{{ folder.name }}</span>
+        </div>
+        <span class="badge bg-secondary">{{ folder.get_file_count }}</span>
+    </a>
+</div>
+
+{% if node.children %}
+    {% for child_node in node.children %}
+        {% include "media_app/partials/folder_tree_item.html" with node=child_node depth=depth|add:1 %}
+    {% endfor %}
+{% endif %}
+{% endwith %}

@@ -1,0 +1,260 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IPAWAS - Investment Promotion Agencies of West Africa{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <link href="{% static 'css/home.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="IPAWAS">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon" style="color:green;"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- About Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            About
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
+                            <li><a class="dropdown-item" href="{% url 'about:who_we_are' %}">
+                                <i class="fas fa-users me-2"></i>Who We Are
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'about:mission_vision_values' %}">
+                                <i class="fas fa-bullseye me-2"></i>Mission, Vision & Values
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'about:strategic_priorities' %}">
+                                <i class="fas fa-chart-line me-2"></i>Strategic Priorities 2025-2027
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'about:governance' %}">
+                                <i class="fas fa-gavel me-2"></i>Governance & Leadership
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'about:ecowas_relationship' %}">
+                                <i class="fas fa-handshake me-2"></i>ECOWAS Relationship
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="dropdown-header">ECOWAS Leadership</li>
+                            <li><a class="dropdown-item" href="{% url 'about:commission_president' %}">
+                                <i class="fas fa-user-tie me-2"></i>Commission President
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'about:authority_chairman' %}">
+                                <i class="fas fa-crown me-2"></i>Authority Chairman
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'about:commissioner_economic' %}">
+                                <i class="fas fa-chart-pie me-2"></i>Commissioner, Economic Affairs
+                            </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Member States -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'members:hub' %}">Member States</a>
+                    </li>
+
+                    <!-- Investment Opportunities -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="opportunitiesDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Opportunities
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="opportunitiesDropdown">
+                            <li><a class="dropdown-item" href="{% url 'opportunities:listing' %}">
+                                <i class="fas fa-lightbulb me-2"></i>Opportunities
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:investment-case' %}">
+                                <i class="fas fa-coins me-2"></i>Investment Services
+                            </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Why West Africa Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="whyWestAfricaDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Why West Africa
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="whyWestAfricaDropdown">
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:hub' %}">
+                                <i class="fas fa-globe me-2"></i>Why Invest Here
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:investment-case' %}">
+                                <i class="fas fa-chart-line me-2"></i>Investment Case
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:incentives' %}">
+                                <i class="fas fa-gift me-2"></i>Incentives & Benefits
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:success-stories' %}">
+                                <i class="fas fa-trophy me-2"></i>Success Stories
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="dropdown-header">Investment Sectors</li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:agriculture-sector' %}">
+                                <i class="fas fa-seedling me-2"></i>Agriculture & Agribusiness
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:energy-sector' %}">
+                                <i class="fas fa-bolt me-2"></i>Energy & Renewable Energy
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:manufacturing-sector' %}">
+                                <i class="fas fa-industry me-2"></i>Manufacturing
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:ict-sector' %}">
+                                <i class="fas fa-laptop-code me-2"></i>ICT & Digital Economy
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'why_west_africa:infrastructure-sector' %}">
+                                <i class="fas fa-road me-2"></i>Infrastructure & Logistics
+                            </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Programs -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Programs</a>
+                    </li>
+
+                    <!-- Knowledge Hub -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'knowledge_hub:hub' %}">Knowledge Hub</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768748727/footer_lg_l2ypft.png" alt="IPAWAS">
+                    </a>
+                    <p class="text-white-75 mb-4 mt-3">
+                        Investment Promotion Agencies of West Africa - Connecting global investors
+                        with transformative opportunities across 12 ECOWAS nations.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Twitter"><img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1768748727/x_logo_gujt2g.png" alt="twitter"></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">About IPAWAS</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'about:who_we_are' %}" class="footer-link">Who We Are</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about:mission_vision_values' %}" class="footer-link">Mission & Vision</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about:governance' %}" class="footer-link">Leadership</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about:ecowas_relationship' %}" class="footer-link">ECOWAS Relationship</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">ECOWAS Leadership</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'about:commission_president' %}" class="footer-link">Commission President</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about:authority_chairman' %}" class="footer-link">Authority Chairman</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about:commissioner_economic' %}" class="footer-link">Economic Affairs Commissioner</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">For Investors</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'members:hub' %}" class="footer-link">Member States</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'opportunities:listing' %}" class="footer-link">Opportunities</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'why_west_africa:investment-case' %}" class="footer-link">Investment Case</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'why_west_africa:success-stories' %}" class="footer-link">Success Stories</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="footer-title">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'knowledge_hub:hub' %}" class="footer-link">Knowledge Hub</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="" class="footer-link">Research & Reports</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="" class="footer-link">News & Updates</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="" class="footer-link">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="copyright-text">
+                        &copy; {% now "Y" %} IPAWAS. {% translate "All rights reserved." %}
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <ul class="footer-legal-links">
+                        <li><a href="">Privacy Policy</a></li>
+                        <li><a href="">Terms of Service</a></li>
+                        <li><a href="">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

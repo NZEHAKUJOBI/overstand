@@ -1,0 +1,240 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate "Server Error" %} | IPAWAS</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #1B7A4C;
+            --dark-green: #0A4428;
+            --gold: #D4A520;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .top-bar img { height: 38px; }
+        .top-bar .brand-name {
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        .error-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+        }
+        .error-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 20px;
+            padding: 3.5rem 3rem;
+            max-width: 620px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+        .error-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem auto;
+        }
+        .error-icon i { color: #fff; font-size: 2rem; }
+        .error-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.75rem;
+        }
+        .error-message {
+            color: #475569;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+        .error-sub {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 50px;
+            padding: 0.35rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .status-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .btn-home {
+            background: linear-gradient(135deg, var(--green), #2D9061);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-home:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(27,122,76,0.4);
+        }
+        .btn-outline-back {
+            background: transparent;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 0.75rem 1.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-outline-back:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .contact-note {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .contact-note a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .contact-note a:hover { text-decoration: underline; }
+        .error-footer {
+            background: rgba(0,0,0,0.3);
+            text-align: center;
+            padding: 1rem;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="/">
+            <img src="https://res.cloudinary.com/dfs7ghfir/image/upload/v1773670075/ipawas-latest-logo_dulpgu_heii5l.webp" alt="{% translate "IPAWAS Logo" %}">
+        </a>
+        <a href="/" class="brand-name">IPAWAS</a>
+    </div>
+
+    <!-- Error content -->
+    <div class="error-wrapper">
+        <div class="error-card">
+            <div class="error-code">500</div>
+
+            <div class="error-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+
+            <div class="status-badge">
+                <span class="dot"></span>
+                {% translate "Our team has been notified" %}
+            </div>
+
+            <h1 class="error-title">{% translate "Something Went Wrong" %}</h1>
+            <p class="error-message">
+                {% blocktranslate trimmed %}
+                We encountered an unexpected error while processing your request.
+                This is on our end — not yours.
+                {% endblocktranslate %}
+            </p>
+            <p class="error-sub">
+                {% blocktranslate trimmed %}
+                Our engineers have been automatically notified and are working to fix this.
+                Please try again in a few minutes.
+                {% endblocktranslate %}
+            </p>
+
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <button class="btn-outline-back" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> {% translate "Try Again" %}
+                </button>
+                <a href="/" class="btn-home">
+                    <i class="fas fa-home"></i> {% translate "Back to Home" %}
+                </a>
+            </div>
+
+            <div class="contact-note">
+                {% translate "Still having issues?" %} <a href="{% url 'about:contact' %}"">{% translate "Contact our support team" %}</a>
+                {% translate "or email us at" %} <a href="mailto:info@ipawas.org">info@ipawas.org</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-footer">
+        &copy; {% now "Y" %} {% blocktranslate trimmed %}IPAWAS &mdash; Investment Promotion Agencies of West Africa. All rights reserved.{% endblocktranslate %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
