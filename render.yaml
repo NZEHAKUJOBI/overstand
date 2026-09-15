@@ -1,0 +1,52 @@
+# Render blueprint. Create the service from this file, then set MONGODB_URI in
+# the dashboard — it is deliberately not stored here.
+services:
+  - type: web
+    name: anchor-real-estate
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm ci && npm run build
+    startCommand: npm run seed:admin && npm run start
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      # Set in the Render dashboard. If using MongoDB Atlas, allow this
+      # service's outbound IPs under Atlas → Network Access.
+      - key: MONGODB_URI
+        sync: false
+      # Generated once by Render and held in the environment. Rotating it
+      # signs every administrator out.
+      - key: SESSION_SECRET
+        generateValue: true
+      # Admin auto-seed credentials for autodeployment
+      - key: SEED_ADMIN_NAME
+        value: Admin
+      - key: SEED_ADMIN_EMAIL
+        value: admin@anchorrealestategroup.ng
+      - key: SEED_ADMIN_PASSWORD
+        value: "123456789"
+      - key: SEED_ADMIN_ROLE
+        value: admin
+      # Outbound mail for enquiry receipts. Port 25 is blocked on Render;
+      # use 587 (STARTTLS) or 465 (implicit TLS). With Gmail, SMTP_PASS must
+      # be a Google App Password, not the account password.
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: SECRETARIAT_EMAIL
+        sync: false
+      # Absolute base URL, used for links inside emails.
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false

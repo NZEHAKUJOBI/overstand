@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+/*
+  Anchor Real Estate Group — design tokens.
+  Palette is taken from the Society's printed identity: a deep forest green
+  field, gold rules, and an uncoated cream stock. Single fixed theme; this is a
+  brand surface, not an app, so there is no dark variant.
+*/
+@theme {
+  --color-forest-950: #071f17;
+  --color-forest-900: #0b2e22;
+  --color-forest-800: #113d2e;
+  --color-forest-700: #1a5741;
+  --color-forest-600: #2b7358;
+
+  --color-gold-300: #e7d5a6;
+  --color-gold-400: #d9be72;
+  --color-gold-500: #c3a44e;
+  --color-gold-600: #a6862f;
+  --color-gold-700: #7f6520;
+
+  --color-paper: #f6f4ec;
+  --color-paper-alt: #edeae0;
+  --color-ink: #1b211d;
+  --color-ink-soft: #4c554f;
+  /* Darkened from a lighter grey so 10–11px labels clear 4.5:1 on paper. */
+  --color-ink-faint: #5f6863;
+  --color-rule: #d9d4c5;
+
+  /* Admin state colours — kept muted so the palette stays institutional. */
+  --color-alert: #8c2f1e;
+  --color-alert-soft: #f4e4e0;
+  --color-ok: #1a5741;
+  --color-ok-soft: #dfeae4;
+
+  --font-display: var(--font-source-serif), ui-serif, Georgia, "Times New Roman",
+    serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo,
+    monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Anchor targets clear the sticky masthead. */
+  section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-600);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background-color: var(--color-forest-900);
+    color: var(--color-gold-300);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/*
+  Small-caps mono eyebrow used for section numbers, field labels and legal
+  notes. Wide tracking is what gives the page its prospectus register.
+*/
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+@utility label-sm {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* Figures are set in the display serif and always aligned in columns. */
+@utility figure-num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Page gutter, shared by every section so the vertical rules line up. */
+@utility shell {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+
+  @media (width >= 80rem) {
+    padding-inline: 3.5rem;
+  }
+}
+
+/* Scroll reveal — deliberately small travel; disabled under reduced motion. */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .reveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

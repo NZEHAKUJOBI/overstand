@@ -1,59 +1,50 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Virtual Environment
-.venv/
-venv/
-env/
-ENV/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Django
-*.log
-logs/
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-/media
-/staticfiles
+# testing
+/coverage
 
-# Environment variables
-.env
-.env.local
-.env.docker
+# next.js
+/.next/
+/out/
 
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# production
+/build
+
+# misc
 .DS_Store
+*.pem
 
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Distribution
-build/
-dist/
-*.egg-info/
-IPAWAS_Dev_Docs/
+# env files (can opt-in for committing if needed)
+.env*
 
-*.dump
+# vercel
+.vercel
 
-# MaxMind GeoLite2 database (download separately — see geoip/README.md)
-geoip/*.mmdb
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
-# Generated outputs — reports, briefings, credentials (never commit)
-outputs/
-credentials.txt
-credentials*.txt
+# keep the template committed; real values stay local
+!.env.example
 
-# Word / Office documents and temp lock files
-*.docx
-~$*
+# local MongoDB data (npm run mongo:dev)
+.mongo-data/
+
+# local SMTP sink output (npm run mail:sink)
+smtp-sink.log
