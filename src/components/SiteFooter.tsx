@@ -1,96 +1,117 @@
+import Link from "next/link";
 import { Crest } from "./Crest";
-import {
-  bankers,
-  email,
-  offices,
-  phones,
-  society,
-  sourceNote,
-} from "@/lib/content";
+import { email, navigation, offices, phones, society, sourceNote } from "@/lib/content";
 
+/**
+ * Footer. Phone and email render only when the Society has supplied them —
+ * an empty contact block is better than a placeholder that looks like a real
+ * channel and silently goes nowhere.
+ */
 export function SiteFooter() {
-  return (
-    <footer className="relative bg-forest-950 text-paper">
-      <div aria-hidden="true" className="h-px w-full bg-gold-500/40" />
-      <div aria-hidden="true" className="mt-[3px] h-[3px] w-full bg-gold-500" />
+  const year = new Date().getFullYear();
+  const hasEmail = email.address.length > 0;
 
-      <div className="shell py-20 md:py-24">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-4">
-            <div className="flex items-center gap-4">
+  return (
+    <footer className="border-t border-gold-500/25 bg-navy-950 text-paper">
+      <div className="shell py-16 md:py-20">
+        <div className="grid gap-12 md:grid-cols-12 md:gap-8">
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-3">
               <Crest size={44} className="h-11 w-11 shrink-0" />
-              <div>
-                <p className="font-display text-[1.0625rem] leading-tight">
+              <span>
+                <span className="font-display block text-[1.0625rem] leading-tight">
                   {society.name}
-                </p>
-                <p className="label-sm mt-1.5 text-gold-400/75">
+                </span>
+                <span className="label-sm block text-gold-400/75">
                   {society.kind}
-                </p>
-              </div>
+                </span>
+              </span>
             </div>
-            <p className="font-display mt-7 max-w-xs text-[1.0625rem] leading-relaxed text-paper/60 italic">
-              “{society.tagline}”
+
+            <p className="mt-6 max-w-sm text-[0.9375rem] leading-[1.7] text-pretty text-paper/60">
+              {society.legalName} — {society.registration}. {society.status}.
             </p>
           </div>
 
-          {offices.map((office) => (
-            <div key={office.label} className="lg:col-span-3">
-              <h2 className="label-sm text-gold-400">{office.label}</h2>
-              <address className="mt-4 text-[0.9375rem] leading-relaxed text-paper/70 not-italic">
-                {office.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </address>
-            </div>
-          ))}
-
-          <div className="lg:col-span-2">
-            <h2 className="label-sm text-gold-400">Contact</h2>
-            <div className="mt-4 space-y-1.5">
-              {phones.map((phone) => (
-                <a
-                  key={phone}
-                  href={`tel:${phone.replace(/\s/g, "")}`}
-                  className="block text-[0.9375rem] text-paper/70 tnum transition-colors duration-200 hover:text-gold-300"
-                >
-                  {phone}
-                </a>
+          <nav aria-label="Footer" className="md:col-span-3">
+            <p className="label-sm text-gold-400/75">This page</p>
+            <ul className="mt-5 grid gap-2.5">
+              {navigation.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    className="text-[0.9375rem] text-paper/65 transition-colors duration-200 hover:text-paper"
+                  >
+                    {item.label}
+                  </a>
+                </li>
               ))}
-              <a
-                href={`mailto:${email.address}`}
-                className="block pt-1.5 text-[0.9375rem] break-all text-paper/70 transition-colors duration-200 hover:text-gold-300"
-              >
-                {email.address}
-              </a>
-            </div>
+              <li>
+                <Link
+                  href="/join"
+                  className="text-[0.9375rem] text-gold-300 transition-colors duration-200 hover:text-gold-400"
+                >
+                  Apply for membership
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="md:col-span-4">
+            {offices.map((office) => (
+              <div key={office.label}>
+                <p className="label-sm text-gold-400/75">{office.label}</p>
+                <address className="mt-5 text-[0.9375rem] leading-[1.7] text-paper/65 not-italic">
+                  {office.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </address>
+              </div>
+            ))}
+
+            {phones.length > 0 || hasEmail ? (
+              <div className="mt-7 grid gap-2">
+                {phones.map((phone) => (
+                  <a
+                    key={phone}
+                    href={`tel:${phone.replace(/\s/g, "")}`}
+                    className="text-[0.9375rem] text-paper/65 transition-colors duration-200 hover:text-paper"
+                  >
+                    {phone}
+                  </a>
+                ))}
+
+                {hasEmail ? (
+                  <a
+                    href={`mailto:${email.address}`}
+                    className="text-[0.9375rem] break-all text-paper/65 transition-colors duration-200 hover:text-paper"
+                  >
+                    {email.address}
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
 
-        <div className="mt-16 border-t border-paper/12 pt-8">
-          <h2 className="label-sm text-paper/55">Bankers</h2>
-          <ul className="mt-4 flex flex-col gap-x-8 gap-y-2 sm:flex-row sm:flex-wrap">
-            {bankers.map((bank) => (
-              <li key={bank.short} className="text-[0.9375rem] text-paper/70">
-                {bank.name}{" "}
-                <span className="text-paper/55">({bank.short})</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-12 border-t border-paper/12 pt-8">
-          <p className="label-sm text-paper/50">
-            {society.location} · Est. {society.established} · {society.tier} ·{" "}
-            {society.bylaws}
-          </p>
-          <p className="mt-5 max-w-4xl text-[0.8125rem] leading-relaxed text-paper/55">
+        <div className="mt-14 border-t border-paper/12 pt-8">
+          <p className="text-[0.8125rem] leading-[1.65] text-pretty text-paper/45">
             {sourceNote}
           </p>
-          <p className="label-sm mt-8 text-paper/55">
-            © {society.established} {society.name}. All rights reserved.
-          </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+            <p className="label-sm text-paper/45">
+              © {year} {society.legalName}
+            </p>
+            <Link
+              href="/login"
+              className="label-sm text-paper/45 transition-colors duration-200 hover:text-gold-400"
+            >
+              Officer sign-in
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,41 +1,51 @@
 @import "tailwindcss";
 
 /*
-  Anchor Real Estate Group — design tokens.
-  Palette is taken from the Society's printed identity: a deep forest green
-  field, gold rules, and an uncoated cream stock. Single fixed theme; this is a
-  brand surface, not an app, so there is no dark variant.
+  Overstand Multipurpose Cooperative Society — design tokens.
+
+  Palette is taken from the Society's crest: a deep navy field, a gold ring,
+  and the green of the house and wheat. Navy carries the ground, gold the
+  accents, green the affirmative states. Single fixed theme; this is a brand
+  surface, not an app, so there is no dark variant.
+
+  Contrast: every text token below clears 4.5:1 against `paper`, and the
+  gold focus ring clears 3:1. Check any replacement before swapping it in.
 */
 @theme {
-  --color-forest-950: #071f17;
-  --color-forest-900: #0b2e22;
-  --color-forest-800: #113d2e;
-  --color-forest-700: #1a5741;
-  --color-forest-600: #2b7358;
+  --color-navy-950: #05142a;
+  --color-navy-900: #0a2240;
+  --color-navy-800: #0f2f56;
+  --color-navy-700: #17406f;
+  --color-navy-600: #245a93;
 
-  --color-gold-300: #e7d5a6;
-  --color-gold-400: #d9be72;
-  --color-gold-500: #c3a44e;
-  --color-gold-600: #a6862f;
-  --color-gold-700: #7f6520;
+  --color-gold-300: #ecdcb0;
+  --color-gold-400: #dcc27c;
+  --color-gold-500: #c9a961;
+  --color-gold-600: #a8873a;
+  --color-gold-700: #806527;
 
-  --color-paper: #f6f4ec;
-  --color-paper-alt: #edeae0;
-  --color-ink: #1b211d;
-  --color-ink-soft: #4c554f;
-  /* Darkened from a lighter grey so 10–11px labels clear 4.5:1 on paper. */
-  --color-ink-faint: #5f6863;
-  --color-rule: #d9d4c5;
+  /* The crest green — used for affirmative states and the agricultural line. */
+  --color-green-600: #2f7d52;
+  --color-green-700: #1f6440;
+  --color-green-800: #164b31;
+
+  --color-paper: #f6f5f0;
+  --color-paper-alt: #eceae2;
+  --color-ink: #16202c;
+  --color-ink-soft: #4a5663;
+  /* Held dark enough that 10–11px labels still clear 4.5:1 on paper. */
+  --color-ink-faint: #5d6874;
+  --color-rule: #d7d3c8;
 
   /* Admin state colours — kept muted so the palette stays institutional. */
   --color-alert: #8c2f1e;
   --color-alert-soft: #f4e4e0;
-  --color-ok: #1a5741;
-  --color-ok-soft: #dfeae4;
+  --color-ok: #1f6440;
+  --color-ok-soft: #dfeae3;
 
-  --font-display: var(--font-source-serif), ui-serif, Georgia, "Times New Roman",
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman",
     serif;
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system,
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo,
     monospace;
@@ -69,7 +79,7 @@
   }
 
   ::selection {
-    background-color: var(--color-forest-900);
+    background-color: var(--color-navy-900);
     color: var(--color-gold-300);
   }
 
@@ -88,7 +98,7 @@
 
 /*
   Small-caps mono eyebrow used for section numbers, field labels and legal
-  notes. Wide tracking is what gives the page its prospectus register.
+  notes. Wide tracking is what holds the institutional register.
 */
 @utility label {
   font-family: var(--font-mono);
@@ -136,23 +146,38 @@
   }
 }
 
-/* Scroll reveal — deliberately small travel; disabled under reduced motion. */
+/* Card surface shared by the service grid, tier panels and fee rows. */
+@utility card {
+  background-color: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+}
+
+/*
+  Scroll reveal — deliberately small travel.
+
+  Note what is NOT here: a rule that hides `.reveal` by default. The hidden
+  state lives entirely on `[data-reveal="hidden"]`, which only the Reveal
+  component sets, and only once it has confirmed it can observe the element.
+  Hiding content in CSS and relying on script to bring it back means any
+  script failure renders a blank page, so the default here is visible and the
+  animation is strictly additive.
+*/
 @layer utilities {
   .reveal {
-    opacity: 0;
-    transform: translateY(10px);
     transition:
       opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
       transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  .reveal[data-shown="true"] {
-    opacity: 1;
-    transform: none;
+  .reveal[data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(10px);
   }
 
+  /* Belt and braces: the component already bails out under reduced motion. */
   @media (prefers-reduced-motion: reduce) {
-    .reveal {
+    .reveal[data-reveal="hidden"] {
       opacity: 1;
       transform: none;
     }

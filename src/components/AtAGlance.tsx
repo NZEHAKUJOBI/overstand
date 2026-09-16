@@ -1,49 +1,47 @@
 import { Reveal } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
 import { glanceFigures, headlineFigure } from "@/lib/content";
 
+/**
+ * The figures band. The headline figure sits on a navy card at the left with
+ * the supporting six in a tiled grid beside it, so the entry contribution
+ * reads first and the rest qualify it.
+ */
 export function AtAGlance() {
   return (
-    <section id="at-a-glance" className="shell py-24 md:py-32">
-      <Reveal>
-        <SectionHeading
-          index="01"
-          title="At a Glance"
-          lead="The Society's mobilization is deliberately granular: a large target reached through small, equally priced units, so that a founding cohort of two hundred can hold it between them without any one member dominating."
-        />
-      </Reveal>
+    <section id="at-a-glance" className="bg-paper-alt py-20 md:py-28">
+      <div className="shell">
+        <Reveal>
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+            <div className="rounded-xl bg-navy-900 p-8 text-paper md:p-10 lg:col-span-5">
+              <p className="label text-gold-400">{headlineFigure.label}</p>
+              <p className="figure-num mt-4 text-[3.25rem] leading-none text-paper md:text-[4rem]">
+                {headlineFigure.value}
+              </p>
+              <span
+                aria-hidden="true"
+                className="mt-7 block h-px w-14 bg-gold-500/50"
+              />
+              <p className="mt-7 text-[0.9375rem] leading-[1.65] text-pretty text-paper/70">
+                {headlineFigure.note}
+              </p>
+            </div>
 
-      <Reveal delay={80}>
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-4">
-            <p className="figure-num text-[4rem] leading-none text-forest-800 sm:text-[5rem]">
-              {headlineFigure.value}
-            </p>
-            <p className="label mt-5 text-gold-700">{headlineFigure.label}</p>
-            <p className="mt-4 max-w-xs text-[0.9375rem] leading-relaxed text-ink-soft">
-              {headlineFigure.note}
-            </p>
-          </div>
-
-          <div className="lg:col-span-8">
-            <dl className="grid grid-cols-2 border-t border-l border-rule sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-rule sm:grid-cols-3 lg:col-span-7">
               {glanceFigures.map((figure) => (
                 <div
                   key={figure.label}
-                  className="border-r border-b border-rule px-5 py-7 sm:px-6 sm:py-8"
+                  className="flex flex-col justify-between gap-3 bg-paper-alt px-5 py-7 md:px-6 md:py-8"
                 >
-                  <dd className="figure-num text-[1.5rem] leading-none text-forest-900 sm:text-[1.875rem]">
+                  <p className="figure-num text-[1.625rem] leading-none text-navy-900 md:text-[1.875rem]">
                     {figure.value}
-                  </dd>
-                  <dt className="label-sm mt-4 text-ink-faint">
-                    {figure.label}
-                  </dt>
+                  </p>
+                  <p className="label-sm text-ink-faint">{figure.label}</p>
                 </div>
               ))}
-            </dl>
+            </div>
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
     </section>
   );
 }

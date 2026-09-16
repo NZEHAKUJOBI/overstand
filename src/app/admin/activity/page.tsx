@@ -83,7 +83,7 @@ export default async function ActivityPage({
                     {entry.entity === "member" && entry.entityId ? (
                       <Link
                         href={`/admin/members/${entry.entityId}`}
-                        className="text-forest-900 underline-offset-4 hover:underline"
+                        className="text-navy-900 underline-offset-4 hover:underline"
                       >
                         {entry.summary}
                       </Link>
@@ -108,7 +108,7 @@ export default async function ActivityPage({
                 {page > 1 ? (
                   <Link
                     href={`/admin/activity?page=${page - 1}`}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Previous
                   </Link>
@@ -116,7 +116,7 @@ export default async function ActivityPage({
                 {page < pageCount ? (
                   <Link
                     href={`/admin/activity?page=${page + 1}`}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Next
                   </Link>

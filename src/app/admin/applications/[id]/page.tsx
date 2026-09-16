@@ -12,17 +12,17 @@ import {
 import { requirePermission } from "@/lib/auth";
 import { can } from "@/lib/rbac";
 import { connectDb } from "@/lib/db";
-import { Enquiry } from "@/lib/models/Enquiry";
+import { Application } from "@/lib/models/Application";
 import {
-  ENQUIRY_STATUS_LABEL,
-  SLOT_PRICE_KOBO,
+  APPLICATION_STATUS_LABEL,
   TIER_INTEREST_LABEL,
-  type EnquiryStatus,
+  contributionRateKobo,
+  type ApplicationStatus,
 } from "@/lib/constants";
-import { formatNaira, formatNumber } from "@/lib/money";
+import { formatNaira } from "@/lib/money";
 import { ReviewForm } from "../ReviewForm";
 
-const STATUS_TONE: Record<EnquiryStatus, "ok" | "warn" | "alert" | "neutral"> = {
+const STATUS_TONE: Record<ApplicationStatus, "ok" | "warn" | "alert" | "neutral"> = {
   new: "warn",
   reviewing: "neutral",
   approved: "ok",
@@ -37,43 +37,43 @@ const dateFormat: Intl.DateTimeFormatOptions = {
   minute: "2-digit",
 };
 
-export default async function EnquiryDetailPage({
+export default async function ApplicationDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await requirePermission("enquiries:read");
+  const session = await requirePermission("applications:read");
   const { id } = await params;
 
   if (!isValidObjectId(id)) notFound();
 
   await connectDb();
-  const enquiry = await Enquiry.findById(id).lean();
-  if (!enquiry) notFound();
+  const application = await Application.findById(id).lean();
+  if (!application) notFound();
 
   return (
     <>
       <PageHeader
-        title={`${enquiry.firstName} ${enquiry.lastName}`}
-        description={`${enquiry.reference} · received ${enquiry.createdAt.toLocaleDateString("en-NG", dateFormat)}`}
+        title={`${application.firstName} ${application.lastName}`}
+        description={`${application.reference} · received ${application.createdAt.toLocaleDateString("en-NG", dateFormat)}`}
         action={
-          enquiry.member ? (
-            <ButtonLink href={`/admin/members/${String(enquiry.member)}`} variant="ghost">
+          application.member ? (
+            <ButtonLink href={`/admin/members/${String(application.member)}`} variant="ghost">
               View Member Record
             </ButtonLink>
           ) : undefined
         }
       />
 
-      {enquiry.applicantMail === "failed" ? (
+      {application.applicantMail === "failed" ? (
         <div className="mb-8">
           <Notice tone="error">
             The confirmation email to the applicant could not be sent
-            {enquiry.mailError ? `: ${enquiry.mailError}` : "."} Contact them by
+            {application.mailError ? `: ${application.mailError}` : "."} Contact them by
             phone, and check the SMTP settings.
           </Notice>
         </div>
-      ) : enquiry.applicantMail === "skipped" ? (
+      ) : application.applicantMail === "skipped" ? (
         <div className="mb-8">
           <Notice tone="info">
             No confirmation was sent — SMTP is not configured on this server.
@@ -83,78 +83,81 @@ export default async function EnquiryDetailPage({
 
       <div className="grid gap-12 xl:grid-cols-12 xl:gap-14">
         <div className="xl:col-span-7">
-          <h2 className="font-display mb-5 text-[1.25rem] text-forest-900">
-            Enquiry
+          <h2 className="font-display mb-5 text-[1.25rem] text-navy-900">
+            Application
           </h2>
 
           <DescriptionList>
             <DescriptionItem term="Status">
-              <Badge tone={STATUS_TONE[enquiry.status]}>
-                {ENQUIRY_STATUS_LABEL[enquiry.status]}
+              <Badge tone={STATUS_TONE[application.status]}>
+                {APPLICATION_STATUS_LABEL[application.status]}
               </Badge>
             </DescriptionItem>
             <DescriptionItem term="Interest">
-              {TIER_INTEREST_LABEL[enquiry.tierInterest]}
+              {TIER_INTEREST_LABEL[application.tierInterest]}
             </DescriptionItem>
             <DescriptionItem term="Email">
               <a
-                href={`mailto:${enquiry.email}`}
+                href={`mailto:${application.email}`}
                 className="break-all underline-offset-4 hover:underline"
               >
-                {enquiry.email}
+                {application.email}
               </a>
             </DescriptionItem>
             <DescriptionItem term="Phone">
               <a
-                href={`tel:${enquiry.phone.replace(/\s/g, "")}`}
+                href={`tel:${application.phone.replace(/\s/g, "")}`}
                 className="tnum underline-offset-4 hover:underline"
               >
-                {enquiry.phone}
+                {application.phone}
               </a>
             </DescriptionItem>
-            {enquiry.slotsInterest ? (
-              <DescriptionItem term="Slots of interest">
-                <span className="tnum">
-                  {formatNumber(enquiry.slotsInterest)}
-                </span>{" "}
-                — {formatNaira(enquiry.slotsInterest * SLOT_PRICE_KOBO)}
-              </DescriptionItem>
-            ) : null}
-            {enquiry.occupation ? (
+            <DescriptionItem term="Monthly contribution">
+              <span className="tnum">
+                {formatNaira(
+                  contributionRateKobo(
+                    application.tierInterest,
+                    application.customContributionKobo,
+                  ),
+                )}
+              </span>{" "}
+              per month
+            </DescriptionItem>
+            {application.occupation ? (
               <DescriptionItem term="Occupation">
-                {enquiry.occupation}
+                {application.occupation}
               </DescriptionItem>
             ) : null}
-            {enquiry.address ? (
-              <DescriptionItem term="Address">{enquiry.address}</DescriptionItem>
+            {application.address ? (
+              <DescriptionItem term="Address">{application.address}</DescriptionItem>
             ) : null}
-            {enquiry.heardFrom ? (
+            {application.heardFrom ? (
               <DescriptionItem term="Heard about us via">
-                {enquiry.heardFrom}
+                {application.heardFrom}
               </DescriptionItem>
             ) : null}
           </DescriptionList>
 
-          {enquiry.message ? (
+          {application.message ? (
             <div className="mt-8">
               <h3 className="label-sm text-ink-faint">Message</h3>
               <p className="mt-3 border-l-2 border-gold-600 pl-5 text-[0.9375rem] leading-relaxed whitespace-pre-wrap text-ink">
-                {enquiry.message}
+                {application.message}
               </p>
             </div>
           ) : null}
 
-          {enquiry.reviewedAt ? (
+          {application.reviewedAt ? (
             <div className="mt-8 border-t border-rule pt-6">
               <h3 className="label-sm text-ink-faint">Review</h3>
               <p className="mt-3 text-[0.9375rem] text-ink-soft">
-                {ENQUIRY_STATUS_LABEL[enquiry.status]} by{" "}
-                {enquiry.reviewedByName ?? "an officer"} on{" "}
-                {enquiry.reviewedAt.toLocaleDateString("en-NG", dateFormat)}.
+                {APPLICATION_STATUS_LABEL[application.status]} by{" "}
+                {application.reviewedByName ?? "an officer"} on{" "}
+                {application.reviewedAt.toLocaleDateString("en-NG", dateFormat)}.
               </p>
-              {enquiry.reviewNote ? (
+              {application.reviewNote ? (
                 <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink">
-                  {enquiry.reviewNote}
+                  {application.reviewNote}
                 </p>
               ) : null}
             </div>
@@ -162,20 +165,20 @@ export default async function EnquiryDetailPage({
         </div>
 
         <div className="xl:col-span-5">
-          {can(session.role, "enquiries:write") ? (
+          {can(session.role, "applications:write") ? (
             <>
-              <h2 className="font-display mb-5 text-[1.25rem] text-forest-900">
+              <h2 className="font-display mb-5 text-[1.25rem] text-navy-900">
                 Record a decision
               </h2>
               <ReviewForm
-                enquiryId={id}
-                currentStatus={enquiry.status}
-                alreadyLinked={Boolean(enquiry.member)}
+                applicationId={id}
+                currentStatus={application.status}
+                alreadyLinked={Boolean(application.member)}
               />
             </>
           ) : (
             <Notice tone="info">
-              Your role can read enquiries but not act on them.
+              Your role can read applications but not act on them.
             </Notice>
           )}
         </div>
@@ -186,7 +189,7 @@ export default async function EnquiryDetailPage({
           href="/admin/applications"
           className="label-sm text-ink-soft underline-offset-4 hover:underline"
         >
-          ← Back to enquiries
+          ← Back to applications
         </Link>
       </p>
     </>

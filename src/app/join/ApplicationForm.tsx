@@ -4,18 +4,19 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import {
-  MAX_INVESTOR_SLOTS,
-  MIN_INVESTOR_SLOTS,
-  SLOT_PRICE_KOBO,
+  APPLICATION_FEE_KOBO,
+  CONTRIBUTION_TIER_2_KOBO,
+  MIN_MEMBER_AGE,
   TIER_INTERESTS,
   TIER_INTEREST_LABEL,
   type TierInterest,
 } from "@/lib/constants";
 import { formatNaira } from "@/lib/money";
-import { submitEnquiry, type EnquiryFormState } from "./actions";
+import { offices } from "@/lib/content";
+import { submitApplication, type ApplicationFormState } from "./actions";
 
 const control =
-  "w-full border border-forest-900/20 bg-white px-3.5 py-3 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:border-gold-600 focus:outline-none";
+  "w-full border border-navy-900/20 bg-white px-3.5 py-3 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:border-gold-600 focus:outline-none";
 
 function Field({
   label,
@@ -56,44 +57,41 @@ function Submit() {
       type="submit"
       disabled={pending}
       aria-busy={pending}
-      className="label bg-forest-900 px-8 py-4 text-paper transition-colors duration-200 hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-55"
+      className="label bg-navy-900 px-8 py-4 text-paper transition-colors duration-200 hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-55"
     >
-      {pending ? "Submitting…" : "Register My Interest"}
+      {pending ? "Submitting…" : "Submit my application"}
     </button>
   );
 }
 
-export function EnquiryForm() {
-  const [state, action] = useActionState<EnquiryFormState, FormData>(
-    submitEnquiry,
+export function ApplicationForm() {
+  const [state, action] = useActionState<ApplicationFormState, FormData>(
+    submitApplication,
     {},
   );
-  const [tier, setTier] = useState<TierInterest>("investor");
-  const [slots, setSlots] = useState("");
+  const [tier, setTier] = useState<TierInterest>("tier_1");
 
   if (state.reference) {
     return (
       <div className="border-t-2 border-gold-500 bg-paper px-7 py-12 sm:px-10">
-        <p className="label text-gold-700">Enquiry received</p>
-        <h2 className="font-display mt-5 text-[1.75rem] leading-tight text-forest-900 sm:text-[2rem]">
+        <p className="label text-gold-700">Application received</p>
+        <h2 className="font-display mt-5 text-[1.75rem] leading-tight text-navy-900 sm:text-[2rem]">
           Thank you — we have your details.
         </h2>
         <p className="mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-ink-soft">
           Your reference is{" "}
-          <strong className="tnum text-forest-900">{state.reference}</strong>.
+          <strong className="tnum text-navy-900">{state.reference}</strong>.
           Please quote it in any correspondence. A member of the Secretariat
-          will contact you.
+          will contact you with the Membership/Entrance Form and instructions
+          for the {formatNaira(APPLICATION_FEE_KOBO)} application fee.
         </p>
 
         {state.mailDelayed ? (
           <p className="mt-6 max-w-xl border-l-2 border-gold-600 pl-5 text-[0.9375rem] leading-relaxed text-ink-soft">
-            We could not send your confirmation email just now, but your enquiry
-            is safely recorded. If you do not hear from us within a few days,
-            call the Secretariat on{" "}
-            <a href="tel:+2349025250026" className="underline underline-offset-4">
-              +234 902 525 0026
-            </a>
-            .
+            We could not send your confirmation email just now, but your
+            application is safely recorded. If you do not hear from us within a
+            few days, call at the Society&apos;s office —{" "}
+            {offices[0].lines.join(", ")}.
           </p>
         ) : (
           <p className="mt-6 text-[0.9375rem] text-ink-soft">
@@ -104,7 +102,7 @@ export function EnquiryForm() {
         <p className="mt-9">
           <Link
             href="/"
-            className="label-sm text-forest-900 underline-offset-4 hover:underline"
+            className="label-sm text-navy-900 underline-offset-4 hover:underline"
           >
             ← Back to the Society
           </Link>
@@ -112,10 +110,6 @@ export function EnquiryForm() {
       </div>
     );
   }
-
-  const slotCount = Number(slots);
-  const holdingKobo =
-    Number.isInteger(slotCount) && slotCount > 0 ? slotCount * SLOT_PRICE_KOBO : 0;
 
   return (
     <form action={action} className="space-y-8" noValidate>
@@ -143,6 +137,21 @@ export function EnquiryForm() {
           </Field>
           <Field label="Surname" name="lastName" error={state.fieldErrors?.lastName} required>
             <input id="lastName" name="lastName" className={control} autoComplete="family-name" required />
+          </Field>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field label="Other names" name="otherNames" error={state.fieldErrors?.otherNames}>
+            <input id="otherNames" name="otherNames" className={control} autoComplete="additional-name" />
+          </Field>
+          <Field
+            label="Date of birth"
+            name="dateOfBirth"
+            error={state.fieldErrors?.dateOfBirth}
+            hint={`Membership is open from age ${MIN_MEMBER_AGE}.`}
+            required
+          >
+            <input id="dateOfBirth" name="dateOfBirth" type="date" className={control} autoComplete="bday" required />
           </Field>
         </div>
 
@@ -176,10 +185,65 @@ export function EnquiryForm() {
       </fieldset>
 
       <fieldset className="space-y-6 border-t border-rule pt-8">
-        <legend className="label text-gold-700">Your interest</legend>
+        <legend className="label text-gold-700">Next of kin</legend>
+
+        <p className="max-w-xl text-[0.875rem] leading-relaxed text-ink-soft">
+          The Membership Application Form requires next-of-kin details. We will
+          hold them with your membership record.
+        </p>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Full name"
+            name="nextOfKin.name"
+            error={state.fieldErrors?.["nextOfKin.name"]}
+            required
+          >
+            <input id="nextOfKin.name" name="nextOfKin.name" className={control} required />
+          </Field>
+          <Field
+            label="Relationship to you"
+            name="nextOfKin.relationship"
+            error={state.fieldErrors?.["nextOfKin.relationship"]}
+            hint="Spouse, sibling, parent, and so on."
+            required
+          >
+            <input id="nextOfKin.relationship" name="nextOfKin.relationship" className={control} required />
+          </Field>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Phone"
+            name="nextOfKin.phone"
+            error={state.fieldErrors?.["nextOfKin.phone"]}
+            required
+          >
+            <input id="nextOfKin.phone" name="nextOfKin.phone" type="tel" className={control} required />
+          </Field>
+          <Field
+            label="Email"
+            name="nextOfKin.email"
+            error={state.fieldErrors?.["nextOfKin.email"]}
+          >
+            <input id="nextOfKin.email" name="nextOfKin.email" type="email" className={control} />
+          </Field>
+        </div>
 
         <Field
-          label="Which tier interests you?"
+          label="Address"
+          name="nextOfKin.address"
+          error={state.fieldErrors?.["nextOfKin.address"]}
+        >
+          <textarea id="nextOfKin.address" name="nextOfKin.address" rows={2} className={control} />
+        </Field>
+      </fieldset>
+
+      <fieldset className="space-y-6 border-t border-rule pt-8">
+        <legend className="label text-gold-700">Your contribution</legend>
+
+        <Field
+          label="Which monthly tier suits you?"
           name="tierInterest"
           error={state.fieldErrors?.tierInterest}
           required
@@ -191,7 +255,7 @@ export function EnquiryForm() {
                 className={`flex cursor-pointer items-start gap-3 border px-4 py-3.5 transition-colors ${
                   tier === value
                     ? "border-gold-600 bg-gold-400/10"
-                    : "border-forest-900/20 hover:bg-forest-900/[0.03]"
+                    : "border-navy-900/20 hover:bg-navy-900/[0.03]"
                 }`}
               >
                 <input
@@ -200,7 +264,7 @@ export function EnquiryForm() {
                   value={value}
                   checked={tier === value}
                   onChange={() => setTier(value)}
-                  className="mt-1 accent-forest-800"
+                  className="mt-1 accent-navy-800"
                 />
                 <span className="text-[0.9375rem] leading-snug text-ink">
                   {TIER_INTEREST_LABEL[value]}
@@ -210,29 +274,21 @@ export function EnquiryForm() {
           </div>
         </Field>
 
-        {tier === "investor" ? (
+        {tier === "custom" ? (
           <Field
-            label="Slots you are considering"
-            name="slotsInterest"
-            error={state.fieldErrors?.slotsInterest}
-            hint={
-              holdingKobo > 0
-                ? `A holding of ${formatNaira(holdingKobo)}. Optional — an indication only.`
-                : `${MIN_INVESTOR_SLOTS.toLocaleString()}–${MAX_INVESTOR_SLOTS.toLocaleString()} slots at ₦5,000 each. Optional.`
-            }
+            label="Monthly amount you intend to contribute"
+            name="customContribution"
+            error={state.fieldErrors?.customContribution}
+            hint={`Above ${formatNaira(CONTRIBUTION_TIER_2_KOBO)}. The Secretariat will agree the final structure with you.`}
+            required
           >
             <input
-              id="slotsInterest"
-              name="slotsInterest"
-              type="number"
-              inputMode="numeric"
-              min={MIN_INVESTOR_SLOTS}
-              max={MAX_INVESTOR_SLOTS}
-              step={1}
-              value={slots}
-              onChange={(event) => setSlots(event.target.value)}
-              placeholder="e.g. 100"
+              id="customContribution"
+              name="customContribution"
+              inputMode="decimal"
+              placeholder="75,000"
               className={control}
+              required
             />
           </Field>
         ) : null}
@@ -246,11 +302,39 @@ export function EnquiryForm() {
         </Field>
       </fieldset>
 
+      <fieldset className="border-t border-rule pt-8">
+        <legend className="label text-gold-700">Declaration</legend>
+
+        <label
+          htmlFor="eligibilityConfirmed"
+          className="mt-6 flex cursor-pointer items-start gap-3"
+        >
+          <input
+            id="eligibilityConfirmed"
+            name="eligibilityConfirmed"
+            type="checkbox"
+            className="mt-1 h-4 w-4 shrink-0 accent-navy-800"
+          />
+          <span className="text-[0.9375rem] leading-relaxed text-ink">
+            I confirm that I am at least {MIN_MEMBER_AGE} years of age, of good
+            character and of sound mind, and that the details above are correct.
+          </span>
+        </label>
+
+        {state.fieldErrors?.eligibilityConfirmed ? (
+          <p className="mt-2 text-[0.8125rem] text-alert">
+            {state.fieldErrors.eligibilityConfirmed}
+          </p>
+        ) : null}
+      </fieldset>
+
       <div className="border-t border-rule pt-7">
         <p className="mb-6 max-w-xl text-[0.875rem] leading-relaxed text-ink-soft">
-          Submitting this form registers your interest only. It does not create
-          membership and commits you to no payment. The Society will send the
-          formal documentation once the Board has adopted it.
+          Submitting this form starts your application. It does not admit you to
+          membership and takes no payment — the Secretariat will contact you
+          with the Membership/Entrance Form and instructions for the{" "}
+          {formatNaira(APPLICATION_FEE_KOBO)} application fee, which is
+          non-refundable.
         </p>
         <Submit />
       </div>

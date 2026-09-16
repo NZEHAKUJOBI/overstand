@@ -5,13 +5,14 @@ import { useActionState, useMemo, useState } from "react";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Field, Input, Notice, Select, Textarea } from "@/components/admin/ui";
 import {
+  APPLICATION_FEE_KOBO,
   BANKS,
   KIND_LABEL,
   METHOD_LABEL,
   PAYMENT_KINDS,
   PAYMENT_METHODS,
   REGISTRATION_FEE_KOBO,
-  duesRateKobo,
+  contributionRateKobo,
   type MemberTier,
   type PaymentKind,
 } from "@/lib/constants";
@@ -22,6 +23,8 @@ export type MemberOption = {
   id: string;
   label: string;
   tier: MemberTier;
+  /** Needed so a tailored member prefills at their own rate, not the floor. */
+  customContributionKobo?: number | null;
 };
 
 /** Naira, no separators — what the amount input expects. */
@@ -39,7 +42,7 @@ export function PaymentForm({
   const [state, formAction] = useActionState(recordPayment, {});
 
   const [memberId, setMemberId] = useState(selectedMemberId ?? "");
-  const [kind, setKind] = useState<PaymentKind>("dues");
+  const [kind, setKind] = useState<PaymentKind>("contribution");
   const [amount, setAmount] = useState("");
   const [touchedAmount, setTouchedAmount] = useState(false);
 
@@ -54,11 +57,15 @@ export function PaymentForm({
    * actually received is what gets recorded, not what was owed.
    */
   const expectedKobo =
-    kind === "registration"
-      ? REGISTRATION_FEE_KOBO
-      : kind === "dues" && member
-        ? duesRateKobo(member.tier)
-        : null;
+    kind === "application"
+      ? APPLICATION_FEE_KOBO
+      : kind === "registration"
+        ? // Null until the Society supplies the registration fee amount, in
+          // which case nothing is prefilled and the officer enters it.
+          REGISTRATION_FEE_KOBO
+        : kind === "contribution" && member
+          ? contributionRateKobo(member.tier, member.customContributionKobo)
+          : null;
 
   const shownAmount =
     touchedAmount || expectedKobo === null ? amount : plainAmount(expectedKobo);
@@ -142,17 +149,17 @@ export function PaymentForm({
           </Field>
         </div>
 
-        {kind === "dues" ? (
+        {kind === "contribution" ? (
           <Field
-            label="Dues month"
-            name="duesPeriod"
-            error={state.fieldErrors?.duesPeriod}
-            hint="The month these dues settle. One dues entry per member per month."
+            label="Contribution month"
+            name="contributionPeriod"
+            error={state.fieldErrors?.contributionPeriod}
+            hint="The month these contributions settle. One contribution entry per member per month."
             required
           >
             <Input
-              id="duesPeriod"
-              name="duesPeriod"
+              id="contributionPeriod"
+              name="contributionPeriod"
               type="month"
               defaultValue={thisMonth}
               required

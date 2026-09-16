@@ -1,110 +1,71 @@
 import Link from "next/link";
 import { Crest } from "./Crest";
-import { society } from "@/lib/content";
+import { hero, society } from "@/lib/content";
 
-const stamps = [
-  { label: "Established", value: society.established },
-  { label: "Classification", value: society.tier },
-  { label: "By-Laws", value: "No. R11913" },
-];
-
+/**
+ * Opening panel. Navy field with a gold rule at the head, the crest set large
+ * above the headline, and the registration badge carried inline — the Society
+ * being registered and certified is the first thing the Official Update says,
+ * so it is the first thing the page says too.
+ */
 export function Hero() {
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden bg-forest-950 text-paper"
-    >
-      {/* Ledger rules — structural texture rather than decoration. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(90deg, rgba(217,190,114,0.05) 0px, rgba(217,190,114,0.05) 1px, transparent 1px, transparent 104px)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(120% 85% at 12% -10%, rgba(43,115,88,0.42), transparent 58%)",
-        }}
-      />
-
-      {/* Document edge, echoing the Society's printed material. */}
+    <section id="top" className="relative overflow-hidden bg-navy-950 text-paper">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-gold-500" />
-      <div aria-hidden="true" className="absolute inset-x-0 top-[5px] h-px bg-gold-500/40" />
 
-      <div className="shell relative flex min-h-[100svh] flex-col justify-center pt-28 pb-16 md:pt-32 md:pb-20">
-        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
-            <p className="label text-gold-400">
-              {society.kind}
-            </p>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(120% 80% at 50% -10%, rgba(36,90,147,0.45), transparent 62%)",
+        }}
+      />
 
-            <h1 className="font-display mt-6 text-[2.75rem] leading-[1.03] font-normal tracking-[-0.025em] text-balance sm:text-[3.75rem] lg:text-[4.5rem]">
-              {society.name}
-            </h1>
+      {/* Faint green wash at the foot, picking up the crest's third colour. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3"
+        style={{
+          backgroundImage:
+            "radial-gradient(90% 100% at 80% 110%, rgba(47,125,82,0.35), transparent 70%)",
+        }}
+      />
 
-            <p className="font-display mt-6 text-[1.375rem] leading-[1.4] text-gold-300 italic sm:text-[1.625rem]">
-              “{society.tagline}”
-            </p>
+      <div className="shell relative flex min-h-[92svh] flex-col items-center justify-center py-28 text-center md:py-32">
+        <Crest size={112} priority className="h-20 w-20 md:h-28 md:w-28" />
 
-            <div aria-hidden="true" className="mt-9 h-px w-24 bg-gold-500/50" />
+        <p className="label mt-8 text-gold-400">{hero.eyebrow}</p>
 
-            <p className="mt-9 max-w-xl text-[1.0625rem] leading-[1.7] text-pretty text-paper/75">
-              A member-owned cooperative society limited in Abuja, mobilising ₦5 billion
-              of member capital into housing, tourism, warehousing and financial
-              inclusion across the Federal Capital Territory — and giving every
-              member a documented stake in what that capital builds.
-            </p>
+        <h1 className="font-display mt-6 max-w-4xl text-[2.5rem] leading-[1.06] font-normal tracking-[-0.025em] text-balance sm:text-[3.25rem] md:text-[4rem]">
+          {hero.heading}
+        </h1>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link
-                href="/join"
-                className="label bg-gold-400 px-7 py-4 text-center text-forest-950 transition-colors duration-200 hover:bg-gold-300"
-              >
-                Become a Member
-              </Link>
-              <a
-                href="#membership"
-                className="label border border-paper/25 px-7 py-4 text-center text-paper transition-colors duration-200 hover:border-paper/60 hover:bg-paper/5"
-              >
-                Membership Terms
-              </a>
-            </div>
-          </div>
+        <p className="mt-7 max-w-2xl text-[1.0625rem] leading-[1.7] text-pretty text-paper/75 md:text-[1.125rem]">
+          {hero.body}
+        </p>
 
-          <div className="lg:col-span-5">
-            <div className="flex flex-col items-center gap-10 lg:items-end">
-              <div className="relative flex items-center justify-center">
-                <div
-                  aria-hidden="true"
-                  className="absolute h-[17rem] w-[17rem] rounded-full border border-gold-400/15 sm:h-[21rem] sm:w-[21rem]"
-                />
-                <Crest size={208} priority className="h-40 w-40 sm:h-52 sm:w-52" />
-              </div>
-
-              <dl className="grid w-full max-w-sm grid-cols-3 border-t border-gold-400/20">
-                {stamps.map((stamp) => (
-                  <div
-                    key={stamp.label}
-                    className="border-r border-gold-400/20 px-3 py-5 last:border-r-0"
-                  >
-                    <dt className="label-sm text-paper/55">{stamp.label}</dt>
-                    <dd className="mt-2 text-[0.8125rem] leading-snug text-gold-300">
-                      {stamp.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
+        <div className="mt-11 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+          <Link
+            href="/join"
+            className="label bg-gold-400 px-8 py-4 text-navy-950 transition-colors duration-200 hover:bg-gold-300"
+          >
+            {hero.primaryCta}
+          </Link>
+          <a
+            href="#services"
+            className="label border border-paper/25 px-8 py-4 text-paper transition-colors duration-200 hover:border-gold-400 hover:text-gold-300"
+          >
+            {hero.secondaryCta}
+          </a>
         </div>
 
-        <p className="label-sm mt-16 text-paper/55 md:mt-20">
-          {society.location}
+        <p className="label-sm mt-12 text-paper/50">
+          {society.registration}
+          <span aria-hidden="true" className="mx-2 text-gold-500/60">
+            ·
+          </span>
+          {society.status}
         </p>
       </div>
     </section>

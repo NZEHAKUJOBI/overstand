@@ -10,7 +10,7 @@ import { Payment } from "@/lib/models/Payment";
 import { recordAudit } from "@/lib/models/AuditLog";
 import { fieldErrorsOf, paymentSchema } from "@/lib/validation";
 import { KIND_LABEL } from "@/lib/constants";
-import { formatMonthKey } from "@/lib/dues";
+import { formatMonthKey } from "@/lib/contributions";
 import { duplicateKeyField, messageOf } from "@/lib/mongoErrors";
 import { formatNaira } from "@/lib/money";
 
@@ -30,7 +30,7 @@ export async function recordPayment(
     memberId: formData.get("memberId"),
     kind: formData.get("kind"),
     amount: formData.get("amount"),
-    duesPeriod: formData.get("duesPeriod"),
+    contributionPeriod: formData.get("contributionPeriod"),
     method: formData.get("method"),
     bank: formData.get("bank"),
     reference: formData.get("reference"),
@@ -63,9 +63,9 @@ export async function recordPayment(
       member: member._id,
       kind: input.kind,
       amountKobo: input.amount,
-      // Only dues carry a period; storing one on other kinds would break the
+      // Only contribution carry a period; storing one on other kinds would break the
       // partial unique index that prevents duplicate months.
-      duesPeriod: input.kind === "dues" ? input.duesPeriod : undefined,
+      contributionPeriod: input.kind === "contribution" ? input.contributionPeriod : undefined,
       method: input.method,
       bank: input.bank || undefined,
       reference: input.reference || undefined,
@@ -83,8 +83,8 @@ export async function recordPayment(
       entity: "payment",
       entityId: memberId,
       summary: `Recorded ${formatNaira(input.amount)} — ${KIND_LABEL[input.kind]}${
-        input.kind === "dues" && input.duesPeriod
-          ? ` for ${formatMonthKey(input.duesPeriod)}`
+        input.kind === "contribution" && input.contributionPeriod
+          ? ` for ${formatMonthKey(input.contributionPeriod)}`
           : ""
       } from ${member.firstName} ${member.lastName} (${member.membershipNumber}).`,
     });
@@ -92,8 +92,8 @@ export async function recordPayment(
     if (duplicateKeyField(error)) {
       return {
         fieldErrors: {
-          duesPeriod:
-            "Dues for this member and month have already been recorded.",
+          contributionPeriod:
+            "Contribution for this member and month have already been recorded.",
         },
       };
     }

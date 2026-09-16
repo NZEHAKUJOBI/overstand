@@ -2,7 +2,7 @@
 # the dashboard — it is deliberately not stored here.
 services:
   - type: web
-    name: anchor-real-estate
+    name: overstand-cooperative
     runtime: node
     plan: starter
     region: frankfurt
@@ -27,7 +27,7 @@ services:
       - key: SEED_ADMIN_NAME
         value: Admin
       - key: SEED_ADMIN_EMAIL
-        value: admin@anchorrealestategroup.ng
+        value: admin@overstandcooperative.ng
       - key: SEED_ADMIN_PASSWORD
         value: "123456789"
       - key: SEED_ADMIN_ROLE

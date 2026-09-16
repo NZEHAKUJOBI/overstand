@@ -27,7 +27,7 @@ export default async function UsersPage() {
       <section aria-labelledby="accounts-heading" className="mb-16">
         <h2
           id="accounts-heading"
-          className="font-display mb-5 text-[1.25rem] text-forest-900"
+          className="font-display mb-5 text-[1.25rem] text-navy-900"
         >
           Accounts
         </h2>
@@ -123,7 +123,7 @@ export default async function UsersPage() {
       <section aria-labelledby="new-heading" className="max-w-3xl">
         <h2
           id="new-heading"
-          className="font-display mb-5 text-[1.25rem] text-forest-900"
+          className="font-display mb-5 text-[1.25rem] text-navy-900"
         >
           Create an account
         </h2>

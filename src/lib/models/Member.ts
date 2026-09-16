@@ -1,11 +1,23 @@
 import { Schema, model, models, type Model, type Types } from "mongoose";
 import {
-  MAX_INVESTOR_SLOTS,
+  MAX_CONTRIBUTION_KOBO,
   MEMBER_STATUSES,
   MEMBER_TIERS,
   type MemberStatus,
   type MemberTier,
 } from "@/lib/constants";
+
+/**
+ * Next of kin, which the Membership Application Form requires. Held as a
+ * subdocument rather than flattened fields so it can be required as a unit.
+ */
+export type NextOfKin = {
+  name: string;
+  relationship: string;
+  phone: string;
+  email?: string;
+  address?: string;
+};
 
 export type MemberDoc = {
   _id: Types.ObjectId;
@@ -16,11 +28,18 @@ export type MemberDoc = {
   email: string;
   phone: string;
   address?: string;
+  dateOfBirth?: Date;
+  occupation?: string;
   tier: MemberTier;
-  /** Ownership slots held. Always 0 for non-investor members. */
-  slots: number;
+  /**
+   * Agreed monthly contribution for members above Tier 2. Null on the standard
+   * tiers, whose rate comes from constants — storing it there too would let the
+   * two drift apart.
+   */
+  customContributionKobo?: number | null;
+  nextOfKin: NextOfKin;
   status: MemberStatus;
-  /** First month for which monthly dues are owed. */
+  /** First month for which a monthly contribution is owed. */
   joinedOn: Date;
   notes?: string;
   createdBy?: Types.ObjectId;
@@ -28,6 +47,17 @@ export type MemberDoc = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+const NextOfKinSchema = new Schema<NextOfKin>(
+  {
+    name: { type: String, required: true, trim: true },
+    relationship: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true },
+    email: { type: String, lowercase: true, trim: true },
+    address: { type: String, trim: true },
+  },
+  { _id: false },
+);
 
 const MemberSchema = new Schema<MemberDoc>(
   {
@@ -44,18 +74,21 @@ const MemberSchema = new Schema<MemberDoc>(
     },
     phone: { type: String, required: true, trim: true },
     address: { type: String, trim: true },
+    dateOfBirth: { type: Date },
+    occupation: { type: String, trim: true },
     tier: { type: String, required: true, enum: MEMBER_TIERS },
-    slots: {
+    customContributionKobo: {
       type: Number,
-      required: true,
-      default: 0,
+      default: null,
       min: 0,
-      max: MAX_INVESTOR_SLOTS,
+      max: MAX_CONTRIBUTION_KOBO,
       validate: {
-        validator: Number.isInteger,
-        message: "Slots must be a whole number.",
+        validator: (value: number | null) =>
+          value === null || Number.isInteger(value),
+        message: "Contribution must be a whole number of kobo.",
       },
     },
+    nextOfKin: { type: NextOfKinSchema, required: true },
     status: {
       type: String,
       required: true,

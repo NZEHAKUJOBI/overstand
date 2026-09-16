@@ -14,14 +14,10 @@ import { can } from "@/lib/rbac";
 import { connectDb } from "@/lib/db";
 import { Member } from "@/lib/models/Member";
 import { Payment } from "@/lib/models/Payment";
-import { Enquiry } from "@/lib/models/Enquiry";
-import { computeDues, formatMonthKey } from "@/lib/dues";
-import { duesPaidByMember, getOverview } from "@/lib/reporting";
-import {
-  KIND_LABEL,
-  MEMBERSHIP_TARGET,
-  TOTAL_SLOT_POOL,
-} from "@/lib/constants";
+import { Application } from "@/lib/models/Application";
+import { computeContribution, formatMonthKey } from "@/lib/contributions";
+import { contributionPaidByMember, getOverview } from "@/lib/reporting";
+import { KIND_LABEL } from "@/lib/constants";
 import { formatNaira, formatNairaCompact, formatNumber } from "@/lib/money";
 
 export default async function AdminOverviewPage() {
@@ -30,8 +26,8 @@ export default async function AdminOverviewPage() {
 
   const overview = await getOverview();
 
-  const newEnquiries = can(session.role, "enquiries:read")
-    ? await Enquiry.countDocuments({ status: "new" })
+  const newApplications = can(session.role, "applications:read")
+    ? await Application.countDocuments({ status: "new" })
     : 0;
 
   const [recentPayments, accruingMembers] = await Promise.all([
@@ -44,18 +40,20 @@ export default async function AdminOverviewPage() {
       )
       .lean(),
     Member.find({ status: { $in: ["active", "suspended"] } })
-      .select("membershipNumber firstName lastName tier status joinedOn")
+      .select(
+        "membershipNumber firstName lastName tier customContributionKobo status joinedOn",
+      )
       .lean(),
   ]);
 
-  const duesPaid = await duesPaidByMember();
+  const contributionPaid = await contributionPaidByMember();
 
   const inArrears = accruingMembers
     .map((member) => ({
       member,
-      position: computeDues(
-        { tier: member.tier, status: member.status, joinedOn: member.joinedOn },
-        duesPaid.get(String(member._id)) ?? 0,
+      position: computeContribution(
+        member,
+        contributionPaid.get(String(member._id)) ?? 0,
       ),
     }))
     .filter((row) => row.position.arrearsKobo > 0)
@@ -81,20 +79,18 @@ export default async function AdminOverviewPage() {
           <StatTile
             label="Active members"
             value={formatNumber(overview.activeMembers)}
-            progress={overview.membershipPercent}
-            detail={`${overview.membershipPercent.toFixed(0)}% of the ${MEMBERSHIP_TARGET}-member target`}
+            detail={`${formatNumber(overview.totalMembers)} on the register`}
           />
           <StatTile
-            label="Slots allocated"
-            value={formatNumber(overview.slotsAllocated)}
-            progress={overview.slotPoolPercent}
-            detail={`of ${formatNumber(TOTAL_SLOT_POOL)} in the pool`}
+            label="Monthly commitment"
+            value={formatNairaCompact(overview.monthlyCommitmentKobo)}
+            detail="Expected from the accruing membership each month"
           />
           <StatTile
-            label="Slot value allocated"
-            value={formatNairaCompact(overview.slotValueKobo)}
-            progress={overview.capitalPercent}
-            detail={`${overview.capitalPercent.toFixed(1)}% of the ₦5.0bn target`}
+            label="Collected this month"
+            value={formatNairaCompact(overview.contributionThisMonthKobo)}
+            progress={overview.collectionPercent}
+            detail={`${overview.collectionPercent.toFixed(0)}% of the monthly commitment`}
           />
           <StatTile
             label="Total received"
@@ -110,21 +106,21 @@ export default async function AdminOverviewPage() {
             detail="Received to date"
           />
           <StatTile
-            label="Dues this month"
-            value={formatNairaCompact(overview.duesThisMonthKobo)}
+            label="Contribution this month"
+            value={formatNairaCompact(overview.contributionThisMonthKobo)}
             detail={formatMonthKey(currentMonth())}
           />
           <StatTile
-            label="Outstanding dues"
+            label="Outstanding contribution"
             value={formatNairaCompact(overview.totalArrearsKobo)}
             detail={`${overview.membersInArrears} member${overview.membersInArrears === 1 ? "" : "s"} in arrears`}
           />
           <StatTile
-            label="New enquiries"
-            value={formatNumber(newEnquiries)}
+            label="New applications"
+            value={formatNumber(newApplications)}
             detail={
-              newEnquiries > 0
-                ? "Awaiting review in Enquiries"
+              newApplications > 0
+                ? "Awaiting review in Applications"
                 : `${formatNumber(overview.totalMembers)} on the register`
             }
           />
@@ -136,7 +132,7 @@ export default async function AdminOverviewPage() {
           <div className="mb-5 flex items-baseline justify-between gap-4">
             <h2
               id="arrears-heading"
-              className="font-display text-[1.25rem] text-forest-900"
+              className="font-display text-[1.25rem] text-navy-900"
             >
               Members in arrears
             </h2>
@@ -151,7 +147,7 @@ export default async function AdminOverviewPage() {
           {inArrears.length === 0 ? (
             <EmptyState
               title="No arrears"
-              body="Every accruing member is up to date on monthly dues."
+              body="Every accruing member is up to date on monthly contribution."
             />
           ) : (
             <Table>
@@ -168,7 +164,7 @@ export default async function AdminOverviewPage() {
                     <Td>
                       <Link
                         href={`/admin/members/${String(member._id)}`}
-                        className="text-forest-900 underline-offset-4 hover:underline"
+                        className="text-navy-900 underline-offset-4 hover:underline"
                       >
                         {member.firstName} {member.lastName}
                       </Link>
@@ -200,7 +196,7 @@ export default async function AdminOverviewPage() {
           <div className="mb-5 flex items-baseline justify-between gap-4">
             <h2
               id="recent-heading"
-              className="font-display text-[1.25rem] text-forest-900"
+              className="font-display text-[1.25rem] text-navy-900"
             >
               Recent payments
             </h2>

@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Field, Notice, Select, Textarea } from "@/components/admin/ui";
-import { reviewEnquiry, type ReviewState } from "./actions";
+import { reviewApplication, type ReviewState } from "./actions";
 
 const DECISIONS = [
   { value: "reviewing", label: "Mark as reviewing" },
@@ -12,16 +12,16 @@ const DECISIONS = [
 ] as const;
 
 export function ReviewForm({
-  enquiryId,
+  applicationId,
   currentStatus,
   alreadyLinked,
 }: {
-  enquiryId: string;
+  applicationId: string;
   currentStatus: string;
   alreadyLinked: boolean;
 }) {
   const [state, action] = useActionState<ReviewState, FormData>(
-    reviewEnquiry,
+    reviewApplication,
     {},
   );
   const [decision, setDecision] = useState<string>(
@@ -30,7 +30,7 @@ export function ReviewForm({
 
   return (
     <form action={action} className="space-y-6" noValidate>
-      <input type="hidden" name="enquiryId" value={enquiryId} />
+      <input type="hidden" name="applicationId" value={applicationId} />
 
       {state.error ? <Notice tone="error">{state.error}</Notice> : null}
       {state.success ? <Notice tone="success">{state.success}</Notice> : null}
@@ -57,7 +57,7 @@ export function ReviewForm({
       {decision === "approved" && !alreadyLinked ? (
         <Notice tone="info">
           A member record will be created with status <strong>pending</strong>,
-          pre-filled from this enquiry. It does not admit the applicant or take
+          pre-filled from this application. It does not admit the applicant or take
           any payment — an officer completes admission on the member record.
         </Notice>
       ) : null}
@@ -66,7 +66,7 @@ export function ReviewForm({
         label="Note"
         name="reviewNote"
         error={state.fieldErrors?.reviewNote}
-        hint="Recorded against the enquiry and visible to other officers."
+        hint="Recorded against the application and visible to other officers."
       >
         <Textarea id="reviewNote" name="reviewNote" rows={3} />
       </Field>

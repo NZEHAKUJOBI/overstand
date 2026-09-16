@@ -50,14 +50,14 @@ export async function signIn(
     const identifier = parsed.data.email.toLowerCase();
     const resolvedEmail = identifier.includes("@")
       ? identifier
-      : `${identifier}@anchorrealestategroup.ng`;
+      : `${identifier}@overstandcooperative.ng`;
 
     let user = await AdminUser.findOne({
       email: { $in: [identifier, resolvedEmail] },
     });
 
     const defaultSeedEmail = (
-      process.env.SEED_ADMIN_EMAIL ?? "admin@anchorrealestategroup.ng"
+      process.env.SEED_ADMIN_EMAIL ?? "admin@overstandcooperative.ng"
     ).toLowerCase();
     const defaultSeedPassword = process.env.SEED_ADMIN_PASSWORD ?? "123456789";
 

@@ -26,10 +26,10 @@ export function AdminSidebar({
   return (
     <>
       {/* Compact bar, below lg */}
-      <div className="flex items-center justify-between border-b border-gold-500/25 bg-forest-950 px-5 py-3 lg:hidden">
+      <div className="flex items-center justify-between border-b border-gold-500/25 bg-navy-950 px-5 py-3 lg:hidden">
         <Link href="/admin" className="flex items-center gap-3 text-paper">
           <Crest size={28} className="h-7 w-7" />
-          <span className="label-sm">Anchor Admin</span>
+          <span className="label-sm">Overstand Admin</span>
         </Link>
         <button
           type="button"
@@ -58,7 +58,7 @@ export function AdminSidebar({
 
       <aside
         id="admin-nav"
-        className={`${open ? "block" : "hidden"} bg-forest-950 lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64 lg:shrink-0`}
+        className={`${open ? "block" : "hidden"} bg-navy-950 lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64 lg:shrink-0`}
       >
         <div className="flex h-full flex-col">
           <Link
@@ -68,7 +68,7 @@ export function AdminSidebar({
             <Crest size={36} className="h-9 w-9 shrink-0" />
             <span>
               <span className="font-display block text-[0.9375rem] leading-tight">
-                Anchor Admin
+                Overstand Admin
               </span>
               <span className="label-sm block text-gold-400/75">
                 Secretariat

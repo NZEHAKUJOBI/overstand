@@ -15,7 +15,7 @@ export function PageHeader({
   return (
     <div className="mb-10 flex flex-col gap-5 border-b border-rule pb-7 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="font-display text-[1.875rem] leading-tight tracking-[-0.015em] text-forest-900">
+        <h1 className="font-display text-[1.875rem] leading-tight tracking-[-0.015em] text-navy-900">
           {title}
         </h1>
         {description ? (
@@ -33,9 +33,9 @@ const buttonBase =
   "label inline-flex items-center justify-center px-5 py-3 transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-55";
 
 const buttonVariants = {
-  primary: "bg-forest-900 text-paper hover:bg-forest-800",
-  gold: "bg-gold-400 text-forest-950 hover:bg-gold-300",
-  ghost: "border border-forest-900/25 text-forest-900 hover:bg-forest-900/5",
+  primary: "bg-navy-900 text-paper hover:bg-navy-800",
+  gold: "bg-gold-400 text-navy-950 hover:bg-gold-300",
+  ghost: "border border-navy-900/25 text-navy-900 hover:bg-navy-900/5",
   danger: "border border-alert/40 text-alert hover:bg-alert/8",
 } as const;
 
@@ -70,7 +70,7 @@ export function ButtonLink({
 /* ── Form fields ──────────────────────────────────────────────────── */
 
 const controlClass =
-  "w-full border border-forest-900/20 bg-white px-3.5 py-2.5 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:border-gold-600 focus:outline-none";
+  "w-full border border-navy-900/20 bg-white px-3.5 py-2.5 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:border-gold-600 focus:outline-none";
 
 export function Field({
   label,
@@ -140,7 +140,7 @@ export function Notice({
   children: ReactNode;
 }) {
   const tones = {
-    info: "border-forest-900/20 bg-paper-alt text-ink",
+    info: "border-navy-900/20 bg-paper-alt text-ink",
     error: "border-alert/35 bg-alert-soft text-alert",
     success: "border-ok/30 bg-ok-soft text-ok",
   } as const;
@@ -163,7 +163,7 @@ export function Badge({
   children: ReactNode;
 }) {
   const tones = {
-    neutral: "bg-forest-900/8 text-ink-soft",
+    neutral: "bg-navy-900/8 text-ink-soft",
     ok: "bg-ok-soft text-ok",
     warn: "bg-gold-400/25 text-gold-700",
     alert: "bg-alert-soft text-alert",
@@ -186,8 +186,8 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="border border-dashed border-forest-900/20 px-6 py-16 text-center">
-      <p className="font-display text-[1.25rem] text-forest-900">{title}</p>
+    <div className="border border-dashed border-navy-900/20 px-6 py-16 text-center">
+      <p className="font-display text-[1.25rem] text-navy-900">{title}</p>
       <p className="mx-auto mt-2 max-w-md text-[0.9375rem] text-ink-soft">
         {body}
       </p>
@@ -212,11 +212,11 @@ export function StatTile({
   return (
     <div className="border-t border-rule pt-6 pb-7">
       <p className="label-sm text-ink-faint">{label}</p>
-      <p className="figure-num mt-3 text-[1.75rem] leading-none text-forest-900">
+      <p className="figure-num mt-3 text-[1.75rem] leading-none text-navy-900">
         {value}
       </p>
       {typeof progress === "number" ? (
-        <div className="mt-4 h-1 w-full bg-forest-900/10">
+        <div className="mt-4 h-1 w-full bg-navy-900/10">
           <div
             className="h-full bg-gold-500"
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
@@ -250,7 +250,7 @@ export function Th({
   return (
     <th
       scope="col"
-      className={`label-sm border-b border-forest-900/20 pb-3 text-ink-faint ${
+      className={`label-sm border-b border-navy-900/20 pb-3 text-ink-faint ${
         align === "right" ? "text-right" : "text-left"
       }`}
     >

@@ -19,17 +19,15 @@ import { can } from "@/lib/rbac";
 import { connectDb } from "@/lib/db";
 import { Member } from "@/lib/models/Member";
 import { Payment } from "@/lib/models/Payment";
-import { computeDues, formatMonthKey } from "@/lib/dues";
+import { computeContribution, formatMonthKey } from "@/lib/contributions";
 import {
   KIND_LABEL,
   METHOD_LABEL,
-  SLOT_PRICE_KOBO,
   STATUS_LABEL,
   TIER_LABEL,
-  duesRateKobo,
   type MemberStatus,
 } from "@/lib/constants";
-import { formatNaira, formatNumber } from "@/lib/money";
+import { formatNaira } from "@/lib/money";
 
 const STATUS_TONE: Record<MemberStatus, "ok" | "warn" | "alert" | "neutral"> = {
   active: "ok",
@@ -66,14 +64,11 @@ export default async function MemberDetailPage({
     .sort({ receivedOn: -1, createdAt: -1 })
     .lean();
 
-  const duesPaidKobo = payments
-    .filter((payment) => payment.kind === "dues")
+  const contributionPaidKobo = payments
+    .filter((payment) => payment.kind === "contribution")
     .reduce((sum, payment) => sum + payment.amountKobo, 0);
 
-  const position = computeDues(
-    { tier: member.tier, status: member.status, joinedOn: member.joinedOn },
-    duesPaidKobo,
-  );
+  const position = computeContribution(member, contributionPaidKobo);
 
   const totalReceived = payments.reduce(
     (sum, payment) => sum + payment.amountKobo,
@@ -124,9 +119,9 @@ export default async function MemberDetailPage({
       <section aria-label="Position" className="mb-12">
         <div className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile
-            label="Ownership slots"
-            value={formatNumber(member.slots)}
-            detail={`Holding ${formatNaira(member.slots * SLOT_PRICE_KOBO)}`}
+            label="Monthly contribution"
+            value={formatNaira(position.rateKobo)}
+            detail={`${TIER_LABEL[member.tier]} tier`}
           />
           <StatTile
             label="Total received"
@@ -134,22 +129,22 @@ export default async function MemberDetailPage({
             detail={`${payments.length} payment${payments.length === 1 ? "" : "s"} recorded`}
           />
           <StatTile
-            label="Dues billed"
+            label="Contribution billed"
             value={formatNaira(position.expectedKobo)}
             detail={
               position.accruing
-                ? `${position.monthsBilled} month${position.monthsBilled === 1 ? "" : "s"} at ${formatNaira(duesRateKobo(member.tier))}`
+                ? `${position.monthsBilled} month${position.monthsBilled === 1 ? "" : "s"} at ${formatNaira(position.rateKobo)}`
                 : "Not accruing at this status"
             }
           />
           <StatTile
-            label={position.creditKobo > 0 ? "Dues credit" : "Dues outstanding"}
+            label={position.creditKobo > 0 ? "Contribution credit" : "Contribution outstanding"}
             value={formatNaira(
               position.creditKobo > 0 ? position.creditKobo : position.arrearsKobo,
             )}
             detail={
               position.arrearsKobo > 0
-                ? "Arrears on monthly dues"
+                ? "Arrears on monthly contribution"
                 : position.creditKobo > 0
                   ? "Paid ahead of schedule"
                   : "Up to date"
@@ -161,7 +156,7 @@ export default async function MemberDetailPage({
       <section aria-labelledby="details-heading" className="mb-12">
         <h2
           id="details-heading"
-          className="font-display mb-5 text-[1.25rem] text-forest-900"
+          className="font-display mb-5 text-[1.25rem] text-navy-900"
         >
           Record
         </h2>
@@ -191,7 +186,7 @@ export default async function MemberDetailPage({
               {member.phone}
             </a>
           </DescriptionItem>
-          <DescriptionItem term="Dues start">
+          <DescriptionItem term="Contribution start">
             {member.joinedOn.toLocaleDateString("en-NG", dateFormat)}
           </DescriptionItem>
           <DescriptionItem term="Registered">
@@ -200,6 +195,16 @@ export default async function MemberDetailPage({
           {member.otherNames ? (
             <DescriptionItem term="Other names">
               {member.otherNames}
+            </DescriptionItem>
+          ) : null}
+          {member.dateOfBirth ? (
+            <DescriptionItem term="Date of birth">
+              {member.dateOfBirth.toLocaleDateString("en-NG", dateFormat)}
+            </DescriptionItem>
+          ) : null}
+          {member.occupation ? (
+            <DescriptionItem term="Occupation">
+              {member.occupation}
             </DescriptionItem>
           ) : null}
           {member.address ? (
@@ -211,10 +216,51 @@ export default async function MemberDetailPage({
         </DescriptionList>
       </section>
 
+      {member.nextOfKin ? (
+        <section aria-labelledby="kin-heading" className="mb-12">
+          <h2
+            id="kin-heading"
+            className="font-display mb-5 text-[1.25rem] text-navy-900"
+          >
+            Next of kin
+          </h2>
+
+          <DescriptionList>
+            <DescriptionItem term="Name">{member.nextOfKin.name}</DescriptionItem>
+            <DescriptionItem term="Relationship">
+              {member.nextOfKin.relationship}
+            </DescriptionItem>
+            <DescriptionItem term="Phone">
+              <a
+                href={`tel:${member.nextOfKin.phone.replace(/\s/g, "")}`}
+                className="tnum underline-offset-4 hover:underline"
+              >
+                {member.nextOfKin.phone}
+              </a>
+            </DescriptionItem>
+            {member.nextOfKin.email ? (
+              <DescriptionItem term="Email">
+                <a
+                  href={`mailto:${member.nextOfKin.email}`}
+                  className="break-all underline-offset-4 hover:underline"
+                >
+                  {member.nextOfKin.email}
+                </a>
+              </DescriptionItem>
+            ) : null}
+            {member.nextOfKin.address ? (
+              <DescriptionItem term="Address">
+                {member.nextOfKin.address}
+              </DescriptionItem>
+            ) : null}
+          </DescriptionList>
+        </section>
+      ) : null}
+
       <section aria-labelledby="payments-heading">
         <h2
           id="payments-heading"
-          className="font-display mb-5 text-[1.25rem] text-forest-900"
+          className="font-display mb-5 text-[1.25rem] text-navy-900"
         >
           Payment history
         </h2>
@@ -258,9 +304,9 @@ export default async function MemberDetailPage({
                   </Td>
                   <Td>
                     {KIND_LABEL[payment.kind]}
-                    {payment.duesPeriod ? (
+                    {payment.contributionPeriod ? (
                       <span className="label-sm mt-1 block text-ink-faint">
-                        {formatMonthKey(payment.duesPeriod)}
+                        {formatMonthKey(payment.contributionPeriod)}
                       </span>
                     ) : null}
                   </Td>

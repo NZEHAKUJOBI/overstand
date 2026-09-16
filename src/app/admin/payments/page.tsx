@@ -14,7 +14,7 @@ import { requirePermission } from "@/lib/auth";
 import { can } from "@/lib/rbac";
 import { connectDb } from "@/lib/db";
 import { Payment, type PaymentDoc } from "@/lib/models/Payment";
-import { formatMonthKey } from "@/lib/dues";
+import { formatMonthKey } from "@/lib/contributions";
 import {
   KIND_LABEL,
   METHOD_LABEL,
@@ -161,7 +161,7 @@ export default async function PaymentsPage({
         <div className="flex items-end">
           <button
             type="submit"
-            className="label border border-forest-900/25 px-5 py-3 text-forest-900 transition-colors hover:bg-forest-900/5"
+            className="label border border-navy-900/25 px-5 py-3 text-navy-900 transition-colors hover:bg-navy-900/5"
           >
             Apply
           </button>
@@ -210,7 +210,7 @@ export default async function PaymentsPage({
                       <>
                         <Link
                           href={`/admin/members/${String(payment.member._id)}`}
-                          className="text-forest-900 underline-offset-4 hover:underline"
+                          className="text-navy-900 underline-offset-4 hover:underline"
                         >
                           {payment.member.firstName} {payment.member.lastName}
                         </Link>
@@ -224,9 +224,9 @@ export default async function PaymentsPage({
                   </Td>
                   <Td>
                     {KIND_LABEL[payment.kind]}
-                    {payment.duesPeriod ? (
+                    {payment.contributionPeriod ? (
                       <span className="label-sm mt-1 block text-ink-faint">
-                        {formatMonthKey(payment.duesPeriod)}
+                        {formatMonthKey(payment.contributionPeriod)}
                       </span>
                     ) : null}
                   </Td>
@@ -265,7 +265,7 @@ export default async function PaymentsPage({
                 {page > 1 ? (
                   <Link
                     href={queryFor({ page: String(page - 1) })}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Previous
                   </Link>
@@ -273,7 +273,7 @@ export default async function PaymentsPage({
                 {page < pageCount ? (
                   <Link
                     href={queryFor({ page: String(page + 1) })}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Next
                   </Link>

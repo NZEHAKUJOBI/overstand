@@ -11,21 +11,21 @@ import {
 } from "@/components/admin/ui";
 import { requirePermission } from "@/lib/auth";
 import { connectDb } from "@/lib/db";
-import { Enquiry, type EnquiryDoc } from "@/lib/models/Enquiry";
+import { Application, type ApplicationDoc } from "@/lib/models/Application";
 import {
-  ENQUIRY_STATUSES,
-  ENQUIRY_STATUS_LABEL,
-  SLOT_PRICE_KOBO,
+  APPLICATION_STATUSES,
+  APPLICATION_STATUS_LABEL,
   TIER_INTEREST_LABEL,
-  type EnquiryStatus,
+  contributionRateKobo,
+  type ApplicationStatus,
 } from "@/lib/constants";
-import { formatNaira, formatNumber } from "@/lib/money";
+import { formatNaira } from "@/lib/money";
 
 const PAGE_SIZE = 25;
 
-export const metadata = { title: "Enquiries" };
+export const metadata = { title: "Applications" };
 
-const STATUS_TONE: Record<EnquiryStatus, "ok" | "warn" | "alert" | "neutral"> = {
+const STATUS_TONE: Record<ApplicationStatus, "ok" | "warn" | "alert" | "neutral"> = {
   new: "warn",
   reviewing: "neutral",
   approved: "ok",
@@ -37,27 +37,27 @@ export default async function ApplicationsPage({
 }: {
   searchParams: Promise<{ status?: string; page?: string }>;
 }) {
-  await requirePermission("enquiries:read");
+  await requirePermission("applications:read");
   const params = await searchParams;
 
-  const status = ENQUIRY_STATUSES.includes(params.status as EnquiryStatus)
-    ? (params.status as EnquiryStatus)
+  const status = APPLICATION_STATUSES.includes(params.status as ApplicationStatus)
+    ? (params.status as ApplicationStatus)
     : "";
   const page = Math.max(1, Number(params.page) || 1);
 
   await connectDb();
 
-  const filter: QueryFilter<EnquiryDoc> = {};
+  const filter: QueryFilter<ApplicationDoc> = {};
   if (status) filter.status = status;
 
-  const [enquiries, total, newCount] = await Promise.all([
-    Enquiry.find(filter)
+  const [applications, total, newCount] = await Promise.all([
+    Application.find(filter)
       .sort({ createdAt: -1 })
       .skip((page - 1) * PAGE_SIZE)
       .limit(PAGE_SIZE)
       .lean(),
-    Enquiry.countDocuments(filter),
-    Enquiry.countDocuments({ status: "new" }),
+    Application.countDocuments(filter),
+    Application.countDocuments({ status: "new" }),
   ]);
 
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -68,8 +68,8 @@ export default async function ApplicationsPage({
         title="Registrations of interest"
         description={
           newCount > 0
-            ? `${newCount} awaiting review. Approving one seeds a pending member record from the enquiry.`
-            : "Enquiries submitted through the public site."
+            ? `${newCount} awaiting review. Approving one seeds a pending member record from the application.`
+            : "Applications submitted through the public site."
         }
       />
 
@@ -84,28 +84,28 @@ export default async function ApplicationsPage({
           </label>
           <Select id="status" name="status" defaultValue={status} className="mt-2">
             <option value="">All statuses</option>
-            {ENQUIRY_STATUSES.map((value) => (
+            {APPLICATION_STATUSES.map((value) => (
               <option key={value} value={value}>
-                {ENQUIRY_STATUS_LABEL[value]}
+                {APPLICATION_STATUS_LABEL[value]}
               </option>
             ))}
           </Select>
         </div>
         <button
           type="submit"
-          className="label border border-forest-900/25 px-5 py-3 text-forest-900 transition-colors hover:bg-forest-900/5"
+          className="label border border-navy-900/25 px-5 py-3 text-navy-900 transition-colors hover:bg-navy-900/5"
         >
           Apply
         </button>
       </form>
 
-      {enquiries.length === 0 ? (
+      {applications.length === 0 ? (
         <EmptyState
-          title={status ? "No matching enquiries" : "No enquiries yet"}
+          title={status ? "No matching applications" : "No applications yet"}
           body={
             status
               ? "Nothing is at this status right now."
-              : "Enquiries submitted through the public form will appear here, newest first."
+              : "Applications submitted through the public form will appear here, newest first."
           }
         />
       ) : (
@@ -114,71 +114,67 @@ export default async function ApplicationsPage({
             <thead>
               <tr>
                 <Th>Received</Th>
-                <Th>Enquirer</Th>
+                <Th>Applicant</Th>
                 <Th>Interest</Th>
-                <Th align="right">Slots</Th>
+                <Th align="right">Monthly</Th>
                 <Th>Status</Th>
                 <Th>Receipt</Th>
               </tr>
             </thead>
             <tbody>
-              {enquiries.map((enquiry) => (
-                <tr key={String(enquiry._id)}>
+              {applications.map((application) => (
+                <tr key={String(application._id)}>
                   <Td>
                     <span className="tnum">
-                      {enquiry.createdAt.toLocaleDateString("en-NG", {
+                      {application.createdAt.toLocaleDateString("en-NG", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
                       })}
                     </span>
                     <span className="label-sm mt-1 block text-ink-faint">
-                      {enquiry.reference}
+                      {application.reference}
                     </span>
                   </Td>
                   <Td>
                     <Link
-                      href={`/admin/applications/${String(enquiry._id)}`}
-                      className="text-forest-900 underline-offset-4 hover:underline"
+                      href={`/admin/applications/${String(application._id)}`}
+                      className="text-navy-900 underline-offset-4 hover:underline"
                     >
-                      {enquiry.firstName} {enquiry.lastName}
+                      {application.firstName} {application.lastName}
                     </Link>
                     <span className="label-sm mt-1 block break-all text-ink-faint">
-                      {enquiry.email}
+                      {application.email}
                     </span>
                   </Td>
                   <Td>
                     <span className="text-[0.875rem]">
-                      {TIER_INTEREST_LABEL[enquiry.tierInterest].split(" — ")[0]}
+                      {TIER_INTEREST_LABEL[application.tierInterest].split(" — ")[0]}
                     </span>
                   </Td>
                   <Td align="right">
-                    {enquiry.slotsInterest ? (
-                      <>
-                        <span className="tnum">
-                          {formatNumber(enquiry.slotsInterest)}
-                        </span>
-                        <span className="label-sm mt-1 block text-ink-faint">
-                          {formatNaira(enquiry.slotsInterest * SLOT_PRICE_KOBO)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-ink-faint">—</span>
-                    )}
+                    <span className="tnum">
+                      {formatNaira(
+                        contributionRateKobo(
+                          application.tierInterest,
+                          application.customContributionKobo,
+                        ),
+                      )}
+                    </span>
                   </Td>
                   <Td>
-                    <Badge tone={STATUS_TONE[enquiry.status]}>
-                      {ENQUIRY_STATUS_LABEL[enquiry.status]}
+                    <Badge tone={STATUS_TONE[application.status]}>
+                      {APPLICATION_STATUS_LABEL[application.status]}
                     </Badge>
                   </Td>
                   <Td>
-                    {enquiry.applicantMail === "sent" ? (
+                    {application.applicantMail === "sent" ? (
                       <span className="label-sm text-ok">Sent</span>
-                    ) : enquiry.applicantMail === "failed" ? (
+                    ) : application.applicantMail === "failed" ? (
                       <span className="label-sm text-alert">Failed</span>
                     ) : (
                       <span className="label-sm text-ink-faint">
-                        {enquiry.applicantMail}
+                        {application.applicantMail}
                       </span>
                     )}
                   </Td>
@@ -199,7 +195,7 @@ export default async function ApplicationsPage({
                 {page > 1 ? (
                   <Link
                     href={`/admin/applications?${new URLSearchParams({ ...(status ? { status } : {}), page: String(page - 1) })}`}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Previous
                   </Link>
@@ -207,7 +203,7 @@ export default async function ApplicationsPage({
                 {page < pageCount ? (
                   <Link
                     href={`/admin/applications?${new URLSearchParams({ ...(status ? { status } : {}), page: String(page + 1) })}`}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Next
                   </Link>

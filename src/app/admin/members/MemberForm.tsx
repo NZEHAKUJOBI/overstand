@@ -5,10 +5,10 @@ import { useActionState, useState } from "react";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Field, Input, Notice, Select, Textarea } from "@/components/admin/ui";
 import {
-  MAX_INVESTOR_SLOTS,
+  CONTRIBUTION_TIER_1_KOBO,
+  CONTRIBUTION_TIER_2_KOBO,
   MEMBER_STATUSES,
-  MIN_INVESTOR_SLOTS,
-  SLOT_PRICE_KOBO,
+  MEMBER_TIERS,
   STATUS_LABEL,
   TIER_LABEL,
   type MemberStatus,
@@ -24,8 +24,15 @@ export type MemberDefaults = {
   email: string;
   phone: string;
   address: string;
+  dateOfBirth: string;
+  occupation: string;
   tier: MemberTier;
-  slots: number;
+  customContribution: string;
+  nextOfKinName: string;
+  nextOfKinRelationship: string;
+  nextOfKinPhone: string;
+  nextOfKinEmail: string;
+  nextOfKinAddress: string;
   status: MemberStatus;
   joinedOn: string;
   notes: string;
@@ -38,11 +45,24 @@ const empty: MemberDefaults = {
   email: "",
   phone: "",
   address: "",
-  tier: "investor",
-  slots: MIN_INVESTOR_SLOTS,
+  dateOfBirth: "",
+  occupation: "",
+  tier: "tier_1",
+  customContribution: "",
+  nextOfKinName: "",
+  nextOfKinRelationship: "",
+  nextOfKinPhone: "",
+  nextOfKinEmail: "",
+  nextOfKinAddress: "",
   status: "pending",
   joinedOn: new Date().toISOString().slice(0, 10),
   notes: "",
+};
+
+const TIER_RATE: Record<MemberTier, string> = {
+  tier_1: `${formatNaira(CONTRIBUTION_TIER_1_KOBO)} per month`,
+  tier_2: `${formatNaira(CONTRIBUTION_TIER_2_KOBO)} per month`,
+  custom: `Above ${formatNaira(CONTRIBUTION_TIER_2_KOBO)} — agreed with the member`,
 };
 
 export function MemberForm({
@@ -63,20 +83,8 @@ export function MemberForm({
 }) {
   const [state, formAction] = useActionState(action, {});
   const [tier, setTier] = useState<MemberTier>(defaults.tier);
-  const [slots, setSlots] = useState(String(defaults.slots));
 
-  const isInvestor = tier === "investor";
-  const slotCount = Number(slots);
-  const holdingKobo =
-    Number.isFinite(slotCount) && slotCount > 0 ? slotCount * SLOT_PRICE_KOBO : 0;
-
-  function onTierChange(value: MemberTier) {
-    setTier(value);
-    // The tiers are defined by whether slots are held at all, so keep the two
-    // fields consistent instead of letting the server reject the combination.
-    if (value === "non_investor") setSlots("0");
-    else if (slots === "0") setSlots(String(MIN_INVESTOR_SLOTS));
-  }
+  const isCustom = tier === "custom";
 
   return (
     <form action={formAction} className="max-w-3xl space-y-8" noValidate>
@@ -119,18 +127,33 @@ export function MemberForm({
           </Field>
         </div>
 
-        <Field
-          label="Other names"
-          name="otherNames"
-          error={state.fieldErrors?.otherNames}
-        >
-          <Input
-            id="otherNames"
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Other names"
             name="otherNames"
-            defaultValue={defaults.otherNames}
-            autoComplete="off"
-          />
-        </Field>
+            error={state.fieldErrors?.otherNames}
+          >
+            <Input
+              id="otherNames"
+              name="otherNames"
+              defaultValue={defaults.otherNames}
+              autoComplete="off"
+            />
+          </Field>
+
+          <Field
+            label="Occupation"
+            name="occupation"
+            error={state.fieldErrors?.occupation}
+          >
+            <Input
+              id="occupation"
+              name="occupation"
+              defaultValue={defaults.occupation}
+              autoComplete="off"
+            />
+          </Field>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
           <Field
@@ -167,12 +190,110 @@ export function MemberForm({
           </Field>
         </div>
 
-        <Field label="Address" name="address" error={state.fieldErrors?.address}>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Date of birth"
+            name="dateOfBirth"
+            error={state.fieldErrors?.dateOfBirth}
+            hint="Members must be at least 18."
+          >
+            <Input
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              defaultValue={defaults.dateOfBirth}
+            />
+          </Field>
+
+          <Field label="Address" name="address" error={state.fieldErrors?.address}>
+            <Textarea
+              id="address"
+              name="address"
+              rows={2}
+              defaultValue={defaults.address}
+            />
+          </Field>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-6 border-t border-rule pt-8">
+        <legend className="label text-gold-700">Next of kin</legend>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Full name"
+            name="nextOfKin.name"
+            error={state.fieldErrors?.["nextOfKin.name"]}
+            required
+          >
+            <Input
+              id="nextOfKin.name"
+              name="nextOfKin.name"
+              defaultValue={defaults.nextOfKinName}
+              autoComplete="off"
+              required
+            />
+          </Field>
+
+          <Field
+            label="Relationship"
+            name="nextOfKin.relationship"
+            error={state.fieldErrors?.["nextOfKin.relationship"]}
+            hint="Spouse, sibling, parent, and so on."
+            required
+          >
+            <Input
+              id="nextOfKin.relationship"
+              name="nextOfKin.relationship"
+              defaultValue={defaults.nextOfKinRelationship}
+              autoComplete="off"
+              required
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field
+            label="Phone"
+            name="nextOfKin.phone"
+            error={state.fieldErrors?.["nextOfKin.phone"]}
+            required
+          >
+            <Input
+              id="nextOfKin.phone"
+              name="nextOfKin.phone"
+              type="tel"
+              defaultValue={defaults.nextOfKinPhone}
+              autoComplete="off"
+              required
+            />
+          </Field>
+
+          <Field
+            label="Email"
+            name="nextOfKin.email"
+            error={state.fieldErrors?.["nextOfKin.email"]}
+          >
+            <Input
+              id="nextOfKin.email"
+              name="nextOfKin.email"
+              type="email"
+              defaultValue={defaults.nextOfKinEmail}
+              autoComplete="off"
+            />
+          </Field>
+        </div>
+
+        <Field
+          label="Address"
+          name="nextOfKin.address"
+          error={state.fieldErrors?.["nextOfKin.address"]}
+        >
           <Textarea
-            id="address"
-            name="address"
+            id="nextOfKin.address"
+            name="nextOfKin.address"
             rows={2}
-            defaultValue={defaults.address}
+            defaultValue={defaults.nextOfKinAddress}
           />
         </Field>
       </fieldset>
@@ -181,42 +302,47 @@ export function MemberForm({
         <legend className="label text-gold-700">Membership</legend>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          <Field label="Tier" name="tier" error={state.fieldErrors?.tier} required>
+          <Field
+            label="Contribution tier"
+            name="tier"
+            error={state.fieldErrors?.tier}
+            hint={TIER_RATE[tier]}
+            required
+          >
             <Select
               id="tier"
               name="tier"
               value={tier}
-              onChange={(event) => onTierChange(event.target.value as MemberTier)}
+              onChange={(event) => setTier(event.target.value as MemberTier)}
             >
-              <option value="investor">{TIER_LABEL.investor}</option>
-              <option value="non_investor">{TIER_LABEL.non_investor}</option>
+              {MEMBER_TIERS.map((value) => (
+                <option key={value} value={value}>
+                  {TIER_LABEL[value]}
+                </option>
+              ))}
             </Select>
           </Field>
 
           <Field
-            label="Ownership slots"
-            name="slots"
-            error={state.fieldErrors?.slots}
+            label="Agreed monthly amount"
+            name="customContribution"
+            error={state.fieldErrors?.customContribution}
             hint={
-              isInvestor
-                ? `${MIN_INVESTOR_SLOTS.toLocaleString()}–${MAX_INVESTOR_SLOTS.toLocaleString()} · holding ${formatNaira(holdingKobo)}`
-                : "Non-investor members hold no slots."
+              isCustom
+                ? `Must be above ${formatNaira(CONTRIBUTION_TIER_2_KOBO)}.`
+                : "Only for a tailored contribution."
             }
-            required
+            required={isCustom}
           >
             <Input
-              id="slots"
-              name="slots"
-              type="number"
-              inputMode="numeric"
-              min={isInvestor ? MIN_INVESTOR_SLOTS : 0}
-              max={MAX_INVESTOR_SLOTS}
-              step={1}
-              value={slots}
-              onChange={(event) => setSlots(event.target.value)}
-              readOnly={!isInvestor}
-              className={isInvestor ? "" : "bg-paper-alt text-ink-faint"}
-              required
+              id="customContribution"
+              name="customContribution"
+              inputMode="decimal"
+              placeholder="75,000"
+              defaultValue={defaults.customContribution}
+              disabled={!isCustom}
+              className={isCustom ? "" : "bg-paper-alt text-ink-faint"}
+              required={isCustom}
             />
           </Field>
         </div>
@@ -238,10 +364,10 @@ export function MemberForm({
           </Field>
 
           <Field
-            label="Dues start"
+            label="Contribution start"
             name="joinedOn"
             error={state.fieldErrors?.joinedOn}
-            hint="Monthly dues accrue from this month onward."
+            hint="Monthly contributions accrue from this month onward."
             required
           >
             <Input

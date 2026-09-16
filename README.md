@@ -1,20 +1,21 @@
-# Anchor Real Estate Group
+# Overstand Multipurpose Cooperative Society
 
-Public site and Secretariat admin dashboard for **Anchor Real Estate Group**, a
-multipurpose cooperative society limited in Abuja, Federal Capital Territory (Tier 1
-Cooperative, FCTA By-Laws No. R11913).
+Public site and Secretariat admin dashboard for **Overstand Multi-Purpose
+Cooperative Society Limited** (Reg. No. 3591), a registered and duly certified
+multipurpose cooperative society at 1004 Ameh Ebute Street, Suite D-18, Boya
+Place Plaza, Wuye, Abuja–FCT.
 
-The Society is not a developer or an estate agency. It mobilises member capital
-in ₦5,000 ownership slots and deploys it across housing, tourism, warehousing,
-financing and a digital cooperative platform.
+The Society pools member contributions and deploys them across real estate,
+agriculture, member lending, wealth management and travel services.
 
 Two surfaces, one Next.js app:
 
 | Route | Purpose |
 | --- | --- |
 | `/` | Public landing page — static, no authentication |
+| `/join` | Membership application — personal and next-of-kin details |
 | `/login` | Officer sign-in |
-| `/admin/*` | Secretariat dashboard — members, payments, dues, audit trail |
+| `/admin/*` | Secretariat dashboard — members, payments, contributions, audit trail |
 
 ## Running it
 
@@ -28,24 +29,26 @@ No MongoDB installed? Run one locally in its own terminal — it keeps its data 
 `.mongo-data`, so it survives restarts:
 
 ```bash
-npm run mongo:dev              # then MONGODB_URI=mongodb://127.0.0.1:27017/anchor
+npm run mongo:dev              # then MONGODB_URI=mongodb://127.0.0.1:27017/overstand
 ```
 
-To exercise enquiry emails without sending real mail, run a local SMTP sink and
-point `SMTP_HOST`/`SMTP_PORT` at it. Captured messages land in `smtp-sink.log`:
+To exercise application emails without sending real mail, run a local SMTP sink
+and point `SMTP_HOST`/`SMTP_PORT` at it. Captured messages land in
+`smtp-sink.log`:
 
 ```bash
 npm run mail:sink              # 127.0.0.1:2599
 ```
 
-Create your first administrator (or use default autodeployment credentials `admin` / `123456789`), then sign in at `/login`:
+Create your first administrator (or use default autodeployment credentials
+`admin` / `123456789`), then sign in at `/login`:
 
 ```bash
-# Runs with defaults (admin@anchorrealestategroup.ng / 123456789):
+# Runs with defaults (admin@overstandcooperative.ng / 123456789):
 npm run seed:admin
 
 # Or customize credentials:
-npm run seed:admin -- --name "TPL Lami" --email lami@example.org \
+npm run seed:admin -- --name "Secretary" --email sec@example.org \
                       --password "123456789" --role admin
 ```
 
@@ -68,7 +71,7 @@ missing.
 
 | Variable | Notes |
 | --- | --- |
-| `MONGODB_URI` | Atlas SRV string or `mongodb://127.0.0.1:27017/anchor`. URL-encode the password if it contains `@ : / ? # [ ] %`. |
+| `MONGODB_URI` | Atlas SRV string or `mongodb://127.0.0.1:27017/overstand`. URL-encode the password if it contains `@ : / ? # [ ] %`. |
 | `SESSION_SECRET` | At least 32 characters — `openssl rand -base64 32`. Rotating it signs every officer out immediately. |
 
 ## Stack
@@ -86,20 +89,23 @@ JavaScript the forms and navigation need.
 src/
   app/
     page.tsx              public landing page
+    join/                 membership application + submission action
     login/                sign-in page + auth actions
     admin/                dashboard (layout guards the whole subtree)
       members/            register, create, detail, edit
       payments/           ledger, record payment
+      applications/       review queue, approve into the register
       users/              admin accounts (admin role only)
       activity/           audit trail
   components/
     admin/                admin UI kit
   lib/
-    constants.ts          Society figures — slot price, fees, caps, targets
+    constants.ts          Society figures — fees, tiers, caps
+    content.ts            every word on the public site
     models/               Mongoose schemas + atomic membership counter
     auth.ts / session.ts  password hashing, cookies, route guards
     rbac.ts               roles and the permission matrix
-    dues.ts               monthly dues accrual and arrears
+    contributions.ts      monthly contribution accrual and arrears
     money.ts              kobo arithmetic and naira formatting
     validation.ts         zod schemas for every form
     reporting.ts          dashboard aggregates
@@ -107,6 +113,8 @@ src/
 scripts/
   seed-admin.ts           create or reset an administrator
   verify.mts              data-layer checks against a throwaway mongod
+brand/
+  overstand-logo.pdf      supplied artwork; build-brand.mjs derives the icon set
 ```
 
 ## How the money is modelled
@@ -119,35 +127,45 @@ The Society's figures live in `src/lib/constants.ts` and nowhere else:
 
 | | |
 | --- | --- |
-| Slot price | ₦5,000 |
-| Slot pool | 1,000,000 (₦5bn) |
-| Holding band | 100–10,000 slots (₦500,000–₦50,000,000) |
-| Registration fee | ₦20,000 one-time |
-| Monthly dues | ₦10,000 investor · ₦50,000 non-investor |
+| Application fee | ₦20,000 one-time, non-refundable |
+| Registration fee | **Amount not yet supplied** — `null` in constants |
+| Annual membership fee | **Amount not yet supplied** — `null` in constants |
+| Tier 1 contribution | ₦25,000 per month |
+| Tier 2 contribution | ₦50,000 per month |
+| Tailored contribution | Above ₦50,000, agreed member by member |
 
 ### Invariants and how they are enforced
 
-- **Holding band and the 1% ceiling** — in the zod schema, so both create and
-  edit go through the same rule. A non-investor member holds exactly 0 slots.
-- **Pool capacity** — checked against the live sum of allocated slots before a
-  member is saved, since it depends on every other member's holding.
+- **The contribution tier** — in the zod schema, shared by the public
+  application and the admin form, so both enforce it identically. A tailored
+  amount must be strictly above Tier 2; the standard tiers carry no custom
+  figure at all.
+- **Minimum age** — 18, checked from the date of birth on the public
+  application rather than left for the Secretariat to catch on the paper form.
+- **Next of kin** — required by the Membership Application Form, so name,
+  relationship and phone are mandatory in both the zod schema and the Mongoose
+  subdocument.
 - **Membership numbers** — allocated by an atomic `$inc` on a counter document,
   not `count() + 1`, so simultaneous registrations cannot collide.
-- **One dues payment per member per month** — a partial unique index in MongoDB,
-  so a double-submitted form is rejected by the database rather than by a
-  read-then-write check.
+- **One contribution payment per member per month** — a partial unique index in
+  MongoDB, so a double-submitted form is rejected by the database rather than
+  by a read-then-write check.
 
 There are **no multi-document transactions**, deliberately: they require a
 replica set, and this way the app runs identically on Atlas and on a standalone
 mongod. Every write that must be atomic is a single-document operation.
 
-### Dues accrual
+### Contribution accrual
 
-Dues accrue from the member's `joinedOn` month inclusive, while the member is
-`active` or `suspended`. `pending` members have not been admitted and `exited`
-members have left, so neither accrues. Suspension deliberately keeps accruing —
-it usually follows arrears, and zeroing the balance would erase the debt.
-Overpayment shows as credit; arrears never go negative.
+Contributions accrue from the member's `joinedOn` month inclusive, while the
+member is `active` or `suspended`. `pending` members have not been admitted and
+`exited` members have left, so neither accrues. Suspension deliberately keeps
+accruing — it usually follows arrears, and zeroing the balance would erase the
+debt. Overpayment shows as credit; arrears never go negative.
+
+A tailored member accrues at their own agreed rate. Where no rate has been
+recorded for one, accrual falls back to the Tier 2 floor, so a missing figure
+can never under-bill.
 
 Arrears are **derived, not stored**. That keeps them correct by construction,
 at the cost of computing across the accruing set for the arrears view. Fine at
@@ -176,18 +194,14 @@ an audit log with the officer who made it, visible at `/admin/activity`.
 
 ## Deploying to Vercel
 
-When deploying to Vercel:
-
 1. Import the repository into your Vercel dashboard.
 2. In **Project Settings → Environment Variables**, configure:
    - `MONGODB_URI`: MongoDB Atlas connection string.
    - `SESSION_SECRET`: Random string of at least 32 characters (e.g., generate with `openssl rand -base64 32`).
-   - `SEED_ADMIN_EMAIL`: (Optional, defaults to `admin@anchorrealestategroup.ng`)
+   - `SEED_ADMIN_EMAIL`: (Optional, defaults to `admin@overstandcooperative.ng`)
    - `SEED_ADMIN_PASSWORD`: (Optional, defaults to `123456789`)
 3. On MongoDB Atlas, allow access from anywhere (`0.0.0.0/0`) under **Network Access**, since Vercel uses dynamic serverless IPs.
-4. Deploy! The administrator account will automatically be provisioned upon first login at `/login` with:
-   - **Email**: `admin@anchorrealestategroup.ng`
-   - **Password**: `123456789`
+4. Deploy. The administrator account is provisioned on first login at `/login`.
 
 ## Deploying to Render
 
@@ -202,77 +216,70 @@ When deploying to Vercel:
    production `MONGODB_URI` from your machine, or from a Render shell.
 
 Mongoose autocreates indexes on first use in development. Before going live,
-confirm the dues uniqueness index exists in production — `npm run seed:admin`
-connecting once is enough to register the models, or call `syncIndexes()` from a
-one-off script.
+confirm the contribution uniqueness index exists in production — a single
+`npm run seed:admin` connection is enough to register the models, or call
+`syncIndexes()` from a one-off script.
 
 ## Verifying
 
 `scripts/verify.mts` spins up a throwaway mongod and exercises the data layer —
-money parsing, the slot band, atomic membership numbering, the duplicate-dues
-index, dues accrual across statuses, pool accounting, dashboard aggregates,
-session signing and the role matrix.
+money parsing, the contribution tiers, the minimum age, the next-of-kin
+requirement, atomic membership numbering, the duplicate-contribution index,
+accrual across statuses, dashboard aggregates, session signing and the role
+matrix.
 
 ```bash
 npm run verify
 ```
 
 It also stands up a real SMTP server on an ephemeral port and asserts that both
-enquiry emails are delivered, correctly addressed, and that applicant-supplied
-text is HTML-escaped before it reaches the message body.
+application emails are delivered, correctly addressed, and that
+applicant-supplied text is HTML-escaped before it reaches the message body.
 
 The first run downloads a MongoDB binary (~780MB, cached afterwards), so allow
-a few minutes. 37 checks; all passing as of the last run.
-
-The HTTP layer was exercised separately against a running production build:
-
-- Unauthenticated `/admin/*` redirects to `/login` with the `next` target kept.
-- A viewer-role session is redirected off every write page to
-  `/admin/no-access`.
-- Member creation and payment recording driven through the real server actions,
-  confirming the slot band, duplicate-email rejection, the duplicate-dues index
-  and arrears arithmetic.
-- The public enquiry form: valid submission, out-of-band slot figure, malformed
-  email, the repeat-submission window and the honeypot — with exactly two
-  emails delivered for the one valid submission and none for the rest.
-- Approving an enquiry seeds a pending member (investor and non-investor tiers
-  both checked); declining records the note and creates no member.
-- The session cookie is `Secure` only when the request arrives over HTTPS.
+a few minutes. 46 checks; all passing as of the last run.
 
 ## Content provenance
 
-Landing-page content derives from the Society's infographic, which cites the
-Minutes of Meeting of 20 August 2026 and the Strategic Meeting Report &
-Implementation Brief of 15 August 2026. All copy lives in
-[`src/lib/content.ts`](src/lib/content.ts), not in components, so it can be
+Landing-page content derives from the Society's Official Update. All copy lives
+in [`src/lib/content.ts`](src/lib/content.ts), not in components, so it can be
 checked against the Society's own documents in one place.
 
 Two constraints follow and should be preserved:
 
-- **Vision, Mission and Core Values are proposed, pending Board adoption.** The
-  page says so next to them.
-- **No investment-return language.** Slot prices, dues and the 1% holding cap
+- **Nothing on the page goes beyond the Official Update.** It states a mission
+  but no vision, core values, roster of offices, target-market breakdown or
+  social-responsibility programme, so the site has no sections for those. Add
+  them back when the Society supplies the source material, not before.
+- **No investment-return language.** Fees, tiers and the contribution structure
   are facts and belong on the page. Yield, ROI or "guaranteed returns" framing
   does not — it is unsupported by the source material and creates regulatory
   exposure for a cooperative soliciting member capital.
 
 ## Known gaps
 
-- The published contact address is a personal Gmail account. On a page inviting
-  ₦500,000 minimum commitments this undercuts the other trust signals; a domain
-  mailbox should replace it. It is marked `provisional` in the content file.
-- Financial Secretary and Assistant Secretary are unfilled and render as dashed
-  offices in the org chart.
-- `metadataBase` in `src/app/layout.tsx` is a placeholder domain — set it to the
-  real one before launch, and add an Open Graph image.
+- **The registration and annual fee amounts are unknown.** The Official Update
+  names both without stating a figure. They are `null` in
+  `src/lib/constants.ts` and render as "confirm at the office" on the public
+  page. Fill them in when the Society confirms them.
+- **No phone number or email address.** `phones` is an empty array and
+  `email.address` an empty string in `src/lib/content.ts`; the footer, the
+  application page and the structured data all omit the contact block rather
+  than publishing a placeholder. Supply them before launch.
+- **Bank details are a generic list.** `BANKS` in `src/lib/constants.ts` should
+  be narrowed to the accounts the Society actually receives through.
+- `metadataBase` in `src/app/layout.tsx` is a placeholder domain — set it to
+  the real one before launch.
+- Loans, savings, agricultural projects and travel services are advertised on
+  the public page but are not administered in the dashboard. Only membership,
+  contributions and fees are.
 - Payments can be recorded but not edited or reversed. A correction currently
   means a compensating entry; a void/reversal flow is the obvious next step.
-- Eligibility criteria and the formal membership forms do not exist yet, so
-  `/join` collects a **registration of interest** rather than an application.
-  It creates no membership and takes no payment, and the page says so.
-- Enquiry email is best-effort: the enquiry is saved first, then mail is
-  attempted, and the outcome is shown in the admin. A failed receipt is visible
-  but is not retried automatically.
+- The application takes no payment. The ₦20,000 fee is collected at the office
+  and recorded by an officer, and the page says so.
+- Application email is best-effort: the application is saved first, then mail
+  is attempted, and the outcome is shown in the admin. A failed receipt is
+  visible but is not retried automatically.
 - Spam protection on the public form is a honeypot, a per-email repeat window
   and a per-IP ceiling. There is no CAPTCHA; if the form is targeted, that is
   the next lever.

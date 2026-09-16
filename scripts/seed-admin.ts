@@ -41,7 +41,7 @@ async function main() {
   const email = (
     arg("email") ??
     process.env.SEED_ADMIN_EMAIL ??
-    "admin@anchorrealestategroup.ng"
+    "admin@overstandcooperative.ng"
   )?.toLowerCase();
   const password =
     arg("password") ?? process.env.SEED_ADMIN_PASSWORD ?? "123456789";

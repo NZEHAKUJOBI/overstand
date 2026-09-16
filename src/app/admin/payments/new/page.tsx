@@ -17,7 +17,9 @@ export default async function NewPaymentPage({
   await connectDb();
 
   const members = await Member.find({ status: { $ne: "exited" } })
-    .select("membershipNumber firstName lastName tier")
+    .select(
+      "membershipNumber firstName lastName tier customContributionKobo",
+    )
     .sort({ lastName: 1, firstName: 1 })
     .lean();
 

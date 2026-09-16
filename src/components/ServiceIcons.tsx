@@ -1,94 +1,77 @@
 import type { Service } from "@/lib/content";
 
 /**
- * Line marks for the eight service lines. Kept to one stroke weight and a
- * shared 32-unit box so the grid reads as a single drawn set.
+ * Line icons for the five member service lines. Drawn on a 24-unit grid with a
+ * single stroke weight so the grid reads as one set, and inheriting
+ * `currentColor` so each card controls its own tone.
  */
 const paths: Record<Service["icon"], React.ReactNode> = {
-  housing: (
+  // A house on a plot line — land and property.
+  realEstate: (
     <>
-      <path d="M5 15 L16 6 L27 15" />
-      <path d="M8 13.5 V26 H24 V13.5" />
-      <path d="M13.5 26 V19 H18.5 V26" />
+      <path d="M3.5 11.2 12 4.5l8.5 6.7" />
+      <path d="M5.8 9.4v9.1h12.4V9.4" />
+      <path d="M10 18.5v-4.8h4v4.8" />
+      <path d="M2.5 21.5h19" />
     </>
   ),
-  tourism: (
+  // Wheat ear over a furrow — the crest's own motif.
+  agriculture: (
     <>
-      <circle cx="16" cy="14" r="5.5" />
-      <path d="M16 4 V6.5 M16 21.5 V24 M6 14 H8.5 M23.5 14 H26 M9 7 L10.7 8.7 M21.3 19.3 L23 21" />
-      <path d="M4 27.5 H28" />
+      <path d="M12 3.2v11.6" />
+      <path d="M12 6.4c-1.9 0-3-1-3-2.6 1.9 0 3 1 3 2.6ZM12 6.4c1.9 0 3-1 3-2.6-1.9 0-3 1-3 2.6Z" />
+      <path d="M12 10.3c-1.9 0-3-1-3-2.6 1.9 0 3 1 3 2.6ZM12 10.3c1.9 0 3-1 3-2.6-1.9 0-3 1-3 2.6Z" />
+      <path d="M12 14.2c-1.9 0-3-1-3-2.6 1.9 0 3 1 3 2.6ZM12 14.2c1.9 0 3-1 3-2.6-1.9 0-3 1-3 2.6Z" />
+      <path d="M3.5 19.5c3-1.6 5.8-2.4 8.5-2.4s5.5.8 8.5 2.4" />
     </>
   ),
-  institutional: (
+  // Coin passing between two hands — lending.
+  loans: (
     <>
-      <path d="M4.5 12 L16 5.5 L27.5 12" />
-      <path d="M4.5 27 H27.5" />
-      <path d="M9 12 V23 M15 12 V23 M21 12 V23 M26 12 V23" />
-      <path d="M6.5 23 H27.5" />
+      <circle cx="12" cy="8" r="3.4" />
+      <path d="M12 6.6v2.8M10.9 7.3h2.2" />
+      <path d="M2.8 15.4c1.5-.9 2.9-.6 4.2.4l2.3 1.8h3.1" />
+      <path d="M21.2 15.4c-1.5-.9-2.9-.6-4.2.4l-2 1.6" />
+      <path d="M2.8 15.4v4.4M21.2 15.4v4.4" />
     </>
   ),
-  warehousing: (
+  // Stacked bars rising out of a vault line — savings and growth.
+  wealth: (
     <>
-      <path d="M4 13.5 L16 7 L28 13.5 V27 H4 Z" />
-      <path d="M11 27 V17.5 H21 V27" />
-      <path d="M11 21 H21" />
+      <path d="M3 20.5h18" />
+      <path d="M6 20.5v-5.2M11 20.5V9.8M16 20.5v-7.4M21 20.5V5.5" />
+      <path d="M3.6 12.4 8.4 8l3.4 2.6L20 3.6" />
+      <path d="M16.4 3.6H20v3.5" />
     </>
   ),
-  financing: (
+  // Aeroplane on a flight arc — ticketing and travel.
+  travel: (
     <>
-      <path d="M5 20.5 H27 V24 H23.5" />
-      <path d="M8.5 24 H5 V17 L8 11.5 H21 L25 17 H27" />
-      <circle cx="10.5" cy="24" r="2.6" />
-      <circle cx="21.5" cy="24" r="2.6" />
-      <path d="M13.1 24 H18.9" />
-    </>
-  ),
-  project: (
-    <>
-      <path d="M4.5 27.5 H27.5" />
-      <path d="M7 27.5 V19 H12 V27.5" />
-      <path d="M14 27.5 V14 H19 V27.5" />
-      <path d="M21 27.5 V21.5 H26 V27.5" />
-      <path d="M8 10 L15 5 L22 8.5" />
-      <path d="M22 4.5 V8.5 H18" />
-    </>
-  ),
-  platform: (
-    <>
-      <rect x="5" y="5.5" width="22" height="16" rx="1" />
-      <path d="M5 17.5 H27" />
-      <path d="M12 26.5 H20" />
-      <path d="M16 21.5 V26.5" />
-      <circle cx="16" cy="11.5" r="2.5" />
-    </>
-  ),
-  space: (
-    <>
-      <rect x="4.5" y="4.5" width="10.5" height="10.5" />
-      <rect x="17" y="4.5" width="10.5" height="10.5" />
-      <rect x="4.5" y="17" width="10.5" height="10.5" />
-      <path d="M18.5 18.5 L26 26 M26 18.5 L18.5 26" />
+      <path d="M10.4 13.6 3.2 11.4a.7.7 0 0 1-.2-1.2l1.3-1a.8.8 0 0 1 .7-.1l3.1.9 3-2.6" />
+      <path d="m20.2 4.2-9.4 8.2-1.2 4.3a.7.7 0 0 1-1.2.3l-1.5-1.8" />
+      <path d="m20.2 4.2-6.6 11.2a.7.7 0 0 1-1.2.1l-2-2.8" />
+      <path d="M4 20.5h16" />
     </>
   ),
 };
 
 export function ServiceIcon({
   name,
-  className,
+  className = "",
 }: {
   name: Service["icon"];
   className?: string;
 }) {
   return (
     <svg
-      viewBox="0 0 32 32"
-      className={className}
-      aria-hidden="true"
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.2"
+      strokeWidth="1.3"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
     >
       {paths[name]}
     </svg>

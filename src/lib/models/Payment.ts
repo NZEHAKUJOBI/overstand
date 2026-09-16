@@ -14,8 +14,8 @@ export type PaymentDoc = {
   kind: PaymentKind;
   /** Integer kobo. Never a float. */
   amountKobo: number;
-  /** "YYYY-MM" — required for dues, absent otherwise. */
-  duesPeriod?: string;
+  /** "YYYY-MM" — required for contribution, absent otherwise. */
+  contributionPeriod?: string;
   method: PaymentMethod;
   bank?: Bank;
   reference?: string;
@@ -45,7 +45,7 @@ const PaymentSchema = new Schema<PaymentDoc>(
         message: "Amount must be a whole number of kobo.",
       },
     },
-    duesPeriod: {
+    contributionPeriod: {
       type: String,
       match: /^\d{4}-(0[1-9]|1[0-2])$/,
     },
@@ -70,16 +70,16 @@ PaymentSchema.index({ receivedOn: -1 });
 PaymentSchema.index({ member: 1, receivedOn: -1 });
 
 /**
- * One dues payment per member per month. Enforced by the database rather than
+ * One contribution payment per member per month. Enforced by the database rather than
  * by a read-then-write check, so a double submission cannot create a duplicate.
  */
 PaymentSchema.index(
-  { member: 1, duesPeriod: 1 },
+  { member: 1, contributionPeriod: 1 },
   {
     unique: true,
     partialFilterExpression: {
-      kind: "dues",
-      duesPeriod: { $type: "string" },
+      kind: "contribution",
+      contributionPeriod: { $type: "string" },
     },
   },
 );

@@ -5,7 +5,7 @@ import { can } from "@/lib/rbac";
 import { signOut } from "../login/actions";
 
 export const metadata: Metadata = {
-  title: { default: "Secretariat", template: "%s · Anchor Secretariat" },
+  title: { default: "Secretariat", template: "%s · Overstand Secretariat" },
   robots: { index: false, follow: false },
 };
 
@@ -27,8 +27,8 @@ export default async function AdminLayout({
     ...(can(session.role, "payments:read")
       ? [{ href: "/admin/payments", label: "Payments" }]
       : []),
-    ...(can(session.role, "enquiries:read")
-      ? [{ href: "/admin/applications", label: "Enquiries" }]
+    ...(can(session.role, "applications:read")
+      ? [{ href: "/admin/applications", label: "Applications" }]
       : []),
     ...(can(session.role, "users:manage")
       ? [{ href: "/admin/users", label: "Admin Users" }]

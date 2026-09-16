@@ -1,6 +1,6 @@
 /**
  * A local SMTP server that accepts everything and writes what it receives to
- * smtp-sink.log. Lets you exercise enquiry receipts without sending real mail.
+ * smtp-sink.log. Lets you exercise application receipts without sending real mail.
  *
  *   npm run mail:sink            # leave running in its own terminal
  *
@@ -8,8 +8,8 @@
  *   SMTP_HOST=127.0.0.1
  *   SMTP_PORT=2599
  *   SMTP_SECURE=false
- *   MAIL_FROM="Anchor Secretariat <secretariat@anchor.test>"
- *   SECRETARIAT_EMAIL=office@anchor.test
+ *   MAIL_FROM="Overstand Secretariat <secretariat@overstand.test>"
+ *   SECRETARIAT_EMAIL=office@overstand.test
  *
  * Development only — never point production at this.
  */

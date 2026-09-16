@@ -5,15 +5,12 @@ import { redirect } from "next/navigation";
 import { isValidObjectId } from "mongoose";
 import { actorId, checkPermission } from "@/lib/auth";
 import { connectDb } from "@/lib/db";
-import { Enquiry } from "@/lib/models/Enquiry";
+import { Application } from "@/lib/models/Application";
 import { Member } from "@/lib/models/Member";
 import { nextMembershipNumber } from "@/lib/models/Counter";
 import { recordAudit } from "@/lib/models/AuditLog";
-import { enquiryReviewSchema, fieldErrorsOf } from "@/lib/validation";
-import { MIN_INVESTOR_SLOTS, TOTAL_SLOT_POOL } from "@/lib/constants";
-import { slotsAllocatedExcluding } from "@/lib/reporting";
+import { applicationReviewSchema, fieldErrorsOf } from "@/lib/validation";
 import { duplicateKeyField, messageOf } from "@/lib/mongoErrors";
-import { formatNumber } from "@/lib/money";
 
 export type ReviewState = {
   error?: string;
@@ -21,115 +18,103 @@ export type ReviewState = {
   fieldErrors?: Record<string, string>;
 };
 
-export async function reviewEnquiry(
+export async function reviewApplication(
   _previous: ReviewState,
   formData: FormData,
 ): Promise<ReviewState> {
-  const guard = await checkPermission("enquiries:write");
+  const guard = await checkPermission("applications:write");
   if ("error" in guard) return { error: guard.error };
 
-  const parsed = enquiryReviewSchema.safeParse({
-    enquiryId: formData.get("enquiryId"),
+  const parsed = applicationReviewSchema.safeParse({
+    applicationId: formData.get("applicationId"),
     decision: formData.get("decision"),
     reviewNote: formData.get("reviewNote"),
   });
 
   if (!parsed.success) return { fieldErrors: fieldErrorsOf(parsed.error) };
 
-  const { enquiryId, decision, reviewNote } = parsed.data;
-  if (!isValidObjectId(enquiryId)) return { error: "Unknown enquiry." };
+  const { applicationId, decision, reviewNote } = parsed.data;
+  if (!isValidObjectId(applicationId)) return { error: "Unknown application." };
 
   let createdMemberId: string | null = null;
 
   try {
     await connectDb();
 
-    const enquiry = await Enquiry.findById(enquiryId);
-    if (!enquiry) return { error: "That enquiry no longer exists." };
+    const application = await Application.findById(applicationId);
+    if (!application) return { error: "That application no longer exists." };
 
     if (decision === "approved") {
-      if (enquiry.member) {
-        return { error: "This enquiry has already produced a member record." };
+      if (application.member) {
+        return { error: "This application has already produced a member record." };
       }
 
       // Approving seeds the register; it does not admit anybody. The member
-      // lands as "pending" so an officer still completes admission.
-      const tier =
-        enquiry.tierInterest === "non_investor" ? "non_investor" : "investor";
-
-      const slots =
-        tier === "investor"
-          ? Math.max(enquiry.slotsInterest ?? MIN_INVESTOR_SLOTS, MIN_INVESTOR_SLOTS)
-          : 0;
-
-      // A pending member does not consume the pool, but flag an overflow now
-      // rather than at admission time.
-      const allocated = await slotsAllocatedExcluding();
-      if (slots > TOTAL_SLOT_POOL - allocated) {
-        return {
-          error: `Only ${formatNumber(TOTAL_SLOT_POOL - allocated)} slots remain unallocated; this enquiry asks for ${formatNumber(slots)}.`,
-        };
-      }
-
+      // lands as "pending" so an officer still completes admission, collects
+      // the application fee and issues the Membership/Entrance Form.
       const member = await Member.create({
         membershipNumber: await nextMembershipNumber(new Date().getUTCFullYear()),
-        firstName: enquiry.firstName,
-        lastName: enquiry.lastName,
-        email: enquiry.email,
-        phone: enquiry.phone,
-        address: enquiry.address,
-        tier,
-        slots,
+        firstName: application.firstName,
+        lastName: application.lastName,
+        otherNames: application.otherNames,
+        email: application.email,
+        phone: application.phone,
+        address: application.address,
+        dateOfBirth: application.dateOfBirth,
+        occupation: application.occupation,
+        nextOfKin: application.nextOfKin,
+        tier: application.tierInterest,
+        customContributionKobo: application.customContributionKobo ?? null,
         status: "pending",
         joinedOn: new Date(),
-        notes: `Created from enquiry ${enquiry.reference}.`,
+        notes: `Created from application ${application.reference}.`,
         createdBy: actorId(guard.session),
         updatedBy: actorId(guard.session),
       });
 
       createdMemberId = String(member._id);
-      enquiry.member = member._id;
+      application.member = member._id;
     }
 
-    enquiry.status = decision;
-    enquiry.reviewNote = reviewNote || undefined;
-    enquiry.reviewedBy = actorId(guard.session);
-    enquiry.reviewedByName = guard.session.name;
-    enquiry.reviewedAt = new Date();
-    await enquiry.save();
+    application.status = decision;
+    application.reviewNote = reviewNote || undefined;
+    application.reviewedBy = actorId(guard.session);
+    application.reviewedByName = guard.session.name;
+    application.reviewedAt = new Date();
+    await application.save();
 
     await recordAudit({
       actor: actorId(guard.session),
       actorName: guard.session.name,
       actorRole: guard.session.role,
-      action: `enquiry.${decision}`,
+      action: `application.${decision}`,
       entity: "member",
       entityId: createdMemberId ?? undefined,
       summary:
         decision === "approved"
-          ? `Approved enquiry ${enquiry.reference} from ${enquiry.firstName} ${enquiry.lastName} and seeded a pending member record.`
-          : `Marked enquiry ${enquiry.reference} from ${enquiry.firstName} ${enquiry.lastName} as ${decision}.`,
+          ? `Approved application ${application.reference} from ${application.firstName} ${application.lastName} and seeded a pending member record.`
+          : `Marked application ${application.reference} from ${application.firstName} ${application.lastName} as ${decision}.`,
     });
   } catch (error) {
     if (duplicateKeyField(error) === "email") {
       return {
         error:
-          "A member with this email is already on the register. Link or update that record instead of approving this enquiry.",
+          "A member with this email is already on the register. Link or update that record instead of approving this application.",
       };
     }
 
-    console.error("[enquiry] review failed", error);
+    console.error("[application] review failed", error);
     return { error: `Could not save the decision. ${messageOf(error)}` };
   }
 
   revalidatePath("/admin");
   revalidatePath("/admin/applications");
-  revalidatePath(`/admin/applications/${enquiryId}`);
+  revalidatePath(`/admin/applications/${applicationId}`);
 
   if (createdMemberId) {
     revalidatePath("/admin/members");
     redirect(`/admin/members/${createdMemberId}?saved=1`);
   }
 
-  return { success: `Enquiry marked as ${decision}.` };
+  return { success: `Application marked as ${decision}.` };
 }

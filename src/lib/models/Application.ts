@@ -1,37 +1,53 @@
 import { Schema, model, models, type Model, type Types } from "mongoose";
 import { Counter } from "./Counter";
 import {
-  ENQUIRY_STATUSES,
+  APPLICATION_STATUSES,
+  MAX_CONTRIBUTION_KOBO,
   TIER_INTERESTS,
-  type EnquiryStatus,
+  type ApplicationStatus,
   type TierInterest,
 } from "../constants";
 
 /**
- * A registration of interest from the public site.
+ * A membership application from the public site.
  *
- * Deliberately NOT a membership application: the Board has not adopted
- * eligibility criteria or forms, so this records an enquiry and nothing more.
- * Approving one seeds a Member record with status "pending"; it does not
- * admit anybody.
+ * It starts an application; it does not admit anybody and takes no payment.
+ * The Society issues the Membership/Entrance Form from its office and collects
+ * the ₦20,000 application fee there, so this record is what the Secretariat
+ * works from between the two. Approving one seeds a Member with status
+ * "pending".
  */
 
 export type MailState = "pending" | "sent" | "failed" | "skipped";
 
-export type EnquiryDoc = {
+export type ApplicantNextOfKin = {
+  name: string;
+  relationship: string;
+  phone: string;
+  email?: string;
+  address?: string;
+};
+
+export type ApplicationDoc = {
   _id: Types.ObjectId;
   reference: string;
   firstName: string;
   lastName: string;
+  otherNames?: string;
   email: string;
   phone: string;
   address?: string;
+  dateOfBirth?: Date;
   occupation?: string;
+  nextOfKin: ApplicantNextOfKin;
   tierInterest: TierInterest;
-  slotsInterest?: number;
+  /** Proposed monthly contribution, for applicants above Tier 2. */
+  customContributionKobo?: number | null;
+  /** The applicant's own confirmation of the Society's eligibility criteria. */
+  eligibilityConfirmed: boolean;
   heardFrom?: string;
   message?: string;
-  status: EnquiryStatus;
+  status: ApplicationStatus;
   reviewNote?: string;
   reviewedBy?: Types.ObjectId;
   reviewedByName?: string;
@@ -46,23 +62,43 @@ export type EnquiryDoc = {
   updatedAt: Date;
 };
 
-const EnquirySchema = new Schema<EnquiryDoc>(
+const NextOfKinSchema = new Schema<ApplicantNextOfKin>(
+  {
+    name: { type: String, required: true, trim: true },
+    relationship: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true },
+    email: { type: String, lowercase: true, trim: true },
+    address: { type: String, trim: true },
+  },
+  { _id: false },
+);
+
+const ApplicationSchema = new Schema<ApplicationDoc>(
   {
     reference: { type: String, required: true, unique: true },
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
+    otherNames: { type: String, trim: true },
     email: { type: String, required: true, lowercase: true, trim: true },
     phone: { type: String, required: true, trim: true },
     address: { type: String, trim: true },
+    dateOfBirth: { type: Date },
     occupation: { type: String, trim: true },
+    nextOfKin: { type: NextOfKinSchema, required: true },
     tierInterest: { type: String, required: true, enum: TIER_INTERESTS },
-    slotsInterest: { type: Number, min: 0 },
+    customContributionKobo: {
+      type: Number,
+      default: null,
+      min: 0,
+      max: MAX_CONTRIBUTION_KOBO,
+    },
+    eligibilityConfirmed: { type: Boolean, required: true, default: false },
     heardFrom: { type: String, trim: true },
     message: { type: String, trim: true },
     status: {
       type: String,
       required: true,
-      enum: ENQUIRY_STATUSES,
+      enum: APPLICATION_STATUSES,
       default: "new",
     },
     reviewNote: { type: String, trim: true },
@@ -78,22 +114,22 @@ const EnquirySchema = new Schema<EnquiryDoc>(
   { timestamps: true },
 );
 
-EnquirySchema.index({ createdAt: -1 });
-EnquirySchema.index({ status: 1, createdAt: -1 });
+ApplicationSchema.index({ createdAt: -1 });
+ApplicationSchema.index({ status: 1, createdAt: -1 });
 // Supports the duplicate-submission window without a full collection scan.
-EnquirySchema.index({ email: 1, createdAt: -1 });
+ApplicationSchema.index({ email: 1, createdAt: -1 });
 
-export const Enquiry: Model<EnquiryDoc> =
-  (models.Enquiry as Model<EnquiryDoc>) ??
-  model<EnquiryDoc>("Enquiry", EnquirySchema);
+export const Application: Model<ApplicationDoc> =
+  (models.Application as Model<ApplicationDoc>) ??
+  model<ApplicationDoc>("Application", ApplicationSchema);
 
 /** Atomic reference allocation, same approach as membership numbers. */
-export async function nextEnquiryReference(year: number): Promise<string> {
+export async function nextApplicationReference(year: number): Promise<string> {
   const counter = await Counter.findByIdAndUpdate(
-    `enquiry:${year}`,
+    `application:${year}`,
     { $inc: { seq: 1 } },
     { returnDocument: "after", upsert: true },
   ).lean();
 
-  return `ARG-INT-${year}-${String(counter?.seq ?? 1).padStart(4, "0")}`;
+  return `OMCS-APP-${year}-${String(counter?.seq ?? 1).padStart(4, "0")}`;
 }

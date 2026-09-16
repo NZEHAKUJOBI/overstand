@@ -5,7 +5,7 @@
  *   npm run mongo:dev        # leave running in its own terminal
  *
  * Point .env.local at it:
- *   MONGODB_URI=mongodb://127.0.0.1:27017/anchor
+ *   MONGODB_URI=mongodb://127.0.0.1:27017/overstand
  *
  * This is a development convenience only — production uses the MONGODB_URI
  * configured on Render.
@@ -19,10 +19,10 @@ const DB_PATH = ".mongo-data";
 mkdirSync(DB_PATH, { recursive: true });
 
 const mongo = await MongoMemoryServer.create({
-  instance: { port: PORT, dbName: "anchor", dbPath: DB_PATH, storageEngine: "wiredTiger" },
+  instance: { port: PORT, dbName: "overstand", dbPath: DB_PATH, storageEngine: "wiredTiger" },
 });
 
-console.log(`\n  MongoDB listening on ${mongo.getUri("anchor")}`);
+console.log(`\n  MongoDB listening on ${mongo.getUri("overstand")}`);
 console.log(`  Data directory: ${DB_PATH}`);
 console.log("  Press Ctrl+C to stop.\n");
 

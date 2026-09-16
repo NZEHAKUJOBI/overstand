@@ -15,14 +15,14 @@ import { requirePermission } from "@/lib/auth";
 import { can } from "@/lib/rbac";
 import { connectDb } from "@/lib/db";
 import { Member, type MemberDoc } from "@/lib/models/Member";
-import { computeDues } from "@/lib/dues";
-import { duesPaidByMember } from "@/lib/reporting";
+import { computeContribution } from "@/lib/contributions";
+import { contributionPaidByMember } from "@/lib/reporting";
 import {
   MEMBER_STATUSES,
   MEMBER_TIERS,
-  SLOT_PRICE_KOBO,
   STATUS_LABEL,
   TIER_LABEL,
+  contributionRateKobo,
   type MemberStatus,
   type MemberTier,
 } from "@/lib/constants";
@@ -103,13 +103,13 @@ export default async function MembersPage({
     // magnitude.
     filter.status = status || { $in: ["active", "suspended"] };
     members = await fetchMembers(filter);
-    const duesPaid = await duesPaidByMember();
+    const contributionPaid = await contributionPaidByMember();
 
     const computed = members
       .map((member) => {
-        const position = computeDues(
-          { tier: member.tier, status: member.status, joinedOn: member.joinedOn },
-          duesPaid.get(String(member._id)) ?? 0,
+        const position = computeContribution(
+          member,
+          contributionPaid.get(String(member._id)) ?? 0,
         );
         return {
           member,
@@ -128,12 +128,12 @@ export default async function MembersPage({
       Member.countDocuments(filter),
     ]);
 
-    const duesPaid = await duesPaidByMember(members.map((m) => String(m._id)));
+    const contributionPaid = await contributionPaidByMember(members.map((m) => String(m._id)));
 
     rows = members.map((member) => {
-      const position = computeDues(
-        { tier: member.tier, status: member.status, joinedOn: member.joinedOn },
-        duesPaid.get(String(member._id)) ?? 0,
+      const position = computeContribution(
+        member,
+        contributionPaid.get(String(member._id)) ?? 0,
       );
       return {
         member,
@@ -227,7 +227,7 @@ export default async function MembersPage({
           ) : null}
           <button
             type="submit"
-            className="label border border-forest-900/25 px-5 py-3 text-forest-900 transition-colors hover:bg-forest-900/5"
+            className="label border border-navy-900/25 px-5 py-3 text-navy-900 transition-colors hover:bg-navy-900/5"
           >
             Apply
           </button>
@@ -272,8 +272,7 @@ export default async function MembersPage({
               <tr>
                 <Th>Member</Th>
                 <Th>Tier</Th>
-                <Th align="right">Slots</Th>
-                <Th align="right">Holding</Th>
+                <Th align="right">Monthly</Th>
                 <Th>Status</Th>
                 <Th align="right">Arrears</Th>
               </tr>
@@ -284,7 +283,7 @@ export default async function MembersPage({
                   <Td>
                     <Link
                       href={`/admin/members/${String(member._id)}`}
-                      className="text-forest-900 underline-offset-4 hover:underline"
+                      className="text-navy-900 underline-offset-4 hover:underline"
                     >
                       {member.firstName} {member.lastName}
                     </Link>
@@ -294,11 +293,13 @@ export default async function MembersPage({
                   </Td>
                   <Td>{TIER_LABEL[member.tier]}</Td>
                   <Td align="right">
-                    <span className="tnum">{formatNumber(member.slots)}</span>
-                  </Td>
-                  <Td align="right">
                     <span className="tnum">
-                      {formatNaira(member.slots * SLOT_PRICE_KOBO)}
+                      {formatNaira(
+                        contributionRateKobo(
+                          member.tier,
+                          member.customContributionKobo,
+                        ),
+                      )}
                     </span>
                   </Td>
                   <Td>
@@ -334,7 +335,7 @@ export default async function MembersPage({
                 {page > 1 ? (
                   <Link
                     href={queryFor({ page: String(page - 1) })}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Previous
                   </Link>
@@ -342,7 +343,7 @@ export default async function MembersPage({
                 {page < pageCount ? (
                   <Link
                     href={queryFor({ page: String(page + 1) })}
-                    className="label-sm border border-forest-900/25 px-4 py-2.5 text-forest-900 hover:bg-forest-900/5"
+                    className="label-sm border border-navy-900/25 px-4 py-2.5 text-navy-900 hover:bg-navy-900/5"
                   >
                     Next
                   </Link>
@@ -362,7 +363,11 @@ function fetchMembers(
   limit?: number,
 ) {
   const query = Member.find(filter)
-    .select("membershipNumber firstName lastName tier slots status joinedOn")
+    // customContributionKobo is required: without it a tailored member would
+    // accrue at the Tier 2 floor rather than their own agreed rate.
+    .select(
+      "membershipNumber firstName lastName tier customContributionKobo status joinedOn",
+    )
     .sort({ lastName: 1, firstName: 1 });
 
   if (typeof skip === "number") query.skip(skip);

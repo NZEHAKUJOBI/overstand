@@ -26,7 +26,7 @@ export default async function NoAccessPage({
 
         <div className="border-t border-rule pt-6">
           <p className="label-sm text-ink-faint">Your role</p>
-          <p className="font-display mt-2 text-[1.25rem] text-forest-900">
+          <p className="font-display mt-2 text-[1.25rem] text-navy-900">
             {ROLE_LABEL[session.role]}
           </p>
           <p className="mt-2 text-[0.9375rem] text-ink-soft">

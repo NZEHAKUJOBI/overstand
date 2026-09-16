@@ -2,299 +2,227 @@
  * Single source of truth for the site copy.
  *
  * Every figure, name and address here is transcribed from the Society's
- * infographic, which in turn cites the Minutes of Meeting of 20 August 2026 and
- * the Strategic Meeting Report & Implementation Brief of 15 August 2026.
- * Items the Society has not yet ratified or filled are marked `provisional`
- * so the page can say so plainly rather than quietly implying otherwise.
+ * Official Update. Nothing on the public page is asserted beyond what that
+ * document supports: where the Update names something without stating it —
+ * the registration and annual fee amounts, the Society's phone and email —
+ * the entry is marked `provisional` and the page says so plainly rather than
+ * quietly implying otherwise.
+ *
+ * Deliberately absent, because the Official Update does not cover them:
+ * a vision statement, core values, the roster of offices, a target-market
+ * breakdown and a social-responsibility programme. Add sections back when
+ * the Society supplies the source material, not before.
  */
 
 export const society = {
-  name: "Anchor Real Estate Group",
-  kind: "Multipurpose Cooperative Society Limited",
-  tagline: "Building Shared Prosperity Through Real Estate",
-  location: "Abuja, Federal Capital Territory, Nigeria",
-  established: "2026",
-  tier: "Tier 1 Cooperative",
-  bylaws: "FCTA By-Laws No. R11913",
+  name: "Overstand",
+  kind: "Multipurpose Cooperative Society",
+  legalName: "Overstand Multi-Purpose Cooperative Society Limited",
+  abbreviation: "OMCS",
+  tagline: "Building Structured Wealth Through Collective Investment",
+  location: "Wuye, Abuja, Federal Capital Territory, Nigeria",
+  registration: "Reg. No. 3591",
+  status: "Fully registered and duly certified",
 } as const;
 
+/**
+ * Nav labels are short on purpose. They are set in wide-tracked small caps, so
+ * a three-word label costs roughly three times the bar width of a one-word
+ * one, and six of those will not fit beside the wordmark and the call to
+ * action. They point at the section headings rather than repeating them.
+ */
 export const navigation = [
-  { id: "at-a-glance", label: "At a Glance" },
-  { id: "vision", label: "Vision" },
-  { id: "governance", label: "Governance" },
-  { id: "membership", label: "Membership" },
+  { id: "at-a-glance", label: "Overview" },
+  { id: "mission", label: "Mission" },
   { id: "services", label: "Services" },
-  { id: "outlook", label: "Outlook" },
-  { id: "join", label: "How to Join" },
+  { id: "membership", label: "Membership" },
+  { id: "contributions", label: "Contributions" },
+  { id: "join", label: "Join" },
 ] as const;
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+
+export const hero = {
+  eyebrow: "Membership registration is now open",
+  heading: "Building structured wealth through collective investment",
+  body: "Overstand Multi-Purpose Cooperative Society Limited is fully registered and duly certified. Membership is open to individuals interested in building structured wealth and achieving economic growth together.",
+  primaryCta: "Apply for membership",
+  secondaryCta: "What we offer",
+};
 
 /* ── 01 · At a Glance ─────────────────────────────────────────────── */
 
 export const headlineFigure = {
-  value: "₦5.0bn",
-  label: "Capital mobilization target",
-  note: "The Society's total mobilization objective across the full slot pool.",
+  value: "₦25,000",
+  label: "Monthly contribution from",
+  note: "Tier 1 entry. Tier 2 is ₦50,000, and members contributing above that agree a tailored structure with the Society.",
 };
 
 export const glanceFigures = [
-  { value: "1,000,000", label: "Ownership slots on offer" },
-  { value: "₦5,000", label: "Price per ownership slot" },
-  { value: "200", label: "Initial membership target" },
-  { value: "₦500K–₦50M", label: "Min–max member holding" },
-  { value: "₦20,000", label: "Registration fee" },
-  { value: "₦10,000", label: "Monthly dues — investor" },
+  { value: "₦20,000", label: "One-time application fee" },
+  { value: "₦25,000", label: "Tier 1 monthly contribution" },
+  { value: "₦50,000", label: "Tier 2 monthly contribution" },
+  { value: "5", label: "Member service lines" },
+  { value: "18+", label: "Minimum age to join" },
+  { value: "3591", label: "Cooperative registration number" },
 ];
 
-/* ── 02 · Vision, Mission & Values ────────────────────────────────── */
-
-export const vision = {
-  heading: "Vision",
-  body: "To be a leading member-owned real estate and multipurpose cooperative in Nigeria, recognized for creating inclusive pathways to property ownership, wealth-building and shared prosperity.",
-};
+/* ── 02 · Mission ─────────────────────────────────────────────────── */
 
 export const mission = {
   heading: "Mission",
-  body: "To mobilize member capital responsibly and transparently, delivering affordable, well-governed real estate, tourism, financial-inclusion and social-impact programmes across the FCT and beyond.",
+  body: "To create financial freedom through innovative solutions, strategic investments, and sustainable wealth-building.",
+  support:
+    "The Society is committed to being credible, transparent and professionally managed. By pooling the resources and talents of its members, it creates pathways to financial independence and builds lasting value together.",
 };
 
-export const values = [
-  {
-    title: "Transparency & Accountability",
-    body: "Open reporting on funds, slots and project performance.",
-  },
-  {
-    title: "Member-Centricity",
-    body: "Governance designed around member interests first.",
-  },
-  {
-    title: "Integrity",
-    body: "Disciplined stewardship of member contributions.",
-  },
-  {
-    title: "Inclusion & Shared Prosperity",
-    body: "Pathways to ownership for every income level.",
-  },
-  {
-    title: "Innovation",
-    body: "A digital platform and differentiated products.",
-  },
-  {
-    title: "Prudent Stewardship",
-    body: "Safeguards against concentration and undue risk.",
-  },
-];
+/* ── 03 · Products & Services ─────────────────────────────────────── */
 
-/* ── 03 · Governance ──────────────────────────────────────────────── */
-
-export type Office = {
-  office: string;
-  holder: string;
-  vacant?: boolean;
+export type Service = {
+  title: string;
+  body: string;
+  icon: "realEstate" | "agriculture" | "loans" | "wealth" | "travel";
 };
 
-export const executive: Office[] = [
-  { office: "President", holder: "TPL Lami" },
-];
+export const servicesIntro =
+  "Membership provides access to a comprehensive suite of professional services.";
 
-export const executiveSecond: Office[] = [
-  { office: "Vice President", holder: "Dr. Adeoye Adegboye" },
-  { office: "Secretary General", holder: "Dr Dayo Popoola" },
-  { office: "Treasurer", holder: "Omotayo Abiola" },
-];
-
-export const executiveThird: Office[] = [
-  { office: "Financial Secretary", holder: "Pending appointment", vacant: true },
-  { office: "Assistant Secretary", holder: "Pending appointment", vacant: true },
-  { office: "Publicity Secretary", holder: "Victoria Jim" },
-];
-
-export const boardOfTrustees = {
-  title: "Board of Trustees",
-  body: "Highly professional, reputable individuals — captains of industry spanning real estate, health, technology, finance and engineering.",
-  tenure: "Two-year tenure, subject to the final Bye-Laws.",
-};
-
-export const governanceNote =
-  "Reporting structure as at 20 August 2026. Dashed offices remain to be filled.";
-
-/* ── 04 · Membership & Ownership ──────────────────────────────────── */
-
-export const holdingBand = {
-  floor: {
-    slots: "100 slots",
-    amount: "₦500,000",
-    caption: "Minimum holding",
+export const services: Service[] = [
+  {
+    title: "Real Estate Investments",
+    body: "Affordable land and property with flexible payment plans.",
+    icon: "realEstate",
   },
-  ceiling: {
-    slots: "10,000 slots",
-    amount: "₦50,000,000",
-    caption: "Maximum holding",
+  {
+    title: "Agricultural Projects",
+    body: "Professionally managed, profitable and sustainable ventures.",
+    icon: "agriculture",
   },
-  scaleNote: "Holding grows with member commitment",
-  capNote: "Ceiling equals 1% of the 1,000,000-slot pool.",
+  {
+    title: "Loan Products",
+    body: "Car loans, salary advances and micro-lending to meet immediate financial needs.",
+    icon: "loans",
+  },
+  {
+    title: "Wealth Management",
+    body: "Tailored savings accounts and strategic investment opportunities for collective and individual growth.",
+    icon: "wealth",
+  },
+  {
+    title: "Travel & Tour Services",
+    body: "Seamless ticket booking and travel convenience.",
+    icon: "travel",
+  },
+];
+
+/* ── 04 · Membership ──────────────────────────────────────────────── */
+
+export const eligibility = {
+  heading: "Who can join",
+  criteria: [
+    "At least 18 years of age",
+    "Of good character",
+    "Of sound mind",
+  ],
 };
 
 export const fees = [
   {
     amount: "₦20,000",
-    label: "Registration fee",
-    detail: "One-time, payable on application.",
+    label: "Application fee",
+    detail:
+      "Non-refundable, due on submission. Covers the form, your ID card and administrative processing.",
   },
   {
-    amount: "₦10,000",
-    label: "Monthly dues",
-    detail: "Investing member — holds ownership slots.",
+    amount: "Confirm at the office",
+    label: "One-time registration fee",
+    detail:
+      "Set by the Society's internal structure. The Secretariat will confirm the amount.",
+    provisional: true,
   },
   {
-    amount: "₦50,000",
-    label: "Monthly dues",
-    detail: "Non-investor member — no ownership slots.",
+    amount: "Confirm at the office",
+    label: "Annual membership fee",
+    detail:
+      "Keeps your access to member benefits and opportunities current year to year.",
+    provisional: true,
   },
 ];
 
-export const nonInvestorTier = {
-  title: "Non-investor tier",
-  body: "Full Society membership and access to services, without holding ownership slots.",
+/* ── 05 · Contribution Structure ──────────────────────────────────── */
+
+export const contributions = {
+  heading: "Monthly contribution structure",
+  lead: "Contributions build a sustainable financial base for the Society's shared goals, including land acquisition and estate development.",
+  tiers: [
+    {
+      name: "Tier 1",
+      amount: "₦25,000",
+      cadence: "per month",
+      detail: "Entry tier.",
+    },
+    {
+      name: "Tier 2",
+      amount: "₦50,000",
+      cadence: "per month",
+      detail: "Higher monthly commitment.",
+    },
+  ],
+  flexibility: {
+    title: "Flexibility notice",
+    body: "The tiers are designed to be inclusive, not restrictive. Members with the financial capacity to contribute above ₦50,000 are encouraged to reach out and agree a tailored contribution structure. This flexibility strengthens the Society's collective investment base and accelerates its shared goals.",
+  },
 };
 
-/* ── 05 · Products & Services ─────────────────────────────────────── */
-
-export type Service = {
-  title: string;
-  body: string;
-  icon:
-    | "housing"
-    | "tourism"
-    | "institutional"
-    | "warehousing"
-    | "financing"
-    | "project"
-    | "platform"
-    | "space";
-};
-
-export const services: Service[] = [
-  {
-    title: "Housing & Property",
-    body: "Residential schemes and property holdings developed for and with members.",
-    icon: "housing",
-  },
-  {
-    title: "Holiday & Tourism",
-    body: "Leisure and hospitality assets held within the Society's portfolio.",
-    icon: "tourism",
-  },
-  {
-    title: "Institutional Real Estate",
-    body: "Larger-scale holdings serving organisations rather than households.",
-    icon: "institutional",
-  },
-  {
-    title: "Warehousing",
-    body: "Logistics and industrial storage capacity across the Territory.",
-    icon: "warehousing",
-  },
-  {
-    title: "Household & Auto Financing",
-    body: "Cooperative credit for household assets and vehicle acquisition.",
-    icon: "financing",
-  },
-  {
-    title: "Project Financing",
-    body: "Pooled member capital deployed into vetted development projects.",
-    icon: "project",
-  },
-  {
-    title: "Digital Cooperative Platform",
-    body: "Member records, slot holdings and contributions administered online.",
-    icon: "platform",
-  },
-  {
-    title: "Recreational, Storage & Office Space",
-    body: "Commercial and community space held and let by the Society.",
-    icon: "space",
-  },
-];
-
-/* ── 06 · Target Market & Expansion ───────────────────────────────── */
-
-export const marketLanes = [
-  {
-    tier: "Primary",
-    segment: "Young professionals",
-    steps: ["Abuja metropolis housing schemes"],
-  },
-  {
-    tier: "Secondary",
-    segment: "Broader population",
-    steps: ["Rent-to-Own + credit scoring", "FCT Area Councils — Phases 1–4"],
-  },
-];
-
-export const expansionNote =
-  "Expansion is paced by demand, resource availability and project viability.";
-
-/* ── 07 · Corporate Social Responsibility ─────────────────────────── */
-
-export const responsibility = {
-  lead: "A social-impact component is built into the Society's operating model.",
-  body: "The initial focus is vocational training for housewives, women and teenagers — supporting skills development, household resilience and community inclusion alongside the Society's broader development mandate.",
-};
-
-/* ── 08 · How to Join ─────────────────────────────────────────────── */
+/* ── 06 · How to Join ─────────────────────────────────────────────── */
 
 export const joinSteps = [
   {
-    title: "Pay the registration fee",
-    body: "A one-time payment of ₦20,000 opens your membership file.",
+    title: "Confirm you are eligible",
+    body: "Membership is open to individuals at least 18 years of age, of good character and of sound mind.",
   },
   {
-    title: "Commit to monthly dues",
-    body: "₦10,000 monthly as an investing member, or ₦50,000 as a non-investor member.",
+    title: "Obtain the Membership/Entrance Form",
+    body: "Collect the form from the Society's office, or start online and the Secretariat will follow up with it.",
   },
   {
-    title: "Choose your holding",
-    body: "Take between 100 and 10,000 ownership slots, or join on the non-investor tier.",
+    title: "Complete your details",
+    body: "The Membership Application Form asks for your personal information and your next of kin.",
   },
   {
-    title: "Complete documentation",
-    body: "Membership forms are signed once the Society finalises them.",
+    title: "Pay the ₦20,000 application fee",
+    body: "Non-refundable, due on submission. It covers the form, your ID card and administrative processing.",
+  },
+  {
+    title: "Choose your contribution tier",
+    body: "₦25,000 or ₦50,000 monthly — or speak to the Secretariat about a tailored structure above ₦50,000.",
   },
 ];
 
 export const joinCaveat =
-  "Detailed eligibility criteria and standard application forms are still being developed. Registrations of interest are being recorded in the meantime.";
+  "Submitting this form starts your application. It does not admit you to membership and takes no payment — the Secretariat will contact you with the Membership/Entrance Form and payment instructions.";
 
 /* ── Contact ──────────────────────────────────────────────────────── */
 
 export const offices = [
   {
-    label: "Registered address",
+    label: "Head office",
     lines: [
-      "124 Sherifat Adenusi Crescent",
-      "ACO Estate, Life Camp",
-      "Abuja–FCT",
-    ],
-  },
-  {
-    label: "Alternative office",
-    lines: [
-      "1004 Ameh Ebute Street, Suite D-14",
-      "Boya Place Plaza, Wuye",
-      "Abuja–FCT",
+      "1004 Ameh Ebute Street",
+      "Suite D-18, Boya Place Plaza",
+      "Wuye, Abuja–FCT",
     ],
   },
 ];
 
-export const phones = ["+234 902 525 0026", "+234 803 612 5057"];
+/** No phone number appears in the Official Update — confirm before launch. */
+export const phones: string[] = [];
 
-export const email = { address: "babdayo111@gmail.com", provisional: true };
+/** No Society address appears in the Official Update — confirm before launch. */
+export const email = { address: "", provisional: true };
 
-export const bankers = [
-  { name: "First City Monument Bank", short: "FCMB" },
-  { name: "Federal Mortgage Bank of Nigeria", short: "FMBN" },
-  { name: "Guaranty Trust Bank", short: "GTBank" },
-];
+export const contactNote =
+  "For enquiries or to proceed with registration, reach out to any of the Society's official representatives for the membership application form, or visit the head office.";
 
 export const sourceNote =
-  "Sources: Anchor Real Estate Group — Minutes of Meeting, 20 August 2026; Strategic Meeting Report & Implementation Brief, 15 August 2026. Vision, Mission and Core Values are proposed, pending formal Board adoption.";
+  "Source: Overstand Multipurpose Cooperative Society — Official Update. Fee amounts shown as “confirm at the office” are named in that document without a stated figure.";

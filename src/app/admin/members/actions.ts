@@ -8,11 +8,10 @@ import { connectDb } from "@/lib/db";
 import { Member } from "@/lib/models/Member";
 import { nextMembershipNumber } from "@/lib/models/Counter";
 import { recordAudit } from "@/lib/models/AuditLog";
-import { fieldErrorsOf, memberSchema } from "@/lib/validation";
-import { slotsAllocatedExcluding } from "@/lib/reporting";
-import { TOTAL_SLOT_POOL } from "@/lib/constants";
+import { fieldErrorsOf, memberSchema, type MemberInput } from "@/lib/validation";
+import { contributionRateKobo, TIER_LABEL } from "@/lib/constants";
 import { duplicateKeyField, messageOf } from "@/lib/mongoErrors";
-import { formatNumber } from "@/lib/money";
+import { formatNaira } from "@/lib/money";
 
 export type MemberFormState = {
   error?: string;
@@ -27,8 +26,17 @@ function readForm(formData: FormData) {
     email: formData.get("email"),
     phone: formData.get("phone"),
     address: formData.get("address"),
+    dateOfBirth: formData.get("dateOfBirth"),
+    occupation: formData.get("occupation"),
     tier: formData.get("tier"),
-    slots: formData.get("slots"),
+    customContribution: formData.get("customContribution"),
+    nextOfKin: {
+      name: formData.get("nextOfKin.name"),
+      relationship: formData.get("nextOfKin.relationship"),
+      phone: formData.get("nextOfKin.phone"),
+      email: formData.get("nextOfKin.email"),
+      address: formData.get("nextOfKin.address"),
+    },
     status: formData.get("status"),
     joinedOn: formData.get("joinedOn"),
     notes: formData.get("notes"),
@@ -36,20 +44,35 @@ function readForm(formData: FormData) {
 }
 
 /**
- * The pool ceiling is a Society-wide invariant, so it is checked here rather
- * than in the schema — it needs to know what every other member already holds.
+ * The shape written to Mongo. `customContribution` is the raw form string and
+ * exists only to be validated, so it is dropped here rather than relying on
+ * Mongoose's strict mode to discard it silently.
  */
-async function poolWouldOverflow(
-  slots: number,
-  status: string,
-  excludeMemberId?: string,
-): Promise<number | null> {
-  if (status !== "active" && status !== "suspended") return null;
+function toDocument(input: MemberInput) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { customContribution, dateOfBirth, ...rest } = input;
 
-  const allocated = await slotsAllocatedExcluding(excludeMemberId);
-  const remaining = TOTAL_SLOT_POOL - allocated;
+  return {
+    ...rest,
+    // Mongoose's update typing rejects an explicit null here, and a cleared
+    // date is removed with $unset rather than written as one.
+    ...(dateOfBirth ? { dateOfBirth } : {}),
+    otherNames: rest.otherNames || undefined,
+    address: rest.address || undefined,
+    occupation: rest.occupation || undefined,
+    notes: rest.notes || undefined,
+    nextOfKin: {
+      ...rest.nextOfKin,
+      email: rest.nextOfKin.email || undefined,
+      address: rest.nextOfKin.address || undefined,
+    },
+  };
+}
 
-  return slots > remaining ? remaining : null;
+/** "Tier 1 (₦25,000/month)" — used in the audit trail. */
+function describeTier(input: MemberInput): string {
+  const rate = contributionRateKobo(input.tier, input.customContributionKobo);
+  return `${TIER_LABEL[input.tier]} (${formatNaira(rate)}/month)`;
 }
 
 export async function createMember(
@@ -68,24 +91,12 @@ export async function createMember(
   try {
     await connectDb();
 
-    const remaining = await poolWouldOverflow(input.slots, input.status);
-    if (remaining !== null) {
-      return {
-        fieldErrors: {
-          slots: `Only ${formatNumber(remaining)} slots remain unallocated in the pool.`,
-        },
-      };
-    }
-
     const membershipNumber = await nextMembershipNumber(
       input.joinedOn.getUTCFullYear(),
     );
 
     const member = await Member.create({
-      ...input,
-      otherNames: input.otherNames || undefined,
-      address: input.address || undefined,
-      notes: input.notes || undefined,
+      ...toDocument(input),
       membershipNumber,
       createdBy: actorId(guard.session),
       updatedBy: actorId(guard.session),
@@ -100,7 +111,7 @@ export async function createMember(
       action: "member.create",
       entity: "member",
       entityId: memberId,
-      summary: `Registered ${input.firstName} ${input.lastName} (${membershipNumber}) holding ${formatNumber(input.slots)} slots.`,
+      summary: `Registered ${input.firstName} ${input.lastName} (${membershipNumber}) on ${describeTier(input)}.`,
     });
   } catch (error) {
     const duplicate = duplicateKeyField(error);
@@ -141,19 +152,6 @@ export async function updateMember(
   try {
     await connectDb();
 
-    const remaining = await poolWouldOverflow(
-      input.slots,
-      input.status,
-      memberId,
-    );
-    if (remaining !== null) {
-      return {
-        fieldErrors: {
-          slots: `Only ${formatNumber(remaining)} slots remain unallocated in the pool.`,
-        },
-      };
-    }
-
     const before = await Member.findById(memberId).lean();
     if (!before) return { error: "That member no longer exists." };
 
@@ -161,27 +159,31 @@ export async function updateMember(
       { _id: memberId },
       {
         $set: {
-          ...input,
-          otherNames: input.otherNames || undefined,
-          address: input.address || undefined,
-          notes: input.notes || undefined,
+          ...toDocument(input),
           updatedBy: actorId(guard.session),
         },
+        ...(input.dateOfBirth ? {} : { $unset: { dateOfBirth: "" } }),
       },
       { runValidators: true },
     );
 
     const changes: string[] = [];
-    if (before.slots !== input.slots) {
-      changes.push(
-        `slots ${formatNumber(before.slots)} → ${formatNumber(input.slots)}`,
-      );
-    }
     if (before.status !== input.status) {
       changes.push(`status ${before.status} → ${input.status}`);
     }
-    if (before.tier !== input.tier) {
-      changes.push(`tier ${before.tier} → ${input.tier}`);
+    if (
+      before.tier !== input.tier ||
+      (before.customContributionKobo ?? null) !== input.customContributionKobo
+    ) {
+      const wasKobo = contributionRateKobo(
+        before.tier,
+        before.customContributionKobo,
+      );
+      changes.push(
+        `contribution ${formatNaira(wasKobo)} → ${formatNaira(
+          contributionRateKobo(input.tier, input.customContributionKobo),
+        )} per month`,
+      );
     }
 
     await recordAudit({

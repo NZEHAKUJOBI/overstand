@@ -33,5 +33,5 @@ export async function nextMembershipNumber(year: number): Promise<string> {
   ).lean();
 
   const seq = counter?.seq ?? 1;
-  return `ARG-${year}-${String(seq).padStart(4, "0")}`;
+  return `OMCS-${year}-${String(seq).padStart(4, "0")}`;
 }

@@ -1,26 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Crest } from "@/components/Crest";
-import { EnquiryForm } from "./EnquiryForm";
-import { joinSteps, society } from "@/lib/content";
+import { ApplicationForm } from "./ApplicationForm";
+import { joinSteps, offices, phones, society } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Register Your Interest",
+  title: "Apply for Membership",
   description:
-    "Register your interest in membership of Anchor Real Estate Group, a multipurpose cooperative society limited in Abuja. Ownership slots of ₦5,000, from 100 to 10,000 per member.",
+    "Apply for membership of Overstand Multi-Purpose Cooperative Society Limited, a registered multipurpose cooperative in Wuye, Abuja. Monthly contributions from ₦25,000.",
 };
 
 export default function JoinPage() {
+  const [headOffice] = offices;
+
   return (
     <>
-      <header className="relative overflow-hidden bg-forest-950 text-paper">
+      <header className="relative overflow-hidden bg-navy-950 text-paper">
         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-gold-500" />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(120% 85% at 15% -10%, rgba(43,115,88,0.4), transparent 60%)",
+              "radial-gradient(120% 85% at 15% -10%, rgba(36,90,147,0.45), transparent 60%)",
           }}
         />
 
@@ -41,12 +43,12 @@ export default function JoinPage() {
           </Link>
 
           <h1 className="font-display mt-12 max-w-3xl text-[2.25rem] leading-[1.08] tracking-[-0.02em] text-balance sm:text-[3rem]">
-            Register your interest in membership
+            Apply for membership
           </h1>
           <p className="mt-6 max-w-2xl text-[1.0625rem] leading-[1.7] text-pretty text-paper/75">
-            The Society is constituting a founding cohort of two hundred
-            members. Tell us how to reach you and what kind of membership suits
-            you, and the Secretariat will take it from there.
+            Membership is open to individuals building structured wealth through
+            collective investment. Complete your details below and the
+            Secretariat will follow up with the Membership/Entrance Form.
           </p>
         </div>
       </header>
@@ -54,7 +56,7 @@ export default function JoinPage() {
       <main className="shell py-16 md:py-24">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <EnquiryForm />
+            <ApplicationForm />
           </div>
 
           <aside className="lg:col-span-5">
@@ -67,7 +69,7 @@ export default function JoinPage() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <span>
-                      <span className="font-display block text-[1.0625rem] leading-snug text-forest-900">
+                      <span className="font-display block text-[1.0625rem] leading-snug text-navy-900">
                         {step.title}
                       </span>
                       <span className="mt-1.5 block text-[0.9375rem] leading-relaxed text-ink-soft">
@@ -79,24 +81,27 @@ export default function JoinPage() {
               </ol>
 
               <div className="mt-10 border-t border-rule pt-7">
-                <h3 className="label-sm text-ink-faint">Prefer to speak to someone?</h3>
-                <div className="mt-4 space-y-1.5">
-                  <a
-                    href="tel:+2349025250026"
-                    className="block text-[0.9375rem] text-forest-900 tnum underline-offset-4 hover:underline"
-                  >
-                    +234 902 525 0026
-                  </a>
-                  <a
-                    href="tel:+2348036125057"
-                    className="block text-[0.9375rem] text-forest-900 tnum underline-offset-4 hover:underline"
-                  >
-                    +234 803 612 5057
-                  </a>
-                </div>
+                <h3 className="label-sm text-ink-faint">
+                  Prefer to do this in person?
+                </h3>
+
+                {phones.length > 0 ? (
+                  <div className="mt-4 space-y-1.5">
+                    {phones.map((phone) => (
+                      <a
+                        key={phone}
+                        href={`tel:${phone.replace(/\s/g, "")}`}
+                        className="tnum block text-[0.9375rem] text-navy-900 underline-offset-4 hover:underline"
+                      >
+                        {phone}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+
                 <p className="mt-5 text-[0.875rem] leading-relaxed text-ink-soft">
-                  124 Sherifat Adenusi Crescent, ACO Estate, Life Camp,
-                  Abuja–FCT
+                  Membership/Entrance Forms are issued from the Society&apos;s
+                  office at {headOffice.lines.join(", ")}.
                 </p>
               </div>
             </div>
@@ -104,10 +109,10 @@ export default function JoinPage() {
         </div>
       </main>
 
-      <footer className="bg-forest-950 py-10 text-paper">
+      <footer className="bg-navy-950 py-10 text-paper">
         <div className="shell flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="label-sm text-paper/55">
-            {society.tier} · {society.bylaws}
+            {society.legalName} · {society.registration}
           </p>
           <Link href="/" className="label-sm text-gold-400 underline-offset-4 hover:underline">
             Return to the Society

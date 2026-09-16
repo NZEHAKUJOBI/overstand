@@ -1,13 +1,13 @@
 import nodemailer, { type Transporter } from "nodemailer";
-import type { EnquiryDoc } from "./models/Enquiry";
-import { SLOT_PRICE_KOBO } from "./constants";
-import { formatNaira, formatNumber } from "./money";
+import type { ApplicationDoc } from "./models/Application";
+import { APPLICATION_FEE_KOBO, TIER_INTEREST_LABEL, contributionRateKobo } from "./constants";
+import { formatNaira } from "./money";
 
 /**
  * Outbound mail over SMTP.
  *
  * If SMTP is not configured the app still works — sending is skipped and the
- * enquiry records that, rather than failing the submission. Losing an enquiry
+ * application records that, rather than failing the submission. Losing an application
  * because a mail server is down would be worse than not sending the receipt.
  *
  * Render blocks outbound port 25, so use 587 (STARTTLS) or 465 (implicit TLS).
@@ -62,11 +62,11 @@ function transporter(): Transporter {
 }
 
 export function cleanFromAddress(raw: string | undefined): string {
-  const FALLBACK = "Anchor Real Estate Group <onboarding@resend.dev>";
+  const FALLBACK = "Overstand Cooperative <onboarding@resend.dev>";
   if (!raw) return FALLBACK;
 
   // Strip ALL quote characters everywhere, then trim
-  let s = raw.replace(/["""''`]/g, "").trim();
+  const s = raw.replace(/["""''`]/g, "").trim();
 
   // Extract email from angle brackets: Name <email@domain>
   const angleMatch = s.match(/^(.*?)\s*<\s*([^<>\s]+@[^<>\s]+)\s*>$/);
@@ -87,7 +87,7 @@ export function cleanFromAddress(raw: string | undefined): string {
 
 export function cleanEmailAddress(addr: string | undefined): string | undefined {
   if (!addr) return undefined;
-  let s = addr.replace(/["""''`]/g, "").trim();
+  const s = addr.replace(/["""''`]/g, "").trim();
   const match = s.match(/<\s*([^<>\s]+@[^<>\s]+)\s*>/);
   if (match) return match[1].trim();
   if (/^[^\s<>]+@[^\s<>]+$/.test(s)) return s;
@@ -157,7 +157,7 @@ export function resetMailTransport(): void {
 
 export function siteUrl(): string {
   return (
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://anchorrealestategroup.ng"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://overstandcooperative.ng"
   ).replace(/\/$/, "");
 }
 
@@ -171,12 +171,12 @@ type Mail = { subject: string; text: string; html: string };
 /* ── Presentation ─────────────────────────────────────────────────── */
 
 const BRAND = {
-  forest: "#0b2e22",
-  gold: "#c3a44e",
-  paper: "#f6f4ec",
-  ink: "#1b211d",
-  soft: "#4c554f",
-  rule: "#d9d4c5",
+  navy: "#0a2240",
+  gold: "#c9a961",
+  paper: "#f6f5f0",
+  ink: "#16202c",
+  soft: "#4a5663",
+  rule: "#d7d3c8",
 };
 
 /** Email clients strip <style>, so everything here is inlined. */
@@ -186,17 +186,17 @@ function shell(heading: string, body: string): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.paper};padding:32px 16px;">
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid ${BRAND.rule};">
-  <tr><td style="background:${BRAND.forest};padding:28px 32px;border-top:3px solid ${BRAND.gold};">
-    <div style="font:600 11px/1.4 'Helvetica Neue',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${BRAND.gold};">Anchor Real Estate Group</div>
+  <tr><td style="background:${BRAND.navy};padding:28px 32px;border-top:3px solid ${BRAND.gold};">
+    <div style="font:600 11px/1.4 'Helvetica Neue',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${BRAND.gold};">Overstand Cooperative</div>
     <div style="font:400 20px/1.3 Georgia,'Times New Roman',serif;color:${BRAND.paper};margin-top:8px;">${heading}</div>
   </td></tr>
   <tr><td style="padding:32px;font:400 15px/1.65 'Helvetica Neue',Arial,sans-serif;color:${BRAND.ink};">
     ${body}
   </td></tr>
   <tr><td style="padding:20px 32px;border-top:1px solid ${BRAND.rule};font:400 12px/1.6 'Helvetica Neue',Arial,sans-serif;color:${BRAND.soft};">
-    Anchor Real Estate Group — Multipurpose Cooperative Society Limited<br>
-    124 Sherifat Adenusi Crescent, ACO Estate, Life Camp, Abuja–FCT<br>
-    Tier 1 Cooperative · FCTA By-Laws No. R11913
+    Overstand Multi-Purpose Cooperative Society Limited<br>
+    1004 Ameh Ebute Street, Suite D-18, Boya Place Plaza, Wuye, Abuja–FCT<br>
+    Reg. No. 3591
   </td></tr>
 </table>
 </td></tr></table></body></html>`;
@@ -214,7 +214,7 @@ ${pairs
 </table>`;
 }
 
-/** Enquiry fields are attacker-controlled; never interpolate them raw. */
+/** Application fields are attacker-controlled; never interpolate them raw. */
 export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -224,30 +224,31 @@ export function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
-const TIER_TEXT: Record<string, string> = {
-  investor: "Investing member — holding ownership slots",
-  non_investor: "Non-investor member — no ownership slots",
-  undecided: "Undecided — would like guidance",
-};
 
-function summaryPairs(enquiry: EnquiryDoc): Array<[string, string]> {
+
+function summaryPairs(application: ApplicationDoc): Array<[string, string]> {
   const pairs: Array<[string, string]> = [
-    ["Reference", enquiry.reference],
-    ["Name", `${enquiry.firstName} ${enquiry.lastName}`],
-    ["Email", enquiry.email],
-    ["Phone", enquiry.phone],
-    ["Interest", TIER_TEXT[enquiry.tierInterest] ?? enquiry.tierInterest],
+    ["Reference", application.reference],
+    ["Name", `${application.firstName} ${application.lastName}`],
+    ["Email", application.email],
+    ["Phone", application.phone],
+    ["Contribution tier", TIER_INTEREST_LABEL[application.tierInterest]],
+    [
+      "Monthly contribution",
+      formatNaira(
+        contributionRateKobo(
+          application.tierInterest,
+          application.customContributionKobo,
+        ),
+      ),
+    ],
   ];
 
-  if (enquiry.slotsInterest) {
-    pairs.push([
-      "Slots of interest",
-      `${formatNumber(enquiry.slotsInterest)} — ${formatNaira(enquiry.slotsInterest * SLOT_PRICE_KOBO)}`,
-    ]);
-  }
-  if (enquiry.occupation) pairs.push(["Occupation", enquiry.occupation]);
-  if (enquiry.address) pairs.push(["Address", enquiry.address]);
-  if (enquiry.heardFrom) pairs.push(["Heard about us via", enquiry.heardFrom]);
+  pairs.push(["Next of kin", `${application.nextOfKin.name} (${application.nextOfKin.relationship})`]);
+  pairs.push(["Next-of-kin phone", application.nextOfKin.phone]);
+  if (application.occupation) pairs.push(["Occupation", application.occupation]);
+  if (application.address) pairs.push(["Address", application.address]);
+  if (application.heardFrom) pairs.push(["Heard about us via", application.heardFrom]);
 
   return pairs;
 }
@@ -258,69 +259,69 @@ function plainPairs(pairs: Array<[string, string]>): string {
 
 /* ── Messages ─────────────────────────────────────────────────────── */
 
-export function applicantReceipt(enquiry: EnquiryDoc): Mail {
-  const pairs = summaryPairs(enquiry);
+export function applicantReceipt(application: ApplicationDoc): Mail {
+  const pairs = summaryPairs(application);
 
-  const text = `Dear ${enquiry.firstName},
+  const text = `Dear ${application.firstName},
 
-Thank you for registering your interest in Anchor Real Estate Group, a multipurpose cooperative society limited in Abuja.
+Thank you for applying for membership of Overstand Multi-Purpose Cooperative Society Limited, a registered multipurpose cooperative society in Wuye, Abuja.
 
-We have recorded your enquiry under reference ${enquiry.reference}. A member of the Secretariat will be in touch.
+We have recorded your application under reference ${application.reference}. A member of the Secretariat will be in touch.
 
 What you submitted
 ${plainPairs(pairs)}
 
 What happens next
-The Society is constituting its founding cohort. Eligibility criteria and the standard membership forms are still being finalised by the Board, and we will send them to you as soon as they are adopted. Nothing you have submitted commits you to membership or to any payment.
+The Secretariat will contact you with the Membership/Entrance Form and instructions for the ${formatNaira(APPLICATION_FEE_KOBO)} application fee, which is non-refundable and covers the form, your ID card and administrative processing. Submitting this form does not admit you to membership, and no payment has been taken.
 
 If any detail above is wrong, reply to this message and we will correct it.
 
-Anchor Real Estate Group
-+234 902 525 0026 / +234 803 612 5057`;
+Overstand Multi-Purpose Cooperative Society Limited
+1004 Ameh Ebute Street, Suite D-18, Boya Place Plaza, Wuye, Abuja–FCT`;
 
   const html = shell(
-    "We have your enquiry",
-    `<p style="margin:0 0 16px;">Dear ${escapeHtml(enquiry.firstName)},</p>
-<p style="margin:0 0 16px;">Thank you for registering your interest in Anchor Real Estate Group, a multipurpose cooperative society limited in Abuja. Your enquiry is recorded under reference <strong>${escapeHtml(enquiry.reference)}</strong>, and a member of the Secretariat will be in touch.</p>
+    "We have your application",
+    `<p style="margin:0 0 16px;">Dear ${escapeHtml(application.firstName)},</p>
+<p style="margin:0 0 16px;">Thank you for applying for membership of Overstand Multi-Purpose Cooperative Society Limited, a registered multipurpose cooperative society in Wuye, Abuja. Your application is recorded under reference <strong>${escapeHtml(application.reference)}</strong>, and a member of the Secretariat will be in touch.</p>
 <p style="margin:24px 0 0;font:600 11px/1.4 'Helvetica Neue',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${BRAND.gold};">What you submitted</p>
 ${rows(pairs)}
 <p style="margin:24px 0 0;font:600 11px/1.4 'Helvetica Neue',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${BRAND.gold};">What happens next</p>
-<p style="margin:12px 0 16px;">The Society is constituting its founding cohort. Eligibility criteria and the standard membership forms are still being finalised by the Board, and we will send them to you as soon as they are adopted. <strong>Nothing you have submitted commits you to membership or to any payment.</strong></p>
+<p style="margin:12px 0 16px;">The Secretariat will contact you with the Membership/Entrance Form and instructions for the ${formatNaira(APPLICATION_FEE_KOBO)} application fee, which is non-refundable and covers the form, your ID card and administrative processing. <strong>Submitting this form does not admit you to membership, and no payment has been taken.</strong></p>
 <p style="margin:0;color:${BRAND.soft};">If any detail above is wrong, reply to this message and we will correct it.</p>`,
   );
 
   return {
-    subject: `Your enquiry — ${enquiry.reference}`,
+    subject: `Your application — ${application.reference}`,
     text,
     html,
   };
 }
 
-export function secretariatNotice(enquiry: EnquiryDoc): Mail {
-  const pairs = summaryPairs(enquiry);
-  const link = `${siteUrl()}/admin/applications/${String(enquiry._id)}`;
+export function secretariatNotice(application: ApplicationDoc): Mail {
+  const pairs = summaryPairs(application);
+  const link = `${siteUrl()}/admin/applications/${String(application._id)}`;
 
-  const text = `New registration of interest — ${enquiry.reference}
+  const text = `New membership application — ${application.reference}
 
 ${plainPairs(pairs)}
-${enquiry.message ? `\nMessage:\n${enquiry.message}\n` : ""}
+${application.message ? `\nMessage:\n${application.message}\n` : ""}
 Review it: ${link}`;
 
   const html = shell(
-    "New registration of interest",
-    `<p style="margin:0 0 16px;">A new enquiry was submitted through the public site.</p>
+    "New membership application",
+    `<p style="margin:0 0 16px;">A new application was submitted through the public site.</p>
 ${rows(pairs)}
 ${
-  enquiry.message
+  application.message
     ? `<p style="margin:20px 0 6px;font:600 11px/1.4 'Helvetica Neue',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:${BRAND.gold};">Message</p>
-<p style="margin:0 0 16px;white-space:pre-wrap;">${escapeHtml(enquiry.message)}</p>`
+<p style="margin:0 0 16px;white-space:pre-wrap;">${escapeHtml(application.message)}</p>`
     : ""
 }
-<p style="margin:24px 0 0;"><a href="${escapeHtml(link)}" style="display:inline-block;background:${BRAND.forest};color:${BRAND.paper};text-decoration:none;padding:13px 22px;font:600 11px/1 'Helvetica Neue',Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;">Review in the Secretariat</a></p>`,
+<p style="margin:24px 0 0;"><a href="${escapeHtml(link)}" style="display:inline-block;background:${BRAND.navy};color:${BRAND.paper};text-decoration:none;padding:13px 22px;font:600 11px/1 'Helvetica Neue',Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;">Review in the Secretariat</a></p>`,
   );
 
   return {
-    subject: `New enquiry — ${enquiry.firstName} ${enquiry.lastName} (${enquiry.reference})`,
+    subject: `New application — ${application.firstName} ${application.lastName} (${application.reference})`,
     text,
     html,
   };
@@ -331,13 +332,13 @@ ${
 export type SendOutcome = { applicant: string; secretariat: string; error?: string };
 
 /**
- * Sends both messages. Never throws: the caller has already saved the enquiry,
+ * Sends both messages. Never throws: the caller has already saved the application,
  * and a mail failure must not lose it. Outcomes are recorded on the document
  * so the Secretariat can see when a receipt did not go out.
  */
-export async function sendEnquiryMail(enquiry: EnquiryDoc): Promise<SendOutcome> {
+export async function sendApplicationMail(application: ApplicationDoc): Promise<SendOutcome> {
   if (!isMailConfigured()) {
-    console.warn("[mail] SMTP not configured — skipping enquiry mail");
+    console.warn("[mail] SMTP not configured — skipping application mail");
     return { applicant: "skipped", secretariat: "skipped" };
   }
 
@@ -347,10 +348,10 @@ export async function sendEnquiryMail(enquiry: EnquiryDoc): Promise<SendOutcome>
 
   const results = await Promise.allSettled([
     (async () => {
-      const message = applicantReceipt(enquiry);
+      const message = applicantReceipt(application);
       await sendMailMessage({
         from,
-        to: enquiry.email,
+        to: application.email,
         replyTo: secretariat,
         subject: message.subject,
         text: message.text,
@@ -359,11 +360,11 @@ export async function sendEnquiryMail(enquiry: EnquiryDoc): Promise<SendOutcome>
     })(),
     (async () => {
       if (!secretariat) return "skipped";
-      const message = secretariatNotice(enquiry);
+      const message = secretariatNotice(application);
       await sendMailMessage({
         from,
         to: secretariat,
-        replyTo: `${enquiry.firstName} ${enquiry.lastName} <${enquiry.email}>`,
+        replyTo: `${application.firstName} ${application.lastName} <${application.email}>`,
         subject: message.subject,
         text: message.text,
         html: message.html,
@@ -390,7 +391,7 @@ export async function sendEnquiryMail(enquiry: EnquiryDoc): Promise<SendOutcome>
 
   if (errors.length) {
     outcome.error = errors.join("; ");
-    console.error("[mail] enquiry mail problem", outcome.error);
+    console.error("[mail] application mail problem", outcome.error);
   }
 
   return outcome;

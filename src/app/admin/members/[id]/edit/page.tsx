@@ -41,8 +41,19 @@ export default async function EditMemberPage({
           email: member.email,
           phone: member.phone,
           address: member.address ?? "",
+          dateOfBirth: member.dateOfBirth
+            ? member.dateOfBirth.toISOString().slice(0, 10)
+            : "",
+          occupation: member.occupation ?? "",
           tier: member.tier,
-          slots: member.slots,
+          customContribution: member.customContributionKobo
+            ? String(member.customContributionKobo / 100)
+            : "",
+          nextOfKinName: member.nextOfKin?.name ?? "",
+          nextOfKinRelationship: member.nextOfKin?.relationship ?? "",
+          nextOfKinPhone: member.nextOfKin?.phone ?? "",
+          nextOfKinEmail: member.nextOfKin?.email ?? "",
+          nextOfKinAddress: member.nextOfKin?.address ?? "",
           status: member.status,
           joinedOn: member.joinedOn.toISOString().slice(0, 10),
           notes: member.notes ?? "",

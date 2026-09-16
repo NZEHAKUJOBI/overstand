@@ -1,23 +1,38 @@
-import { duesRateKobo, type MemberStatus, type MemberTier } from "./constants";
+import {
+  contributionRateKobo,
+  type MemberStatus,
+  type MemberTier,
+} from "./constants";
 
 /**
- * Monthly dues accrual.
+ * Monthly contribution accrual.
  *
- * Business rule: dues accrue from the member's `joinedOn` month inclusive, for
- * as long as the member is `active` or `suspended`. `pending` members have not
- * been admitted yet and `exited` members have left, so neither accrues —
- * suspension deliberately keeps accruing, since it is usually a consequence of
- * arrears and zeroing the balance would erase the debt.
+ * Business rule: contributions accrue from the member's `joinedOn` month
+ * inclusive, for as long as the member is `active` or `suspended`. `pending`
+ * members have not been admitted yet and `exited` members have left, so
+ * neither accrues — suspension deliberately keeps accruing, since it is
+ * usually a consequence of arrears and zeroing the balance would erase the
+ * debt.
  */
 
-export type DuesPosition = {
+export type ContributionPosition = {
   monthsBilled: number;
+  /** The member's own monthly rate, tailored members included. */
+  rateKobo: number;
   expectedKobo: number;
   paidKobo: number;
   /** Never negative — an overpayment shows as credit, not negative arrears. */
   arrearsKobo: number;
   creditKobo: number;
   accruing: boolean;
+};
+
+/** The subset of a member this module needs, so callers can pass a lean doc. */
+export type ContributingMember = {
+  tier: MemberTier;
+  status: MemberStatus;
+  joinedOn: Date;
+  customContributionKobo?: number | null;
 };
 
 const ACCRUING_STATUSES: readonly MemberStatus[] = ["active", "suspended"];
@@ -48,32 +63,41 @@ export function monthsBilledBetween(from: Date, to: Date): number {
   return Math.max(0, months);
 }
 
-export function computeDues(
-  member: { tier: MemberTier; status: MemberStatus; joinedOn: Date },
-  duesPaidKobo: number,
+export function computeContribution(
+  member: ContributingMember,
+  contributionPaidKobo: number,
   asOf: Date = new Date(),
-): DuesPosition {
+): ContributionPosition {
   const accruing = ACCRUING_STATUSES.includes(member.status);
 
   const monthsBilled = accruing
     ? monthsBilledBetween(member.joinedOn, asOf)
     : 0;
 
-  const expectedKobo = monthsBilled * duesRateKobo(member.tier);
-  const balance = expectedKobo - duesPaidKobo;
+  const rateKobo = contributionRateKobo(
+    member.tier,
+    member.customContributionKobo,
+  );
+
+  const expectedKobo = monthsBilled * rateKobo;
+  const balance = expectedKobo - contributionPaidKobo;
 
   return {
     monthsBilled,
+    rateKobo,
     expectedKobo,
-    paidKobo: duesPaidKobo,
+    paidKobo: contributionPaidKobo,
     arrearsKobo: Math.max(0, balance),
     creditKobo: Math.max(0, -balance),
     accruing,
   };
 }
 
-/** Every dues month from joining to now, newest first. */
-export function duesPeriodsSince(joinedOn: Date, asOf: Date = new Date()): string[] {
+/** Every contribution month from joining to now, newest first. */
+export function contributionPeriodsSince(
+  joinedOn: Date,
+  asOf: Date = new Date(),
+): string[] {
   const periods: string[] = [];
   const cursor = new Date(
     Date.UTC(joinedOn.getUTCFullYear(), joinedOn.getUTCMonth(), 1),

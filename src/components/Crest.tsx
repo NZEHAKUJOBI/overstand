@@ -2,9 +2,10 @@ import Image from "next/image";
 import logo from "@/app/logo.png";
 
 /**
- * Society crest — the cooperative's seal, a gold anchor and portico on a forest
- * field. The artwork is masked to its circle with transparent corners, so it
- * sits directly on the forest ground with no plate behind it.
+ * Society crest — a wheat ear, a green house and cupped hands inside a navy
+ * roundel within a gold ring. The artwork is masked to its circle with
+ * transparent corners, so it sits directly on the navy ground with no plate
+ * behind it.
  *
  * `className` handles layout as before; `size` is the intrinsic width Next.js
  * optimises for, so set it to the largest CSS size the call site renders.
