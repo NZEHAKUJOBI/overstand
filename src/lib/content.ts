@@ -33,7 +33,7 @@ export const society = {
  */
 export const navigation = [
   { id: "at-a-glance", label: "Overview" },
-  { id: "mission", label: "Mission" },
+  { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "membership", label: "Membership" },
   { id: "contributions", label: "Contributions" },
@@ -67,10 +67,28 @@ export const glanceFigures = [
   { value: "3591", label: "Cooperative registration number" },
 ];
 
-/* ── 02 · Mission ─────────────────────────────────────────────────── */
+/* ── 02 · About, Vision & Mission ─────────────────────────────────── */
+
+export const about = {
+  badge: "About Us",
+  heading: "Overstand Multi-Purpose Cooperative...",
+  body: "is a newly established co-operative, registered in compliance with the Nigerian Co-operative Societies Act, 2004 (AS AMENDED). We are a member-driven organization dedicated to creating financial opportunities that empower individuals. Our cooperative offers a range of services designed to help our members achieve financial independence, including the ability to purchase land, acquire homes, invest in agricultural projects, and access both car and salary loans.",
+  servicesSummary: [
+    "Purchase Land",
+    "Acquire Homes",
+    "Agricultural Investments",
+    "Car & Salary Loans",
+    "Financial Independence",
+  ],
+};
+
+export const vision = {
+  heading: "Vision Statement",
+  body: "To become a leading cooperative society in Nigeria, recognized for transforming lives through economic empowerment and sustainable growth.",
+};
 
 export const mission = {
-  heading: "Mission",
+  heading: "Mission Statement",
   body: "To create financial freedom through innovative solutions, strategic investments, and sustainable wealth-building.",
   support:
     "The Society is committed to being credible, transparent and professionally managed. By pooling the resources and talents of its members, it creates pathways to financial independence and builds lasting value together.",

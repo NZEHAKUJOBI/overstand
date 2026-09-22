@@ -1,9 +1,9 @@
+import { About } from "@/components/About";
 import { AtAGlance } from "@/components/AtAGlance";
 import { Contributions } from "@/components/Contributions";
 import { Hero } from "@/components/Hero";
 import { HowToJoin } from "@/components/HowToJoin";
 import { Membership } from "@/components/Membership";
-import { Mission } from "@/components/Mission";
 import { Services } from "@/components/Services";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -46,7 +46,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <AtAGlance />
-        <Mission />
+        <About />
         <Services />
         <Membership />
         <Contributions />
