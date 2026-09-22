@@ -32,7 +32,14 @@ const optional = (max: number) => trimmed.max(max).optional().or(z.literal(""));
 const phoneField = trimmed
   .min(7, "Enter a phone number.")
   .max(24)
-  .regex(/^[+\d][\d\s-]*$/, "Enter a valid phone number.");
+  .regex(/^[+\d][\d\s-]*$/, "Enter a valid phone number.")
+  .transform((val) => {
+    if (val.startsWith("+")) {
+      return val.replace(/\s+/g, " ");
+    }
+    const cleaned = val.replace(/^0+/, "");
+    return `+234 ${cleaned}`;
+  });
 
 /** Accepts "20,000" or "₦20,000.50" and yields integer kobo. */
 const nairaAmount = trimmed

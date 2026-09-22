@@ -31,6 +31,7 @@ const { memberSchema, paymentSchema } = await import("../src/lib/validation");
 const { parseNairaToKobo, formatNaira } = await import("../src/lib/money");
 const { signSession, verifySession } = await import("../src/lib/session");
 const { can } = await import("../src/lib/rbac");
+const { parsePhone, formatFullPhone } = await import("../src/lib/countries");
 
 await connectDb();
 await Member.syncIndexes();
@@ -118,6 +119,40 @@ await check("requires a contribution month on contribution payments", () => {
     method: "cash", bank: "", reference: "", receivedOn: "2026-09-01", note: "",
   });
   assert.equal(result.success, false);
+});
+await check("normalizes local phone to include Nigerian country code", () => {
+  const result = memberSchema.safeParse({
+    ...baseMember,
+    tier: "tier_1",
+    phone: "0803 123 4567",
+  });
+  assert.equal(result.success, true, JSON.stringify(result.error?.issues));
+  assert.equal(result.data?.phone, "+234 803 123 4567");
+});
+await check("preserves international phone numbers with country code", () => {
+  const result = memberSchema.safeParse({
+    ...baseMember,
+    tier: "tier_1",
+    phone: "+44 7911 123456",
+  });
+  assert.equal(result.success, true, JSON.stringify(result.error?.issues));
+  assert.equal(result.data?.phone, "+44 7911 123456");
+});
+await check("correctly parses phone and country codes", () => {
+  const parsed1 = parsePhone("+234 803 123 4567");
+  assert.equal(parsed1.dialCode, "+234");
+  assert.equal(parsed1.nationalNumber, "803 123 4567");
+
+  const parsed2 = parsePhone("+44 7911 123456");
+  assert.equal(parsed2.dialCode, "+44");
+  assert.equal(parsed2.nationalNumber, "7911 123456");
+
+  const parsed3 = parsePhone("0803 123 4567");
+  assert.equal(parsed3.dialCode, "+234");
+  assert.equal(parsed3.nationalNumber, "803 123 4567");
+
+  const formatted = formatFullPhone("+234", "0803 123 4567");
+  assert.equal(formatted, "+234 803 123 4567");
 });
 
 console.log("\nmembership numbers");
