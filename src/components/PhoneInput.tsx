@@ -3,7 +3,6 @@
 import { useId, useState, type ChangeEvent } from "react";
 import {
   COUNTRY_CODES,
-  DEFAULT_DIAL_CODE,
   formatFullPhone,
   parsePhone,
 } from "@/lib/countries";
@@ -37,6 +36,9 @@ export function PhoneInput({
   const [dialCode, setDialCode] = useState(initial.dialCode);
   const [nationalNumber, setNationalNumber] = useState(initial.nationalNumber);
 
+  const selectedCountry =
+    COUNTRY_CODES.find((c) => c.dialCode === dialCode) || COUNTRY_CODES[0];
+
   // Compute combined full phone for the form submission
   const combinedPhone = nationalNumber.trim()
     ? formatFullPhone(dialCode, nationalNumber)
@@ -61,37 +63,25 @@ export function PhoneInput({
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div
+      className={`relative flex items-stretch border border-navy-900/20 bg-white transition-colors focus-within:border-gold-600 focus-within:ring-1 focus-within:ring-gold-500 ${className}`}
+    >
       {/* Hidden input carrying the combined international value for formData.get(name) */}
       <input type="hidden" name={name} value={combinedPhone} />
 
-      {/* Country code selector */}
-      <div className="relative shrink-0">
-        <label htmlFor={`${inputId}-dialcode`} className="sr-only">
-          Country dial code
-        </label>
-        <select
-          id={`${inputId}-dialcode`}
-          value={dialCode}
-          onChange={handleDialCodeChange}
-          disabled={disabled}
-          aria-label="Country dial code"
-          className="h-[42px] cursor-pointer appearance-none border border-navy-900/20 bg-white py-2 pl-3 pr-8 text-[0.875rem] font-medium text-navy-950 focus:border-gold-600 focus:outline-none focus:ring-1 focus:ring-gold-500 disabled:opacity-50"
-        >
-          {COUNTRY_CODES.map((c) => (
-            <option key={`${c.code}-${c.dialCode}`} value={c.dialCode}>
-              {c.flag} {c.dialCode} ({c.name})
-            </option>
-          ))}
-        </select>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-ink-soft"
-        >
+      {/* Country code selector with compact visual display and full native select overlay */}
+      <div className="relative flex shrink-0 items-center border-r border-navy-900/15 bg-paper-alt/40 hover:bg-paper-alt transition-colors">
+        {/* Compact visual badge (Flag + Dial Code + Chevron) */}
+        <div className="pointer-events-none flex items-center gap-1.5 px-3 py-3 text-[0.875rem] font-medium text-navy-950">
+          <span className="text-base leading-none" aria-hidden="true">
+            {selectedCountry?.flag ?? "🇳🇬"}
+          </span>
+          <span className="tnum font-mono text-[0.875rem]">{dialCode}</span>
           <svg
-            className="h-3.5 w-3.5 fill-current"
+            className="h-3.5 w-3.5 text-ink-soft shrink-0"
             viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            aria-hidden="true"
           >
             <path
               fillRule="evenodd"
@@ -100,22 +90,36 @@ export function PhoneInput({
             />
           </svg>
         </div>
+
+        {/* Real accessible select element stretched over the visual area */}
+        <select
+          id={`${inputId}-dialcode`}
+          value={dialCode}
+          onChange={handleDialCodeChange}
+          disabled={disabled}
+          aria-label="Country dial code"
+          className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+        >
+          {COUNTRY_CODES.map((c) => (
+            <option key={`${c.code}-${c.dialCode}`} value={c.dialCode}>
+              {c.flag} {c.dialCode} — {c.name}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* National digits input */}
-      <div className="relative min-w-0 flex-1">
-        <input
-          id={inputId}
-          type="tel"
-          value={nationalNumber}
-          onChange={handleNumberChange}
-          required={required}
-          disabled={disabled}
-          autoComplete={autoComplete}
-          placeholder={placeholder}
-          className="h-[42px] w-full border border-navy-900/20 bg-white px-3.5 py-2 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:border-gold-600 focus:outline-none focus:ring-1 focus:ring-gold-500 disabled:opacity-50"
-        />
-      </div>
+      {/* National digits input taking all remaining width */}
+      <input
+        id={inputId}
+        type="tel"
+        value={nationalNumber}
+        onChange={handleNumberChange}
+        required={required}
+        disabled={disabled}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        className="w-full min-w-0 flex-1 bg-transparent px-3.5 py-3 text-[0.9375rem] text-ink placeholder:text-ink-faint focus:outline-none disabled:opacity-50"
+      />
     </div>
   );
 }
