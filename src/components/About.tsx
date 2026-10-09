@@ -1,5 +1,5 @@
 import { Reveal } from "./Reveal";
-import { about, mission, vision } from "@/lib/content";
+import { about, cooperativeCommitment, mission, vision } from "@/lib/content";
 
 /**
  * About section presenting the Society's legal background,
@@ -102,10 +102,6 @@ export function About() {
                 <p className="mt-6 text-[1.0625rem] leading-[1.75] font-normal text-paper/85 sm:text-[1.125rem]">
                   {mission.body}
                 </p>
-
-                <p className="mt-4 text-[0.9375rem] leading-[1.7] text-paper/65">
-                  {mission.support}
-                </p>
               </div>
 
               <div className="mt-8 border-t border-paper/10 pt-6">
@@ -116,6 +112,13 @@ export function About() {
             </article>
           </Reveal>
         </div>
+        <Reveal delay={180}>
+          <div className="card border border-rule bg-white p-8 md:p-10">
+            <p className="text-[1.0625rem] leading-[1.8] text-ink-soft md:text-[1.125rem]">
+              {cooperativeCommitment}
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

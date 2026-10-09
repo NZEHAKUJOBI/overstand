@@ -72,7 +72,7 @@ export const glanceFigures = [
 export const about = {
   badge: "About Us",
   heading: "Overstand Multi-Purpose Cooperative...",
-  body: "is a newly established co-operative, registered in compliance with the Nigerian Co-operative Societies Act, 2004 (AS AMENDED). We are a member-driven organization dedicated to creating financial opportunities that empower individuals. Our cooperative offers a range of services designed to help our members achieve financial independence, including the ability to purchase land, acquire homes, invest in agricultural projects, and access both car and salary loans.",
+  body: "We are an established co-operative registered in compliance with the Nigerian Co-operative Societies Act, 2004 (AS AMENDED). We are a member-driven organization dedicated to creating financial opportunities that empower individuals. Our cooperative offers a range of services to help members achieve financial independence, including purchasing land, acquiring homes, investing in agricultural projects, and accessing car and salary loans.",
   servicesSummary: [
     "Purchase Land",
     "Acquire Homes",
@@ -89,10 +89,11 @@ export const vision = {
 
 export const mission = {
   heading: "Mission Statement",
-  body: "To create financial freedom through innovative solutions, strategic investments, and sustainable wealth-building.",
-  support:
-    "The Society is committed to being credible, transparent and professionally managed. By pooling the resources and talents of its members, it creates pathways to financial independence and builds lasting value together.",
+  body: "Our mission is to empower our members through collective ownership, equitable decision-making, and sustainable practices. We strive to build a community that fosters mutual support, economic resilience, and social responsibility, ensuring that all members benefit from shared resources and opportunities. Together, we work to create a more just and inclusive society, guided by the principles of cooperation, transparency, and democratic governance.",
 };
+
+export const cooperativeCommitment =
+  "The Cooperative is committed to being credible, transparent, and professionally managed. By pooling resources and talents of its members, the cooperative creates pathways to financial independence and builds lasting value for all.";
 
 /* ── 03 · Products & Services ─────────────────────────────────────── */
 
@@ -136,11 +137,19 @@ export const services: Service[] = [
 /* ── 04 · Membership ──────────────────────────────────────────────── */
 
 export const eligibility = {
-  heading: "Who can join",
+  heading: "Who Can Join",
+  requirementsHeading: "Eligibility Requirements",
   criteria: [
-    "At least 18 years of age",
-    "Of good character",
-    "Of sound mind",
+    "Must be at least 18 years of age",
+    "Must be of good character",
+    "Must be of sound mind",
+  ],
+  openToHeading: "Open To",
+  openTo: [
+    "Business owners",
+    "Salary earners",
+    "Residents in Nigeria",
+    "Nigerians in the diaspora",
   ],
 };
 
@@ -240,7 +249,7 @@ export const phones: string[] = [];
 export const email = { address: "", provisional: true };
 
 export const contactNote =
-  "For enquiries or to proceed with registration, reach out to any of the Society's official representatives for the membership application form, or visit the head office.";
+  "For inquiries or to proceed with registration, contact any of our official representatives for the membership application form, or visit the head office.";
 
 export const sourceNote =
   "Source: Overstand Multipurpose Cooperative Society — Official Update. Fee amounts shown as “confirm at the office” are named in that document without a stated figure.";
