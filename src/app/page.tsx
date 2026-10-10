@@ -1,9 +1,8 @@
-import { AtAGlance } from "@/components/AtAGlance";
+import { About } from "@/components/About";
 import { Contributions } from "@/components/Contributions";
 import { Hero } from "@/components/Hero";
 import { HowToJoin } from "@/components/HowToJoin";
 import { Membership } from "@/components/Membership";
-import { Mission } from "@/components/Mission";
 import { Services } from "@/components/Services";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -35,7 +34,7 @@ export default function Home() {
   return (
     <>
       <a
-        href="#at-a-glance"
+        href="#top"
         className="label sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-60 focus:bg-gold-400 focus:px-5 focus:py-3 focus:text-navy-950"
       >
         Skip to content
@@ -45,8 +44,7 @@ export default function Home() {
 
       <main className="flex-1">
         <Hero />
-        <AtAGlance />
-        <Mission />
+        <About />
         <Services />
         <Membership />
         <Contributions />

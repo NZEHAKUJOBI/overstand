@@ -16,7 +16,7 @@ export function Mission() {
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
             <span className="label text-gold-700">{mission.heading}</span>
 
-            <p className="font-display mt-7 text-[1.75rem] leading-[1.32] font-normal tracking-[-0.015em] text-balance text-navy-900 sm:text-[2.125rem] md:text-[2.5rem]">
+            <p className="font-display mt-7 text-[1.25rem] leading-[1.5] font-normal tracking-[-0.015em] text-balance text-navy-900 sm:text-[1.375rem] md:text-[1.5rem]">
               {mission.body}
             </p>
 

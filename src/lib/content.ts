@@ -2,16 +2,16 @@
  * Single source of truth for the site copy.
  *
  * Every figure, name and address here is transcribed from the Society's
- * Official Update. Nothing on the public page is asserted beyond what that
- * document supports: where the Update names something without stating it —
- * the registration and annual fee amounts, the Society's phone and email —
- * the entry is marked `provisional` and the page says so plainly rather than
- * quietly implying otherwise.
+ * Official Update and approved correction file. Nothing on the public page is
+ * asserted beyond what those documents support: where the Update names
+ * something without stating it — the registration and annual fee amounts,
+ * the Society's phone and email — the entry is marked `provisional` and the
+ * page says so plainly rather than quietly implying otherwise.
  *
  * Deliberately absent, because the Official Update does not cover them:
- * a vision statement, core values, the roster of offices, a target-market
- * breakdown and a social-responsibility programme. Add sections back when
- * the Society supplies the source material, not before.
+ * a vision statement, core values, the roster of offices and a
+ * social-responsibility programme. Add sections back when the Society
+ * supplies the source material, not before.
  */
 
 export const society = {
@@ -32,8 +32,8 @@ export const society = {
  * action. They point at the section headings rather than repeating them.
  */
 export const navigation = [
-  { id: "at-a-glance", label: "Overview" },
-  { id: "mission", label: "Mission" },
+  { id: "top", label: "Overview" },
+  { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "membership", label: "Membership" },
   { id: "contributions", label: "Contributions" },
@@ -49,6 +49,19 @@ export const hero = {
   primaryCta: "Apply for membership",
   secondaryCta: "What we offer",
 };
+
+export const about = {
+  eyebrow: "About Us",
+  heading: "Overstand Multi-Purpose Cooperative...",
+  body: "We are an established co-operative registered in compliance with the Nigerian Co-operative Societies Act, 2004 (AS AMENDED). We are a member-driven organization dedicated to creating financial opportunities that empower individuals. Our cooperative offers a range of services to help members achieve financial independence, including purchasing land, acquiring homes, investing in agricultural projects, and accessing car and salary loans.",
+  highlights: [
+    "Purchase land",
+    "Acquire homes",
+    "Agricultural investments",
+    "Car & salary loans",
+    "Financial independence",
+  ],
+} as const;
 
 /* ── 01 · At a Glance ─────────────────────────────────────────────── */
 
@@ -70,10 +83,10 @@ export const glanceFigures = [
 /* ── 02 · Mission ─────────────────────────────────────────────────── */
 
 export const mission = {
-  heading: "Mission",
-  body: "To create financial freedom through innovative solutions, strategic investments, and sustainable wealth-building.",
+  heading: "Mission Statement",
+  body: "Our mission is to empower our members through collective ownership, equitable decision-making, and sustainable practices. We strive to build a community that fosters mutual support, economic resilience, and social responsibility, ensuring that all members benefit from shared resources and opportunities. Together, we work to create a more just and inclusive society, guided by the principles of cooperation, transparency, and democratic governance.",
   support:
-    "The Society is committed to being credible, transparent and professionally managed. By pooling the resources and talents of its members, it creates pathways to financial independence and builds lasting value together.",
+    "The Cooperative is committed to being credible, transparent, and professionally managed. By pooling resources and talents of its members, the cooperative creates pathways to financial independence and builds lasting value for all.",
 };
 
 /* ── 03 · Products & Services ─────────────────────────────────────── */
@@ -118,11 +131,19 @@ export const services: Service[] = [
 /* ── 04 · Membership ──────────────────────────────────────────────── */
 
 export const eligibility = {
-  heading: "Who can join",
+  heading: "Who Can Join",
+  requirementsHeading: "Eligibility Requirements",
   criteria: [
-    "At least 18 years of age",
-    "Of good character",
-    "Of sound mind",
+    "Must be at least 18 years of age",
+    "Must be of good character",
+    "Must be of sound mind",
+  ],
+  openToHeading: "Open To",
+  openTo: [
+    "Business owners",
+    "Salary earners",
+    "Residents in Nigeria",
+    "Nigerians in the diaspora",
   ],
 };
 
@@ -222,7 +243,7 @@ export const phones: string[] = [];
 export const email = { address: "", provisional: true };
 
 export const contactNote =
-  "For enquiries or to proceed with registration, reach out to any of the Society's official representatives for the membership application form, or visit the head office.";
+  "For inquiries or to proceed with registration, contact any of our official representatives for the membership application form, or visit the head office.";
 
 export const sourceNote =
   "Source: Overstand Multipurpose Cooperative Society — Official Update. Fee amounts shown as “confirm at the office” are named in that document without a stated figure.";

@@ -27,28 +27,39 @@ export function Membership() {
                 {eligibility.heading}
               </h3>
 
-              <ul className="mt-7 grid gap-4">
-                {eligibility.criteria.map((criterion) => (
-                  <li key={criterion} className="flex items-start gap-3">
-                    <svg
-                      viewBox="0 0 20 20"
-                      aria-hidden="true"
-                      className="mt-0.5 h-5 w-5 shrink-0 text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="10" cy="10" r="8" />
-                      <path d="m6.5 10.2 2.4 2.4 4.6-4.9" />
-                    </svg>
-                    <span className="text-[0.9375rem] leading-[1.6] text-ink-soft">
-                      {criterion}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              {[
+                {
+                  heading: eligibility.requirementsHeading,
+                  items: eligibility.criteria,
+                },
+                { heading: eligibility.openToHeading, items: eligibility.openTo },
+              ].map((group) => (
+                <div key={group.heading} className="mt-7">
+                  <h4 className="label-sm text-gold-700">{group.heading}</h4>
+                  <ul className="mt-4 grid gap-4">
+                    {group.items.map((criterion) => (
+                      <li key={criterion} className="flex items-start gap-3">
+                        <svg
+                          viewBox="0 0 20 20"
+                          aria-hidden="true"
+                          className="mt-0.5 h-5 w-5 shrink-0 text-green-600"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="10" cy="10" r="8" />
+                          <path d="m6.5 10.2 2.4 2.4 4.6-4.9" />
+                        </svg>
+                        <span className="text-[0.9375rem] leading-[1.6] text-ink-soft">
+                          {criterion}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </Reveal>
 
