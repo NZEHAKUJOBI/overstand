@@ -13,7 +13,6 @@ import {
 } from "@/lib/constants";
 import { formatNaira } from "@/lib/money";
 import { offices } from "@/lib/content";
-import { PhoneInput } from "@/components/PhoneInput";
 import { submitApplication, type ApplicationFormState } from "./actions";
 
 const control =
@@ -164,10 +163,10 @@ export function ApplicationForm() {
             label="Phone"
             name="phone"
             error={state.fieldErrors?.phone}
-            hint="Select your country code and enter your phone number."
+            hint="Include the network code, e.g. 0803…"
             required
           >
-            <PhoneInput id="phone" name="phone" autoComplete="tel" required />
+            <input id="phone" name="phone" type="tel" className={control} autoComplete="tel" required />
           </Field>
         </div>
 
@@ -218,10 +217,9 @@ export function ApplicationForm() {
             label="Phone"
             name="nextOfKin.phone"
             error={state.fieldErrors?.["nextOfKin.phone"]}
-            hint="Select country code and enter phone number."
             required
           >
-            <PhoneInput id="nextOfKin.phone" name="nextOfKin.phone" required />
+            <input id="nextOfKin.phone" name="nextOfKin.phone" type="tel" className={control} required />
           </Field>
           <Field
             label="Email"

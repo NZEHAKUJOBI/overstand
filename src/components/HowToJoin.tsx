@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
-import { contactNote, joinCaveat, joinSteps } from "@/lib/content";
+import { contactNote, joinCaveat, joinSteps, offices } from "@/lib/content";
 
 /**
- * The five steps to membership, as a numbered rail, with registration contacts
+ * The five steps to membership, as a numbered rail, with the office details
  * and the caveat alongside. The caveat is load-bearing: the online form starts
  * an application, it does not admit anybody and takes no payment, and the page
  * has to say so where somebody is about to click.
@@ -72,6 +72,18 @@ export function HowToJoin() {
                   {contactNote}
                 </p>
 
+                {offices.map((office) => (
+                  <div key={office.label} className="mt-7">
+                    <p className="label-sm text-gold-400/75">{office.label}</p>
+                    <address className="mt-3 text-[0.9375rem] leading-[1.7] text-paper/80 not-italic">
+                      {office.lines.map((line) => (
+                        <span key={line} className="block">
+                          {line}
+                        </span>
+                      ))}
+                    </address>
+                  </div>
+                ))}
               </div>
             </Reveal>
           </div>

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Field, Input, Notice, Select, Textarea } from "@/components/admin/ui";
-import { PhoneInput } from "@/components/PhoneInput";
 import {
   CONTRIBUTION_TIER_1_KOBO,
   CONTRIBUTION_TIER_2_KOBO,
@@ -177,12 +176,13 @@ export function MemberForm({
             label="Phone"
             name="phone"
             error={state.fieldErrors?.phone}
-            hint="Select country code and enter phone number."
+            hint="Include the country or network code."
             required
           >
-            <PhoneInput
+            <Input
               id="phone"
               name="phone"
+              type="tel"
               defaultValue={defaults.phone}
               autoComplete="off"
               required
@@ -257,12 +257,12 @@ export function MemberForm({
             label="Phone"
             name="nextOfKin.phone"
             error={state.fieldErrors?.["nextOfKin.phone"]}
-            hint="Select country code and enter phone number."
             required
           >
-            <PhoneInput
+            <Input
               id="nextOfKin.phone"
               name="nextOfKin.phone"
+              type="tel"
               defaultValue={defaults.nextOfKinPhone}
               autoComplete="off"
               required

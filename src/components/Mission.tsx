@@ -20,6 +20,11 @@ export function Mission() {
               {mission.body}
             </p>
 
+            <span aria-hidden="true" className="mt-10 h-px w-16 bg-gold-600/50" />
+
+            <p className="mt-10 text-[1.0625rem] leading-[1.75] text-pretty text-ink-soft">
+              {mission.support}
+            </p>
           </div>
         </Reveal>
       </div>
